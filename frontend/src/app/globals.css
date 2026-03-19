@@ -1,0 +1,207 @@
+/* ===================================================
+   GLOBAL CSS — CarRec AI  
+   Jade #00BB77 → Teal #00A693 → Cobalt #1E6FD9
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
+/* ── Variables ─────────────────────────────────────── */
+:root {
+  --jade:          #00BB77;
+  --jade-light:    #00D98A;
+  --jade-dark:     #009960;
+  --teal:          #00A693;
+  --teal-light:    #00BFB0;
+  --cobalt:        #1E6FD9;
+  --cobalt-light:  #4090F7;
+  --cobalt-dark:   #1557B0;
+  --navy:          #0D1B3E;
+  --midnight:      #070E1C;
+
+  /* Gradients */
+  --gradient-brand:   linear-gradient(135deg, #00BB77 0%, #00A693 45%, #1E6FD9 100%);
+  --gradient-brand-h: linear-gradient(90deg,  #00BB77 0%, #00A693 45%, #1E6FD9 100%);
+  --gradient-hero:    linear-gradient(135deg, #009960 0%, #007A8C 40%, #1557B0 100%);
+
+  /* Light surfaces */
+  --bg-primary:   #F4FBF9;
+  --bg-secondary: #EAF7F2;
+  --bg-card:      #FFFFFF;
+  --bg-input:     #FFFFFF;
+  --bg-nav:       rgba(244,251,249,0.96);
+
+  /* Light text */
+  --text-primary:   #0C1B2B;
+  --text-secondary: #375470;
+  --text-muted:     #6B93B0;
+
+  /* Light borders */
+  --border-color:   #C8E8E0;
+  --border-focus:   #00BB77;
+  --border-card:    #DCF0EA;
+
+  /* Shadows */
+  --shadow-xs:    0 1px 2px rgba(0,20,30,0.06);
+  --shadow-sm:    0 2px 6px rgba(0,20,30,0.08), 0 1px 2px rgba(0,20,30,0.04);
+  --shadow-md:    0 6px 20px rgba(0,20,30,0.10), 0 2px 6px rgba(0,20,30,0.05);
+  --shadow-lg:    0 16px 48px rgba(0,20,30,0.12), 0 4px 12px rgba(0,20,30,0.06);
+  --shadow-xl:    0 24px 64px rgba(0,20,30,0.14), 0 8px 20px rgba(0,20,30,0.08);
+  --shadow-brand: 0 4px 20px rgba(0,187,119,0.30);
+  --shadow-cobalt:0 4px 20px rgba(30,111,217,0.28);
+  --shadow-glow:  0 0 40px rgba(0,187,119,0.18);
+
+  /* Status */
+  --danger:   #EF4444;
+  --warning:  #F59E0B;
+  --success:  #00BB77;
+
+  /* Ranking */
+  --rank-1: #F5A623;
+  --rank-2: #A1AAB5;
+  --rank-3: #CD7C52;
+  --rank-4: #4090F7;
+  --rank-5: #00A693;
+
+  /* Radii - Diperbesar untuk kesan lebih luwes */
+  --radius-sm:   12px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+  --radius-2xl:  40px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 120ms cubic-bezier(0.4,0,0.2,1);
+  --transition-base: 220ms cubic-bezier(0.4,0,0.2,1);
+  --transition-slow: 380ms cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── Dark Mode (Slate / Titanium) ───────────────────────── */
+[data-theme='dark'] {
+  --bg-primary:   #09090b; /* Zinc 950 */
+  --bg-secondary: #18181b; /* Zinc 900 */
+  --bg-card:      #18181b; /* Zinc 900 */
+  --bg-input:     #27272a; /* Zinc 800 */
+  --bg-nav:       rgba(9, 9, 11, 0.85);
+
+  --text-primary:   #f4f4f5; /* Zinc 100 */
+  --text-secondary: #a1a1aa; /* Zinc 400 */
+  --text-muted:     #71717a; /* Zinc 500 */
+
+  --border-color: #27272a; /* Zinc 800 */
+  --border-card:  #27272a; /* Zinc 800 */
+
+  --shadow-xs:    0 1px 2px rgba(0,0,0,0.40);
+  --shadow-sm:    0 2px 6px rgba(0,0,0,0.45);
+  --shadow-md:    0 6px 20px rgba(0,0,0,0.50);
+  --shadow-lg:    0 16px 48px rgba(0,0,0,0.55);
+  --shadow-xl:    0 24px 64px rgba(0,0,0,0.60);
+  --shadow-brand: 0 4px 24px rgba(0,187,119,0.35);
+  --shadow-cobalt:0 4px 24px rgba(30,111,217,0.32);
+  --shadow-glow:  0 0 50px rgba(0,187,119,0.22);
+}
+
+/* ── Reset ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background var(--transition-base), color var(--transition-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+input, textarea { font-family: inherit; }
+
+/* ── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--border-color); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--teal); }
+
+/* ── Utilities ─────────────────────────────────────── */
+.gradient-text {
+  background: var(--gradient-brand-h);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-hero {
+  background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.85) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animations ────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.5); opacity: 0.5; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes gradientPan {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes borderGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,187,119,0); }
+  50%       { box-shadow: 0 0 0 4px rgba(0,187,119,0.15); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes rankPop {
+  0%   { transform: scale(0.7) rotate(-8deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.animate-fade-up    { animation: fadeUp 0.45s cubic-bezier(0.4,0,0.2,1) forwards; }
+.animate-scale-in   { animation: scaleIn 0.3s cubic-bezier(0.4,0,0.2,1) forwards; }

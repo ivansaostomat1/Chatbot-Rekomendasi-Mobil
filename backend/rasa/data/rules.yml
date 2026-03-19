@@ -1,0 +1,18 @@
+version: "3.1"
+
+rules:
+
+- rule: greet user
+  steps:
+  - intent: greet
+  - action: utter_greet
+
+- rule: handle recommendation request
+  steps:
+  - intent: ask_recommendation
+  - action: action_recommend_car
+
+- rule: user choose preference
+  steps:
+  - intent: choose_preference
+  - action: action_recommend_car

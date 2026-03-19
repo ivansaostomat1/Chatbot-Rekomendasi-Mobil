@@ -1,0 +1,43 @@
+#buat run frontend
+cd frontend
+npm run dev
+
+#buat ganti dan aktifin venv (harus sesuai urutan dibawah)
+cd backend
+.\venv\Scripts\activate
+cd rasa
+
+#buat run backend (di folder backend BUKAN RASA)
+uvicorn app.main:app --reload
+
+#buat train rasa
+rasa train
+
+#buat run rasa
+rasa run actions
+
+#buat run rasa api
+rasa run --enable-api --cors "*"
+
+#buat debug nlp
+rasa shell
+rasa shell --debug
+
+#cek port
+netstat -ano | findstr :5055
+
+#kill port nodejs
+taskkill /F /IM node.exe
+
+
+#buat run frontend
+cd frontend
+npm run dev
+
+#buat ganti dan aktifin venv (harus sesuai urutan dibawah)
+cd backend
+.\venv\Scripts\activate
+cd rasa
+
+#buat run backend (di folder backend BUKAN RASA)
+uvicorn app.main:app --reload

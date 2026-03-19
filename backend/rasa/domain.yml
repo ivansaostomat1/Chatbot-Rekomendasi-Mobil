@@ -1,0 +1,103 @@
+version: "3.1"
+
+intents:
+  - greet
+  - ask_recommendation
+  - choose_preference
+
+actions:
+  - action_recommend_car
+responses:
+
+  utter_greet:
+  - text: "Halo! Saya bisa membantu rekomendasi mobil."
+
+  utter_ask_detail:
+  - text: "Baik, saya sedang mencari mobil yang cocok untuk kamu..."
+
+  utter_ask_preference:
+    - text: |
+        Saya menemukan mobil sesuai budget kamu.
+
+        Apa yang paling kamu prioritaskan?
+
+        1️⃣ irit bahan bakar  
+        2️⃣ performa kencang  
+        3️⃣ teknologi canggih  
+        4️⃣ kenyamanan
+        
+entities:
+  - budget
+  - body_type
+  - powertrain
+  - feature
+  - preference
+  - hard_filter
+  - brand
+
+slots:
+  min_budget:
+    type: float
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  max_budget:
+    type: float
+    influence_conversation: false
+    mappings:
+      - type: custom
+  brand:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: brand
+
+  body_type:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: body_type
+
+  powertrain:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: powertrain
+
+  feature:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: feature
+
+  preference:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: preference
+
+  hard_filter:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: hard_filter
+
+  need:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  priority_asked:
+    type: bool
+    initial_value: false
+    influence_conversation: false
+    mappings:
+      - type: custom

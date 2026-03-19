@@ -1,0 +1,125 @@
+.container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 10px 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  font-family: inherit;
+  animation: fadeIn 0.3s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.labelGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.value {
+  font-weight: 800;
+  color: #4090F7;
+  background: rgba(64,144,247,0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  outline: none;
+  margin-top: 4px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #4090F7;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.slider:disabled::-webkit-slider-thumb {
+  background: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: #4090F7;
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #2a7af3;
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  background: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

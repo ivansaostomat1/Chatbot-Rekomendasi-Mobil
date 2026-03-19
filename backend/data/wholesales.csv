@@ -1,0 +1,613 @@
+BRAND,MODEL,VARIAN,TYPE MODEL,JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC,TOTAL_2025
+AION,Hyptec HT,Premium,HYPTEC HT Premium,0,79,886,276,195,56,37,96,23,78,75,113,1914
+AION,Hyptec HT,Ultra (Gullwing),HYPTEC HT Ultra,0,0,0,0,0,0,0,0,0,0,0,0,0
+AION,UT,Premium,AION UT Premium,0,0,0,0,0,0,0,0,0,0,0,1087,1087
+AION,V,Exclusive,AION V Exclusive,0,0,0,0,0,0,0,0,25,21,23,32,101
+AION,V,Luxury,AION V Luxury,0,0,0,0,0,765,336,617,502,318,245,203,2986
+AION,Y Plus,Exclusive,AION Y Plus Exclusive,66,57,66,75,65,25,9,5,2,0,0,232,602
+AION,Y Plus,Premium,AION Y Plus Premium,17,23,7,11,22,14,39,7,2,0,0,7,149
+AUDI,A4,Sedan 2.0 TFSI quattro,A4 2.0 TFSI A/T,0,1,0,0,0,0,0,0,0,0,0,2,3
+AUDI,A5,Coupe 2.0 TFSI quattro,A5 2.0 TFSI,0,0,0,0,0,0,0,0,0,0,0,0,0
+AUDI,A5,Sportback 2.0 TFSI quattro,A5 2.0 TFSI A/T SB,0,0,0,0,0,0,0,0,0,0,0,1,1
+AUDI,Q5,2.0 TFSI Quattro,Q5 2.0 TFSI AT,0,0,2,1,1,0,0,0,1,0,0,0,5
+AUDI,Q7,3.0 TFSI Quattro,Q7 3.0 TFSI AT,0,0,0,0,0,0,0,0,0,0,0,0,0
+AUDI,Q8,3.0 TFSI Quattro,Q8 3.0 TFSI A/T,0,0,0,1,1,1,0,0,0,1,1,0,5
+BAIC,BJ30,Hybrid AWD,BJ-30 AWD,0,0,0,0,0,0,0,0,0,46,48,20,114
+BAIC,BJ40,Plus 4x4,BJ-40 PLUS,20,37,43,37,24,40,45,75,50,28,37,19,455
+BAIC,X55 II,Lite,X-55 II Prime,1,14,15,0,0,0,0,0,0,0,0,0,30
+BAIC,X55 II,Prime,X-55 II Lite,0,0,0,1,7,1,2,3,2,2,0,2,20
+BMW,2 Series,218i Gran Coupé Sport,218i Gran Coupe,0,2,7,1,0,0,0,1,0,8,0,0,19
+BMW,2 Series,220i Coupé M Sport,220i Coupe AT,0,1,1,0,0,0,0,0,0,1,0,2,5
+BMW,3 Series,320i M Sport,320i CKD AT,1,0,14,5,28,1,0,0,1,3,19,2,74
+BMW,3 Series,330i M Sport Pro,330i CKD B7 AT,0,2,0,2,30,3,3,7,8,10,21,4,90
+BMW,4 Series,430i M Sport Pro Convertible,430i AT,0,1,1,1,7,1,7,2,0,1,0,0,21
+BMW,4 Series,430i M Sport Pro Coupé,430i Convertible AT,0,2,2,2,9,1,4,9,3,6,2,1,41
+BMW,4 Series,i4 eDrive35 Gran Coupé,CBU i4 eDrive35 Gran Coupe AT,0,2,1,2,0,0,2,10,1,1,10,7,36
+BMW,5 Series,520i M Sport (G60),520i G60 CKD AT,1,29,17,4,24,1,5,8,9,8,14,6,126
+BMW,5 Series,i5 eDrive40 M Sport,i5 eDrive40,0,0,0,6,2,3,4,2,5,0,42,35,99
+BMW,5 Series,i5 M60 xDrive,i5 M60 xDrive A/T,1,0,0,0,0,0,0,0,0,0,0,10,11
+BMW,7 Series,735i M Sport (G70),735i Limousine RHD AT,1,5,13,7,12,7,19,34,8,18,5,3,132
+BMW,7 Series,i7 M70 xDrive,i7 M70 xDrive AT S,0,0,0,0,0,0,0,1,0,0,0,0,1
+BMW,7 Series,i7 xDrive60 Gran Lusso,i7 xDrive60 Limousine RHD AT,0,3,6,3,2,4,0,1,1,1,1,3,25
+BMW,iX,xDrive40 Sport,iX xDrive40 AT,10,8,9,2,2,3,0,0,3,4,7,58,106
+BMW,iX,xDrive50 Sport,iX xDrive50,0,1,0,0,1,1,0,0,0,0,1,0,4
+BMW,iX1,eDrive20 M Sport,iX1 eDrive20 A/T,9,18,8,4,5,1,6,7,7,15,67,26,173
+BMW,iX2,xDrive30 M Sport,iX2 xDrive30 A/T,0,0,0,0,0,0,2,0,0,0,0,0,2
+BMW,M2,Coupé,M2 Coupe RHD MX AT,2,5,3,4,1,0,8,14,4,8,14,28,91
+BMW,M3,Competition M xDrive,M3 Competition M xDrive 32HJ A/T,0,0,0,0,0,0,0,0,0,4,0,1,5
+BMW,M3,Competition Touring M xDrive,M3 Competition M xDrive T AT,1,8,2,1,0,1,1,0,2,3,6,2,27
+BMW,M3,CS,M3 CS 32GB A/T S,0,0,0,0,0,0,0,0,0,5,1,0,6
+BMW,M4,Competition M xDrive,M4 Convertible Competition M xDrive 32HK AT,0,0,0,0,4,5,2,5,3,5,4,0,28
+BMW,M4,Competition M xDrive Convertible,M4 Coupe Competition M xDrive 42BA AT,1,1,1,0,1,0,0,1,0,1,0,11,17
+BMW,M4,CS,M4 CS A/T,0,3,0,0,1,0,2,0,0,0,0,1,7
+BMW,X1,sDrive18i xLine (U11),X1 sDrive18i U11 A7 AT,1,33,35,7,25,1,4,4,7,15,36,6,174
+BMW,X3,sDrive20i xLine (G01),CBU X3 20 xDrive AT 32GP S,0,0,0,0,0,29,1,0,0,0,0,0,30
+BMW,X3,xDrive20i (G45),X3 sDrive20i G01 CKD AT,0,4,6,3,0,0,1,0,0,0,0,0,14
+BMW,X3,xDrive20i M Sport,X3 xDrive 20i0G45,0,0,0,0,0,0,0,11,75,32,7,9,134
+BMW,X3,xDrive30i M Sport,X3 xDrive30i G01 CKD AT,0,1,2,1,1,0,0,0,0,0,0,0,5
+BMW,X4,xDrive30i M Sport,X4 xDrive30i RHD AT,1,0,1,0,0,0,0,0,0,1,0,1,4
+BMW,X5,xDrive40i M Sport,X5 xDrive40i G05 CKD AT,12,33,24,8,18,4,5,8,11,21,9,3,156
+BMW,X6,xDrive40i M Sport,X6 xDrive40i M Sport A/T,0,0,0,1,6,4,1,3,2,4,2,0,23
+BMW,X7,xDrive40i M Sport,X7 xDrive40i G07 CKD AT,0,2,7,7,2,3,7,10,7,6,8,80,139
+BMW,XM,50e (PHEV),XM 50e AT,0,2,0,1,0,0,0,0,0,2,0,0,5
+BMW,XM,Label (PHEV),XM Label AT,0,0,0,0,0,0,0,0,0,0,1,0,1
+BMW,XM,Standard (PHEV),XM AT,0,2,4,1,1,1,3,2,0,0,0,3,17
+BMW,Z4,M40i,Z4 M40i AT,0,12,1,1,1,0,2,0,0,0,0,0,17
+BMW,Z4,sDrive30i M Sport,Z4 sDrive30i AT,0,0,0,0,0,2,0,3,0,6,0,0,11
+BYD,Atto 1,Dynamic Standard Range,Atto 1 Dynamic Standard Range,0,0,0,0,0,0,0,0,0,5057,4878,3065,13000
+BYD,Atto 1,Premium Extended Range,Atto 1 Premium Extended Range,0,0,0,0,0,0,0,0,0,4339,3455,1788,9582
+BYD,Atto 3,Advanced Standard Range,Atto 3 Advanced Standard Range,50,3,15,0,43,36,356,430,239,242,256,433,2103
+BYD,Atto 3,Superior Extended Range,Atto 3 Superior Extended Range,190,59,373,144,19,19,57,24,1,0,0,2,888
+BYD,Dolphin,Dynamic Standard Range,Dolphin Dynamic Standard Range,2,30,49,53,18,8,18,62,11,10,5,1,267
+BYD,Dolphin,Premium Extended Range,Dolphin Premium Standard Range,6,7,59,66,100,6,7,16,2,3,8,1,281
+BYD,M6,Standard 7-Seater,M6 Standard,226,585,295,440,276,544,519,873,47,159,270,275,4509
+BYD,M6,Superior 7-Seater,M6 Superior,189,80,416,406,440,141,221,259,168,236,178,303,3037
+BYD,M6,Superior Captain 6-Seater,M6 Superior Captain,166,428,582,411,468,159,151,247,106,121,119,178,3136
+BYD,Seal,Performance AWD,Seal Performance,42,5,100,60,157,0,0,7,57,6,13,7,454
+BYD,Seal,Premium Extended Range,Seal Premium Extended Range,243,21,134,123,46,1,67,42,18,9,16,21,741
+BYD,Sealion 7,Performance AWD,Sealion 7 Performance,0,94,309,418,340,227,486,161,66,70,36,82,2289
+BYD,Sealion 7,Premium,Sealion 7 Premium,0,87,873,1375,892,841,453,441,231,277,239,404,6113
+CHERY,J6,IWD (AWD),iCar 03 AWD,251,568,860,711,423,319,344,219,206,283,124,87,4395
+CHERY,J6,RWD,iCar 03 RWD,172,66,127,199,157,126,155,106,102,103,48,54,1415
+CHERY,J6T,T IWD (AWD),J6T IWD,0,0,0,0,0,0,0,0,0,0,84,142,226
+CHERY,J6T,T RWD,J6T RWD,0,0,0,0,0,0,0,0,0,0,0,34,34
+CHERY,Omoda 5,GT AWD,Gt 4X4,1,1,4,24,2,0,1,0,0,0,0,0,33
+CHERY,Omoda 5,GT FWD,Gt,10,8,17,8,1,1,0,0,0,0,0,0,45
+CHERY,Omoda 5,RZ (Facelift),OMDA 5 RZ (Facelift),0,0,0,0,0,116,146,81,60,49,62,44,558
+CHERY,Omoda 5,Z (Facelift),OMDA 5 Z (Facelift),0,0,0,0,0,33,12,2,5,4,4,0,60
+CHERY,Omoda E5,Pure,Omoda E5,98,146,83,49,43,32,61,171,126,131,97,68,1105
+CHERY,Omoda E5,Standard,OmodaE5 Pure,29,41,24,17,17,53,25,25,19,18,7,24,299
+CHERY,Tiggo 5X,Champion,Tiggo 5X  Champion,24,55,26,0,1,1,0,3,1,0,1,0,112
+CHERY,Tiggo 5X,Classic,Tiggo 5X  Classic,1,19,2,0,0,0,1,0,0,2,0,0,25
+CHERY,Tiggo 7 Pro,Comfort,Tiggo 7 Comfort,0,0,0,0,0,2,0,1,1,0,0,0,4
+CHERY,Tiggo 7 Pro,Luxury,Tiggo 7 Luxury,24,2,0,0,0,0,0,0,0,0,0,0,26
+CHERY,Tiggo 7 Pro,Premium,Tiggo 7 Premium,1,0,0,0,0,0,1,1,2,0,0,0,5
+CHERY,Tiggo 8,Comfort,"Tiggo 8  1,6   Comfort",0,3,71,22,19,3,33,36,16,14,19,22,258
+CHERY,Tiggo 8,Premium,"Tiggo 8  1,6  Premium",386,285,284,140,177,99,162,63,61,60,45,58,1820
+CHERY,Tiggo 8 CSH,AWD,Tiggo 8 CSH AWD Premium,0,0,0,0,0,0,0,0,0,0,0,28,28
+CHERY,Tiggo 8 CSH,Comfort,Tiggo 8 Csh Fwd,0,0,0,0,0,0,0,0,0,0,0,69,69
+CHERY,Tiggo 8 CSH,Premium,Tiggo 8 CSH FWD Premium,0,0,0,26,394,1102,320,356,243,269,143,420,3273
+CHERY,Tiggo 8 Pro,Luxury,Tiggo 8  Pro Luxury,25,1,0,0,0,1,0,0,0,0,0,0,27
+CHERY,Tiggo 8 Pro,Premium,Tiggo 8  Pro Premium,0,0,0,0,0,0,0,0,0,0,0,0,0
+CHERY,Tiggo 8 Pro Max,AWD,Tiggo 8  Pro Max Fwd,9,8,6,8,4,1,1,0,1,8,6,2,54
+CHERY,Tiggo 9 CSH,AWD,Tiggo 9 CSH AWD,0,0,0,0,0,0,0,0,123,96,120,47,386
+CHERY,Tiggo Cross,Comfort,Tiggo Cross Comfort,0,22,86,4,4,37,58,12,13,22,16,21,295
+CHERY,Tiggo Cross,CSH,Tiggo Cross  CSH,0,0,0,0,0,0,0,0,1042,388,330,281,2041
+CHERY,Tiggo Cross,Premium,Tiggo Cross  Premium,0,196,222,406,751,345,257,83,79,65,51,46,2501
+CHERY,Tiggo Cross,Sport,Tiggo Cross  Sport,0,0,0,0,0,0,16,17,5,48,54,13,153
+CITROËN,C5 Aircross,Shine,New Citroën C5 Aircross,0,0,0,0,0,0,4,0,0,0,0,0,4
+DAIHATSU,Ayla,1.0 M MT,All New Ayla 1.0 M MT (FMC 2023),245,275,320,441,231,176,193,187,175,161,140,86,2630
+DAIHATSU,Ayla,1.0 X CVT,All New Ayla 1.0 X CVT (FMC 2023),174,177,218,255,137,181,180,178,181,193,70,40,1984
+DAIHATSU,Ayla,1.0 X MT,All New Ayla 1.0 X MT (FMC 2023),301,305,335,458,289,225,219,225,190,244,200,170,3161
+DAIHATSU,Ayla,1.2 R CVT,All New Ayla 1.2 R CVT (FMC 2023),159,140,118,197,113,88,130,143,131,127,50,40,1436
+DAIHATSU,Ayla,1.2 R MT,All New Ayla 1.2 R MT (FMC 2023),139,161,175,213,111,77,139,165,122,126,60,51,1539
+DAIHATSU,Luxio,1.5 D MT,Luxio 1.5 D (New),14,55,34,61,57,47,52,69,67,102,95,113,766
+DAIHATSU,Luxio,1.5 X AT,Luxio 1.5 X AT (New),10,60,53,70,72,72,67,37,51,55,40,42,629
+DAIHATSU,Luxio,1.5 X MT,Luxio 1.5 X MT (New),23,96,62,145,86,92,107,126,125,117,114,215,1308
+DAIHATSU,Rocky,1.0 R TC CVT,Rocky  1.0 R CVT,15,15,20,15,17,5,18,5,5,52,13,5,185
+DAIHATSU,Rocky,1.0 R TC CVT ASA,Rocky  1.0 R ASA CVT,0,0,0,0,0,0,1,0,1,0,0,0,2
+DAIHATSU,Rocky,1.0 R TC MT,Rocky  1.0 R MT,0,0,0,0,0,0,1,0,1,0,0,0,2
+DAIHATSU,Rocky,1.2 M CVT,Rocky  1.2 M CVT,0,0,0,12,0,0,0,0,0,0,0,0,12
+DAIHATSU,Rocky,1.2 M MT,Rocky  1.2 M MT,0,0,0,24,0,0,0,0,0,0,0,0,24
+DAIHATSU,Rocky,1.2 X CVT,Rocky  1.2 X CVT,285,336,213,147,107,33,73,72,221,265,155,40,1947
+DAIHATSU,Rocky,1.2 X MT,Rocky  1.2 X MT,94,88,73,69,39,14,18,5,40,89,76,13,618
+DAIHATSU,Sigra,1.0 D MT,New Sigra 1.0 D MT 2022,582,635,628,533,578,455,306,139,296,398,528,312,5390
+DAIHATSU,Sigra,1.0 M MT,New Sigra 1.0 M MT 2022,642,616,650,783,703,541,618,769,329,450,438,368,6907
+DAIHATSU,Sigra,1.2 R AT,New Sigra 1.2 R AT 2022,274,357,453,477,424,296,313,251,177,212,247,331,3812
+DAIHATSU,Sigra,1.2 R MT,New Sigra 1.2 R MT 2022,2020,1594,2211,1733,929,1211,1572,1110,706,442,698,1371,15597
+DAIHATSU,Sigra,1.2 X AT,New Sigra 1.2 X AT 2022,10,25,111,124,91,66,69,60,121,89,92,70,928
+DAIHATSU,Sigra,1.2 X MT,New Sigra 1.2 X MT 2022,75,69,256,370,334,173,73,48,109,98,102,111,1818
+DAIHATSU,Sirion,R CVT,New Sirion R Cvt (Mc 2022),0,10,10,20,20,20,20,20,19,21,40,0,200
+DAIHATSU,Terios,IDS R AT,All New Terios IDS R AT (MC 2023),89,115,162,68,134,134,120,181,133,151,91,26,1404
+DAIHATSU,Terios,IDS R Custom AT,All New Terios IDS Custom AT (MC 2023),10,15,45,29,45,49,47,50,28,21,24,12,375
+DAIHATSU,Terios,IDS R Custom MT,All New Terios IDS Custom MT (MC 2023),35,55,56,28,56,45,62,58,49,51,36,12,543
+DAIHATSU,Terios,IDS R MT,All New Terios IDS R MT (MC 2023),107,235,290,101,269,196,228,242,232,264,188,101,2453
+DAIHATSU,Terios,IDS X AT,All New Terios IDS X AT (MC 2023),163,267,341,137,292,229,256,270,249,284,214,123,2825
+DAIHATSU,Terios,IDS X MT,All New Terios IDS X MT (MC 2023),547,1001,1133,333,893,594,662,497,574,578,426,319,7557
+DAIHATSU,Xenia,1.3 R CVT,All New Xenia 1.3 R CVT,88,350,241,0,26,23,32,46,56,100,115,57,1134
+DAIHATSU,Xenia,1.3 R MT,All New Xenia 1.3 R MT,50,358,266,0,90,50,86,75,111,96,100,25,1307
+DAIHATSU,Xenia,1.3 X CVT,All New Xenia 1.3 X CVT,48,233,113,0,21,41,70,66,88,101,130,80,991
+DAIHATSU,Xenia,1.3 X MT,All New Xenia 1.3 X MT,75,386,302,0,68,64,83,85,115,138,165,102,1583
+DAIHATSU,Xenia,1.5 R CVT,All New Xenia 1.5 R CVT,39,96,80,0,52,21,40,29,44,45,40,20,506
+DAIHATSU,Xenia,1.5 R MT,All New Xenia 1.5 R MT,0,0,0,0,0,0,0,13,3,0,0,0,16
+DENZA,D9,EV Advanced,D9 Advanced,25,912,1587,811,630,1768,523,292,227,192,209,298,7474
+FORD,Everest,2.0 Sport 4x2,Everest Sport 2.0L (4x2) A/T,0,0,0,9,5,10,6,8,7,7,5,7,64
+FORD,Everest,Titanium 4x4,Everest Titanium 2.0L (4x4) A/T,31,19,31,33,33,27,13,24,29,33,39,33,345
+FORD,Everest,XLT 4x4,Everest XLT 2.0L (4x4) A/T,2,1,0,2,1,0,0,0,0,0,0,0,6
+GEELY,EX5,Max Long Range,EX5 MAX,0,66,176,163,227,240,209,224,157,182,248,272,2164
+GEELY,EX5,Pro Standard Range,EX5 PRO,0,0,0,0,0,0,0,0,0,0,36,40,76
+GWM,Haval H6,HEV 1.5T DHT,HAVAL H6 Hev 1.5T DHT (4x2) A/T,0,6,5,3,1,0,1,5,11,1,0,1,34
+GWM,Haval Jolion,HEV 1.5 DHT,HAVAL Jolion Hev 1.5T DHT (4x2) A/T,13,31,52,8,61,3,6,3,0,2,0,1,180
+GWM,ORA 03,400 Pro,ORA 03 400 PRO (4X2) A/T,0,0,0,0,0,10,0,164,60,97,21,31,383
+GWM,ORA 07,Performance AWD,ORA 07 PERFORMANCE AWD,0,0,0,0,0,20,0,0,0,0,0,0,20
+GWM,Tank 300,Diesel 4x2,GWM TANK 300 DIESEL 2.4T (4X2) A/T,0,0,0,0,0,0,0,0,0,110,50,69,229
+GWM,Tank 300,Diesel 4x4,GWM TANK 300 DIESEL 2.4T (4X4) A/T,0,0,0,0,0,0,2,59,118,1,122,61,363
+GWM,Tank 300,HEV 4x4,TANK 300 Hev 2.0T (4X4) A/T,36,45,65,12,14,20,9,3,16,6,4,11,241
+GWM,Tank 500,HEV 4x4,TANK 500 Hev 2.0T (4X4) A/T,13,25,42,12,10,15,11,7,8,4,27,4,178
+HONDA,BR-V,E CVT,BR-V E,21,16,105,2,6,16,50,53,1,0,0,0,270
+HONDA,BR-V,E MT,BR-V E,114,171,93,9,93,32,97,44,6,1,0,0,660
+HONDA,BR-V,Prestige CVT,BR-V E Prestige,615,727,32,52,191,18,153,168,240,356,27,0,2579
+HONDA,BR-V,Prestige Honda Sensing,BR-V Prestige-HS,121,120,83,0,55,12,89,24,0,6,174,0,684
+HONDA,BR-V,S MT,BR-V S,0,0,0,0,0,0,2,1,5,6,6,0,20
+HONDA,Brio,RS CVT,Brio RS,77,24,11,8,0,0,32,28,40,20,30,0,270
+HONDA,Brio,RS MT,Brio RS,398,697,310,243,152,184,258,63,147,134,92,89,2767
+HONDA,Brio,Satya E CVT,Brio SATYA E,854,956,643,449,619,344,904,789,751,190,1184,292,7975
+HONDA,Brio,Satya E MT,Brio SATYA E,3347,3670,2891,1411,620,1797,1007,1398,1040,1652,422,1713,20968
+HONDA,Brio,Satya S MT,Brio SATYA S,154,150,145,63,60,60,66,68,126,179,111,71,1253
+HONDA,City,1.5 L Sensing,All New City,0,0,0,0,0,0,0,0,0,0,0,0,0
+HONDA,City Hatchback,RS CVT Honda Sensing,NEW CITY HB RS-HS,48,142,59,58,30,50,66,0,0,0,0,0,453
+HONDA,Civic,RS 1.5 Turbo,All New Civic,0,3,0,0,0,0,0,0,0,0,0,0,3
+HONDA,Civic,RS e:HEV,New Civic,0,0,0,0,30,36,42,23,25,29,29,26,240
+HONDA,Civic,Type R (FL5),Civic Type R,0,0,2,2,0,0,1,0,0,0,0,0,5
+HONDA,CR-V,1.5 L Turbo,All New CRV 1.5 T,17,40,33,0,41,22,21,45,44,30,17,20,330
+HONDA,CR-V,2.0 RS e:HEV,All New CRV 2.0 e:HEV,0,0,0,0,18,23,19,22,29,27,7,5,150
+HONDA,HR-V,1.5 E CVT,New HR-V E,95,7,0,0,112,124,99,69,40,32,2,0,580
+HONDA,HR-V,1.5 E+ CVT,New HR-V E+,0,0,0,0,447,314,582,372,183,85,59,0,2042
+HONDA,HR-V,1.5 RS Turbo,New HR-V RS,0,30,0,0,1,0,0,0,0,0,0,0,31
+HONDA,HR-V,1.5 SE (Special Edition),New HR-V SE,774,1334,1033,18,0,0,0,0,0,0,0,0,3159
+HONDA,HR-V,e:HEV (Hybrid),New HR-V e:HEV,0,0,0,0,0,265,839,637,1019,35,245,172,3212
+HONDA,HR-V,RS e:HEV (Hybrid),New HR-V RS e:HEV,0,0,0,0,0,376,429,264,232,474,303,750,2828
+HONDA,Step WGN,e:HEV,STEP WGN RS e:HEV,0,0,0,0,0,0,39,87,170,94,83,31,504
+HONDA,WR-V,1.5 E CVT,WRV E,13,9,8,12,18,1,29,0,0,0,0,0,90
+HONDA,WR-V,1.5 E MT,WRV E,9,63,28,0,50,45,1,14,19,11,0,0,240
+HONDA,WR-V,1.5 RS,WRV RS,444,445,458,162,242,94,198,130,59,197,217,30,2676
+HONDA,WR-V,1.5 RS Honda Sensing,WRV RS 0 HS,145,152,69,121,375,145,67,74,156,88,23,0,1415
+HYUNDAI,All New Santa Fe,Gasoline 2.5 8AT Calligraphy,Santa Fe G2.5 8AT Calligraphy,55,21,22,33,32,9,6,13,12,15,14,7,239
+HYUNDAI,All New Santa Fe,Gasoline 2.5 8AT Prime,Santa Fe HEV 1.6T 6AT Prime,17,16,2,15,25,4,2,1,19,3,6,3,113
+HYUNDAI,All New Santa Fe,HEV 1.6T 6AT Calligraphy,Santa Fe HEV 1.6T 6AT Calligraphy,96,267,362,198,87,20,7,18,29,21,35,37,1177
+HYUNDAI,All New Santa Fe,HEV 1.6T 6AT Prime,Santa Fe G2.5 8AT Prime,10,9,1,4,4,2,1,4,1,5,7,2,50
+HYUNDAI,Creta,Active 1.5 MT (Old),Creta Active 1.5 MT,0,0,0,0,0,0,0,0,0,1,0,0,1
+HYUNDAI,Creta,Alpha 1.5 IVT (Old),Creta Prime 1.5 IVT Alpha,133,17,3,0,0,0,0,0,0,0,0,0,153
+HYUNDAI,Creta,Prime 1.5 IVT (Old),Creta Prime 1.5 IVT,101,95,31,0,0,1,0,1,0,1,0,1,231
+HYUNDAI,Creta,Prime 1.5 Two Tone (Old),Creta Prime 1.5 IVT Two Tone,183,59,72,0,0,0,0,1,0,0,0,0,315
+HYUNDAI,Creta FL,Active 1.5 MT,Creta FL Active 1.5 MT,0,0,0,3,1,1,0,2,0,3,0,0,10
+HYUNDAI,Creta FL,Alpha 1.5 IVT (Matte),Creta FL Alpha 1.5T IVT,0,0,0,0,0,0,0,0,0,0,0,7,7
+HYUNDAI,Creta FL,Alpha 1.5 Two Tone,Creta FL Alpha 1.5T IVT Two Tone,0,0,0,0,0,0,0,0,0,0,0,52,52
+HYUNDAI,Creta FL,N Line 1.5 IVT,Creta FL N Line 1.5 IVT,114,118,85,43,39,22,8,12,17,9,17,11,495
+HYUNDAI,Creta FL,N Line 1.5 Turbo,Creta FL N Line 1.5 IVT Two Tone,184,207,269,205,196,140,122,106,157,119,90,87,1882
+HYUNDAI,Creta FL,N Line 1.5 Turbo Two Tone,Creta FL N Line 1.5T IVT,31,30,18,6,3,4,2,0,1,0,1,3,99
+HYUNDAI,Creta FL,N Line 1.5 Two Tone,Creta FL N Line 1.5T IVT Two Tone,57,43,27,1,8,25,16,7,6,7,7,4,208
+HYUNDAI,Creta FL,Prime 1.5 IVT,Creta FL Prime 1.5 IVT,85,70,85,48,78,50,29,10,30,26,14,28,553
+HYUNDAI,Creta FL,Prime 1.5 Two Tone,Creta FL Prime 1.5 IVT Two Tone,107,69,73,54,70,22,30,30,45,28,30,23,581
+HYUNDAI,Creta FL,Style 1.5 IVT,Creta FL Style 1.5 IVT,11,13,15,20,22,2,17,14,18,21,12,23,188
+HYUNDAI,Creta FL,Trend 1.5 IVT,Creta FL Trend 1.5 IVT,74,21,40,34,40,27,19,34,35,43,35,22,424
+HYUNDAI,Creta FL,Trend 1.5 MT,Creta FL Trend 1.5 MT,1,2,2,2,2,1,2,1,2,1,2,3,21
+HYUNDAI,Ioniq 5,N (High Performance),Ioniq5 Signature N,4,5,5,2,2,1,1,0,0,0,0,0,20
+HYUNDAI,Ioniq 5,Prime Long Range,Ioniq5 Prime Extended,1,3,13,1,11,1,0,0,0,0,0,0,30
+HYUNDAI,Ioniq 5,Prime Standard Range,Ioniq5 Prime Reguler,3,1,0,0,0,0,0,0,0,0,0,0,4
+HYUNDAI,Ioniq 5,Signature Long Range,Ioniq5 Signature Extended,53,97,60,47,213,3,18,86,2,30,58,44,711
+HYUNDAI,Ioniq 5,Signature Standard Range,Ioniq5 Signature Reguler,0,3,11,0,0,0,0,0,0,0,0,0,14
+HYUNDAI,Ioniq 6,Signature AWD,Ioniq 6,4,56,131,0,0,0,0,0,0,0,0,0,191
+HYUNDAI,Ioniq 9,Calligraphy AWD,Ioniq9 Calligraphy AWD,0,0,0,0,0,0,0,0,0,0,1,0,1
+HYUNDAI,Kona EV,N Line Long Range,Kona EV N Line,0,13,3,1,1,1,0,4,2,3,60,60,148
+HYUNDAI,Kona EV,Prime Long Range,Kona EV Prime Extended,0,2,1,0,5,0,0,0,0,74,23,1,106
+HYUNDAI,Kona EV,Prime Standard Range,Kona EV Prime Reguler,0,0,0,0,0,0,1,1,0,0,7,1,10
+HYUNDAI,Kona EV,Signature Long Range,Kona EV Signature Extended,21,29,17,15,29,4,10,26,27,4,127,36,345
+HYUNDAI,Kona EV,Signature Standard Range,Kona EV Signature Reguler,2,0,0,0,1,0,0,0,0,1,0,0,4
+HYUNDAI,Kona EV,Style Standard Range,Kona EV Style,1,0,1,0,1,0,0,0,14,11,9,24,61
+HYUNDAI,Palisade,Diesel Signature (Facelift),Palisade 2.2 CRDi Signature,51,89,95,35,25,14,16,15,12,6,34,27,419
+HYUNDAI,Palisade,Hybrid Calligraphy,All New Palisade Hybrid Calligraphy,0,0,0,0,0,318,105,118,116,74,58,61,850
+HYUNDAI,Palisade,Hybrid Calligraphy AWD,All New Palisade Hybrid Calligraphy AWD,0,0,0,0,0,44,3,39,20,14,28,22,170
+HYUNDAI,Palisade,Signature AWD,All New Palisade Hybrid Signature,0,0,0,0,0,24,11,12,0,3,7,4,61
+HYUNDAI,Santa Fe,Gasoline 2.5 6AT Prime,Santa Fe G2.5 6AT Prime,19,13,2,0,0,0,0,0,0,0,0,0,34
+HYUNDAI,Santa Fe,Gasoline 2.5 6AT Signature,Santa Fe G2.5 6AT Signature,29,17,3,0,1,0,0,0,0,0,0,0,50
+HYUNDAI,Santa Fe,Gasoline 2.5 6AT Style,Santa Fe G2.5 6AT Style,0,0,0,0,0,0,0,0,0,0,0,0,0
+HYUNDAI,Stargazer,Active IVT,Stargazer Active IVT,2,4,3,11,8,2,3,2,5,6,5,1,52
+HYUNDAI,Stargazer,Active MT,Stargazer Active MT,138,3,8,1,6,4,6,2,3,91,4,40,306
+HYUNDAI,Stargazer,Cartenz Prime HSS 6 Seat,Stargazer Cartenz Prime HSS 6 Seat,0,0,0,0,0,0,168,93,69,72,48,22,472
+HYUNDAI,Stargazer,Cartenz Prime HSS 7 Seat,Stargazer Cartenz Prime HSS 7 Seat,0,0,0,0,0,0,24,76,64,53,21,19,257
+HYUNDAI,Stargazer,Cartenz Smart HSS 6 Seat,Stargazer Cartenz Smart HSS 6 Seat,0,0,0,0,0,0,0,23,24,27,12,11,97
+HYUNDAI,Stargazer,Cartenz Smart HSS 7 Seat,Stargazer Cartenz Smart HSS 7 Seat,0,0,0,0,0,0,0,22,41,17,11,14,105
+HYUNDAI,Stargazer,Cartenz Style IVT 6 Seat,Stargazer Cartenz Style IVT 6 Seat,0,0,0,0,0,0,0,30,17,19,12,16,94
+HYUNDAI,Stargazer,Cartenz Style IVT 7 Seat,Stargazer Cartenz Style IVT 7 Seat,0,0,0,0,0,0,0,23,25,20,18,17,103
+HYUNDAI,Stargazer,Cartenz Style MT 6 Seat,Stargazer Cartenz Style MT 6 Seat,0,0,0,0,0,0,0,0,2,0,0,7,9
+HYUNDAI,Stargazer,Cartenz Style MT 7 Seat,Stargazer Cartenz Style MT 7 Seat,0,0,0,0,0,0,0,0,3,3,7,0,13
+HYUNDAI,Stargazer,Cartenz Trend IVT,Stargazer Cartenz Trend IVT,0,0,0,0,0,0,0,5,7,15,4,3,34
+HYUNDAI,Stargazer,Cartenz Trend MT,Stargazer Cartenz Trend MT,0,0,0,0,0,0,0,0,3,0,4,0,7
+HYUNDAI,Stargazer,Essential IVT 6 Seat,Stargazer Essential IVT 6 Seat,137,59,116,125,119,47,55,36,41,0,0,0,735
+HYUNDAI,Stargazer,Essential IVT 7 Seat,Stargazer Essential IVT 7 Seat,105,40,86,91,102,40,140,47,94,108,157,139,1149
+HYUNDAI,Stargazer,Essential MT 6 Seat,Stargazer Essential MT 6 Seat,5,5,2,0,0,0,2,4,2,1,1,0,22
+HYUNDAI,Stargazer,Essential MT 7 Seat,Stargazer Essential MT 7 Seat,4,2,5,8,4,6,2,0,2,1,5,2,41
+HYUNDAI,Stargazer,Essential Tech 6 Seat,Stargazer Essential Tech 6 Seat,0,95,127,135,116,33,107,44,64,18,1,0,740
+HYUNDAI,Stargazer,Essential Tech 7 Seat,Stargazer Essential Tech 7 Seat,0,66,85,81,74,21,63,23,82,39,9,0,543
+HYUNDAI,Stargazer,Prime 6 Seat,Stargazer Prime 6 Seat,6,153,118,83,54,12,76,32,24,50,51,39,698
+HYUNDAI,Stargazer,Prime 6 Seat Two Tone,Stargazer Prime 6 Seat Two Tone,135,28,31,19,5,1,1,0,1,6,1,2,230
+HYUNDAI,Stargazer,Prime 7 Seat,Stargazer Prime 7 Seat,1,84,62,43,45,7,23,13,20,29,34,51,412
+HYUNDAI,Stargazer,Prime 7 Seat Two Tone,Stargazer Prime 7 Seat Two Tone,16,13,5,9,2,0,2,2,0,5,1,0,55
+HYUNDAI,Stargazer X,Cartenz Prime 6 Seat,Stargazer Cartenz X Prime 6 Seat,0,0,0,0,0,0,0,173,125,93,93,37,521
+HYUNDAI,Stargazer X,Cartenz Prime 7 Seat,Stargazer Cartenz X Prime 7 Seat,0,0,0,0,0,0,0,107,48,77,40,29,301
+HYUNDAI,Stargazer X,Cartenz Style 6 Seat,Stargazer Cartenz X Style 6 Seat,0,0,0,0,0,0,0,10,19,8,5,6,48
+HYUNDAI,Stargazer X,Cartenz Style 7 Seat,Stargazer Cartenz X Style 7 Seat,0,0,0,0,0,0,0,5,11,5,3,4,28
+HYUNDAI,Stargazer X,Cartenz Trend 6 Seat,Stargazer Cartenz X Trend 6 Seat,0,0,0,0,0,0,0,0,0,1,0,0,1
+HYUNDAI,Stargazer X,Cartenz Trend 7 Seat,Stargazer Cartenz X Trend 7 Seat,0,0,0,0,0,0,0,0,0,0,0,0,0
+HYUNDAI,Stargazer X,Prime 6 Seat,Stargazer X Prime 6 Seat,161,117,152,130,110,18,66,43,25,37,13,13,885
+HYUNDAI,Stargazer X,Prime 6 Seat Two Tone,Stargazer X Prime 6 Seat Two Tone,24,20,13,24,15,8,18,1,0,2,0,1,126
+HYUNDAI,Stargazer X,Prime 7 Seat,Stargazer X Prime 7 Seat,95,68,79,36,35,11,22,6,17,15,4,5,393
+HYUNDAI,Stargazer X,Prime 7 Seat Two Tone,Stargazer X Prime 7 Seat Two Tone,10,13,8,5,3,3,3,0,1,3,0,2,51
+HYUNDAI,Stargazer X,Style 6 Seat,Stargazer X Style 6 Seat,0,0,1,0,0,0,0,0,0,0,0,0,1
+HYUNDAI,Stargazer X,Style 7 Seat,Stargazer X Style 7 Seat,0,0,6,0,0,0,0,0,0,0,0,0,6
+HYUNDAI,Staria,Signature 7,Staria Signature 7,0,3,7,2,1,0,0,2,0,2,0,1,18
+HYUNDAI,Staria,Signature 9,Staria Signature 9,1,2,5,2,1,2,1,4,1,0,2,0,21
+HYUNDAI,Tucson,1.6T HEV,Tucson,1,1,2,2,6,3,0,0,0,0,1,1,17
+HYUNDAI,Tucson,2.0 Gasoline,Tucson HEV,3,9,13,6,16,2,25,1,0,0,1,0,76
+HYUNDAI,Venue,1.0 Turbo N Line,Venue,0,22,6,1,1,1,0,0,0,1,0,1,33
+ISUZU,MU-X,1.9 4x4 AT,MU-X 4X4,1,0,24,21,26,0,8,11,12,0,0,0,103
+JAECOO,J5,BEV Premium Range,J5 BEV  4X2 Premium,0,0,0,0,0,0,0,0,0,0,653,1010,1663
+JAECOO,J5,BEV Standard Range,J5 BEV  4X2 Standart,0,0,0,0,0,0,0,0,0,0,0,0,0
+JAECOO,J7,AWD Turbo,J7 AWD Turbo,0,0,0,0,0,0,0,0,6,3,27,3,39
+JAECOO,J7,SHS (Hybrid) 4x2,J7 SHS 4X2 Turbo,0,0,0,0,0,120,0,318,64,40,34,101,677
+JAECOO,J8,ARDIS (PHEV) AWD,J8 ARDIS Turbo,0,0,0,0,0,0,0,0,26,10,3,1,40
+JAECOO,J8,SHS ARDIS Turbo,J8 SHS ARDIS Turbo,0,0,0,0,0,0,0,0,106,56,24,48,234
+JETOUR,Dashing,Inspira,Dashing Inspira,0,36,48,5,9,64,26,44,34,64,34,69,433
+JETOUR,Dashing,Journey,Dashing Journey,0,10,3,3,0,1,4,14,7,5,36,37,120
+JETOUR,X70 Plus,Inspira,X70P Inspira,0,36,10,12,11,22,27,32,17,25,25,33,250
+JETOUR,X70 Plus,Journey,X70P Journey,0,0,3,0,0,1,2,7,10,12,8,17,60
+KIA,Carens,1.5L Premiere 6-Seater,Carens,0,0,0,1,0,0,0,0,0,0,0,0,1
+KIA,Carens,1.5L Premiere 7-Seater,Carens,0,2,0,0,0,1,2,1,2,1,0,0,9
+KIA,Carnival,1.6T Hybrid Premiere,Carnival HEV,0,9,1,2,0,0,0,0,0,0,0,0,12
+KIA,Carnival,2.2 Diesel Premiere,Carnival,0,0,4,10,0,1,0,0,0,2,3,0,20
+KIA,EV6,GT-Line AWD,EV6,1,2,0,0,0,0,0,0,0,0,0,0,3
+KIA,EV9,GT-Line AWD,EV9,1,2,0,0,0,0,0,0,0,0,0,0,3
+KIA,Sonet,Premiere IVT,Sonet Premiere,30,0,0,0,0,0,1,1,0,0,0,0,32
+LEXUS,ES,300h Ultra Luxury,ES 300 h,0,0,6,4,4,3,2,2,1,0,0,0,22
+LEXUS,LBX,Luxury 1.5 CVT HEV,LBX Luxury 1.5 Cvt Hev,1,3,4,8,3,3,0,1,0,1,0,0,24
+LEXUS,LBX,Sport 1.5 CVT HEV,"LBX Sport 1,5 Cvt HEV",0,2,0,0,2,1,1,2,0,0,0,0,8
+LEXUS,LC,500h,LC 500h,0,0,0,0,0,0,0,1,0,0,0,0,1
+LEXUS,LM,350h 4 Seater,LM 350h 7 Seater,34,73,124,111,176,139,27,47,28,34,54,57,904
+LEXUS,LM,350h 7 Seater,LM 350h 4 Seater,1,1,7,5,11,16,25,23,13,0,0,0,102
+LEXUS,LM,500h 4 Seater,LM 500h 6 Seater,0,0,0,0,0,0,0,0,0,0,0,0,0
+LEXUS,LM,500h 6 Seater,LM 500h 4 Seater,0,0,0,2,4,2,1,1,0,0,2,0,12
+LEXUS,LS,500 Hybrid,LS 500 Hybrid,0,0,0,0,0,0,0,1,0,0,0,0,1
+LEXUS,LX,600,LX 600,9,2,1,6,1,1,0,1,8,12,2,0,43
+LEXUS,LX,700h,LX 700H,0,0,0,0,0,0,10,16,5,3,20,12,66
+LEXUS,NX,350h,NX 350h,0,3,4,6,7,8,15,2,1,0,0,0,46
+LEXUS,NX,450h+,NX 450h+,0,0,1,0,0,0,0,0,0,0,0,0,1
+LEXUS,RX,350h,RX 350h,0,0,0,4,0,2,1,2,2,0,1,0,12
+LEXUS,RX,350h Luxury HEV,RX 350h Luxury HEV,3,19,30,40,30,37,7,33,9,2,5,5,220
+LEXUS,RX,450h+ Luxury PHEV,RX 450h+ Luxury PHEV,2,3,3,3,6,5,8,1,0,1,1,2,35
+LEXUS,RX,500h,RX 500h,0,2,2,2,2,1,4,2,0,0,1,3,19
+LEXUS,RZ,500e Luxury,RZ 500e Luxury,0,0,0,0,0,0,0,0,0,0,0,2,2
+MAXUS,MIFA 7,EV,MIFA 7,15,12,1,0,1,0,8,12,9,1,2,62,123
+MAXUS,MIFA 9,EV,MIFA 9,30,1,4,3,3,0,8,0,45,11,13,53,171
+MAZDA,2 Hatchback,GT AT,Mazda 2 GT AT,0,0,0,0,0,0,0,0,0,0,0,0,0
+MAZDA,2 Sedan,1.5 GT Skyactiv,Mazda 2 Sedan,1,0,0,0,0,0,0,0,0,0,0,0,1
+MAZDA,3 Hatchback,2.0 GT,Mazda 3 Hatchback,98,60,72,53,74,56,55,69,87,37,48,73,782
+MAZDA,3 Sedan,1.5 Skyactiv-G,Mazda 3 Sedan,1,3,4,3,3,0,0,1,0,0,1,0,16
+MAZDA,6 estate,Elite Estate,Mazda 6 Elite Sedan,2,4,0,0,1,2,1,5,1,0,0,0,16
+MAZDA,6 sedan,Elite Sedan,Mazda 6 Elite Estate,1,1,0,0,0,3,5,5,1,2,9,3,30
+MAZDA,CX-3,GT (2.0L),CX-3 GT,19,13,21,13,28,30,21,11,14,11,11,10,202
+MAZDA,CX-3,Kuro Edition,CX-3 Kuro,0,0,0,0,0,0,16,72,48,17,15,22,190
+MAZDA,CX-3,Sport (1.5L),CX-3 Sport,0,2,81,60,85,61,42,28,4,0,0,0,363
+MAZDA,CX-3,Touring (1.5L),CX-3 Touring,0,0,0,0,0,0,0,0,54,39,25,36,154
+MAZDA,CX-5,Elite,CX-5 Elite,4,19,22,14,21,24,32,26,24,11,18,27,242
+MAZDA,CX-5,Kuro Edition,CX-5 Kuro,9,55,48,26,31,63,56,56,107,41,56,51,599
+MAZDA,CX-60,2.5 Pro,CX-60 2.5 Sport,0,0,0,0,0,0,1,1,4,34,20,33,93
+MAZDA,CX-60,2.5 Sport,CX-60 2.5 Pro,1,4,4,1,0,0,1,4,2,3,10,8,38
+MAZDA,CX-60,3.3 MHEV Elite,CX-60 3.3 MHEV AWD Elite,2,15,8,5,22,9,16,19,0,0,0,0,96
+MAZDA,CX-60,3.3 MHEV Kuro,CX-60 3.3 MHEV AWD Kuro,18,12,3,3,1,0,0,0,1,0,0,0,38
+MAZDA,CX-8,Elite,New CX-8 Elite,6,7,11,1,10,3,12,10,6,11,4,13,94
+MAZDA,CX-80,2.5 PHEV Elite,CX-8 2.5 PHEV AWD ELITE,5,2,3,1,0,1,1,0,0,1,4,1,19
+MAZDA,CX-80,2.5 PHEV Kuro,CX-8 2.5 PHEV AWD KURO,7,3,1,5,5,3,9,3,3,6,6,1,52
+MAZDA,CX-9,AWD,New CX-9 AWD,1,0,0,1,0,0,1,0,0,0,1,0,4
+MAZDA,CX-9,Kuro Edition,New CX-9,2,0,0,0,1,0,0,0,0,0,0,0,3
+MAZDA,MX-30,e-Skyactiv,MX-3 BEV,2,0,1,0,1,0,1,0,0,0,0,0,5
+MAZDA,MX-5,RF (Automatic),MX 5 RF AT,0,5,2,8,2,1,1,6,4,3,2,0,34
+MAZDA,MX-5,RF (Manual),New MX 5 RF MT,0,1,0,1,1,1,0,0,1,0,0,1,6
+MERCEDES-BENZ,A-Class,A 200,A 200,2,2,0,1,0,0,0,2,1,2,11,5,26
+MERCEDES-BENZ,A-Class,A 200 Sedan Progressive,A 200 Sedan (V177),0,0,0,0,0,0,0,0,0,0,0,0,0
+MERCEDES-AMG,A-Class,A 35 4MATIC Sedan (V177),AMG A 35 4MATIC (V177),0,5,0,0,2,2,0,2,2,1,4,3,21
+MERCEDES-BENZ,C-Class,C 200 Avantgarde Line,C 200 AVA Line (W206),0,5,12,10,13,29,30,6,2,12,2,3,124
+MERCEDES-BENZ,C-Class,C 300 AMG Line (W206),C 300 AMG Line (W206),2,3,1,0,5,2,18,14,6,0,1,0,52
+MERCEDES-BENZ,CLA-Class,CLA 200 AMG Line,CLA 200 AMG Line (C118),1,2,1,0,0,0,1,6,1,2,0,11,25
+MERCEDES-BENZ,CLE-Class,CLE 300 4MATIC Coupé,CLE 300,0,2,0,0,0,1,0,0,0,0,0,0,3
+MERCEDES-BENZ,E-Class,E 200 Exclusive (W214),E 200 (W214) CKD,26,24,14,6,1,17,4,5,13,14,3,4,131
+MERCEDES-BENZ,E-Class,E 300 AMG Line (W214),E 300 (W214) CKD,2,6,9,3,11,4,16,18,7,4,1,8,89
+MERCEDES-BENZ,EQB,250+ Progressive Line,EQB 250,0,0,1,0,1,2,2,0,0,0,2,1,9
+MERCEDES-BENZ,EQE (V295),350+ Electric Art Line,EQE 350 (V295),0,3,0,1,1,1,0,2,2,1,0,2,13
+MERCEDES-BENZ,EQE SUV (X294),350 4MATIC AMG Line,EQE 350 4M (X294),0,1,0,0,1,1,1,1,0,0,2,1,8
+MERCEDES-BENZ,EQS (V297),450+ AMG Line,EQS 450+ (V297),0,1,1,0,1,0,1,2,1,0,0,1,8
+MERCEDES-BENZ,EQS SUV (X296),450 4MATIC AMG Line,EQS SUV 450 ( X 296),2,0,1,0,0,0,0,0,0,0,0,0,3
+MERCEDES-BENZ,G-Class,580 with EQ Technology (EV),G 580 With EQ Technology,0,0,0,0,1,0,2,0,0,0,0,0,3
+MERCEDES-BENZ,GLA,200 AMG Line (H247),GLA 200,3,9,1,1,4,1,3,13,8,11,3,0,57
+MERCEDES-BENZ,GLB,200 Progressive Line (X247),GLB 200 Progressive Line ( X247),1,2,0,0,0,3,4,2,0,0,0,3,15
+MERCEDES-BENZ,GLC,300 4MATIC AMG Line (X254),GLC 300 AMG Line ( X254),4,13,24,13,9,18,23,56,8,12,10,3,193
+MERCEDES-BENZ,GLC Coupe,300 4MATIC AMG Line (C254),GLC 300 Coupe,1,0,0,1,1,0,0,0,0,0,0,0,3
+MERCEDES-BENZ,GLE,450 4MATIC AMG Line (V167),GLE 450 (V167),3,16,19,17,29,5,10,9,9,6,12,0,135
+MERCEDES-BENZ,GLS,450 4MATIC AMG Line (X167),GLS 450 (X167),2,0,2,1,0,2,7,4,0,1,0,1,20
+MERCEDES-BENZ,S-Class,S 450 4MATIC Luxury (V223),S 450,1,2,2,5,1,4,3,2,2,0,3,5,30
+MERCEDES-AMG,A-Class,A 45 S 4MATIC+ (W177),AMG A 45 4MATIC (W177)*,0,0,0,0,0,0,0,0,0,0,0,0,0
+MERCEDES-AMG,C-Class,C 63 S E Performance,AMG C 63 S E Performance (W206),0,0,0,0,0,0,1,0,0,0,0,0,1
+MERCEDES-AMG,CLE-Class,CLE 53 4MATIC+ Cabriolet,AMG CLE 53 4M+ Cabrio (A236)*,0,0,0,0,0,0,0,0,0,0,0,5,5
+MERCEDES-AMG,G-Class,G 63 (W465),AMG G 63,0,0,0,0,0,3,1,0,2,0,1,0,7
+MERCEDES-AMG,GLA,35 4MATIC (H247),AMG GLA 35,2,2,2,2,0,1,0,4,3,1,0,6,23
+MERCEDES-AMG,GLC Coupe,43 4MATIC+ (C254),AMG GLC 43 4M Coupe (C254)*,0,1,0,0,0,0,0,2,0,0,0,0,3
+MERCEDES-AMG,GLS,63 4MATIC+,AMG GLS 63 (X167),0,1,0,0,0,0,0,0,0,0,0,0,1
+MERCEDES-AMG,SL-Class,SL 43,AMG SL 43,0,0,0,0,0,0,0,0,0,0,0,0,0
+MERCEDES-MAYBACH,GLS,600 4MATIC,GLS 600 Maybach (X167),0,0,0,0,0,0,0,0,0,0,0,0,0
+MERCEDES-MAYBACH,S-Class,S 580 4MATIC+ (Z223),Maybach S 580 (Z223)*,0,0,0,1,1,0,0,0,1,0,1,0,4
+MG,4 EV,Magnify CKD,4 EV Magnify CKD,95,189,137,102,31,7,66,43,1,11,9,4,695
+MG,4 EV,Magnify Max CKD,4 EV Magnify Max CKD,0,0,0,0,0,0,39,41,6,6,0,0,92
+MG,5 GT,Activate,5 GT Activate 1.5L,0,0,0,0,0,0,0,0,5,2,2,0,9
+MG,5 GT,Ignite,5 GT Ignite 1.5L,10,2,3,1,2,1,7,5,19,9,1,0,60
+MG,5 GT,Magnify,5 GT Magnify 1.5L,0,0,2,1,0,1,3,8,17,48,6,1,87
+MG,Cyberster,Performance AWD,Cyberster,0,5,2,0,1,0,0,0,2,1,2,0,13
+MG,HS,Activate,New HS Activate,0,0,0,0,0,0,0,0,0,0,1,0,1
+MG,HS,i-Smart Magnify,New HS i0Smart Magnify,0,0,1,0,0,0,1,3,16,28,5,0,54
+MG,HS,Ignite,New HS Ignite,0,0,0,0,0,0,0,0,0,3,0,2,5
+MG,VS HEV,Magnify,VS HEV Magnify,3,4,2,1,0,0,7,8,23,41,52,63,204
+MG,ZS,Activate,ZS EV,0,0,0,0,0,0,0,0,0,0,2,0,2
+MG,ZS,Ignite,ZS EV Ignite,0,0,0,0,17,0,0,0,0,0,0,0,17
+MG,ZS,Magnify,ZS EV Magnify,33,26,26,8,32,48,11,16,2,1,9,160,372
+MG,ZS EV,Ignite,ZS Ignite 1.5L CVT,0,0,0,0,0,0,1,3,15,6,12,18,55
+MG,ZS EV,Magnify,ZS Magnify 1.5L CVT,3,1,1,0,3,1,16,12,53,66,43,9,208
+MINI,Aceman,JCW E,Jcw Aceman E At,0,0,0,0,3,0,1,3,0,0,1,0,8
+MINI,Aceman,SE (82GC),Cbu Aceman Se At 82Gc,0,6,8,1,2,2,0,1,1,0,1,3,25
+MINI,Cooper,S Cabrio (F57),Cbu Cooper S Cabrio,0,0,0,0,8,4,4,6,5,1,1,1,30
+MINI,Cooper 5-Door,Cooper (C),Cooper 5 Door A/T,1,0,1,0,0,0,0,0,0,0,0,0,2
+MINI,Cooper 5-Door,S (Cooper S),Cooper S 5 Door A/T,1,3,5,1,0,0,0,3,3,0,0,2,18
+MINI,Cooper Cabrio,JCW (32GX),Cbu Jcw Cabrio At 32Gx S,0,0,0,0,7,1,1,5,1,4,1,1,21
+MINI,Cooper EV,JCW E,Jcw E At,0,0,0,0,3,2,5,4,1,1,0,1,17
+MINI,Cooper EV,SE (J01),Cooper SE A/T,2,9,0,4,0,2,4,8,2,4,4,10,49
+MINI,Cooper EV,SE Hatch,Cooper SE Hatch A/T,1,17,0,0,0,1,0,0,0,0,0,0,19
+MINI,Cooper Hatch,John Cooper Works,Jcw At,0,0,0,0,12,5,9,11,3,1,2,0,43
+MINI,Cooper Hatch,S Hatch,Cooper S Hatch A/T,0,1,0,0,0,0,0,0,0,0,0,0,1
+MINI,Cooper Hatch,S RHD,Cooper S RHD A/T,1,12,8,6,0,1,1,6,6,4,4,6,55
+MINI,Countryman,C (U25),Countryman C A/T,0,1,1,6,4,0,4,11,7,3,1,1,39
+MINI,Countryman,S ALL4 (U25),Countryman S ALL4 A/T,1,2,1,1,2,3,3,9,6,6,5,4,43
+MINI,Countryman,S F60 CKD,Cooper S Countryman F60 CKD A/T,6,34,1,0,0,0,0,0,0,0,0,0,41
+MINI,Countryman,SE ALL4 (EV),Countryman SE ALL4,0,2,0,1,2,2,2,6,2,1,3,5,26
+MITSUBISHI,Destinator,1.5 Exceed CVT,Destinator 1.5L Exceed (4X2) A/T,0,0,0,0,0,0,22,396,414,244,7,170,1253
+MITSUBISHI,Destinator,1.5 GLS CVT,Destinator 1.5L Gls (4X2) A/T,0,0,0,0,0,0,22,112,107,27,18,18,304
+MITSUBISHI,Destinator,1.5 Ultimate CVT,Destinator 1.5L Ultimate (4X2) A/T,0,0,0,0,0,0,218,1236,1060,839,85,1523,4961
+MITSUBISHI,Destinator,1.5 Ultimate Premium,Destinator 1.5L Ultimate Premium (4X2) A/T,0,0,0,0,0,0,96,469,429,662,1704,537,3897
+MITSUBISHI,Pajero Sport,2.4 Dakar 4x2 AT,Pajero Sport 2.4L DAKAR (4x2) 8AT,748,741,707,405,549,459,480,501,480,796,670,722,7258
+MITSUBISHI,Pajero Sport,2.4 Dakar Ultimate 4x2,Pajero Sport 2.4L DAKAR ULTIMATE0L 4X4 8A/T,141,189,148,142,112,125,103,95,107,184,127,168,1641
+MITSUBISHI,Pajero Sport,2.4 Dakar Ultimate 4x4,Pajero Sport 2.4L DAKAR Utimate (4x2) 8AT,35,60,37,17,22,22,30,19,22,6,14,23,307
+MITSUBISHI,Pajero Sport,2.5 Exceed AT,Pajero Sport 2.5 L EXCEED (4X2) 5AT,0,0,12,18,20,3,35,0,1,24,28,9,150
+MITSUBISHI,Pajero Sport,2.5 Exceed MT,Pajero Sport 2.5L EXCEED0H (4x2) 5MT,7,0,4,3,9,2,4,4,3,4,7,7,54
+MITSUBISHI,Pajero Sport,2.5 GLX 4x4 MT,Pajero Sport 2.5L GLX (4x4) 5MT,53,54,55,54,36,66,35,37,33,67,66,48,604
+MITSUBISHI,Xforce,1.5 Exceed CVT,Xforce Exceed 1.5L 4X2 A/T,23,68,230,0,0,0,3,4,9,7,10,11,365
+MITSUBISHI,Xforce,1.5 Ultimate CVT,Xforce Ultimate 1.5L 4X2 A/T,238,254,51,2,0,0,2,11,1,0,3,3,565
+MITSUBISHI,Xforce,1.5 Ultimate DS (ADAS),Xforce Ultimate DS,112,200,179,255,203,201,149,325,310,288,264,272,2758
+MITSUBISHI,Xpander,1.5 Exceed CVT,Xpander 1.5L EXCEED (4X2) CVT,202,230,173,31,172,338,300,400,362,540,245,54,3047
+MITSUBISHI,Xpander,1.5 Exceed MT,Xpander 1.5L EXCEED (4X2) M/T,120,138,137,67,82,222,119,137,89,204,158,173,1646
+MITSUBISHI,Xpander,1.5 GLS CVT,Xpander 1.5L GLS (4X2) CVT,0,2,0,0,26,16,55,65,25,30,32,264,515
+MITSUBISHI,Xpander,1.5 GLS MT,Xpander 1.5L GLS (4X2) M/T,75,132,16,0,9,5,144,69,13,25,196,0,684
+MITSUBISHI,Xpander,1.5 Ultimate CVT,Xpander 1.5L ULTIMATE (4X2) CVT,1224,1092,948,618,960,812,625,540,349,1040,748,730,9686
+MITSUBISHI,Xpander,1.5 Ultimate MT,Xpander 1.5L ULTIMATE0L (4X2) MT,73,57,79,48,47,36,38,42,53,87,48,77,685
+MITSUBISHI,Xpander Cross,1.5 MT,Xpander Cross 1.5L (4X2) M/T,201,136,181,79,91,106,110,78,84,99,127,156,1448
+MITSUBISHI,Xpander Cross,1.5 Premium CVT,Xpander Cross 1.5L PREMIUM (4X2) CVT,785,753,755,527,572,755,608,415,322,726,593,502,7313
+NETA,V-II,EV,NETA V II EV,57,40,47,42,46,66,30,27,18,53,60,54,540
+NETA,X,500 Supreme,NETA X EV 500 SUPREME,33,13,8,10,14,18,9,6,3,2,1,0,117
+NISSAN,Kicks,e-Power VL,KICKS E-POWER,3,1,13,0,1,1,1,2,4,0,0,0,26
+NISSAN,Livina,1.5 VL AT,Livina VL,6,21,28,27,15,16,13,7,0,0,0,0,133
+NISSAN,Magnite,Premium Turbo CVT,Magnite Premium Turbo CVT,12,19,39,53,31,1,0,0,2,0,0,0,157
+NISSAN,Serena,e-Power Highway Star (C28),All New Serena Highway Star e0Power,6,105,1,72,8,101,110,70,61,22,15,15,586
+NISSAN,Terra,2.5 VL 4x4 AT,Terra VL 2.5 AT 4x4,10,5,3,6,2,2,5,5,5,8,2,0,53
+NISSAN,X-Trail,e-Power e-4ORCE,X-Trail e-Power e-4ORCE (4x4) A/T,0,0,0,0,0,0,0,0,0,0,0,85,85
+POLYTRON,G3,Standard Range,Polytron G3,0,0,0,0,0,0,10,4,27,50,23,59,173
+POLYTRON,G3+,Long Range (Plus),Polytron G3+,0,0,0,0,0,0,11,17,23,62,57,112,282
+SUBARU,BRZ,2.4 AT EyeSight (ZD8),BRZ 2.4 AT ES (ZD8),2,4,16,1,0,0,0,9,7,5,2,8,54
+SUBARU,BRZ,2.4 MT (ZD8),BRZ 2.4 MT (ZD8),0,0,1,8,0,5,2,1,0,0,0,3,20
+SUBARU,Crosstrek,2.0i-L ES,Crosstrek 2.0i-L ES (GU7),0,0,0,0,0,0,0,0,0,0,0,0,0
+SUBARU,Crosstrek,2.0i-S ES,Crosstrek 2.0i-S ES (GU7),3,5,7,0,0,0,0,5,6,1,3,6,36
+SUBARU,Forester,2.0i-L ES,Forester 2.0i-L (SK7),3,1,1,1,1,1,0,0,0,0,0,0,8
+SUBARU,Forester,2.0i-S ES,Forester 2.0i-S ES (SK7),1,5,15,0,3,5,3,9,3,1,0,4,49
+SUBARU,Forester,2.5i-S EyeSight,Forester 2.5i-S ES (SL9),0,0,0,0,0,0,20,15,9,3,3,1,51
+SUBARU,Outback,2.5i-Touring EyeSight,Outback 2.5i-T ES (BT9),3,0,3,0,0,0,2,3,2,0,0,1,14
+SUBARU,WRX Sedan,2.4 MT,WRX SEDAN 2.4 MT (VBH),0,1,1,1,0,0,0,0,0,0,0,1,4
+SUBARU,WRX Sedan,2.4 MT tS EyeSight,WRX SEDAN 2.4 MT tS (VBH),0,0,0,0,3,6,1,3,0,1,0,0,14
+SUBARU,WRX Sedan,2.4 tS EyeSight (AT),WRX SEDAN 2.4 AT tS ES (VBH),3,1,7,0,1,0,1,2,1,1,1,0,18
+SUBARU,WRX Wagon,2.4 GT-S EyeSight,WRX WAGON 2.4 GT-S ES (VNH),0,0,0,0,0,0,0,0,0,0,0,0,0
+SUBARU,WRX Wagon,2.4 tS EyeSight,WRX WAGON 2.4 tS ES (VNH),1,0,3,1,0,0,0,1,1,0,1,1,9
+SUZUKI,All New Ertiga,Cruise Hybrid 2Tone AT,All New Ertiga Cr Hybrid 2Tone At,57,41,36,157,0,0,0,0,0,0,0,0,291
+SUZUKI,All New Ertiga,Cruise Hybrid 2Tone MT,All New Ertiga Cr Hybrid 2Tone Mt,16,8,13,32,0,0,0,0,0,0,0,0,69
+SUZUKI,All New Ertiga,Cruise Hybrid AT,All New Ertiga Cr Hybrid At,11,10,5,49,0,0,0,0,0,0,0,0,75
+SUZUKI,All New Ertiga,Cruise Hybrid MT,All New Ertiga Cr Hybrid Mt,13,5,4,6,0,0,0,0,0,0,0,0,28
+SUZUKI,All New Ertiga,GA MT,All New Ertiga GA,3,2,2,5,3,0,0,1,1,0,0,0,17
+SUZUKI,All New Ertiga,GL AT,All New Ertiga GL AT,58,20,40,38,35,19,26,27,22,30,17,97,429
+SUZUKI,All New Ertiga,GL MT,All New Ertiga GL MT,0,23,62,23,11,17,15,20,26,23,14,47,281
+SUZUKI,All New Ertiga,GX Hybrid AT,All New Ertiga Gx Hybrid At,28,45,90,315,0,0,0,0,0,0,0,0,478
+SUZUKI,All New Ertiga,GX Hybrid MT,All New Ertiga Gx Hybrid Mt,1,16,42,168,0,0,0,0,0,0,0,0,227
+SUZUKI,APV Arena,GE,APV GE,29,53,79,70,51,67,70,100,73,53,85,176,906
+SUZUKI,APV Arena,GL,APV GL,15,27,20,50,41,49,46,77,46,130,29,25,555
+SUZUKI,APV Arena,GX,APV GX,20,47,20,23,66,55,51,85,68,83,64,64,646
+SUZUKI,APV Arena,SGX,APV SGX,2,9,4,4,12,38,8,8,18,32,14,0,149
+SUZUKI,Fronx,GL AT,Fronx Gl Mt,0,0,0,0,0,112,38,37,57,39,53,225,561
+SUZUKI,Fronx,GL MT,Fronx Gl At,0,0,0,0,0,221,112,147,152,168,171,324,1295
+SUZUKI,Fronx,Hybrid GX AT,Fronx Hybrid Gx Mt,0,0,0,0,0,99,128,95,79,30,97,233,761
+SUZUKI,Fronx,Hybrid GX MT,Fronx Hybrid Gx At,0,0,0,0,0,363,375,286,264,216,307,943,2754
+SUZUKI,Fronx,Hybrid SGX 2Tone AT,Fronx Hybrid Sgx 2Tone At,0,0,0,0,0,840,1216,749,331,296,492,1351,5275
+SUZUKI,Fronx,Hybrid SGX AT,Fronx Hybrid Sgx At,0,0,0,0,0,147,328,187,117,85,292,512,1668
+SUZUKI,Grand Vitara,GX 2-Tone AT (Non-MC),Grand Vitara GX AT,116,125,68,83,69,33,36,22,0,0,0,0,552
+SUZUKI,Grand Vitara,GX AT (Non-MC),Grand Vitara 2TONE GX AT,135,121,109,93,130,130,121,99,43,76,40,23,1120
+SUZUKI,Grand Vitara,MC GX 2-Tone AT,Grand Vitara MC GX AT,0,0,0,0,0,0,0,0,0,0,60,39,99
+SUZUKI,Grand Vitara,MC GX AT,Grand Vitara MC 2TONE GX AT,0,0,0,0,0,0,0,0,0,0,5,45,50
+SUZUKI,Jimny 5-Door,AT (Single Tone),Jimny 5 Doors At,74,101,65,45,25,33,40,56,64,50,60,65,678
+SUZUKI,Jimny 5-Door,AT 2-Tone,Jimny 5 Doors 2Tone At,43,56,50,34,24,39,34,51,66,30,30,37,494
+SUZUKI,Jimny 5-Door,MT (Single Tone),Jimny 5 Doors Mt,0,1,0,0,0,0,0,0,0,0,0,0,1
+SUZUKI,Jimny 5-Door,MT 2-Tone,Jimny 5 Doors 2Tone Mt,0,3,5,2,4,0,0,0,0,0,0,0,14
+SUZUKI,Jimny 5-Door,White Rhino AT,Jimny 5D White Rhino At,30,29,27,44,14,0,0,0,0,0,0,0,144
+SUZUKI,Jimny-3Door,2Tone MT,New Jimny 2TONE MT,0,0,0,0,0,0,0,0,0,0,0,0,0
+SUZUKI,Jimny-3Door,2Tone AT,New Jimny 2TONE AT,38,37,28,13,11,12,18,16,9,7,18,13,220
+SUZUKI,Jimny-3Door,AT (Single Tone),New Jimny AT,37,48,22,27,27,22,20,26,16,22,17,20,304
+SUZUKI,Jimny-3Door,MT (Single Tone),New Jimny MT,0,0,0,0,0,0,0,0,0,0,0,0,0
+SUZUKI,New Baleno,AT,New Baleno AT,601,526,411,418,0,0,0,0,0,0,0,0,1956
+SUZUKI,S-Presso,1.0 AGS (AT),S Presso AT,73,147,89,81,97,94,110,98,53,55,80,162,1139
+SUZUKI,S-Presso,1.0 MT,S Presso MT,25,30,44,30,34,29,31,34,38,33,45,60,433
+SUZUKI,XL7,Alpha Hybrid 2-Tone AT,Alpha Hybrid 2Tone Mt,108,17,121,45,63,46,56,68,44,42,48,132,790
+SUZUKI,XL7,Alpha Hybrid 2-Tone MT,Alpha Hybrid 2Tone At,388,479,489,215,344,305,205,427,44,109,92,345,3442
+SUZUKI,XL7,Alpha Hybrid AT,XL-7 Alpha Hybrid AT,94,21,104,33,40,56,42,86,5,21,37,133,672
+SUZUKI,XL7,Alpha Hybrid MT,XL-7 Alpha Hybrid MT,13,5,19,11,11,11,10,7,5,14,26,13,145
+SUZUKI,XL7,Alpha Kuro Hybrid 2Tone AT,XL-7 Alapha Kuro Hybrid 2Tone At,0,0,0,0,0,0,0,0,115,157,116,287,675
+SUZUKI,XL7,Alpha Kuro Hybrid AT,XL-7 Alapha Kuro Hybrid At,0,0,0,0,0,0,0,0,123,116,71,171,481
+SUZUKI,XL7,Beta Hybrid AT,XL-7 Beta Hybrid AT,339,240,370,65,108,180,142,163,245,251,217,551,2871
+SUZUKI,XL7,Beta Hybrid MT,XL-7  Beta Hybrid MT,73,45,99,35,46,46,38,32,46,62,39,122,683
+SUZUKI,XL7,Zeta AT,XL-7 Zeta AT,302,189,220,85,171,124,111,146,126,170,130,410,2184
+SUZUKI,XL7,Zeta MT,Xl 7 Zeta MT,224,109,178,73,92,101,65,72,77,91,89,273,1444
+TOYOTA,Agya,1.2 E MT,All New Agya 1.2 E M/T FMC 2023,0,0,0,0,0,0,0,0,0,1,0,0,1
+TOYOTA,Agya,1.2 G CVT,All New Agya 1.2 G M/T FMC 2023,670,441,605,201,604,128,261,253,424,476,442,665,5170
+TOYOTA,Agya,1.2 G MT,All New Agya 1.2 G M/T FMC 2023,1458,747,231,218,775,538,437,337,520,440,499,838,7038
+TOYOTA,Agya,1.2 GR Sport CVT,All New Agya 1.2 Gr-S Cvt Fmc 2023,32,0,8,8,6,3,6,4,2,1,1,1,72
+TOYOTA,Agya,1.2 GR Sport MT,All New Agya 1.2 Gr-S M/T Fmc 2023,0,0,0,0,6,1,1,0,0,2,0,1,11
+TOYOTA,All New Agya,1.2 G CVT MI 2025,New Agya 1.2 G Cvt Mi 2025,0,419,328,107,223,282,348,202,394,410,473,497,3683
+TOYOTA,All New Agya,1.2 GR Sport CVT MI 2025,New Agya 1.2 GR Cvt Mi 2025,0,0,4,3,0,1,4,1,2,0,1,2,18
+TOYOTA,Alphard,2.5 G AT (Gas),Alphard 2.5 G At,0,0,1,0,0,0,0,0,0,0,0,0,1
+TOYOTA,Alphard,2.5 HEV CVT,Alphard 2.5 Hev Cvt,407,318,203,47,89,33,65,155,172,98,169,145,1901
+TOYOTA,Alphard,2.5 G CVT,Alphard 2.5 G Cvt,20,128,51,31,32,30,30,27,44,41,40,20,494
+TOYOTA,Avanza,1.3 E CVT,All New Avanza 1.3 E Cvt 2021,342,460,735,366,477,246,429,400,501,551,626,648,5781
+TOYOTA,Avanza,1.3 E MT,All New Avanza 1.3 E 2021,868,696,674,375,599,244,572,374,422,877,948,2043,8692
+TOYOTA,Avanza,1.5 G CVT,All New Avanza 1.5 G CVT 2021,889,835,1574,883,1185,1165,1276,997,824,764,1024,1032,12448
+TOYOTA,Avanza,1.5 G MT,All New Avanza 1.5 G 2021,388,687,1530,737,936,731,639,673,687,535,674,1073,9290
+TOYOTA,bZ4X,Mono Tone (FWD),BZ4X EV,4,4,1,0,0,9,13,7,2,29,5,3,77
+TOYOTA,Calya,1.2 E MT,Calya 1.2 E 2022,53,160,117,81,85,53,56,91,116,56,157,90,1115
+TOYOTA,Calya,1.2 E STD MT (Non-ABS),Calya 1.2 E Std 2022,80,30,90,11,70,31,48,73,80,66,92,129,800
+TOYOTA,Calya,1.2 G AT,Calya 1.2 G AT  2022,979,1087,665,344,472,740,648,707,554,616,702,1044,8558
+TOYOTA,Calya,1.2 G MT,Calya 1.2 G 2022,1566,2351,1767,836,1853,838,1773,1414,1773,2319,2171,2244,20905
+TOYOTA,Camry,2.5 Hybrid (HEV),All New Camry 2.5 Hev 2021,0,0,15,10,43,28,18,47,41,35,36,8,281
+TOYOTA,Camry,2.5 V,All New Camry 2.5 V 2021,0,0,1,0,0,0,0,1,0,3,27,0,32
+TOYOTA,Corolla Altis,1.8 Hybrid GR Sport,All New Corolla Altis 1.8 Hybrid AT 2023,0,1,1,0,3,5,5,5,25,22,17,3,87
+TOYOTA,Corolla Altis,1.8 V,All New Corolla Altis 1.8 V A/T 2-23,0,0,3,1,6,6,3,7,12,1,6,8,53
+TOYOTA,Corolla Cross,1.8 Hybrid AT,Corolla Cross 1.8 A/T Hev,0,3,21,1,8,11,4,8,3,5,6,4,74
+TOYOTA,Corolla Cross,1.8 Hybrid GR Sport,Corolla Cross 1.8 A/T Hev Gr Sport,0,5,14,9,5,4,3,3,7,5,6,7,68
+TOYOTA,Fortuner,2.7 SRZ 4x2 AT,Fortuner Srz 2.7 A/T Imp 2024,2,0,5,0,0,2,0,0,0,0,0,8,17
+TOYOTA,Fortuner,2.8 VRZ AT 2022,New Fortuner Vrz 2.8 Dsl A/T Imp 2024,14,3,15,15,16,1,24,7,5,2,5,26,133
+TOYOTA,Fortuner,2.8 VRZ GR Sport AT 2022,New Fortuner Vrz 2.8 Gr Sport AT 2022,0,0,1,0,0,0,0,0,0,0,0,0,1
+TOYOTA,Fortuner,2.8 VRZ TSS,Fortuner Vrz 2.8 TSS Dsl A/T Imp 2024,3,0,12,0,9,0,0,2,1,4,1,7,39
+TOYOTA,GR 86,2.4 AT,GR 86 AT,0,4,1,0,2,3,2,1,0,0,1,1,15
+TOYOTA,GR 86,2.4 MT,GR 86,0,1,0,0,0,0,1,0,0,0,0,0,2
+TOYOTA,GR Corolla,1.6 Turbo (G16E),GR Corolla 1.6 2023,0,0,0,0,0,0,0,0,0,0,0,1,1
+TOYOTA,GR Supra,MK 5,GR Supra 3.0 AT,0,1,1,1,1,0,0,1,0,0,1,0,6
+TOYOTA,GR Yaris,1.6T Facelift AT (DAT),GR Yaris 1.6 AT,1,2,9,3,2,0,2,0,0,0,0,2,21
+TOYOTA,GR Yaris,1.6T Facelift MT,GR Yaris 1.6,0,0,1,0,0,0,0,0,1,1,0,1,4
+TOYOTA,Innova Zenix,2.0 G CVT IMP 2025,All New Kijang Innova Zenix 2.0 G Cvt Imp 2025,0,0,0,0,0,0,0,0,115,289,233,114,751
+TOYOTA,Innova Zenix,2.0 G HEV CVT 2025,All New Kijang Innova Zenix 2.0 G Hev Cvt 2025,0,0,0,0,0,0,0,200,0,0,0,0,200
+TOYOTA,Innova Zenix,2.0 G HEV CVT IMP 2025,All New Kijang Innova Zenix 2.0 G Hev Cvt Imp 2025,0,0,0,0,0,0,0,0,587,299,485,342,1713
+TOYOTA,Innova Zenix,2.0 Q HEV CVT TSS IMP 2025,All New Kijang Innova Zenix 2.0 Q Hev Cvt Tss Imp 2025,0,0,0,0,0,0,0,0,484,659,558,434,2135
+TOYOTA,Innova Zenix,2.0 V CVT IMP 2025,All New Kijang Innova Zenix 2.0 V Cvt Imp 2025,0,0,0,0,0,0,0,0,0,40,48,31,119
+TOYOTA,Innova Zenix,2.0 V HEV CVT IMP 2025,All New Kijang Innova Zenix 2.0 V Hev Cvt Imp 2025,0,0,0,0,0,0,0,0,276,572,520,223,1591
+TOYOTA,Innova Zenix,G CVT 2.0 (Gas),All New Kijang Innova Zenix G Cvt 2.0,587,803,550,292,231,330,325,298,333,129,80,78,4036
+TOYOTA,Innova Zenix,G HEV CVT 2.0,All New Kijang Innova Zenix G Hev Cvt 2.0,474,639,316,635,525,495,201,182,164,218,101,152,4102
+TOYOTA,Innova Zenix,Q HEV CVT TSS 2.0 Modellista,All New Kijang Innova Zenix Q Hev Cvt Tss 2.0 Modellista,843,807,1130,830,1088,754,730,567,397,289,250,368,8053
+TOYOTA,Innova Zenix,V CVT 2.0 (Gas),All New Kijang Innova Zenix V Cvt 2.0,198,294,306,133,180,240,137,62,116,81,13,56,1816
+TOYOTA,Innova Zenix,V HEV CVT 2.0,All New Kijang Innova Zenix V Hev Cvt 2.0,577,536,760,956,926,699,467,343,264,172,220,220,6140
+TOYOTA,Kijang Innova Reborn,G AT DSL,All New Kijang Innova G A/T Dsl,0,0,0,0,0,0,0,0,0,0,0,1421,1421
+TOYOTA,Kijang Innova Reborn,G AT DSL 2022,All New Kijang Innova G A/T Dsl 2022,1786,2123,1715,930,1619,1651,1866,1286,2237,1536,1432,1678,19859
+TOYOTA,Kijang Innova Reborn,G DSL (MT),All New Kijang Innova G Dsl,0,0,0,0,0,0,0,0,0,0,0,642,642
+TOYOTA,Kijang Innova Reborn,G DSL (MT) 2022,All New Kijang Innova G Dsl 2022,706,806,576,812,604,645,585,803,1170,629,535,715,8586
+TOYOTA,Kijang Innova Reborn,G IMP 2022 (MT),All New Kijang Innova G Imp 2022,0,0,0,0,0,0,0,0,0,0,0,0,0
+TOYOTA,Land Cruiser,70,Land Cruiser 70,0,0,0,0,2,0,0,45,35,56,0,0,138
+TOYOTA,Land Cruiser,300 GR Sport,Land Cruiser 300 GR0S,20,25,34,37,27,22,24,36,10,15,9,4,263
+TOYOTA,Land Cruiser,300 VX-R,Land Cruiser 300 VX0R,18,23,29,20,27,35,26,16,19,12,8,12,245
+TOYOTA,New Fortuner,2.4 G AT IMP 2024,New Fortuner G 2.4 Dsl A/T Imp 2024,41,11,16,4,11,13,7,2,4,18,11,30,168
+TOYOTA,New Fortuner,2.4 G MT IMP 2024,New Fortuner G 2.4 Dsl Imp 2024,14,8,3,2,18,15,5,11,8,2,8,24,118
+TOYOTA,New Fortuner,2.7 SRZ w/ GR Parts 4x2 IMP 2024,New Fortuner Srz 2.7 With Gr Parts A/T Imp 2024,42,35,28,24,31,22,23,25,17,11,10,21,289
+TOYOTA,New Fortuner,2.8 GR Sport 4x4 IMP 2024,New Fortuner 2.8 Gr Sport 4X4 Dsl A/T Imp 2024,149,146,140,148,240,291,238,210,189,97,86,159,2093
+TOYOTA,New Fortuner,2.8 VRZ 4x4 AT IMP 2024,New Fortuner Vrz 2.8 4X4 Dsl A/T Imp 2024,29,13,6,2,12,14,106,41,6,7,10,1,247
+TOYOTA,New Fortuner,2.8 VRZ w/ GR Parts TSS 4x2 IMP 2024,New Fortuner Vrz 2.8 With Gr Parts Tss Dsl A/T Imp 2024,914,942,705,1130,1065,1043,707,669,719,605,786,775,10060
+TOYOTA,New Yaris,1.5 GR Sport CVT (3 Airbag),New Yaris 1.5 GR Sport CVT 3 Airbag 2023,26,6,5,8,13,13,12,12,12,17,12,16,152
+TOYOTA,New Yaris,1.5 GR Sport CVT (7 Airbag),New Yaris 1.5 GR Sport CVT 7 Airbag 2023,1,2,0,2,6,3,5,3,2,4,4,0,32
+TOYOTA,Raize,1.0T G CVT,RAIZE 1.0T G CVT One Tone New 2021,125,121,82,90,143,21,63,124,42,64,114,118,1107
+TOYOTA,Raize,1.0T G MT,RAIZE 1.0T G One Tone New 2021,51,101,11,44,22,29,22,25,34,25,33,53,450
+TOYOTA,Raize,1.0T GR Sport CVT,RAIZE 1.0T GR CVT One Tone New 2021,231,198,147,137,258,63,132,178,157,175,161,197,2034
+TOYOTA,Raize,1.0T GR Sport CVT TSS Two Tone,RAIZE 1.0T GR CVT Two Tone New 2021,237,293,223,64,238,159,102,159,115,187,169,213,2159
+TOYOTA,Raize,1.0T GR Sport CVT Two Tone,Raize 1.0T Gr Tss Cvt Two Tone New 2021,35,42,12,29,54,11,25,26,17,34,50,44,379
+TOYOTA,Raize,1.2 G CVT,Raize 1.2T G CVT New 2021,393,390,302,217,328,324,196,311,364,373,395,544,4137
+TOYOTA,Raize,1.2 G MT,Raize 1.2T G New 2021,36,11,5,15,11,12,22,12,18,24,16,15,197
+TOYOTA,Rush,1.5 G AT,Rush 1.5 G A/T IMP 2024,97,287,149,221,129,112,157,136,101,140,131,185,1845
+TOYOTA,Rush,1.5 G MT,Rush 1.5 G Imp 2024,192,254,140,149,135,96,170,208,128,160,188,242,2062
+TOYOTA,New Rush,1.5 GR Sport AT,Rush 1.5 Gr Sport A/T Imp 2024,1306,1408,781,478,939,929,1022,736,732,788,929,1274,11322
+TOYOTA,New Rush,1.5 GR Sport MT,Rush 1.5 Gr Sport Imp 2024,1737,1211,1057,1170,1228,1218,1051,869,1312,926,1349,1446,14574
+TOYOTA,Urban Cruiser,EV,Urban Cruiser EV,0,0,0,0,0,1,0,0,0,0,0,0,1
+TOYOTA,Vellfire,2.5 VIP HEV,Vellflre 2.5 VIP Hybrid,55,100,55,22,32,20,9,15,20,19,18,19,384
+TOYOTA,Veloz,1.5 CVT,All New Veloz 1.5 CVT 2021,44,48,39,17,40,23,18,51,47,7,24,1,359
+TOYOTA,Veloz,1.5 MT,All New Veloz 1.5 2021,155,254,70,267,185,173,139,113,114,98,126,40,1734
+TOYOTA,Veloz,1.5 Q CVT,All New Veloz 1.5 Q Cvt 2021,527,704,599,376,855,702,626,482,476,402,262,12,6023
+TOYOTA,Veloz,1.5 Q CVT TSS,All New Veloz 1.5 Q Cvt Tss 2021,139,121,85,73,112,159,91,107,60,56,61,2,1066
+TOYOTA,Vios,1.5 G TSS,VIOS 1.5 G AT FMC,6,37,3,1,19,4,2,3,12,8,7,4,106
+TOYOTA,Voxy,2.0 CVT,Voxy 2.0 AT,20,101,100,80,114,86,60,147,62,39,40,26,875
+TOYOTA,Yaris Cross,1.5 G CVT,New Yaris Cross 1.5 G Cvt,18,3,0,3,0,1,2,11,11,11,7,6,73
+TOYOTA,Yaris Cross,1.5 G MT,New Yaris Cross 1.5 G,0,0,0,0,4,0,3,3,1,1,7,7,26
+TOYOTA,Yaris Cross,1.5 S CVT TSS,New Yaris Cross 1.5 S Cvt Tss,4,2,0,1,1,3,4,1,2,3,2,1,24
+TOYOTA,Yaris Cross,1.5 S GR CVT TSS,New Yaris Cross 1.5 S Gr Cvt Tss,25,24,21,11,9,7,13,8,2,8,1,5,134
+TOYOTA,Yaris Cross,1.5 S HV CVT TSS,New Yaris Cross 1.5 S Hv Cvt Tss,4,8,60,17,78,42,79,19,62,65,85,68,587
+TOYOTA,Yaris Cross,1.5 S HV CVT TSS Prem Color,New Yaris Cross 1.5 S Hv Cvt Tss Premium Color,5,0,8,2,7,9,10,6,8,21,18,7,101
+TOYOTA,Yaris Cross,1.5 S HV GR CVT TSS,New Yaris Cross 1.5 S Hv Gr Cvt Tss,96,62,81,69,102,60,47,74,44,86,106,96,923
+TOYOTA,Yaris Cross,1.5 S HV GR CVT TSS Prem Color,New Yaris Cross 1.5 S Hv Gr Cvt Tss Premium Color,122,282,128,73,101,107,138,118,105,155,228,212,1769
+VINFAST,VF 3,EV (+Battery),VF 3,0,0,242,155,209,319,214,110,106,160,47,210,1772
+VINFAST,VF 5,EV (+Battery),VF 5,6,2,22,5,11,9,1,4,3,6,6,3031,3106
+VINFAST,VF 6,Eco (+Battery),VF 6 Eco,0,0,0,0,0,0,0,3,2,3,0,1,9
+VINFAST,VF 6,Plus (+Battery),VF 6 Plus,0,0,0,0,0,0,0,4,7,8,2,3,24
+VINFAST,VF e34,EV (+Battery),VF e34,12,5,24,1001,11,214,84,18,38,32,13,4522,5974
+VOLKSWAGEN,ID. Buzz,Long Wheelbase (LWB),ID.BUZZ LWB EV AT,0,0,15,0,55,36,8,15,8,9,6,9,161
+VOLKSWAGEN,T-Cross,1.0 TSI Dynamic,T-Cross 1.0 TSI AT,0,1,1,0,0,0,0,1,0,1,1,0,5
+VOLKSWAGEN,Tiguan Allspace,1.4 TSI,Tiguan Allspace 1.4 TSI AT,4,5,3,5,0,1,9,20,13,7,5,6,78
+VOLVO,EC40,Ultimate Twin Motor,EC40 Electric Vehicles,1,0,1,0,0,1,1,2,1,0,0,4,11
+VOLVO,EX30,Plus,EX30 Plus Electric Vehicles,0,2,0,3,3,0,1,1,1,1,7,5,24
+VOLVO,EX30,Ultra Extended Range,EX30 Ultra Electric Vehicles,0,1,2,2,0,2,2,7,4,3,6,19,48
+VOLVO,EX40,Ultimate,EX40 Electric Vehicles,1,0,0,0,0,0,0,0,1,0,2,2,6
+VOLVO,XC40,Recharge PHEV (T5),XC40 Plugin Hybrid,0,0,0,0,0,0,0,0,0,0,0,0,0
+VOLVO,XC60,Recharge (PHEV) AWD,XC60 Plugin Hybrid,0,5,4,0,3,2,2,5,2,9,6,4,42
+VOLVO,XC90,Recharge (PHEV) AWD,XC90 Plugin Hybrid,1,0,0,4,4,3,4,1,1,2,0,11,31
+WULING,Almaz,1.5 Exclusive (E+) CVT,Almaz 1.5L,0,0,0,0,0,0,0,0,0,0,0,4,4
+WULING,Almaz,1.5L Smart Enjoy MT,Almaz 1.5E+ T CVT,2,0,0,0,0,0,0,0,0,0,0,0,2
+WULING,Almaz RS,1.5T Pro,Almaz RS 1.5T Pro,28,5,13,0,0,0,0,0,0,0,0,0,46
+WULING,Alvez,1.5 CE,Alvez 1.5 CE,34,54,46,49,31,34,12,55,34,31,66,11,457
+WULING,Alvez,1.5 EX,Alvez 1.5 EX,63,39,76,25,134,39,43,81,70,16,47,6,639
+WULING,Alvez,1.5 SE,Alvez 1.5 SE,37,53,114,12,34,8,21,33,35,8,71,0,426
+WULING,BinguoEV,New Lite (333 KM),Binguo 333 KM AC,1,0,1,5,2,1,65,8,0,0,0,0,83
+WULING,BinguoEV,New Pro (333 KM),Binguo 333 KM DC,16,6,68,78,208,33,45,9,0,0,0,0,463
+WULING,BinguoEV,Premium Range (410 KM),Binguo 410 KM DC,130,169,399,172,0,0,0,6,0,0,0,0,876
+WULING,Cloud EV,460 KM,Cloud 460 KM,58,100,11,1,0,0,0,0,0,0,0,0,170
+WULING,Confero S,1.5 C MT,Confero S 1.5,397,201,7,72,104,43,61,53,74,154,213,635,2014
+WULING,Confero S,1.5 L AC Lux+ (ACT),Confero S 1.5L,2,1,0,0,0,0,0,0,0,0,0,0,3
+WULING,Confero S,1.5 L MT (Lux),Confero S 1.5C,0,1,0,0,0,0,0,0,0,0,0,0,1
+WULING,Cortez S,1.5 S T CVT,Cortez 1.5S T CVT,0,0,0,1,0,0,0,0,0,0,0,0,1
+WULING,Cortez S,1.5 S T MT,Cortez 1.5S T MT,0,1,0,0,30,3,4,0,0,2,31,10,81
+WULING,Cortez (Old),1.8 C AT,Cortez 1.8C AT,0,1,0,0,0,0,0,0,0,0,0,0,1
+WULING,Cortez (Old),1.8 C MT,Cortez 1.8C MT,1,2,0,0,0,0,0,0,0,0,0,0,3
+WULING,Cortez (Old),1.8 L AT (Lux),Cortez 1.8L AT,6,3,0,0,0,0,0,0,0,0,0,0,9
+WULING,Cortez (Old),1.8 L MT (Lux),Cortez 1.8L MT,0,1,0,0,0,0,0,0,0,0,0,0,1
+WULING,Cortez (Old),1.5 C MT,Cortez 1.5C MT,4,3,0,0,0,0,0,0,0,0,0,0,7
+WULING,Darion,EV CE (Standard),Darion EV CE,0,0,0,0,0,0,0,0,0,0,64,381,445
+WULING,Darion,EV EX (Long Range),Darion EV EX,0,0,0,0,0,0,0,0,0,0,332,929,1261
+WULING,Darion,PHEV CE (Lux),Darion PHEV CE,0,0,0,0,0,0,0,0,0,0,1,63,64
+WULING,Darion,PHEV EX (Lux+),Darion PHEV EX,0,0,0,0,0,0,0,0,0,0,7,161,168
+WULING,New Air EV,Lite 200 KM,New Air ev Lite 200KM,49,60,12,47,25,27,26,12,4,19,17,36,334
+WULING,New Air EV,Lite 300 KM,New Air ev Lite 300KM,85,280,224,288,288,314,142,37,53,86,172,387,2356
+WULING,New Air EV,Pro 300 KM,New Air ev Pro 300KM,0,194,226,210,106,33,116,117,76,13,21,61,1173
+WULING,New Almaz RS,Hybrid,Almaz RS Hybrid,0,0,0,0,0,0,0,0,0,0,0,0,0
+WULING,New Almaz RS,Hybrid (HEV),New Almaz HEV,6,10,29,3,4,2,10,3,2,3,1,15,88
+WULING,New Almaz RS,RS Pro,New Almaz RS Pro,11,15,38,8,3,1,8,2,10,1,1,2,100
+WULING,New BinguoEV,Lite (333km),New Binguo Lite,0,0,0,0,0,0,350,503,505,474,207,82,2121
+WULING,New BinguoEV,Pro (333km),New Binguo Pro,0,0,0,0,0,0,15,220,56,151,159,69,670
+WULING,New Cloud EV,Lite (460km),New Cloud Lite,0,0,67,97,171,11,142,13,23,80,56,98,758
+WULING,New Cloud EV,Pro (460km),New Cloud Pro,0,360,188,58,248,14,139,161,93,108,14,1,1384
+WULING,New Confero S,1.5C MT (Lux),New Confero S 1.5C,0,0,0,0,0,0,0,0,0,0,0,1,1
+WULING,New Confero S,1.5L MT (Lux+),New Confero S 1.5L,0,0,0,0,0,0,0,0,0,0,0,1,1
+WULING,New Cortez,1.5 CE CVT,Cortez 1.5 CE,0,0,1,0,0,5,12,13,6,0,40,25,102
+WULING,New Cortez,1.5 EX CVT,Cortez 1.5 EX,25,53,191,27,50,29,27,20,25,8,65,41,561
+XPENG,G6,Standard Range,G6 Standard Range (4x2) A/T,0,0,0,0,0,0,27,59,15,4,12,6,123
+XPENG,X9,Long Range Pro,X9 Long Range Pro (4x2) A/T,0,0,0,0,0,0,14,88,13,24,25,92,256
+XPENG,X9,Long Range Pro+,X9 Long Range Pro+ (4x2) A/T,0,0,0,0,0,0,20,9,63,72,96,225,485
+XPENG,X9,Standard Range Pro,X9 Standard Range Pro (4x2) A/T,0,0,0,0,0,0,9,21,0,0,0,0,30

@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  fastapi-backend:
+    build:
+      context: ./backend
+    container_name: fastapi-backend
+    ports:
+      - "8000:8000"
+    # Runs the custom recommendation API
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      # Mount data so db state is preserved across container restarts
+      - ./backend/data:/app/data
+    restart: unless-stopped
+
+  rasa-action-server:
+    build:
+      context: ./backend
+    container_name: rasa-action-server
+    ports:
+      - "5055:5055"
+    # Path where rasa acts are defined
+    working_dir: /app/rasa
+    command: >
+      python -m rasa run actions 
+      --port 5055
+    restart: unless-stopped
+
+  rasa-server:
+    build:
+      context: ./backend
+    container_name: rasa-server
+    ports:
+      - "5005:5005"
+    working_dir: /app/rasa
+    command: >
+      python -m rasa run 
+      --model models 
+      --enable-api 
+      --cors "*"
+    depends_on:
+      - rasa-action-server
+    restart: unless-stopped
+
+  nextjs-frontend:
+    build:
+      context: ./frontend
+    container_name: nextjs-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - fastapi-backend
+      - rasa-server
+    restart: unless-stopped

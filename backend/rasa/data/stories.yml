@@ -1,0 +1,20 @@
+stories:
+
+- story: greet and ask recommendation
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_recommendation
+  - action: action_recommend_car
+
+
+- story: direct recommendation
+  steps:
+  - intent: ask_recommendation
+  - action: action_recommend_car
+
+
+- story: user choose preference
+  steps:
+  - intent: choose_preference
+  - action: action_recommend_car

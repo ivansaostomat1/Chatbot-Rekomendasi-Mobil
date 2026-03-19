@@ -1,0 +1,19 @@
+fastapi
+uvicorn
+pandas
+numpy
+scikit-learn
+pydantic
+
+# NLP
+rasa
+
+# HTTP client (untuk call rasa API)
+requests
+
+# env configuration
+python-dotenv
+
+# optional tapi sangat berguna
+tqdm
+joblib

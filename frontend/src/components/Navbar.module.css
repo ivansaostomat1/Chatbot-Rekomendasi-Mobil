@@ -1,0 +1,203 @@
+/* ── Navbar ── Premium sticky glass nav ── */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: 64px;
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border-card);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  transition:
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease;
+}
+
+
+
+.inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* ── Logo ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.logoIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--gradient-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1rem;
+  box-shadow: 0 2px 12px rgba(0,187,119,0.35);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.logo:hover .logoIcon {
+  transform: rotate(-5deg) scale(1.08);
+  box-shadow: 0 4px 18px rgba(0,187,119,0.45);
+}
+
+.logoWordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logoMain {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  background: var(--gradient-brand-h);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.logoSub {
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── Desktop Nav ── */
+.navLinks {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 2px;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  transition: color 150ms ease, background 150ms ease;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: var(--jade);
+  background: rgba(0,187,119,0.07);
+}
+
+.navLink.active {
+  color: var(--jade);
+  background: rgba(0,187,119,0.10);
+  box-shadow: inset 0 0 0 1px rgba(0,187,119,0.25);
+}
+
+/* ── Right actions ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.themeToggle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.themeToggle:hover {
+  color: var(--jade);
+  border-color: rgba(0,187,119,0.4);
+  background: rgba(0,187,119,0.06);
+  box-shadow: 0 0 12px rgba(0,187,119,0.15);
+}
+
+.menuBtn {
+  display: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.menuBtn:hover {
+  color: var(--jade);
+  border-color: rgba(0,187,119,0.4);
+}
+
+/* ── Mobile ── */
+.mobileMenu {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  backdrop-filter: blur(20px);
+  animation: fadeUp 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.mobileLink {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  transition: all 120ms ease;
+}
+
+.mobileLink:hover,
+.mobileLink.mobileActive {
+  color: var(--jade);
+  background: rgba(0,187,119,0.08);
+}
+
+@media (max-width: 768px) {
+  .navLinks  { display: none; }
+  .menuBtn   { display: flex; }
+  .inner     { gap: 1rem; }
+}

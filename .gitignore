@@ -1,0 +1,24 @@
+# =========================
+# GITHUB SAFE GITIGNORE
+# =========================
+
+# Dependencies
+node_modules/
+backend/venv/
+backend/env/
+.env
+
+# Cache and temporary files
+.next/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+Thumbs.db
+
+# Rasa cache
+backend/.rasa/
+backend/rasa/.rasa/
+
+# Note: backend/data/ is NOT excluded. All CSV and Databases will be pushed.
+# Note: frontend/public/ is NOT excluded. All brosurs/images will be pushed.

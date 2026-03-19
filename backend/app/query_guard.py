@@ -1,6 +1,7 @@
 # backend/app/query_guard.py
 
 import pandas as pd
+from typing import Optional
 
 
 # ======================================================
@@ -72,7 +73,7 @@ def normalize_powertrain(df: pd.DataFrame):
 # APPLY VEHICLE TYPE FILTER
 # ======================================================
 
-def filter_body_type(df: pd.DataFrame, body_type: str | None):
+def filter_body_type(df: pd.DataFrame, body_type: Optional[str]):
 
     if body_type is None:
         return df
@@ -94,7 +95,7 @@ def filter_body_type(df: pd.DataFrame, body_type: str | None):
 # APPLY POWERTRAIN FILTER
 # ======================================================
 
-def filter_powertrain(df: pd.DataFrame, powertrain: str | None):
+def filter_powertrain(df: pd.DataFrame, powertrain: Optional[str]):
 
     if powertrain is None:
         return df

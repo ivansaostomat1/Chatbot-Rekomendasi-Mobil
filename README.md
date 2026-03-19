@@ -35,35 +35,10 @@ Aplikasi ini menggunakan teknologi modern dan didesain berbasis *microservices*:
 - **🌐 Frontend:** [Next.js](https://nextjs.org/) (React, TypeScript, CSS Modules)
 - **⚙️ Backend API:** [FastAPI](https://fastapi.tiangolo.com/) (Python, Pandas, Scikit-Learn)
 - **🧠 AI / NLP:** [Rasa Open Source](https://rasa.com/) (Rasa Core & Rasa Action Server)
-- **📦 Deployment:** Docker & Docker Compose
 
 ---
 
-## 🚀 Cara Menjalankan (Deployment)
-
-Proyek ini ter-*dockerisasi* penuh. Cara paling mudah untuk menjalankannya (di komputer manapun atau VPS) adalah melalui Docker.
-
-### 📝 Prasyarat
-- Pastikan [Docker](https://www.docker.com/) dan Docker Compose sudah terinstal di sistem kamu.
-
-### 🏃‍♂️ Menyalakan Semua Server (1 Langkah)
-Buka terminal di dalam folder proyek ini (sejajar dengan file `docker-compose.yml`), lalu jalankan:
-
-```bash
-docker-compose up -d --build
-```
-Proses ini akan:
-1. Mengunduh dan mem-build image efisien untuk Python 3.9 dan Node.js 20.
-2. Menyalakan `fastapi-backend` di port **8000**
-3. Menyalakan `rasa-server` di port **5005**
-4. Menyalakan `rasa-action-server` di port **5055**
-5. Menyalakan `nextjs-frontend` di port **3000**
-
-👉 Buka **[http://localhost:3000](http://localhost:3000)** di browser kamu untuk chatting dengan Otobot!
-
----
-
-## 🛠️ Cara Menjalankan Manual (Untuk Development)
+## 🛠️ Cara Menjalankan (Untuk Development)
 
 Jika kamu ingin mengutak-atik kode dan melihat *live-reload*, jalankan 3 komponen ini di terminal terpisah:
 
@@ -119,7 +94,6 @@ npm run dev
 │   │   └── 📁 components        # Komponen React (CarCard, Modal Evaluasi, Sidebar)
 │   ├── package.json
 │   └── next.config.ts
-├── docker-compose.yml           # Orkestrasi 4 kontainer terintegrasi
 └── README.md                    # Dokumentasi ini
 ```
 

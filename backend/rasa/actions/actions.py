@@ -189,11 +189,17 @@ def parse_budget(text):
         value = int(numbers[0] * multiplier)
         
         if value >= 1_000_000_000:
+            # Budget > 1 Miliar: range -100jt s.d. +150jt
+            min_budget = max(0, value - 100_000_000)
+            max_budget = value + 150_000_000
+        elif value <= 500_000_000:
+            # Budget ≤ 500jt: range -50jt s.d. +100jt
             min_budget = max(0, value - 50_000_000)
             max_budget = value + 100_000_000
         else:
-            min_budget = max(0, value - 30_000_000)
-            max_budget = value + 50_000_000
+            # Budget 500jt - 1M: range -75jt s.d. +125jt
+            min_budget = max(0, value - 75_000_000)
+            max_budget = value + 125_000_000
 
         return min_budget, max_budget
 

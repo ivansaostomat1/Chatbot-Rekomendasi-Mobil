@@ -17,4 +17,4 @@ python-dotenv
 # optional tapi sangat berguna
 tqdm
 joblib
-websockets==10.4
+websockets

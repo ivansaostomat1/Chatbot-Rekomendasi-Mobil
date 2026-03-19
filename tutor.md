@@ -87,28 +87,32 @@ Rasa membutuhkan 2 terminal/server sekaligus agar bisa menerima logika dari Pyth
 **Terminal 3 (Menyalakan AI Core):**
 *Windows:*
 ```bash
-cd backend/rasa
+cd backend
 .\venv\Scripts\activate
+cd rasa
 rasa run --enable-api --cors "*"
 ```
 *MacOS / Linux:*
 ```bash
-cd backend/rasa
-source ../venv/bin/activate
+cd backend
+source venv/bin/activate
+cd rasa
 rasa run --enable-api --cors "*"
 ```
 
 **Terminal 4 (Menyalakan Custom Actions Server):**
 *Windows:*
 ```bash
-cd backend/rasa
+cd backend
 .\venv\Scripts\activate
+cd rasa
 rasa run actions
 ```
 *MacOS / Linux:*
 ```bash
-cd backend/rasa
-source ../venv/bin/activate
+cd backend
+source venv/bin/activate
+cd rasa
 rasa run actions
 ```
 

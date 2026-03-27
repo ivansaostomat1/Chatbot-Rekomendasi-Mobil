@@ -35,11 +35,7 @@ const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = []
     papers.push(null);
   }
 
-  // Hanya menggunakan state hovered untuk mengontrol seluruh efek (tanpa state open yang menetap)
   const [hovered, setHovered] = useState(false);
-  const [paperOffsets, setPaperOffsets] = useState<{ x: number; y: number }[]>(
-    Array.from({ length: maxItems }, () => ({ x: 0, y: 0 }))
-  );
 
   const folderBackColor = darkenColor(color, 0.08);
   const paper1 = darkenColor('#ffffff', 0.1);
@@ -47,42 +43,11 @@ const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = []
   const paper3 = '#ffffff';
 
   const handleClick = (e: React.MouseEvent) => {
-    // Memaksa animasi kembali ke state awal saat folder diklik
+    // Saat diklik, lepaskan status hover agar tampilannya kembali ke semula (state awal)
     setHovered(false);
-    setPaperOffsets(Array.from({ length: maxItems }, () => ({ x: 0, y: 0 })));
-    
     if (onClick) {
       onClick();
     }
-  };
-
-  const handlePaperMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
-    if (!hovered) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const offsetX = (e.clientX - centerX) * 0.15;
-    const offsetY = (e.clientY - centerY) * 0.15;
-    setPaperOffsets(prev => {
-      const newOffsets = [...prev];
-      newOffsets[index] = { x: offsetX, y: offsetY };
-      return newOffsets;
-    });
-  };
-
-  const handlePaperMouseLeave = (_e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
-    setPaperOffsets(prev => {
-      const newOffsets = [...prev];
-      newOffsets[index] = { x: 0, y: 0 };
-      return newOffsets;
-    });
-  };
-
-  const getOpenTransform = (index: number) => {
-    if (index === 0) return 'translate(-120%, -70%) rotate(-15deg)';
-    if (index === 1) return 'translate(10%, -70%) rotate(15deg)';
-    if (index === 2) return 'translate(-50%, -100%) rotate(5deg)';
-    return '';
   };
 
   const getPaperSize = (index: number, isHovered: boolean) => {
@@ -103,10 +68,7 @@ const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = []
         }}
         onClick={handleClick}
         onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => {
-          setHovered(false);
-          setPaperOffsets(Array.from({ length: maxItems }, () => ({ x: 0, y: 0 })));
-        }}
+        onMouseLeave={() => setHovered(false)}
       >
         <div
           style={{
@@ -134,31 +96,23 @@ const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = []
           {/* Papers */}
           {papers.map((item, i) => {
             const paperSize = getPaperSize(i, hovered);
-            
-            // Map animasi "open" secara langsung ke saat statusnya "hovered"
-            const transformStyle = hovered
-              ? `${getOpenTransform(i)} translate(${paperOffsets[i].x}px, ${paperOffsets[i].y}px)`
-              : 'translateX(-50%) translateY(10%)';
 
             return (
               <div
                 key={i}
-                onMouseMove={e => handlePaperMouseMove(e, i)}
-                onMouseLeave={e => handlePaperMouseLeave(e, i)}
                 style={{
                   position: 'absolute',
                   zIndex: 20,
                   bottom: '10%',
                   left: '50%',
                   transition: 'all 300ms ease-in-out',
-                  transform: transformStyle,
+                  transform: hovered ? 'translateX(-50%) translateY(0%)' : 'translateX(-50%) translateY(10%)',
                   ...paperSize,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: i === 0 ? paper1 : i === 1 ? paper2 : paper3,
                   borderRadius: '10px',
-                  ...(hovered ? { scale: '1.1' } : {}),
                 }}
               >
                 {item}

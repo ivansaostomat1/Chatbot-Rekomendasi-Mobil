@@ -1,4 +1,4 @@
-# 🎓 Panduan Instalasi & Menjalankan Otobot (Tutor.md)
+# 🎓 Panduan Instalasi & Menjalankan Otobot
 
 Panduan ini berisi tahapan lengkap, dari cara melakukan *clone* proyek di *device* / laptop baru, hingga menyesuaikan perintah jika kamu menggunakan OS yang berbeda (Windows vs MacOS/Linux).
 
@@ -6,10 +6,10 @@ Panduan ini berisi tahapan lengkap, dari cara melakukan *clone* proyek di *devic
 
 ## 1. Persiapan Awal (Pindah Device / Laptop Baru)
 
-Jika kamu berpindah ke laptop baru, pastikan laptop tersebut telah terinstal:
-- **Git**
-- **Node.js** (Disarankan versi 18 atau 20 LTS)
-- **Python** (Disarankan versi 3.9 atau 3.10)
+Jika kamu berpindah ke laptop baru, pastikan laptop tersebut telah terinstal Software berikut:
+- **Git**: [Unduh di sini](https://git-scm.com/)
+- **Node.js**: Versi 18, 20 LTS, atau lebih baru. [Unduh di sini](https://nodejs.org/)
+- **Python**: **Sangat Disarankan versi 3.10 hingga 3.14**. (Versi saat ini di pengembangan: 3.14.0). [Unduh di sini](https://www.python.org/)
 
 ### Clone Repository (Hanya dilakukan 1x di device baru)
 Buka terminal/CMD/Powershell dan jalankan:
@@ -20,19 +20,18 @@ cd Chatbot-Rekomendasi-Mobil
 
 ---
 
-## 2. Menginstal Dependency (Library) di Device Baru
+## 2. Menginstal Dependency (Library)
 
-Karena folder `node_modules` (frontend) dan `venv` (backend) sudah kita blokir dari GitHub agar ringan, kamu **wajib menginstalnya kembali** di laptop baru satu per satu.
+Karena folder `node_modules` (frontend) dan `venv` (backend) tidak diunggah ke GitHub, kamu **wajib menginstalnya kembali** di laptop baru.
 
-### A. Frontend (Javascript / Next.js)
-**Berlaku sama untuk semua OS (Windows / Mac / Linux):**
+### A. Frontend (Next.js)
 ```bash
 cd frontend
 npm install
 ```
 
 ### B. Backend (Python / FastAPI / Rasa)
-Kamu harus membuat wadah *virtual environment* (`venv`) yang baru di komputermu, lalu mengunduh library dari `requirements.txt`. Pastikan terminal utama sejajar di dalam folder `backend/`.
+Pastikan kamu berada di folder `backend/` untuk membuat *virtual environment* (`venv`).
 
 **Untuk Windows:**
 ```bash
@@ -50,99 +49,75 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-*(Catatan: Langkah 2A dan 2B di atas hanya perlu dilakukan sekali ketika baru pindah laptop atau ketika ada update package baru).*
+> [!TIP]
+> `requirements.txt` sudah dikunci (pinned) versinya agar sistem tetap stabil meskipun kamu berpindah perangkat.
 
 ---
 
 ## 3. Cara Menjalankan Layanan (Daily Development)
 
-Setiap kali kamu mau mengerjakan skripsi atau mendemonstrasikan sistem ini secara lokal, kamu harus membuka **4 Terminal** (usahakan di-*split* panel terminalnya agar rapi).
+Buka **4 Terminal** terpisah (atau gunakan fitur split panel di VS Code). Pastikan terminal Backend selalu mengaktifkan `venv`.
 
-### Terminal 1: Menyalakan UI (Frontend Next.js)
-Berlaku untuk semua OS:
+### Terminal 1: Frontend (UI)
 ```bash
 cd frontend
 npm run dev
 ```
+*Layanan berjalan di: `http://localhost:3000`*
 
-### Terminal 2: Menyalakan API & Sistem Ranking (FastAPI)
-Jika terminal baru dibuka, pastikan kamu selalu MENGAKTIFKAN `venv` terlebih dahulu.
-
-**Windows:**
+### Terminal 2: Backend (FastAPI & Ranking)
 ```bash
 cd backend
-.\venv\Scripts\activate
+# Aktifkan venv dulu (.\venv\Scripts\activate atau source venv/bin/activate)
 uvicorn app.main:app --reload
 ```
-**MacOS / Linux:**
+*Layanan berjalan di: `http://localhost:8000`*
+
+### Terminal 3: Rasa Core (NLP Server)
 ```bash
 cd backend
-source venv/bin/activate
-uvicorn app.main:app --reload
-```
-
-### Terminal 3 & 4: Menyalakan Chatbot NLP (Rasa)
-Rasa membutuhkan 2 terminal/server sekaligus agar bisa menerima logika dari Python Actions dan memproses teks klasifikasi.
-
-**Terminal 3 (Menyalakan AI Core):**
-*Windows:*
-```bash
-cd backend
-.\venv\Scripts\activate
+# Aktifkan venv dulu
 cd rasa
 rasa run --enable-api --cors "*"
 ```
-*MacOS / Linux:*
-```bash
-cd backend
-source venv/bin/activate
-cd rasa
-rasa run --enable-api --cors "*"
-```
+*Layanan berjalan di: `http://localhost:5005`*
 
-**Terminal 4 (Menyalakan Custom Actions Server):**
-*Windows:*
+### Terminal 4: Rasa Actions (Custom Logic)
 ```bash
 cd backend
-.\venv\Scripts\activate
+# Aktifkan venv dulu
 cd rasa
 rasa run actions
 ```
-*MacOS / Linux:*
-```bash
-cd backend
-source venv/bin/activate
-cd rasa
-rasa run actions
-```
+*Layanan berjalan di: `http://localhost:5055`*
 
 ---
 
-## 4. Tips & Trik Darurat
+## 4. Tips & Troubleshooting
 
-### Gagal Menyalakan Server (Port Already in Use)
-Jika sewaktu-waktu terminal gagal dinyalakan karena pesan error *"port is already in use"*, artinya ada server lama yang belum sepenuhnya tertutup ('nyangkut' di *background* proses laptopmu).
+### Port yang Digunakan
+Sistem ini menggunakan beberapa port utama. Jika ada error "Port already in use", cek port berikut:
+- **3000**: UI (Next.js)
+- **8000**: API (FastAPI)
+- **5005**: NLP (Rasa Core)
+- **5055**: Logic (Rasa Actions)
 
-**Di Windows:**
-Cek port yang tersangkut (contoh jika port API 8000 yang error):
+### Cara Mematikan Port (Windows)
+Jika terminal tertutup tapi server masih 'nyangkut':
 ```bash
+# Ganti 8000 dengan port yang bermasalah
 netstat -ano | findstr :8000
-```
-Lalu matikan paksa dengan angka PID (angka paling ujung kanan dari output di atas):
-```bash
-taskkill /F /PID <masukkan_angka_pid>
+taskkill /F /PID <ANGKA_PID_DARI_HASIL_DI_ATAS>
 ```
 
-**Di MacOS / Linux:**
+### Melatih Ulang Chatbot (Re-Train)
+Jika kamu mengubah file di folder `rasa/data/` atau `domain.yml`, jalankan:
 ```bash
-lsof -i :8000
-kill -9 <masukkan_angka_pid>
-```
-
-### Melatih Ulang Chatbot (Re-Train Model)
-Apabila kamu mengubah data kalimat sapaan, contoh mobil, atau respons bot di file `nlu.yml` / `stories.yml` / `domain.yml`, kamu wajib melatih otak (model) si chatbot kembali agar ia mengerti:
-```bash
-# Pastikan terminal ada di folder backend/rasa dan venv sedang menyala
+cd backend/rasa
 rasa train
 ```
-Setelah proses *training* selesai, matikan Terminal 3 & 4 (`Ctrl + C`), lalu hidupkan kembali keduanya.
+Setelah selesai, restart Terminal 3 & 4.
+
+### Error "Rasa not found"
+Pastikan kamu sudah menjalankan perintah `activate` pada `venv` di setiap terminal backend yang baru dibuka.
+

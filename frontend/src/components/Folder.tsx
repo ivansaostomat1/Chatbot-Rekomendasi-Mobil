@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 
 interface FolderProps {
@@ -25,7 +23,7 @@ const darkenColor = (hex: string, percent: number): string => {
   r = Math.max(0, Math.min(255, Math.floor(r * (1 - percent))));
   g = Math.max(0, Math.min(255, Math.floor(g * (1 - percent))));
   b = Math.max(0, Math.min(255, Math.floor(b * (1 - percent))));
-  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).padStart(6, '0').toUpperCase();
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 };
 
 const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = [], className = '', onClick }) => {
@@ -36,7 +34,6 @@ const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = []
   }
 
   const [open, setOpen] = useState(false);
-  const [hovered, setHovered] = useState(false);
   const [paperOffsets, setPaperOffsets] = useState<{ x: number; y: number }[]>(
     Array.from({ length: maxItems }, () => ({ x: 0, y: 0 }))
   );
@@ -70,13 +67,23 @@ const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = []
     });
   };
 
-  const handlePaperMouseLeave = (_e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+  const handlePaperMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
     setPaperOffsets(prev => {
       const newOffsets = [...prev];
       newOffsets[index] = { x: 0, y: 0 };
       return newOffsets;
     });
   };
+
+  const folderStyle: React.CSSProperties = {
+    '--folder-color': color,
+    '--folder-back-color': folderBackColor,
+    '--paper-1': paper1,
+    '--paper-2': paper2,
+    '--paper-3': paper3
+  } as React.CSSProperties;
+
+  const scaleStyle = { transform: `scale(${size})` };
 
   const getOpenTransform = (index: number) => {
     if (index === 0) return 'translate(-120%, -70%) rotate(-15deg)';
@@ -85,111 +92,74 @@ const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = []
     return '';
   };
 
-  const getPaperSize = (index: number, isOpen: boolean) => {
-    if (index === 0) return { width: '70%', height: '80%' };
-    if (index === 1) return isOpen ? { width: '80%', height: '80%' } : { width: '80%', height: '70%' };
-    if (index === 2) return isOpen ? { width: '90%', height: '80%' } : { width: '90%', height: '60%' };
-    return { width: '70%', height: '70%' };
-  };
-
   return (
-    <div style={{ transform: `scale(${size})` }} className={className}>
+    <div style={scaleStyle} className={className}>
       <div
+        className={`group relative transition-all duration-200 ease-in cursor-pointer ${
+          !open ? 'hover:-translate-y-2' : ''
+        }`}
         style={{
-          position: 'relative',
-          transition: 'all 200ms ease-in',
-          cursor: 'pointer',
-          transform: open ? 'translateY(-8px)' : hovered ? 'translateY(-8px)' : undefined,
+          ...folderStyle,
+          transform: open ? 'translateY(-8px)' : undefined
         }}
         onClick={handleClick}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
       >
         <div
-          style={{
-            position: 'relative',
-            width: '100px',
-            height: '80px',
-            borderRadius: '0 10px 10px 10px',
-            backgroundColor: folderBackColor,
-          }}
+          className="relative w-[100px] h-[80px] rounded-tl-0 rounded-tr-[10px] rounded-br-[10px] rounded-bl-[10px]"
+          style={{ backgroundColor: folderBackColor }}
         >
-          {/* Folder tab */}
           <span
-            style={{
-              position: 'absolute',
-              zIndex: 0,
-              bottom: '98%',
-              left: 0,
-              width: '30px',
-              height: '10px',
-              borderRadius: '5px 5px 0 0',
-              backgroundColor: folderBackColor,
-            }}
-          />
-
-          {/* Papers */}
+            className="absolute z-0 bottom-[98%] left-0 w-[30px] h-[10px] rounded-tl-[5px] rounded-tr-[5px] rounded-bl-0 rounded-br-0"
+            style={{ backgroundColor: folderBackColor }}
+          ></span>
           {papers.map((item, i) => {
-            const paperSize = getPaperSize(i, open);
+            let sizeClasses = '';
+            if (i === 0) sizeClasses = open ? 'w-[70%] h-[80%]' : 'w-[70%] h-[80%]';
+            if (i === 1) sizeClasses = open ? 'w-[80%] h-[80%]' : 'w-[80%] h-[70%]';
+            if (i === 2) sizeClasses = open ? 'w-[90%] h-[80%]' : 'w-[90%] h-[60%]';
+
             const transformStyle = open
               ? `${getOpenTransform(i)} translate(${paperOffsets[i].x}px, ${paperOffsets[i].y}px)`
-              : hovered
-                ? 'translateX(-50%) translateY(0%)'
-                : 'translateX(-50%) translateY(10%)';
+              : undefined;
 
             return (
               <div
                 key={i}
                 onMouseMove={e => handlePaperMouseMove(e, i)}
                 onMouseLeave={e => handlePaperMouseLeave(e, i)}
+                className={`absolute z-20 bottom-[10%] left-1/2 transition-all duration-300 ease-in-out ${
+                  !open ? 'transform -translate-x-1/2 translate-y-[10%] group-hover:translate-y-0' : 'hover:scale-110'
+                } ${sizeClasses}`}
                 style={{
-                  position: 'absolute',
-                  zIndex: 20,
-                  bottom: '10%',
-                  left: '50%',
-                  transition: 'all 300ms ease-in-out',
-                  transform: transformStyle,
-                  ...paperSize,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  ...(!open ? {} : { transform: transformStyle }),
                   backgroundColor: i === 0 ? paper1 : i === 1 ? paper2 : paper3,
-                  borderRadius: '10px',
-                  ...(open && hovered ? { scale: '1.1' } : {}),
+                  borderRadius: '10px'
                 }}
               >
                 {item}
               </div>
             );
           })}
-
-          {/* Front folder flaps */}
           <div
+            className={`absolute z-30 w-full h-full origin-bottom transition-all duration-300 ease-in-out ${
+              !open ? 'group-hover:[transform:skew(15deg)_scaleY(0.6)]' : ''
+            }`}
             style={{
-              position: 'absolute',
-              zIndex: 30,
-              width: '100%',
-              height: '100%',
-              transformOrigin: 'bottom',
-              transition: 'all 300ms ease-in-out',
               backgroundColor: color,
               borderRadius: '5px 10px 10px 10px',
-              transform: open || hovered ? 'skew(15deg) scaleY(0.6)' : undefined,
+              ...(open && { transform: 'skew(15deg) scaleY(0.6)' })
             }}
-          />
+          ></div>
           <div
+            className={`absolute z-30 w-full h-full origin-bottom transition-all duration-300 ease-in-out ${
+              !open ? 'group-hover:[transform:skew(-15deg)_scaleY(0.6)]' : ''
+            }`}
             style={{
-              position: 'absolute',
-              zIndex: 30,
-              width: '100%',
-              height: '100%',
-              transformOrigin: 'bottom',
-              transition: 'all 300ms ease-in-out',
               backgroundColor: color,
               borderRadius: '5px 10px 10px 10px',
-              transform: open || hovered ? 'skew(-15deg) scaleY(0.6)' : undefined,
+              ...(open && { transform: 'skew(-15deg) scaleY(0.6)' })
             }}
-          />
+          ></div>
         </div>
       </div>
     </div>

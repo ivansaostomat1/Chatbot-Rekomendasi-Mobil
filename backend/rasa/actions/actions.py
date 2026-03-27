@@ -31,15 +31,15 @@ NEED_CLUSTER_MAP = {
 PREFERENCE_CLUSTER_MAP = {
     "irit": "City Car", "hemat": "City Car", "bbm": "City Car",
     "keluarga": "Family Car", "luas": "Family Car",
-    "kencang": "Performance", "ngebut": "Performance", "responsif": "Performance", "sporty": "Performance",
+    "kencang": "Performance", "ngebut": "Performance", "responsif": "Performance", "sporty": "Performance", "nggak lelet": "Performance",
     "banjir": "Offroad", "jalan rusak": "Offroad",
     "luxury": "Luxury", "mewah": "Luxury"
 }
 
 PREFERENCE_INDEX_MAP = {
     "irit": "INDEX_EFFICIENCY", "hemat": "INDEX_EFFICIENCY", "bbm": "INDEX_EFFICIENCY",
-    "kencang": "INDEX_PERFORMANCE", "ngebut": "INDEX_FUN_TO_DRIVE", "responsif": "INDEX_FUN_TO_DRIVE",
-    "fun": "INDEX_FUN_TO_DRIVE", "sporty": "INDEX_FUN_TO_DRIVE", "enak dikendarai": "INDEX_FUN_TO_DRIVE", "gesit": "INDEX_FUN_TO_DRIVE",
+    "kencang": "INDEX_PERFORMANCE", "nggak lelet": "INDEX_PERFORMANCE", "ngebut": "INDEX_FUN_TO_DRIVE", "responsif": "INDEX_FUN_TO_DRIVE",
+    "fun": "INDEX_FUN_TO_DRIVE", "sporty": "INDEX_FUN_TO_DRIVE", "enak dikendarai": "INDEX_FUN_TO_DRIVE", "gesit": "INDEX_FUN_TO_DRIVE", "lincah": "INDEX_FUN_TO_DRIVE", "enak dibawa ": "INDEX_FUN_TO_DRIVE", "handlingnya enak": "INDEX_FUN_TO_DRIVE",
     "nyaman": "INDEX_PASSENGER_COMFORT", "driver nyaman": "INDEX_DRIVER_COMFORT",
     "keluarga": "INDEX_SPACE", "luas": "INDEX_SPACE", "kabinnya luas": "INDEX_SPACE",
     "aman": "INDEX_SAFETY", "teknologi": "INDEX_TECH", "fitur": "INDEX_TECH", "fitur lengkap": "INDEX_TECH", "modern": "INDEX_TECH", "canggih": "INDEX_TECH",
@@ -150,6 +150,7 @@ def is_new_query(text: str) -> bool:
         "mau mobil", "cari mobil", "ingin mobil", "butuh mobil",
         "mau cari", "tolong carikan", "rekomendasikan",
         "pengen mobil", "ganti mobil", "mobil baru",
+        "ada mobil", "mobil apa"
     ]
     return any(t in text for t in new_query_triggers)
 
@@ -296,50 +297,6 @@ def extract_entities(entities):
     }
 
 
-# ======================================================
-# DETERMINE TRIGGER: APAKAH PERLU TANYA PRIORITAS?
-# ======================================================
-
-def should_ask_priority(parsed: dict) -> tuple[bool, str]:
-    """
-    Returns (should_ask: bool, reason: str)
-    """
-
-    need_terms = parsed["need_terms"]
-    preference_terms = parsed["preference_terms"]
-
-    has_clustered_need = any(n in CLUSTERED_NEED_TERMS for n in need_terms)
-    has_lifestyle_need = any(n in LIFESTYLE_NEED_TERMS for n in need_terms)
-
-    # Filter preferensi yang bukan sekunder
-    primary_preferences = [p for p in preference_terms if p not in SECONDARY_PREFERENCE_TERMS]
-
-    # Cek apakah ada entity lain yang sudah menjadi constraint kuat
-    has_other_constraints = bool(
-        parsed.get("body_entities") or 
-        parsed.get("powertrain_entities") or 
-        parsed.get("brand_entities") or 
-        parsed.get("feature_entities") or 
-        parsed.get("hard_filter_entities")
-    )
-
-    # [CASE 1] Tidak ada need dan tidak ada preference → tanya
-    if not need_terms and not preference_terms:
-        if has_other_constraints:
-            return False, "Tidak ada butuh/preference namun ada filter spesifik lain"
-        return True, "Tidak ada need maupun preference"
-
-    # [CASE 2] Hanya lifestyle need tanpa primary preference → tanya
-    if has_lifestyle_need and not has_clustered_need and not primary_preferences:
-        return True, f"Hanya lifestyle need ({need_terms}) tanpa preferensi jelas"
-
-    # [CASE 3] Ada 2+ primary preference yang masuk (user butuh ranking prioritas)
-    if len(primary_preferences) >= 2:
-        return True, f"Ada {len(primary_preferences)} preferensi: {primary_preferences}"
-
-    return False, "Sudah ada cukup informasi"
-
-
 
 
 # ======================================================
@@ -458,6 +415,17 @@ class ActionRecommendCar(Action):
 
         new_query = is_new_query(text)
 
+        # =================================================
+        # FIX 5: GUARD AGAINST EMPTY INPUTS (OUT OF DOMAIN CHAT)
+        # Jika sama sekali tidak ada entitas yang tertangkap dari NLU 
+        # (contoh chat asal: "jokowi", "makan", dll) dan ia tidak terdeteksi 
+        # sebagai trigger new_query, kita tolak langsung dari action.
+        # =================================================
+        if not entities and not new_query:
+            print(f"[RASA ACTION] ❌ TERDETEKSI PESAN ASAL/OUT-OF-DOMAIN: '{text}'. Mengeksekusi fallback action.")
+            dispatcher.utter_message(response="utter_default")
+            return []
+
         if new_query:
             print("[RASA ACTION] 🔄 NEW QUERY DETECTED → Mereset seluruh konteks sesi.")
             prev_preferences = []
@@ -469,8 +437,6 @@ class ActionRecommendCar(Action):
             prev_hard_filters = []
             prev_min_budget = None
             prev_max_budget = None
-            # FIX 4: Reset priority_asked
-            priority_already_asked = False
         else:
             print("[RASA ACTION] 🔄 Menggabungkan Kriteria dengan memori konteks (Update Default).")
             prev_preferences = tracker.get_slot("preference") or []
@@ -489,7 +455,6 @@ class ActionRecommendCar(Action):
 
             prev_min_budget = tracker.get_slot("min_budget")
             prev_max_budget = tracker.get_slot("max_budget")
-            priority_already_asked = tracker.get_slot("priority_asked") or False
 
         def unique_clean(lst):
             return list(set([str(x).strip().lower() for x in lst if x]))
@@ -522,35 +487,6 @@ class ActionRecommendCar(Action):
         print(f"[RASA ACTION] Parsed need_terms: {parsed['need_terms']}")
         print(f"[RASA ACTION] Parsed preference_terms: {parsed['preference_terms']}")
 
-        # =================================================
-        # LOGIKA PERTANYAAN PRIORITAS
-        # =================================================
-
-        ask_priority, reason = should_ask_priority(parsed)
-
-        if ask_priority and not priority_already_asked:
-
-            dispatcher.utter_message(text="""Apa yang paling kamu prioritaskan?
-
-1️⃣ irit bahan bakar  
-2️⃣ performa kencang  
-3️⃣ teknologi canggih  
-4️⃣ kenyamanan""")
-
-            print(f"[RASA ACTION] Bertanya prioritas ke user. Alasan: {reason}")
-            print("==================================================")
-
-            return [
-                SlotSet("min_budget", parsed["min_budget"]),
-                SlotSet("max_budget", parsed["max_budget"]),
-                SlotSet("need", parsed["need_terms"]),
-                SlotSet("preference", parsed["preference_terms"]),
-                SlotSet("priority_asked", True),
-            ]
-
-        # Jika priority sudah ditanya, langsung lanjut ke backend
-        if priority_already_asked:
-            print(f"[RASA ACTION] Priority sudah ditanya sebelumnya, skip ke backend.")
 
         # =================================================
         # KIRIM KE FASTAPI ATAU MINTA BOBOT KE FRONTEND
@@ -582,6 +518,4 @@ class ActionRecommendCar(Action):
             SlotSet("powertrain", parsed["powertrain_entities"]),
             SlotSet("body_type", parsed["body_entities"]),
             SlotSet("hard_filter", parsed["hard_filter_entities"]),
-            # FIX 4: Reset priority di akhir setiap query baru agar sesi berikutnya mulai fresh
-            SlotSet("priority_asked", False if new_query else priority_already_asked),
         ]

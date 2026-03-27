@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { sendChatMessage } from '@/lib/api';
 import { ChatMessage, CarRecommendation, ConstraintReport } from '@/types';
 import CarCard from '@/components/CarCard';
-import MagicRings from '@/components/MagicRings';
+import TextType from '@/components/TextType';
 import RippleGrid from '@/components/RippleGrid';
 import ManualWeightInput from '@/components/ManualWeightInput';
 import api from '@/lib/api';
@@ -259,15 +259,15 @@ export default function ChatbotPage() {
       <main className={styles.chatMain} style={{ position: 'relative', overflow: 'hidden' }}>
         
         {/* ── Ripple Grid Animation (Only for Chat Background) ── */}
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, opacity: 0.15, pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, opacity: 10, pointerEvents: 'none' }}>
           <RippleGrid
-            enableRainbow={false}
-            gridColor="#888888" 
-            rippleIntensity={0.06}
-            gridSize={12}
-            gridThickness={15}
+            enableRainbow={true}
+            gridColor="#000000ff" 
+            rippleIntensity={0.01}
+            gridSize={10}
+            gridThickness={50}
             mouseInteraction={true}
-            mouseInteractionRadius={1.2}
+            mouseInteractionRadius={0.2}
           />
         </div>
 
@@ -284,14 +284,14 @@ export default function ChatbotPage() {
             </div>
           </div>
           <div className={styles.chatHeaderRight}>
-            <span className={styles.chatHeaderBadge}>Top 5 Rekomendasi</span>
+            <span className={styles.chatHeaderBadge}>Chatbot Rekomendasi Mobil</span>
             <button
               className={styles.resetBtn}
               onClick={handleResetSession}
               title="Reset Sesi"
               aria-label="Reset Sesi"
             >
-              <HiArrowPath size={15} />
+              <HiArrowPath size={25} />
             </button>
           </div>
         </div>
@@ -352,21 +352,27 @@ export default function ChatbotPage() {
           );
         })}
           {loading && (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '180px', margin: '16px 0', opacity: 0.8 }}>
-              <div style={{ width: '100%', height: '100%', maxWidth: '300px', position: 'relative' }}>
-                <MagicRings
-                  color="#fc42ff"
-                  colorTwo="#42fcff"
-                  ringCount={5}
-                  speed={2.2}
-                  attenuation={8}
-                  lineThickness={2.5}
-                  baseRadius={0.25}
-                  radiusStep={0.08}
-                  scaleRate={0.15}
-                  opacity={1}
-                  blur={0}
-                  noiseAmount={0.05}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '180px', margin: '16px 0', opacity: 0.9 }}>
+              <div style={{ padding: '16px 20px', borderRadius: '14px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                <RiRobot2Fill size={18} style={{ color: '#4090F7', animation: 'pulse 2s infinite' }} />
+                <TextType 
+                  text={[
+                    "Otobot sedang menganalisis kebutuhan Anda...", 
+                    "Sistem sedang menyaring kandidat mobil terbaik...", 
+                    "Menghitung bobot ranking VIKOR...", 
+                    "Sebentar lagi selesai..."
+                  ]}
+                  typingSpeed={30}
+                  pauseDuration={2000}
+                  showCursor
+                  cursorCharacter="|"
+                  deletingSpeed={30}
+                  cursorBlinkDuration={0.5}
+                  style={{
+                    fontSize: '0.85rem',
+                    color: 'var(--text-primary)',
+                    fontWeight: 600,
+                  }}
                 />
               </div>
             </div>

@@ -28,7 +28,7 @@ const darkenColor = (hex: string, percent: number): string => {
   return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 };
 
-const Folder: React.FC<FolderProps> = ({ color = '#5227FF', size = 1, items = [], className = '', onClick }) => {
+const Folder: React.FC<FolderProps> = ({ color = '#bd8100ff', size = 1, items = [], className = '', onClick }) => {
   const maxItems = 3;
   const papers = items.slice(0, maxItems);
   while (papers.length < maxItems) {

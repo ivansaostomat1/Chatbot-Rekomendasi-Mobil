@@ -144,8 +144,8 @@ export default function Navbar() {
               title="Evaluasi Sistem"
             >
               <Folder
-                size={0.35}
-                color="#5227FF"
+                size={0.25}
+                color="#f79809ff"
                 onClick={openEvalWindow}
               />
             </div>

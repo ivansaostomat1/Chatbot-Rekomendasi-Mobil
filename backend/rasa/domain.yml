@@ -4,10 +4,14 @@ intents:
   - greet
   - ask_recommendation
   - choose_preference
+  - nlu_fallback
 
 actions:
   - action_recommend_car
 responses:
+
+  utter_default:
+  - text: "Maaf, saya kurang mengerti maksud Anda. Bisa tolong ulangi dengan kata lain? 🤔"
 
   utter_greet:
   - text: "Halo! Saya bisa membantu rekomendasi mobil."
@@ -15,17 +19,7 @@ responses:
   utter_ask_detail:
   - text: "Baik, saya sedang mencari mobil yang cocok untuk kamu..."
 
-  utter_ask_preference:
-    - text: |
-        Saya menemukan mobil sesuai budget kamu.
 
-        Apa yang paling kamu prioritaskan?
-
-        1️⃣ irit bahan bakar  
-        2️⃣ performa kencang  
-        3️⃣ teknologi canggih  
-        4️⃣ kenyamanan
-        
 entities:
   - budget
   - body_type
@@ -91,13 +85,6 @@ slots:
 
   need:
     type: list
-    influence_conversation: false
-    mappings:
-      - type: custom
-
-  priority_asked:
-    type: bool
-    initial_value: false
     influence_conversation: false
     mappings:
       - type: custom

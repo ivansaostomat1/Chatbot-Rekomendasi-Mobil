@@ -1,0 +1,230 @@
+version: "3.1"
+nlu:
+- intent: greet
+  examples: |
+    - selamat malam
+    - hai
+    - selamat pagi
+    - halo
+- intent: choose_preference
+  examples: |
+    - 1
+    - hemat
+    - pilih 3
+    - nomor 1
+    - fitur lengkap
+    - nyaman
+    - 3
+    - ngebut
+    - irit
+    - pilih 1
+    - nomor 2
+    - nomor 3
+    - kencang
+    - pilihan 1
+    - 2
+    - 4
+    - performa
+    - pilih 4
+    - nomor 4
+    - teknologi
+    - pilih 2
+- intent: ask_recommendation
+  examples: |
+    - mobil [hatchback](body_type) yang [irit](preference) budget [500 jutaan](budget) apa aja?
+    - cari mobil yang pakai mesin [Turbo](powertrain) budget [500 juta](budget)
+    - carikan saya [Toyota](brand) [500 jutaan](budget)
+    - [Volkswagen](brand) yang cocok untuk [keluarga](preference) apa ya?
+    - enak dibawa [ngebut](preference) dan [irit](preference) harga [1m](budget)
+    - carikan saya [Honda](brand) yang [fitur lengkap](preference)
+    - saya punya budget [1M](budget) buat beli mobil [sport](body_type), kira-kira dapet mobil apa?
+    - mobil [Mercedes](brand) yang [Tangguh](preference) apa ya?
+    - saya butuh mobil untuk perjalanan jauh, dengan budget [1-3M](budget) dapet mobil apa?
+    - saya suka mobil yang besar untuk [keluarga saya](preference), dengan budget [2M](budget) dapet mobil apa?
+    - selamat pagi, saya cari [AUDI](brand) budget [500 jutaan](budget) dengan [sunroof](feature)
+    - mobil yang aman dari [banjir](hard_filter) dan nyaman untuk mudik di budget [500-600jt](budget)
+    - [SUV](body_type) [Honda](brand) yang [hemat](preference) apa aja?
+    - carikan saya mobil [Nissan](brand) yang cocok [disegala medan](preference)
+    - bisa kasih rekomendasi mobil di budget [1500m](budget)
+    - dengan budget [300 juta](budget), cariin saya [BMW](brand)
+    - budget [500 juta](budget) dapet mobil apa yang [bebas banjir](hard_filter)?
+    - cariin saya [Daihatsu](brand) budget [100 jutaan](budget)
+    - saya mau mobil [suv](body_type) di budget [700jt](budget)
+    - rekomendasikan saya [Mercedes](brand) yang cocok untuk [keluarga](preference)
+    - tampilkan mobil yang cocok untuk [ngebut](preference)
+    - mobil [kencang](preference)
+    - saya lagi suka mobil [AION](brand), budget saya cuma [500 jutaan](budget)
+    - [MPV](body_type) budget [400 jutaan](budget) fitur nya [canggih](preference) apa aja?
+    - paling worth it dengan budget [700 jutaan](budget) dapet [BMW](brand) apa?
+    - carikan saya [BMW](brand) yang siap diajak [ngebut](preference)
+    - cari mobil yang bisa [apple carplay](feature) budget [600 juta](budget) tapi mau yang [SUV](body_type)
+    - handphone saya suka kehabisan baterai, saya butuh mobil yang bisa [wireless charger](feature) budget cuma [200 jutaan](budget)
+    - mobil yang [enak dikendarai](preference) dan [responsif](preference) di harga [700jt](budget) apa ya
+    - mobil [BMW](brand) yang [canggih](preference) apa ya?
+    - rekomendasikan saya mobil [KIA](brand)
+    - mobil [Ford](brand) yang enak buat [ngebut](preference) apa ya?
+    - [Audi](brand) yang support [Apple Carplay](feature) apa ya?
+    - saya suka mobil yang ada [sunroof](feature) nya, tapi budget saya [700 juta](budget) bisa dapet apa?
+    - saya lagi suka mobil [Geely](brand), ada jenis apa aja?
+    - kira-kira dengan budget [800 jutaan](budget) dapet apa ya?
+    - [Jetour](brand) yang [Tangguh](preference) apa ya?
+    - carikan saya [SUV](body_type) dengan [360 camera](feature)
+    - mobil yang cocok untuk [keluarga besar](hard_filter) tapi [kencang](preference), budget [900 juta](budget)
+    - saya butuh mobil yang [Tangguh](preference) dan bisa untuk [trabas banjir](hard_filter)
+    - saya pengen cari mobil yang enak buat [ngebut](preference) tapi budget cuma [300 juta](budget), dapet mobil apa?
+    - carikan saya [Mercedes](brand) yang [teknologi](preference) nya bagus denga budget [700 juta](budget)
+    - cariin saya mobil [hatchback](body_type) budget [500 juta](budget)
+    - [DENZA](brand) harganya berapa?
+    - saya cari [BMW](brand) [Coupe](body_type) budget [500 jutaan](budget)
+    - saya cari mobil [MPV](body_type) budget [600 juta](budget) dengan [sunroof](feature)
+    - budget [3M](budget) dapet [SUV](body_type) apa?
+    - mobil aman dari [banjir](hard_filter)
+    - budget saya [7M](budget) dapet mobil [sport](body_type) apa?
+    - mobil [sunroof](feature) [BMW](brand) budget [1-4M](budget) apa aja?
+    - carikan saya mobil [Audi](brand) dengan budget [200-400 juta](budget)
+    - mobil [CHERY](brand) yang [Tangguh](preference) budget [400-700 jutaan](budget) dapet apa?
+    - cari mobil [Mercedes](brand) yang [panoramic sunroof](feature)
+    - saya cari mobil [EV](powertrain) yang [kencang](preference) budget [700 jutaan](budget)
+    - saya cari mobil [wagon](body_type), budget unlimited
+    - [diesel](powertrain) budget [500 juta](budget) apa aja?
+    - saya cari mobil [sedan](body_type) yang cocok [irit](preference)
+    - [hatchback](body_type) yang [bagus](preference) budget [550 jutaan](budget)
+    - budget [600 juta](budget) butuh mobil yang [Hybrid](powertrain)
+    - carikan [Coupe](body_type) budget [500 jutaan](budget)
+    - mobil paling [nyaman](preference)
+    - mobil dengan fitur [canggih](preference)
+    - budget [8M](budget) dapet [SUV](body_type) apa?
+    - saya cari mobil untuk [keluarga besar](hard_filter) dengan budget [600jt](budget)
+    - saya cari mobil yang [responsif](preference) dengan budget [800 jutaan](budget)
+    - saya suka mobil [EV](powertrain) yang [nyaman](preference), rekomendasi nya apa?
+    - carikan mobil [Toyota](brand) budget [200-600 juta](budget) yang [nyaman](preference) buat [keluarga](preference), utamakan [SUV](body_type).
+    - cari mobil dengan [teknologi](preference) yang [modern](preference) budget [800 juta](budget)
+    - saya cari mobil [Toyota](brand) yang [responsif](preference)
+    - mobil [nyaman](preference)
+    - mobil [JAECOO](brand) ada apa aja?
+    - cariin [AUDI](brand) budget [700 juta](budget)
+    - saya suka [Mercedes](brand), tapi budget cuma [400 jutaan](budget), rekomendasiin ke saya mobil yang [bagus](preference)
+    - carikan saya mobil [MPV](body_type) dengan budget [500 juta](budget)
+    - budget [3M](budget) dapet [Wagon](body_type) apa?
+    - saya cari [Daihatsu](brand) yang [irit](preference) dan [hemat](preference)
+    - mobil yang aman dari [banjir](hard_filter) di budget [500jt](budget)
+    - budget saya cuma [300 juta](budget), tapi mau mobil [SUV](body_type) kira-kira dapet apa?
+    - mobil [Hybrid](powertrain) budget [900 jutaan](budget) yang enak buat pemula apa?
+    - saya cari mobil yang bisa [Android Auto](feature)
+    - saya cari mobil [250jt](budget)
+    - saya suka mobil yang [canggih](preference), kira-kira mobil apa yang cocok?
+    - dengan karakter saya yang [sporty](preference) kira-kira dapet mobil apa ya dengan budget [4M](budget)?
+    - [MITSUBISHI](brand) yang enak buat [keluarga](preference) apa ya?
+    - carikan saya [CHERY](brand) budget [400 juta](budget)
+    - mobil [listrik](powertrain) budget [3M](budget) apa aja?
+    - saya cari [Toyota](brand) yang ada [360 camera](feature) nya, budget [700 juta](budget)
+    - saya cari mobil [nyaman](preference) untuk dibawah sendiri untuk kuliahan dengan budget [400jt](budget) butuh [wireless apple carplay](feature) dan [android auto](feature)
+    - budget [800 juta](budget) butuh [SUV](body_type) yang [nyaman](preference)
+    - [GWM](brand) yang cocok buat karakter saya yang suka main ditanah apa aja?
+    - mau cari [MINI](brand) tapi budget [200 juta](budget)
+    - [LEXUS](brand) yang enak [irit](preference) apa aja? budget bebas
+    - mau cari [SUV](body_type) yang [Tangguh](preference)
+    - mobil [hemat bbm](preference)
+    - ada mobil yang [irit](preference) tapi budget [300 jutaan](budget) ga?
+    - saya cari mobil [Toyota](brand) yang [irit](preference)
+    - budget [2M](budget) pengen dapet mobil yang cocok untuk [offroad](preference)
+    - saya baru mau beli [HYUNDAI](brand) karena disaranin temen saya, enaknya beli apa ya dengan budget [700-850 juta](budget)?
+    - budget saya [8M](budget) nyari mobil yang [responsif](preference)
+    - kasih saya mobil [offroad](preference) budget [400 juta](budget) yang enak buat [keluarga](preference) juga
+    - saya baru mau beli mobil [EV](powertrain) tapi cuma punya budget [600 jutaan](budget), rekomendasi nya apa?
+    - mobil yang [canggih](preference)
+    - saya lagi suka [BYD](brand), mobil yang cocok untuk daily apa ya?
+    - carikan saya mobil [EV](powertrain) yang ada [sunroof](feature) nya
+    - budget [1M](budget) pengen punya mobil yang [sporty](preference) ada ga?
+    - carikan mobil [sport](body_type) [modern](preference) yang cocok untuk anak muda
+    - cariin saya mobil [diesel](powertrain) yang enak buat [ngebut](preference)
+    - saya mau beli mobil yang cocok [disegala medan](preference), tapi budget [700 juta - 1M](budget), dapet mobil apa?
+    - budget saya [1-5M](budget) tapi pengen mobil yang bisa diajak [lari](preference), kira-kira dapet mobil apa?
+    - [wagon](body_type) budget [700 juta](budget) dapet brand apa?
+    - saya mau mobil [nyaman](preference) dan [tangguh](preference) [bebas banjir](hard_filter) di harga [800jt](budget)
+    - nyari mobil yang enak buat [anak muda](preference) budget [800 jutaan](budget)
+    - mobil [teknologi](preference)
+    - mobil [Daihatsu](brand) yang ada [wireless charger](feature) nya budget [400 juta](budget)
+    - saya cari mobil [Daihatsu](brand) yang [nyaman](preference)
+    - saya cari mobil [diesel](powertrain) tapi pengen yang [irit](preference)
+    - budget [200 juta](budget) dapet [Wuling](brand) apa?
+    - mobil [nyaman](preference) dan paling enak buat penumpang di budget kurang dari [2m](budget)
+    - mobil [sporty](preference) buat [anak muda](preference) dengan budget [4M](budget)
+    - saya butuh mobil untuk daily yang [irit](preference) dengan budget [450 juta](budget)
+    - saya cari [Honda](brand) budget [600 juta](budget) tapi gamau [City car](body_type)
+    - untuk [keluarga besar](hard_filter) dengan budget [1-2M](budget) dapet mobil apa ya?
+    - saya tertarik sama mobil [Xpeng](brand) dengan budget [2M](budget)
+    - rekomendasi mobil [Mazda](brand) budget [200 juta](budget) buat [anak muda](preference)
+    - selamat malam, saya cari [BYD](brand) yang ada [panoramic sunroof](feature)
+    - berikan saya pilihan mobil [BMW](brand) dan [AUDI](brand)
+- lookup: body_type
+  examples: |
+    - suv
+    - mpv
+    - sedan
+    - hatchback
+    - coupe
+    - wagon
+- lookup: powertrain
+  examples: |
+    - hybrid
+    - bensin
+    - diesel
+    - listrik
+    - ev
+- lookup: feature
+  examples: |
+    - sunroof
+    - panoramic sunroof
+    - apple carplay
+    - android auto
+    - wireless charger
+    - 360 camera
+- lookup: preference
+  examples: |
+    - irit
+    - hemat
+    - bbm
+    - kencang
+    - ngebut
+    - responsif
+    - sporty
+    - fun
+    - nyaman
+    - empuk
+    - senyap
+    - luas
+    - kabin luas
+    - aman
+    - safety
+    - teknologi
+    - fitur
+    - modern
+    - mewah
+    - luxury
+    - banjir
+    - jalan rusak
+    - nanjak
+- lookup: hard_filter
+  examples: |
+    - keluarga besar
+    - bebas banjir
+    - banjir
+- lookup: brand
+  examples: |
+    - toyota
+    - honda
+    - suzuki
+    - mitsubishi
+    - nissan
+    - mazda
+    - hyundai
+    - kia
+    - wuling
+    - chery
+    - bmw
+    - mercedes
+    - benz
+    - audi
+    - lexus
+    - volvo

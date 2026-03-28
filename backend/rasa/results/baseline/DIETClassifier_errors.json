@@ -1,0 +1,319 @@
+[
+  {
+    "text": "yang irit",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 5,
+        "end": 9,
+        "confidence_entity": 0.9848329424858093,
+        "value": "irit",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "canggih",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 0,
+        "end": 7,
+        "confidence_entity": 0.9450700283050537,
+        "value": "canggih",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "saya cari mobil kecil yang lucu tapi budget 400 juta",
+    "entities": [
+      {
+        "start": 44,
+        "end": 52,
+        "value": "400 juta",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "hard_filter",
+        "start": 16,
+        "end": 21,
+        "confidence_entity": 0.40875113010406494,
+        "value": "kecil",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "hard_filter",
+        "start": 27,
+        "end": 31,
+        "confidence_entity": 0.6530863642692566,
+        "value": "lucu",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 44,
+        "end": 52,
+        "confidence_entity": 0.9975281357765198,
+        "value": "400 juta",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "budget saya tinggi, carikan saya BMW sedan",
+    "entities": [
+      {
+        "start": 33,
+        "end": 36,
+        "value": "BMW",
+        "entity": "brand"
+      },
+      {
+        "start": 37,
+        "end": 42,
+        "value": "sedan",
+        "entity": "body_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9992853999137878,
+        "value": "tinggi",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "brand",
+        "start": 33,
+        "end": 36,
+        "confidence_entity": 0.9998805522918701,
+        "value": "BMW",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "body_type",
+        "start": 37,
+        "end": 42,
+        "confidence_entity": 0.9991552829742432,
+        "value": "sedan",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "tampilkan saya mobil Citroen",
+    "entities": [
+      {
+        "start": 21,
+        "end": 28,
+        "value": "Citroen",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 21,
+        "end": 28,
+        "confidence_entity": 0.9083311557769775,
+        "value": "Citroen",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "BAIC budget 700 jutaan",
+    "entities": [
+      {
+        "start": 0,
+        "end": 4,
+        "value": "BAIC",
+        "entity": "brand"
+      },
+      {
+        "start": 12,
+        "end": 22,
+        "value": "700 jutaan",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 12,
+        "end": 22,
+        "confidence_entity": 0.9999001026153564,
+        "value": "700 jutaan",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "mobil ground clearance tinggi",
+    "entities": [
+      {
+        "start": 6,
+        "end": 29,
+        "value": "ground clearance tinggi",
+        "entity": "hard_filter"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 23,
+        "end": 29,
+        "confidence_entity": 0.9990997314453125,
+        "value": "tinggi",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "saya cari Subaru yang memiliki teknologi 360 camera",
+    "entities": [
+      {
+        "start": 10,
+        "end": 16,
+        "value": "Subaru",
+        "entity": "brand"
+      },
+      {
+        "start": 41,
+        "end": 51,
+        "value": "360 camera",
+        "entity": "feature"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 31,
+        "end": 40,
+        "confidence_entity": 0.9197333455085754,
+        "value": "teknologi",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 41,
+        "end": 51,
+        "confidence_entity": 0.9962332844734192,
+        "value": "360 camera",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "ada ga mobil mpv canggih di budget 200-300jt",
+    "entities": [
+      {
+        "start": 13,
+        "end": 16,
+        "value": "mpv",
+        "entity": "body_type"
+      },
+      {
+        "start": 35,
+        "end": 44,
+        "value": "200-300jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 13,
+        "end": 16,
+        "confidence_entity": 0.9997609257698059,
+        "value": "mpv",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 17,
+        "end": 24,
+        "confidence_entity": 0.999750554561615,
+        "value": "canggih",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 35,
+        "end": 44,
+        "confidence_entity": 0.9986275434494019,
+        "value": "200-300jt",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "LCGC budget 200 juta dapet apa?",
+    "entities": [
+      {
+        "start": 0,
+        "end": 4,
+        "value": "LCGC",
+        "entity": "body_type"
+      },
+      {
+        "start": 12,
+        "end": 20,
+        "value": "200 juta",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 12,
+        "end": 20,
+        "confidence_entity": 0.9995352029800415,
+        "value": "200 juta",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "saya cari mobil yang performa nya bagus dengan budget 300 juta",
+    "entities": [
+      {
+        "start": 21,
+        "end": 29,
+        "value": "performa",
+        "entity": "preference"
+      },
+      {
+        "start": 54,
+        "end": 62,
+        "value": "300 juta",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 34,
+        "end": 39,
+        "confidence_entity": 0.9477011561393738,
+        "value": "bagus",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 54,
+        "end": 62,
+        "confidence_entity": 0.9975353479385376,
+        "value": "300 juta",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  }
+]

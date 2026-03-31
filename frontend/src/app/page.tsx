@@ -7,6 +7,7 @@ import CarCard from '@/components/CarCard';
 import TextType from '@/components/TextType';
 import RippleGrid from '@/components/RippleGrid';
 import ManualWeightInput from '@/components/ManualWeightInput';
+import { useScientificMode } from '@/lib/ScientificModeContext';
 import api from '@/lib/api';
 import styles from './page.module.css';
 import { HiPaperAirplane, HiArrowPath } from 'react-icons/hi2';
@@ -50,6 +51,7 @@ function MsgBubble({ msg }: { msg: ChatMessage }) {
 }
 
 function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], constraintReport?: ConstraintReport }) {
+  const { isScientific } = useScientificMode();
   const weights = constraintReport?.normalized_weights;
   const relaxNotes = constraintReport?.relax_notes;
 
@@ -57,11 +59,11 @@ function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], con
     <div className={styles.carsSection}>
       <div className={styles.carsSectionHeader}>
         <span className={styles.carsSectionTitle}>🏆 Top {cars.length} Rekomendasi</span>
-        <span className={styles.carsSectionBadge}>VIKOR Ranked</span>
+        {isScientific && <span className={styles.carsSectionBadge}>VIKOR Ranked</span>}
       </div>
 
-      {/* Weight Vector Panel */}
-      {weights && Object.keys(weights).length > 0 && (
+      {/* Weight Vector Panel (Scientific Only) */}
+      {isScientific && weights && Object.keys(weights).length > 0 && (
         <div style={{ marginBottom: '12px', padding: '12px 14px', borderRadius: '12px', background: 'rgba(30,111,217,0.07)', border: '1px solid rgba(30,111,217,0.2)', fontSize: '0.75rem' }}>
           <div style={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4090F7', marginBottom: '8px' }}>📊 Bobot Preferensi (Normalized)</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '4px 12px' }}>
@@ -78,8 +80,8 @@ function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], con
         </div>
       )}
 
-      {/* Relaxation Log */}
-      {relaxNotes && relaxNotes.length > 0 && (
+      {/* Relaxation Log (Scientific Only) */}
+      {isScientific && relaxNotes && relaxNotes.length > 0 && (
         <div style={{ marginBottom: '12px', padding: '10px 14px', borderRadius: '10px', background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)', fontSize: '0.75rem' }}>
           <div style={{ fontWeight: 800, color: '#F59E0B', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>⚠️ Constraint Relaxation</div>
           {relaxNotes.map((note, i) => (
@@ -108,6 +110,7 @@ function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], con
 
 
 export default function ChatbotPage() {
+  const { isScientific } = useScientificMode();
   const [messages, setMessages] = useState<ChatMessage[]>(() => [createWelcomeMessage()]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -304,7 +307,7 @@ export default function ChatbotPage() {
             <div key={msg.id}>
               <MsgBubble msg={msg} />
               
-              {payload && (
+              {payload && isScientific && (
                 <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
                   <div style={{ fontWeight: 800, marginBottom: '10px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <RiRobot2Fill size={16} style={{ color: '#4090F7' }} /> Otobot menangkap:
@@ -333,6 +336,25 @@ export default function ChatbotPage() {
                   </div>
                   <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--border-color)', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
                      Saya telah menyiapkan profil bobot rekomendasi awal berdasarkan klaster spesifik Anda. Silakan putuskan di bawah ini 👇
+                  </div>
+                </div>
+              )}
+
+              {/* Simplified summary for Awam mode */}
+              {payload && !isScientific && (
+                <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
+                    <RiRobot2Fill size={16} style={{ color: '#4090F7' }} />
+                    <span style={{ fontWeight: 700 }}>
+                      🔍 Mencari {payload.cluster_name ? `mobil ${payload.cluster_name}` : 'mobil'}
+                      {payload.entities?.length > 0 && ` (${payload.entities.join(', ')})`}
+                      {(payload.min_budget || payload.max_budget) && (
+                        <> dengan budget {payload.min_budget ? `Rp ${(payload.min_budget/1000000).toLocaleString('id-ID')} Jt` : 'Rp 0'}{' - '}{payload.max_budget ? `Rp ${(payload.max_budget/1000000).toLocaleString('id-ID')} Jt` : 'Tak Terbatas'}</>
+                      )}
+                    </span>
+                  </div>
+                  <div style={{ marginTop: '8px', color: 'var(--text-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                    Atur prioritas Anda di bawah, lalu tekan tombol untuk mendapatkan rekomendasi 👇
                   </div>
                 </div>
               )}

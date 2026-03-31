@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { CarRecommendation, NLPMappingData, VikorSensitivityData, ClusterDetailData } from '@/types';
 import styles from './CarCard.module.css';
 import SpotlightCard from './SpotlightCard';
+import { useScientificMode } from '@/lib/ScientificModeContext';
 
 interface Props {
   car: CarRecommendation;
@@ -155,6 +156,7 @@ function Badge({ children }: { children: React.ReactNode }) {
 
 
 export default function CarCard({ car, rank }: Props) {
+  const { isScientific } = useScientificMode();
   const [expanded, setExpanded] = useState(false);
   const [evalTab, setEvalTab] = useState<'index' | 'nlp' | 'vikor' | 'cluster'>('index');
 
@@ -235,54 +237,73 @@ export default function CarCard({ car, rank }: Props) {
           )}
         </div>
 
-        {/* Cluster Semantic Profile */}
-        {car.CLUSTER_NAME && CLUSTER_PROFILES[car.CLUSTER_NAME] && (
+        {/* Cluster Semantic Profile (Scientific Only) */}
+        {isScientific && car.CLUSTER_NAME && CLUSTER_PROFILES[car.CLUSTER_NAME] && (
           <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', padding: '4px 0', fontStyle: 'italic', letterSpacing: '0.02em' }}>
             📎 Cluster = {CLUSTER_PROFILES[car.CLUSTER_NAME]}
           </div>
         )}
 
-        {/* ── VIKOR Score (S, R, Q) ── */}
+        {/* ── VIKOR Score ── */}
         {car.VIKOR_Q !== undefined && (
           <div className={styles.vikorSection}>
-            <div className={styles.vikorHeader}>
-              <span className={styles.vikorLabel}>VIKOR Score</span>
-              <span className={styles.vikorQuality} style={{ color: vq.color }}>{vq.label}</span>
-            </div>
-
-            <div className={styles.vikorTrack}>
-              <div
-                className={styles.vikorBar}
-                style={{ width: `${vq.pct}%`, background: `linear-gradient(90deg, ${cfg.color}bb, ${cfg.color})` }}
-              />
-            </div>
-
-            <div className={styles.vikorMeta}>
-              <span className={styles.vikorQ}>Q = {car.VIKOR_Q.toFixed(4)}</span>
-              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                {car.VIKOR_S !== undefined && `S = ${car.VIKOR_S.toFixed(3)}`}
-                {car.VIKOR_R !== undefined && `  R = ${car.VIKOR_R.toFixed(3)}`}
-              </span>
-              <span className={styles.vikorPct}>{vq.pct}% skor</span>
-            </div>
-
-            {/* Rank Gap (Compromise Analysis) */}
-            {rank === 1 && Q1 != null && Q2 != null && DQ != null && (
-              <div style={{ marginTop: '8px', padding: '8px 10px', borderRadius: '8px', background: advantageOk ? 'rgba(0,187,119,0.07)' : 'rgba(245,158,11,0.07)', border: `1px solid ${advantageOk ? 'rgba(0,187,119,0.25)' : 'rgba(245,158,11,0.25)'}`, fontSize: '0.7rem' }}>
-                <div style={{ fontWeight: 700, marginBottom: '4px', color: advantageOk ? '#00BB77' : '#F59E0B' }}>
-                  {advantageOk ? '✅ Kondisi Advantage Terpenuhi' : '⚠️ Multiple Compromise Solution'}
+            {/* Simplified view for Awam mode */}
+            {!isScientific ? (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Kecocokan</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: vq.color }}>{vq.pct}% — {vq.label}</span>
                 </div>
-                <div style={{ color: 'var(--text-muted)', lineHeight: 1.8 }}>
-                  Q₁ = {Q1.toFixed(4)} &nbsp;|&nbsp; Q₂ = {Q2.toFixed(4)} &nbsp;|&nbsp; DQ = {DQ.toFixed(4)}<br/>
-                  Q₂ − Q₁ = {(Q2 - Q1).toFixed(4)} {advantageOk ? '≥' : '<'} DQ
+                <div className={styles.vikorTrack}>
+                  <div
+                    className={styles.vikorBar}
+                    style={{ width: `${vq.pct}%`, background: `linear-gradient(90deg, ${cfg.color}bb, ${cfg.color})` }}
+                  />
                 </div>
-              </div>
+              </>
+            ) : (
+              <>
+                {/* Full scientific VIKOR display */}
+                <div className={styles.vikorHeader}>
+                  <span className={styles.vikorLabel}>VIKOR Score</span>
+                  <span className={styles.vikorQuality} style={{ color: vq.color }}>{vq.label}</span>
+                </div>
+
+                <div className={styles.vikorTrack}>
+                  <div
+                    className={styles.vikorBar}
+                    style={{ width: `${vq.pct}%`, background: `linear-gradient(90deg, ${cfg.color}bb, ${cfg.color})` }}
+                  />
+                </div>
+
+                <div className={styles.vikorMeta}>
+                  <span className={styles.vikorQ}>Q = {car.VIKOR_Q.toFixed(4)}</span>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                    {car.VIKOR_S !== undefined && `S = ${car.VIKOR_S.toFixed(3)}`}
+                    {car.VIKOR_R !== undefined && `  R = ${car.VIKOR_R.toFixed(3)}`}
+                  </span>
+                  <span className={styles.vikorPct}>{vq.pct}% skor</span>
+                </div>
+
+                {/* Rank Gap (Compromise Analysis) */}
+                {rank === 1 && Q1 != null && Q2 != null && DQ != null && (
+                  <div style={{ marginTop: '8px', padding: '8px 10px', borderRadius: '8px', background: advantageOk ? 'rgba(0,187,119,0.07)' : 'rgba(245,158,11,0.07)', border: `1px solid ${advantageOk ? 'rgba(0,187,119,0.25)' : 'rgba(245,158,11,0.25)'}`, fontSize: '0.7rem' }}>
+                    <div style={{ fontWeight: 700, marginBottom: '4px', color: advantageOk ? '#00BB77' : '#F59E0B' }}>
+                      {advantageOk ? '✅ Kondisi Advantage Terpenuhi' : '⚠️ Multiple Compromise Solution'}
+                    </div>
+                    <div style={{ color: 'var(--text-muted)', lineHeight: 1.8 }}>
+                      Q₁ = {Q1.toFixed(4)} &nbsp;|&nbsp; Q₂ = {Q2.toFixed(4)} &nbsp;|&nbsp; DQ = {DQ.toFixed(4)}<br/>
+                      Q₂ − Q₁ = {(Q2 - Q1).toFixed(4)} {advantageOk ? '≥' : '<'} DQ
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
 
-        {/* ── Status ── */}
-        {car.VIKOR_STATUS && (
+        {/* ── Status (Scientific Only) ── */}
+        {isScientific && car.VIKOR_STATUS && (
           <div className={styles.statusRow} style={{ borderColor: `${cfg.color}20` }}>
             <span className={styles.statusDot} style={{ background: vq.color }} />
             <span className={styles.statusText}>{car.VIKOR_STATUS}</span>
@@ -291,13 +312,16 @@ export default function CarCard({ car, rank }: Props) {
 
         {/* ══════════════════════════════════════════════════ */}
         {/* EXPAND: FULL BREAKDOWN + SCIENTIFIC EVALUATION     */}
+        {/* (Scientific Mode Only)                             */}
         {/* ══════════════════════════════════════════════════ */}
-        <button
-          onClick={() => setExpanded(p => !p)}
-          style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0 0', color: 'var(--text-muted)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', textTransform: 'uppercase' }}
-        >
-          {expanded ? '▲ Sembunyikan Evaluasi' : '▼ Lihat Breakdown & Evaluasi Ilmiah'}
-        </button>
+        {isScientific && (
+          <button
+            onClick={() => setExpanded(p => !p)}
+            style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0 0', color: 'var(--text-muted)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', textTransform: 'uppercase' }}
+          >
+            {expanded ? '▲ Sembunyikan Evaluasi' : '▼ Lihat Breakdown & Evaluasi Ilmiah'}
+          </button>
+        )}
 
         {expanded && (
           <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px dashed var(--border-color)` }}>

@@ -1,15 +1,19 @@
+
 'use client';
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { HiMoon, HiSun, HiXMark, HiTrash } from 'react-icons/hi2';
+import { HiMoon, HiSun, HiXMark, HiTrash, HiArrowLeft, HiMicrophone, HiAdjustmentsHorizontal, HiChartBar, HiClipboardDocumentCheck, HiMagnifyingGlassCircle } from 'react-icons/hi2';
 import Folder from './Folder';
 import styles from './Navbar.module.css';
+import { useScientificMode } from '@/lib/ScientificModeContext';
 import {
   CarRecommendation,
   NLPMappingData,
   VikorSensitivityData,
   ClusterDetailData,
+  NLPBaselineData,
+  NLPGap,
 } from '@/types';
 
 interface ClusterDist {
@@ -42,12 +46,6 @@ interface HistoryItem {
   top_recommendations: CarRecommendation[];
 }
 
-const SCENARIO_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
-  'A_efficiency_heavy': { label: 'Efisiensi', emoji: '⛽', color: '#00BB77' },
-  'B_performance_heavy': { label: 'Performa', emoji: '⚡', color: '#F59E0B' },
-  'C_equal_weights': { label: 'Equal', emoji: '⚖️', color: '#4090F7' },
-};
-
 const INDEX_SHORT: Record<string, string> = {
   INDEX_PERFORMANCE: '⚡ Perf',
   INDEX_EFFICIENCY: '⛽ Eff',
@@ -64,15 +62,25 @@ const INDEX_SHORT: Record<string, string> = {
   INDEX_CLUSTER_MATCH: '🎯 Cluster',
 };
 
+type EvalViewMode = 'history_list' | 'chat_detail' | 'system_metrics';
+type ChatDetailTab = 'nlp' | 'filter' | 'vikor';
+
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const { isScientific, toggleScientific } = useScientificMode();
   const [mounted, setMounted] = useState(false);
   const [evalOpen, setEvalOpen] = useState(false);
 
-  // Evaluation data
+  // States for new UI redesign
+  const [viewMode, setViewMode] = useState<EvalViewMode>('history_list');
+  const [selectedChat, setSelectedChat] = useState<HistoryItem | null>(null);
+  const [chatTab, setChatTab] = useState<ChatDetailTab>('nlp');
+
+  // Evaluation Data
   const [clusterData, setClusterData] = useState<ClusterEval | null>(null);
   const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
   const [nlpMapping, setNlpMapping] = useState<NLPMappingData | null>(null);
+  const [nlpBaseline, setNlpBaseline] = useState<NLPBaselineData | null>(null);
   const [vikorSensitivity, setVikorSensitivity] = useState<VikorSensitivityData | null>(null);
   const [clusterDetail, setClusterDetail] = useState<ClusterDetailData | null>(null);
   const [loadingEval, setLoadingEval] = useState(false);
@@ -85,18 +93,21 @@ export default function Navbar() {
 
   const openEvalWindow = async () => {
     setEvalOpen(true);
+    setViewMode('history_list');
     setLoadingEval(true);
     try {
-      const [clusterRes, historyRes, nlpRes, vikorRes, clusterDetailRes] = await Promise.all([
+      const [clusterRes, historyRes, nlpRes, nlpBaselineRes, vikorRes, clusterDetailRes] = await Promise.all([
         fetch('http://localhost:8000/evaluasi/clustering'),
         fetch('http://localhost:8000/history'),
         fetch('http://localhost:8000/evaluasi/nlp/mapping'),
+        fetch('http://localhost:8000/evaluasi/nlp/baseline'),
         fetch('http://localhost:8000/evaluasi/vikor/sensitivity'),
         fetch('http://localhost:8000/evaluasi/clustering/detail'),
       ]);
       if (clusterRes.ok) setClusterData(await clusterRes.json());
       if (historyRes.ok) setHistoryData(await historyRes.json());
       if (nlpRes.ok) setNlpMapping(await nlpRes.json());
+      if (nlpBaselineRes.ok) setNlpBaseline(await nlpBaselineRes.json());
       if (vikorRes.ok) setVikorSensitivity(await vikorRes.json());
       if (clusterDetailRes.ok) setClusterDetail(await clusterDetailRes.json());
     } catch (err) {
@@ -108,520 +119,639 @@ export default function Navbar() {
 
   const deleteHistory = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:8000/history/${id}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        setHistoryData(prev => prev.filter(h => h.id !== id));
-      } else {
-        console.error('Failed to delete history item');
-      }
+      const res = await fetch(`http://localhost:8000/history/${id}`, { method: 'DELETE' });
+      if (res.ok) setHistoryData(prev => prev.filter(h => h.id !== id));
     } catch (err) {
       console.error('Error deleting history:', err);
     }
+  };
+
+  const openChatDetail = (chat: HistoryItem) => {
+    setSelectedChat(chat);
+    setChatTab('nlp');
+    setViewMode('chat_detail');
   };
 
   return (
     <>
       <nav className={styles.navbar}>
         <div className={styles.inner}>
-          {/* Logo */}
           <a href="/" className={styles.logo}>
             <div className={styles.logoWordmark}>
               <span className={styles.logoMain}>Otobot</span>
               <span className={styles.logoSub}>Otomotif Bot</span>
             </div>
           </a>
-
-          {/* Center: empty spacer */}
           <div style={{ flex: 1 }} />
-
-          {/* Actions */}
           <div className={styles.actions}>
-            {/* Folder Icon — Opens Eval Window */}
-            <div
-              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginRight: '6px' }}
-              title="Evaluasi Sistem"
+            {/* Scientific Mode Toggle */}
+            <button
+              onClick={toggleScientific}
+              title={isScientific ? 'Mode Ilmiah aktif — klik untuk Mode Awam' : 'Mode Awam aktif — klik untuk Mode Ilmiah'}
+              aria-label="Toggle Scientific Mode"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                padding: '5px 12px', borderRadius: '20px', cursor: 'pointer',
+                fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.02em',
+                border: `1.5px solid ${isScientific ? 'rgba(139,92,246,0.5)' : 'var(--border-color)'}`,
+                background: isScientific ? 'rgba(139,92,246,0.12)' : 'var(--bg-secondary)',
+                color: isScientific ? '#8B5CF6' : 'var(--text-muted)',
+                transition: 'all 0.3s ease', marginRight: '4px',
+              }}
             >
-              <Folder
-                size={0.25}
-                color="#f79809ff"
-                onClick={openEvalWindow}
-              />
-            </div>
+              <span style={{ display: 'inline-block', width: '28px', height: '16px', borderRadius: '10px', background: isScientific ? '#8B5CF6' : 'var(--border-color)', position: 'relative', transition: 'background 0.3s ease' }}>
+                <span style={{ position: 'absolute', top: '2px', left: isScientific ? '14px' : '2px', width: '12px', height: '12px', borderRadius: '50%', background: '#fff', transition: 'left 0.3s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }} />
+              </span>
+              🔬 {isScientific ? 'Ilmiah' : 'Simpel'}
+            </button>
+
+            {isScientific && (
+              <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginRight: '6px' }} title="Evaluasi Sistem">
+                <Folder size={0.25} color="#f79809ff" onClick={openEvalWindow} />
+              </div>
+            )}
             <button className={styles.themeToggle} onClick={toggleTheme} aria-label="Toggle theme">
-              {mounted ? (
-                theme === 'dark' ? <HiSun size={17} /> : <HiMoon size={17} />
-              ) : <span style={{ width: 17, height: 17 }} />}
+              {mounted ? (theme === 'dark' ? <HiSun size={17} /> : <HiMoon size={17} />) : <span style={{ width: 17, height: 17 }} />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* ══════════════════════════════════════════ */}
-      {/* FULL SYSTEM EVALUATION MODAL               */}
-      {/* ══════════════════════════════════════════ */}
+      {/* FULL SYSTEM EVALUATION MODAL */}
       {evalOpen && (
         <div
-          style={{
-            position: 'fixed', inset: 0, zIndex: 300,
-            background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '20px', animation: 'fadeIn 0.2s ease',
-          }}
+          style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', animation: 'fadeIn 0.2s ease' }}
           onClick={() => setEvalOpen(false)}
         >
           <div
             onClick={e => e.stopPropagation()}
             style={{
               background: 'var(--bg-card)', borderRadius: '20px',
-              width: '100%', maxWidth: '780px', maxHeight: '90vh',
-              overflowY: 'auto', padding: '28px',
-              boxShadow: '0 12px 48px rgba(0,0,0,0.3)',
+              width: '100%', maxWidth: '900px', maxHeight: '92vh', height: '100%',
+              overflow: 'hidden', padding: '0',
+              boxShadow: '0 24px 64px rgba(0,0,0,0.4)',
               border: '1px solid var(--border-color)',
-              display: 'flex', flexDirection: 'column', gap: '20px',
-              animation: 'fadeUp 0.3s ease',
-              position: 'relative',
+              display: 'flex', flexDirection: 'column',
+              animation: 'fadeUp 0.3s ease', position: 'relative',
             }}
           >
-            {/* Close button */}
-            <button
-              onClick={() => setEvalOpen(false)}
-              style={{ position: 'absolute', top: '20px', right: '20px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}
-            >
-              <HiXMark />
-            </button>
-
-            <div>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, fontFamily: "'Space Grotesk', sans-serif" }}>
-                📐 Evaluasi Matematika Sistem
-              </h2>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0 0' }}>
-                Transparansi ilmiah untuk VIKOR, NLP (Rasa), dan Agglomerative Clustering
-              </p>
+            {/* Modal Header */}
+            <div style={{ padding: '24px 28px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)', zIndex: 20 }}>
+              <div>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, fontFamily: "'Space Grotesk', sans-serif", color: 'var(--text-primary)' }}>
+                  {viewMode === 'history_list' && '💬 Riwayat Konsultasi'}
+                  {viewMode === 'chat_detail' && '🔍 Rincian Analisis AI'}
+                  {viewMode === 'system_metrics' && '📐 Metrik Sistem Keseluruhan'}
+                </h2>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: '6px 0 0' }}>
+                  {viewMode === 'history_list' && 'Pilih obrolan Anda untuk melihat logika bagaimana AI memberikan rekomendasi.'}
+                  {viewMode === 'chat_detail' && 'Membedah bagaimana pesan Anda diproses secara matematis.'}
+                  {viewMode === 'system_metrics' && 'Data akurasi NLP, stabilitas Clustering, dan sensitivitas MCDM.'}
+                </p>
+              </div>
+              <button
+                onClick={() => setEvalOpen(false)}
+                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                aria-label="Tutup"
+              >
+                <HiXMark />
+              </button>
             </div>
 
-            {loadingEval ? (
-              <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>Memuat data evaluasi...</div>
-            ) : (
-              <>
-                {/* ═══════════════════════════════════════════════════ */}
-                {/* SECTION 1: NLP MAPPING ACCURACY                     */}
-                {/* ═══════════════════════════════════════════════════ */}
-                <Section title="🧠 NLP → Decision Mapping Accuracy" color="#4090F7">
-                  {nlpMapping ? (
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.9 }}>
-                      {/* Pipeline Config */}
-                      <div style={{ marginBottom: '12px' }}>
-                        <strong>Pipeline:</strong> {nlpMapping.pipeline_config.pipeline.join(' → ')}
-                      </div>
-                      <div style={{ marginBottom: '12px' }}>
-                        <strong>Entity Types:</strong>{' '}
-                        {nlpMapping.pipeline_config.entity_types.map(e => <Badge key={e}>{e}</Badge>)}
-                      </div>
+            {/* Modal Body / Scrollable Area */}
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+              {loadingEval ? (
+                <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  <div style={{ fontSize: '2rem', marginBottom: '12px' }}>⏳</div>
+                  Memuat log percakapan...
+                </div>
+              ) : (
+                <div style={{ padding: '24px 28px' }}>
 
-                      {/* Overall Accuracy */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '14px' }}>
-                        <MetricCard label="Overall Accuracy" value={`${(nlpMapping.overall_accuracy * 100).toFixed(1)}%`} color="#4090F7" />
-                        <MetricCard label="Benar / Total" value={`${nlpMapping.correct} / ${nlpMapping.total}`} color="#00BB77" />
-                        <MetricCard label="Jumlah Mapping" value={`${nlpMapping.mapping_tables.preference_index_count + nlpMapping.mapping_tables.preference_cluster_count + nlpMapping.mapping_tables.need_cluster_count}`} color="#8B5CF6" />
-                      </div>
-
-                      {/* Per-type accuracy */}
-                      <div style={{ marginBottom: '12px' }}>
-                        <strong>Accuracy per Tipe Mapping:</strong>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
-                          {Object.entries(nlpMapping.per_type_accuracy).map(([type, stats]) => (
-                            <div key={type} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <Badge>{type.replace(/_/g, ' ')}</Badge>
-                              <div style={{ flex: 1, height: '6px', borderRadius: '3px', background: 'var(--border-color)' }}>
-                                <div style={{ height: '100%', width: `${stats.accuracy * 100}%`, borderRadius: '3px', background: stats.accuracy === 1 ? '#00BB77' : stats.accuracy >= 0.8 ? '#F59E0B' : '#EF4444', transition: 'width 0.6s ease' }} />
+                  {/* LAYER 1: HISTORY LIST */}
+                  {viewMode === 'history_list' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                      {historyData.length === 0 ? (
+                        <EmptyState text="Belum ada riwayat konsultasi. Silakan cari mobil terlebih dahulu." />
+                      ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
+                          {historyData.map(h => (
+                            <div
+                              key={h.id}
+                              onClick={() => openChatDetail(h)}
+                              style={{ padding: '16px 20px', borderRadius: '12px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', cursor: 'pointer', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.2s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}
+                              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#4090F7'}
+                              onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-color)'}
+                            >
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: 600 }}>
+                                  {new Date(h.timestamp).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}
+                                </div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                                  "{h.user_message}"
+                                </div>
                               </div>
-                              <span style={{ fontWeight: 700, fontSize: '0.72rem', color: stats.accuracy === 1 ? '#00BB77' : '#F59E0B', minWidth: '60px', textAlign: 'right' }}>
-                                {(stats.accuracy * 100).toFixed(0)}% ({stats.correct}/{stats.total})
-                              </span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); deleteHistory(h.id); }}
+                                  style={{ padding: '6px', background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', borderRadius: '6px' }}
+                                  title="Hapus History"
+                                >
+                                  <HiTrash size={16} />
+                                </button>
+                                <div style={{ background: 'rgba(64,144,247,0.1)', color: '#4090F7', padding: '6px 12px', borderRadius: '8px', fontSize: '0.72rem', fontWeight: 700 }}>
+                                  Lihat Keputusan →
+                                </div>
+                              </div>
                             </div>
                           ))}
                         </div>
-                      </div>
+                      )}
 
-                      {/* Test table */}
-                      <div style={{ marginTop: '10px' }}>
-                        <strong>Detail Tes Mapping:</strong>
-                        <div style={{ maxHeight: '200px', overflowY: 'auto', marginTop: '6px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                          <table style={{ width: '100%', fontSize: '0.7rem', borderCollapse: 'collapse' }}>
-                            <thead>
-                              <tr style={{ background: 'var(--bg-secondary)', position: 'sticky', top: 0 }}>
-                                <th style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 700 }}>Input</th>
-                                <th style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 700 }}>Tipe</th>
-                                <th style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 700 }}>Expected</th>
-                                <th style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 700 }}>Actual</th>
-                                <th style={{ padding: '6px 8px', textAlign: 'center', fontWeight: 700 }}>✓</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {nlpMapping.test_results.map((r, i) => (
-                                <tr key={i} style={{ borderTop: '1px solid var(--border-color)', background: r.correct ? 'rgba(0,187,119,0.04)' : 'rgba(239,68,68,0.04)' }}>
-                                  <td style={{ padding: '5px 8px', fontWeight: 600 }}>{r.input}</td>
-                                  <td style={{ padding: '5px 8px', color: 'var(--text-muted)' }}>{r.type.replace(/_/g, ' ')}</td>
-                                  <td style={{ padding: '5px 8px' }}>{r.expected}</td>
-                                  <td style={{ padding: '5px 8px', color: r.correct ? '#00BB77' : '#EF4444', fontWeight: 600 }}>{r.actual}</td>
-                                  <td style={{ padding: '5px 8px', textAlign: 'center', fontSize: '0.85rem' }}>{r.correct ? '✅' : '❌'}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
+                      <div style={{ marginTop: '20px', paddingTop: '24px', borderTop: '1px dashed var(--border-color)', textAlign: 'center' }}>
+                        <button
+                          onClick={() => setViewMode('system_metrics')}
+                          style={{ background: 'rgba(139,92,246,0.08)', color: '#8B5CF6', border: '1px solid rgba(139,92,246,0.25)', padding: '10px 20px', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', transition: 'all 0.25s ease' }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(139,92,246,0.15)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(139,92,246,0.08)'}
+                        >
+                          <HiChartBar size={16} /> Buka Laporan Teknis Keseluruhan Sistem
+                        </button>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '8px 0 0' }}>Data Baseline NLP, Uji Sensitivitas VIKOR, dan Cluster Distribution.</p>
                       </div>
                     </div>
-                  ) : (
-                    <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Gagal memuat data NLP mapping.</div>
                   )}
-                </Section>
 
-                {/* ═══════════════════════════════════════════════════ */}
-                {/* SECTION 2: VIKOR FORMULAS + SENSITIVITY              */}
-                {/* ═══════════════════════════════════════════════════ */}
-                <Section title="🏆 VIKOR — Sensitivity Analysis" color="#00BB77">
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.9 }}>
-                    {/* Formulas */}
-                    <FormulaBlock label="S (Group Utility)" formula="S = Σ (wⱼ × Dᵢⱼ)" desc="Total jarak tertimbang alternatif terhadap solusi ideal." />
-                    <FormulaBlock label="R (Regret Measure)" formula="R = max (wⱼ × Dᵢⱼ)" desc="Jarak maksimum (worst-case) satu alternatif terhadap solusi ideal." />
-                    <FormulaBlock label="Q (Compromise Index)" formula="Q = v(S − S*) / (S⁻ − S*) + (1−v)(R − R*) / (R⁻ − R*)" desc="Indeks kompromi akhir. v = 0.5 (balanced strategy). Semakin kecil Q, semakin baik." />
-                    <FormulaBlock label="DQ (Acceptable Advantage)" formula="DQ = 1 / (m − 1)" desc="Threshold minimum jarak Q₁ dan Q₂ agar peringkat 1 dianggap pemenang mutlak." />
+                  {/* LAYER 2: CHAT DETAIL VIEW */}
+                  {viewMode === 'chat_detail' && selectedChat && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      <button onClick={() => setViewMode('history_list')} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '0', alignSelf: 'flex-start' }}>
+                        <HiArrowLeft size={14} /> Kembali ke Daftar Chat
+                      </button>
 
-                    {/* Sensitivity Results */}
-                    {vikorSensitivity ? (
-                      <div style={{ marginTop: '16px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                          <strong>Sensitivity Analysis</strong>
-                          <span style={{
-                            padding: '3px 10px', borderRadius: '20px', fontSize: '0.68rem', fontWeight: 700,
-                            background: vikorSensitivity.is_sensitive ? 'rgba(0,187,119,0.12)' : 'rgba(239,68,68,0.12)',
-                            color: vikorSensitivity.is_sensitive ? '#00BB77' : '#EF4444',
-                            border: `1px solid ${vikorSensitivity.is_sensitive ? 'rgba(0,187,119,0.3)' : 'rgba(239,68,68,0.3)'}`,
-                          }}>
-                            {vikorSensitivity.is_sensitive ? '✅ SENSITIF' : '⚠️ TIDAK SENSITIF'}
-                          </span>
+                      {/* Chat Input Bubble */}
+                      <div style={{ padding: '20px', background: 'rgba(64,144,247,0.08)', border: '1px solid rgba(64,144,247,0.2)', borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+                        <div style={{ background: '#4090F7', color: '#fff', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(64,144,247,0.3)' }}>User</div>
+                        <div>
+                          <div style={{ fontSize: '0.7rem', color: '#4090F7', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Input Pengguna</div>
+                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>"{selectedChat.user_message}"</div>
                         </div>
-                        <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '12px', fontStyle: 'italic' }}>
-                          {vikorSensitivity.sensitivity_proof}
-                        </p>
+                      </div>
 
-                        {/* Scenario comparison cards */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-                          {Object.entries(vikorSensitivity.scenarios).map(([key, sc]) => {
-                            const meta = SCENARIO_LABELS[key] || { label: key, emoji: '📊', color: '#888' };
-                            return (
-                              <div key={key} style={{ padding: '10px', borderRadius: '10px', background: `${meta.color}08`, border: `1px solid ${meta.color}20` }}>
-                                <div style={{ fontWeight: 800, fontSize: '0.75rem', color: meta.color, marginBottom: '8px', textAlign: 'center' }}>
-                                  {meta.emoji} {meta.label}
+                      {/* TABS FOR DETAILS */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)', gap: '8px', padding: '4px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                        <button onClick={() => setChatTab('nlp')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'nlp' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'nlp' ? '#4090F7' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'nlp' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                          <HiMicrophone size={16} /> 1. NLP Pemahaman
+                        </button>
+                        <button onClick={() => setChatTab('filter')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'filter' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'filter' ? '#8B5CF6' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'filter' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                          <HiAdjustmentsHorizontal size={16} /> 2. Kategori Filter
+                        </button>
+                        <button onClick={() => setChatTab('vikor')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'vikor' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'vikor' ? '#00BB77' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'vikor' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                          <HiChartBar size={16} /> 3. Pembobotan VIKOR
+                        </button>
+                      </div>
+
+
+                      {/* TAB CONTENTS (SIMPLIFIED TERMS) */}
+                      <div style={{ padding: '20px', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'var(--bg-card)' }}>
+                        {/* NLP TAB */}
+                        {chatTab === 'nlp' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.2s ease' }}>
+                            <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 NLU Processing Math (DIET Classifier)</div>
+                              <div style={{ fontSize: '0.75rem', color: '#4090F7', fontFamily: "'Fira Code', 'Courier New', monospace" }}>L_total = L_intent + L_entity + L_mask</div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                                Ekstraksi makna dan entitas bahasa alami melalui Dual Intent & Entity Transformer architecture dengan sparse (TF-IDF/ngram) dan dense (ConveRT) featurizers.
+                              </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
+                              <div style={{ padding: '14px', borderRadius: '10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#4090F7', textTransform: 'uppercase' }}>Classification Tensor: Y_pred (Intent)</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace", padding: '10px', background: 'rgba(64,144,247,0.08)', borderRadius: '8px', border: '1px solid rgba(64,144,247,0.2)' }}>
+                                  {"P(y|x) = softmax( W_2 · GELU(W_1 · h_{CLS} + b_1) + b_2 )"}<br /><br />
+                                  {"argmax(P) ➔ "} [ {selectedChat.nlp_needs?.length > 0 ? selectedChat.nlp_needs.map(n => `"${n}"`).join(', ') : 'Ø (Fallback)'} ]
                                 </div>
-                                {sc.top_5.map((car, i) => (
-                                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3px 0', borderTop: i > 0 ? '1px solid var(--border-color)' : 'none', fontSize: '0.68rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                      <span style={{
-                                        width: '16px', height: '16px', borderRadius: '50%',
-                                        background: i === 0 ? meta.color : 'var(--border-color)',
-                                        color: i === 0 ? '#fff' : 'var(--text-secondary)',
-                                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                                        fontSize: '0.55rem', fontWeight: 800,
-                                      }}>{i + 1}</span>
-                                      <span style={{ fontWeight: 600, maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                        {car.model}
-                                      </span>
+                              </div>
+
+                              <div style={{ padding: '14px', borderRadius: '10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#EF4444', textTransform: 'uppercase' }}>Sequence Tagging: CRF Layer (Entities)</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace", padding: '10px', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)' }}>
+                                  {"arg max_y P(y|X) ∝ exp( Σ_{i} Φ(y_{i-1}, y_i, X, i) )"}<br /><br />
+                                  {"X_entities ➔ "} [ {selectedChat.nlp_entities?.length > 0 ? selectedChat.nlp_entities.map(e => `"${e}"`).join(', ') : 'Ø'} ]
+                                </div>
+                              </div>
+
+                              <div style={{ padding: '14px', borderRadius: '10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#F59E0B', textTransform: 'uppercase' }}>Semantic Lexicon Vector (Mapping Matrix)</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace", padding: '10px', background: 'rgba(245,158,11,0.08)', borderRadius: '8px', border: '1px solid rgba(245,158,11,0.2)' }}>
+                                  {"f_{map} : X_{lex} ➔ V_{MCDM}"}<br /><br />
+                                  {"V_mapped ➔ "} [ {selectedChat.nlp_preferences?.length > 0 ? selectedChat.nlp_preferences.map(p => `"${p}"`).join(', ') : 'Ø'} ]
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {/* FILTER & CLUSTER TAB */}
+                        {chatTab === 'filter' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.2s ease' }}>
+                            <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Sub-space Filtering (HAC Ward&apos;s Method)</div>
+                              <div style={{ fontSize: '0.75rem', color: '#8B5CF6', fontFamily: "'Fira Code', 'Courier New', monospace" }}>{"Δ(A, B) = || x_A - x_B ||²"}</div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                                Reduksi dimensi data mobil (Boolean Array Filter) sebelum MCDM dimulai. Hanya mobil yang memenuhi hard constraint (Ω_c) dan centroid klaster terkait yang lolos.
+                              </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+                              <div style={{ padding: '20px', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8B5CF6', marginBottom: '12px', textTransform: 'uppercase' }}>Target Cluster Set (C_k)</div>
+                                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>
+                                  {selectedChat.cluster_name || 'C_Global (All)'}
+                                </div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '8px' }}>Centroid pencarian dipersempit.</div>
+                              </div>
+
+                              <div style={{ padding: '20px', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#1E6FD9', marginBottom: '12px', textTransform: 'uppercase' }}>Boolean Constraint Set (Ω)</div>
+                                <div style={{ width: '100%', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800 }}>Awal (N)</span>
+                                    <span style={{ fontSize: '1.4rem', color: '#EF4444', fontWeight: 800, fontFamily: "'Fira Code', 'Courier New', monospace" }}>{selectedChat.cars_total}</span>
+                                  </div>
+                                  <span style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>➔</span>
+                                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800 }}>Lolos (N&apos;)</span>
+                                    <span style={{ fontSize: '1.8rem', color: '#00BB77', fontWeight: 800, fontFamily: "'Fira Code', 'Courier New', monospace" }}>{selectedChat.cars_after_constraint}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {/* VIKOR TAB */}
+                        {chatTab === 'vikor' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.2s ease' }}>
+                            <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                               <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>⚖️ MCDM Calculation (VIKOR Core)</div>
+                               <div style={{ fontSize: '0.75rem', color: '#00BB77', fontFamily: "'Fira Code', 'Courier New', monospace" }}>{"Q_j = v * ((S_j - S^*) / (S^- - S^*)) + (1-v) * ((R_j - R^*) / (R^- - R^*))"}</div>
+                               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                                  Dimana v = 0.5 merepresentasikan 'Majority of Criteria' (Utility kompromi berimbang). Nilai Q yang lebih kecil menunjukkan kedekatan terhadap solusi ideal positif (Positive Ideal Solution).
+                               </div>
+                            </div>
+                            
+                            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '16px' }}>
+                              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px', textTransform: 'uppercase' }}>Weight Vector Array (W_j)</div>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: 'var(--bg-secondary)', padding: '12px', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
+                                {selectedChat.weight_dict_used ? Object.entries(selectedChat.weight_dict_used).sort(([, a], [, b]) => b - a).slice(0, 8).map(([k, v]) => (
+                                  <span key={k} style={{ fontSize: '0.72rem', padding: '6px 10px', borderRadius: '6px', background: v > 0.15 ? 'rgba(0,187,119,0.15)' : 'var(--bg-card)', color: v > 0.15 ? '#00BB77' : 'var(--text-muted)', fontWeight: v > 0.15 ? 800 : 600, border: `1px solid ${v > 0.15 ? 'rgba(0,187,119,0.4)' : 'var(--border-color)'}`, fontFamily: "'Fira Code', 'Courier New', monospace" }}>
+                                     {INDEX_SHORT[k] || k.replace('INDEX_', '')}: {v.toFixed(3)}
+                                  </span>
+                                )) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>w_j = 1/n (Uniform / Unweighted)</div>}
+                              </div>
+                            </div>
+
+                            <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
+                              <div style={{ padding: '14px 16px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)' }}>Matriks S, R, Q (Output Peringkat)</div>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                                {selectedChat.top_recommendations?.slice(0, 3).map((car, idx) => (
+                                  <div key={idx} style={{ padding: '14px 16px', background: 'var(--bg-card)', borderBottom: idx !== 2 ? '1px dashed var(--border-color)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                      <div style={{ background: idx === 0 ? '#00BB77' : 'var(--bg-secondary)', color: idx === 0 ? '#fff' : 'var(--text-secondary)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem' }}>{idx + 1}</div>
+                                      <div>
+                                        <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{car.BRAND} {car.MODEL}</div>
+                                        <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontFamily: "'Fira Code', 'Courier New', monospace", marginTop: '4px' }}>
+                                          Utility S: {car.VIKOR_S?.toFixed(4) || 'N/A'} <span style={{ opacity: 0.5 }}>|</span> Regret R: {car.VIKOR_R?.toFixed(4) || 'N/A'}
+                                        </div>
+                                      </div>
                                     </div>
-                                    <span style={{ fontWeight: 700, color: meta.color, fontSize: '0.65rem' }}>
-                                      {car.VIKOR_Q.toFixed(3)}
-                                    </span>
+                                    <div style={{ textAlign: 'right' }}>
+                                      <div style={{ fontWeight: 800, fontSize: '0.7rem', color: '#00BB77', textTransform: 'uppercase' }}>Nilai Q</div>
+                                      <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace" }}>{car.VIKOR_Q?.toFixed(4) || 'N/A'}</div>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ) : (
-                      <div style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '10px 0' }}>Gagal memuat data sensitivity.</div>
-                    )}
-                  </div>
-                </Section>
-
-                {/* ═══════════════════════════════════════════════════ */}
-                {/* SECTION 3: CLUSTERING — STABILITY + SEMANTIC         */}
-                {/* ═══════════════════════════════════════════════════ */}
-                <Section title="📊 Agglomerative Clustering — Evaluasi Detail" color="#8B5CF6">
-                  {clusterData && clusterDetail ? (
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.9 }}>
-                      {/* Basic metrics */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '14px' }}>
-                        <MetricCard label="Silhouette Score" value={clusterDetail.stability.current_silhouette.toFixed(4)} color="#8B5CF6" />
-                        <MetricCard label="Jumlah Klaster" value={String(clusterData.n_clusters)} color="#00BB77" />
-                        <MetricCard label="Total Mobil" value={String(clusterData.total_cars)} color="#4090F7" />
-                      </div>
-
-                      {/* Interpretation */}
-                      <div style={{
-                        padding: '8px 12px', borderRadius: '8px', marginBottom: '14px',
-                        background: clusterDetail.stability.current_silhouette > 0.5 ? 'rgba(0,187,119,0.07)' : clusterDetail.stability.current_silhouette > 0.2 ? 'rgba(245,158,11,0.07)' : 'rgba(239,68,68,0.07)',
-                        border: `1px solid ${clusterDetail.stability.current_silhouette > 0.5 ? 'rgba(0,187,119,0.2)' : clusterDetail.stability.current_silhouette > 0.2 ? 'rgba(245,158,11,0.2)' : 'rgba(239,68,68,0.2)'}`,
-                        fontSize: '0.72rem',
-                      }}>
-                        <strong>Interpretasi: </strong>{clusterDetail.stability.interpretation}
-                      </div>
-
-                      {/* Stability: Silhouette per k */}
-                      <div style={{ marginBottom: '16px' }}>
-                        <strong>🔬 Stabilitas Cluster (Silhouette per k):</strong>
-                        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', marginTop: '10px', height: '100px' }}>
-                          {clusterDetail.stability.silhouette_per_k.map(item => {
-                            const pct = item.silhouette != null ? Math.max(10, item.silhouette * 200) : 10;
-                            const isSelected = item.k === clusterDetail.stability.current_k;
-                            return (
-                              <div key={item.k} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ fontSize: '0.62rem', fontWeight: 700, color: isSelected ? '#8B5CF6' : 'var(--text-muted)' }}>
-                                  {item.silhouette?.toFixed(3) ?? '-'}
-                                </span>
-                                <div style={{
-                                  width: '100%', height: `${pct}%`, borderRadius: '4px',
-                                  background: isSelected ? 'linear-gradient(180deg, #8B5CF6, #6D28D9)' : 'var(--border-color)',
-                                  transition: 'height 0.6s ease',
-                                  border: isSelected ? '2px solid #8B5CF6' : 'none',
-                                }} />
-                                <span style={{ fontSize: '0.65rem', fontWeight: isSelected ? 800 : 500, color: isSelected ? '#8B5CF6' : 'var(--text-muted)' }}>
-                                  k={item.k}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '6px', textAlign: 'center' }}>
-                          Best k = {clusterDetail.stability.best_k.k} (sil = {clusterDetail.stability.best_k.silhouette.toFixed(4)}) | Digunakan: k = {clusterDetail.stability.current_k}
-                        </div>
-                      </div>
-
-                      {/* Semantic Validation */}
-                      <div style={{ marginBottom: '10px' }}>
-                        <strong>🧬 Validasi Semantik Cluster:</strong>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-                          {Object.entries(clusterDetail.semantic_validation).map(([cname, profile]) => {
-                            const clr = {
-                              'City Car': '#00BB77', 'Family Car': '#00A693',
-                              'Offroad': '#1E6FD9', 'Performance': '#F59E0B',
-                              'Luxury': '#8B5CF6',
-                            }[cname] || '#00A693';
-                            return (
-                              <div key={cname} style={{ padding: '10px', borderRadius: '8px', background: `${clr}06`, border: `1px solid ${clr}15` }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                  <span style={{ fontWeight: 800, color: clr }}>{cname}</span>
-                                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{profile.count} mobil</span>
-                                </div>
-                                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
-                                  Karakter: <strong style={{ color: 'var(--text-primary)' }}>{profile.character_summary}</strong>
-                                </div>
-                                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                  {profile.top_features.map((f, i) => (
-                                    <span key={i} style={{
-                                      fontSize: '0.62rem', padding: '2px 8px', borderRadius: '4px',
-                                      background: `${clr}12`, color: clr, fontWeight: 700,
-                                      border: `1px solid ${clr}25`,
-                                    }}>
-                                      {INDEX_SHORT[f.name] || f.name.replace('INDEX_', '')} = {f.value.toFixed(3)}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Distribution bars */}
-                      <div style={{ marginTop: '12px' }}>
-                        <strong>Distribusi Klaster:</strong>
-                        {clusterData.cluster_distribution.map(c => (
-                          <div key={c.name} style={{ marginBottom: '8px', marginTop: '4px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-                              <span style={{ fontWeight: 600 }}>{c.name}</span>
-                              <span style={{ color: 'var(--text-muted)' }}>{c.count} mobil ({c.percentage}%)</span>
-                            </div>
-                            <div style={{ height: '6px', borderRadius: '3px', background: 'var(--border-color)' }}>
-                              <div style={{ height: '100%', width: `${c.percentage}%`, borderRadius: '3px', background: c.color, transition: 'width 0.6s ease' }} />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div style={{ marginTop: '12px' }}>
-                        <strong>Fitur yang digunakan:</strong>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '6px' }}>
-                          {clusterData.features_used.map(f => <Badge key={f}>{f}</Badge>)}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Gagal memuat data clustering.</div>
-                  )}
-                </Section>
-
-                {/* ═══════════════════════════════════════════════════ */}
-                {/* SECTION 4: ARCHITECTURE                              */}
-                {/* ═══════════════════════════════════════════════════ */}
-                <Section title="⚙️ Arsitektur Sistem" color="#F59E0B">
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 2 }}>
-                    <div><strong>1. NLP (Rasa)</strong> → extract: need, preference, constraint, entity</div>
-                    <div><strong>2. Query Builder</strong> → convert: weight_dict, hard_filters, soft_signals</div>
-                    <div><strong>3. Clustering</strong> → optional bias (soft constraint via INDEX_CLUSTER_MATCH)</div>
-                    <div><strong>4. VIKOR Engine</strong> → solve: conflicting multi-objective optimization</div>
-                    <div><strong>5. Relaxation Strategy</strong> → Brand → Powertrain → Budget +30% (last resort)</div>
-                  </div>
-                </Section>
-
-                {/* ═══════════════════════════════════════════════════ */}
-                {/* SECTION 5: HISTORY — ENRICHED                        */}
-                {/* ═══════════════════════════════════════════════════ */}
-                <Section title="🕒 Riwayat Rekomendasi Terakhir" color="#E11D48">
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    {historyData.length === 0 ? (
-                      <div style={{ textAlign: 'center', padding: '20px', background: 'var(--bg-secondary)', borderRadius: '10px' }}>Belum ada riwayat percakapan. Mulai tanya Otobot!</div>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        {historyData.slice(0, 5).map((h) => (
-                          <div key={h.id} style={{ padding: '16px', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', position: 'relative' }}>
-                            {/* Delete Button */}
-                            <button
-                              onClick={(e) => { e.stopPropagation(); deleteHistory(h.id); }}
-                              style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(225, 29, 72, 0.1)', color: '#E11D48', border: 'none', borderRadius: '6px', padding: '6px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.7rem', fontWeight: 600, transition: 'all 0.2s' }}
-                              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(225, 29, 72, 0.2)'}
-                              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(225, 29, 72, 0.1)'}
-                              title="Hapus riwayat ini"
-                            >
-                              <HiTrash size={14} /> Hapus
-                            </button>
-
-                            <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '12px', color: 'var(--text-primary)', paddingRight: '60px' }}>
-                              <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', display: 'block', fontWeight: 500, marginBottom: '2px' }}>{new Date(h.timestamp).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span>
-                              💬 &quot;{h.user_message}&quot;
                             </div>
                             
-                            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '12px', marginBottom: '12px' }}>
-                              {/* NLP Sub-module */}
-                              <div style={{ background: 'rgba(64,144,247,0.04)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(64,144,247,0.1)' }}>
-                                <div style={{ color: '#4090F7', fontWeight: 700, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>🧠 Pemahaman NLP</div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.75rem' }}>
-                                  <div><span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Cari:</span> {h.nlp_needs?.length ? h.nlp_needs.join(', ') : '-'}</div>
-                                  <div><span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Syarat Khusus:</span> {h.nlp_entities?.length ? h.nlp_entities.join(', ') : '-'}</div>
-                                  <div><span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Preferensi:</span> {h.nlp_preferences?.length ? h.nlp_preferences.join(', ') : '-'}</div>
-                                </div>
+                            {selectedChat.top_recommendations && selectedChat.top_recommendations.length >= 2 && selectedChat.top_recommendations[0] && selectedChat.top_recommendations[1] && (
+                          <div style={{ padding: '16px', marginTop: '4px', background: 'rgba(0,187,119,0.06)', border: '1px solid rgba(0,187,119,0.2)', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Pembuktian Matematis (Acceptable Advantage)</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontFamily: "'Fira Code', 'Courier New', monospace", display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              <div style={{ background: 'var(--bg-card)', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                                {"Batas Mutlak DQ = 1 / (N - 1) = "} <strong style={{ color: 'var(--text-primary)' }}>{(1 / (selectedChat.cars_after_constraint - 1 || 1)).toFixed(4)}</strong>
                               </div>
-
-                              {/* Clustering Sub-module */}
-                              <div style={{ background: 'rgba(139,92,246,0.04)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(139,92,246,0.1)' }}>
-                                <div style={{ color: '#8B5CF6', fontWeight: 700, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>📊 Targeting Klaster</div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.75rem' }}>
-                                  <div><span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Klaster Utama:</span> {h.cluster_name || 'Global (Seluruh Data)'}</div>
-                                  <div><span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Penyaringan Populasi:</span> <br/>{h.cars_total} mobil awal → <strong>{h.cars_after_constraint}</strong> kandidat lolos syarat.</div>
-                                </div>
+                              <div style={{ background: 'var(--bg-card)', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                                {"Delta Juara: Q(a_2) - Q(a_1) = "} <strong style={{ color: 'var(--text-primary)' }}>{((selectedChat.top_recommendations[1].VIKOR_Q || 0) - (selectedChat.top_recommendations[0].VIKOR_Q || 0)).toFixed(4)}</strong>
                               </div>
                             </div>
 
-                            {/* Weight Dict Used */}
-                            {h.weight_dict_used && Object.keys(h.weight_dict_used).length > 0 && (
-                              <div style={{ background: 'rgba(245,158,11,0.04)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(245,158,11,0.1)', marginBottom: '12px' }}>
-                                <div style={{ color: '#F59E0B', fontWeight: 700, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem' }}>⚖️ Bobot VIKOR Ternormalisasi</div>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                                  {Object.entries(h.weight_dict_used)
-                                    .sort(([, a], [, b]) => b - a)
-                                    .slice(0, 8)
-                                    .map(([key, val]) => (
-                                      <span key={key} style={{
-                                        fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px',
-                                        background: val > 0.1 ? 'rgba(245,158,11,0.12)' : 'var(--bg-secondary)',
-                                        color: val > 0.1 ? '#F59E0B' : 'var(--text-muted)',
-                                        fontWeight: val > 0.1 ? 700 : 500,
-                                        border: `1px solid ${val > 0.1 ? 'rgba(245,158,11,0.25)' : 'var(--border-color)'}`,
-                                      }}>
-                                        {INDEX_SHORT[key] || key.replace('INDEX_', '')} {(val * 100).toFixed(1)}%
-                                      </span>
-                                    ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* VIKOR Sub-module */}
-                            <div style={{ background: 'rgba(0,187,119,0.04)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(0,187,119,0.1)' }}>
-                              <div style={{ color: '#00BB77', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>🏆 Ranking VIKOR (Top 3)</div>
-                              
-                              {h.top_recommendations?.length === 0 ? (
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Tidak ada kandidat memadai ditemukan.</div>
-                              ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                  {h.top_recommendations?.slice(0, 3).map((car: CarRecommendation, idx: number) => (
-                                    <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-secondary)', borderRadius: '6px', fontSize: '0.75rem' }}>
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: idx === 0 ? '#00BB77' : 'var(--border-color)', color: idx === 0 ? '#fff' : 'var(--text-secondary)', fontWeight: 800, fontSize: '0.6rem' }}>{idx+1}</span>
-                                        <strong style={{ color: 'var(--text-primary)' }}>{car.BRAND} {car.MODEL}</strong>
-                                      </div>
-                                      <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column' }}>
-                                        <span style={{ fontWeight: 700, color: '#00BB77' }}>Q: {car.VIKOR_Q?.toFixed(4) ?? '-'}</span>
-                                        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>(S: {car.VIKOR_S?.toFixed(3) ?? '-'} | R: {car.VIKOR_R?.toFixed(3) ?? '-'}) — {car.VIKOR_STATUS?.split(' ')[0]}</span>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
+                            <div style={{ fontSize: '0.75rem', fontWeight: 800, marginTop: '4px', color: ((selectedChat.top_recommendations[1].VIKOR_Q || 0) - (selectedChat.top_recommendations[0].VIKOR_Q || 0)) >= (1 / (selectedChat.cars_after_constraint - 1 || 1)) ? '#00BB77' : '#F59E0B' }}>
+                              {((selectedChat.top_recommendations[1].VIKOR_Q || 0) - (selectedChat.top_recommendations[0].VIKOR_Q || 0)) >= (1 / (selectedChat.cars_after_constraint - 1 || 1)) ? 'Status: Condition 1 Satisfied ✅ (Murni Terbaik)' : 'Status: Condition 1 Failed ⚠️ (Perlu Kompromi)'}
                             </div>
                           </div>
-                        ))}
+                        )}
                       </div>
                     )}
+
                   </div>
-                </Section>
-              </>
+                </div>
+            )}
+
+            {/* LAYER 3: SYSTEM METRICS (SCIENCE DASHBOARD) */}
+            {viewMode === 'system_metrics' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', animation: 'fadeIn 0.2s ease' }}>
+                <button onClick={() => setViewMode('history_list')} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '0', alignSelf: 'flex-start' }}>
+                  <HiArrowLeft size={14} /> Kembali ke Riwayat
+                </button>
+
+                <SectionContainer title="🧠 1. NLU Research Dashboard (Baseline Results)" color="#EF4444" id="nlp-baseline">
+                  <NLPBaselineSection data={nlpBaseline} isScientific={isScientific} />
+                </SectionContainer>
+                <SectionContainer title="🎯 2. NLP Strategic Decision Mapping" color="#4090F7" id="nlp-mapping">
+                  <NLPMappingSection data={nlpMapping} />
+                </SectionContainer>
+                <SectionContainer title="🏆 3. VIKOR Sensitivity & MCDM Stability" color="#00BB77" id="vikor">
+                  <VikorSection data={vikorSensitivity} />
+                </SectionContainer>
+                <SectionContainer title="📊 4. Hierarchical Clustering (HAC) Validation" color="#8B5CF6" id="clustering">
+                  <ClusteringSection clusterData={clusterData} clusterDetail={clusterDetail} />
+                </SectionContainer>
+              </div>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 }
 
-/* ── Reusable sub-components ── */
 
-function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
+/* ═══════════════════════════════════════════════════════════════ */
+/*  REUSABLE UI COMPONENTS (SCIENTIFIC BLOCKS WITH MATH PROOFS)   */
+/* ═══════════════════════════════════════════════════════════════ */
+
+function MathBlock({ formula, desc }: { formula: string, desc?: string }) {
   return (
-    <div style={{ padding: '16px', borderRadius: '14px', background: 'var(--bg-secondary)', border: `1px solid ${color}25` }}>
-      <div style={{ fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-        {title}
+    <div style={{ padding: '12px 18px', background: '#0D1117', border: '1px solid #30363D', borderRadius: '8px', margin: '10px 0', fontFamily: "'Fira Code', 'Courier New', monospace" }}>
+      <div style={{ color: '#58A6FF', fontSize: '0.95rem', fontWeight: 600, letterSpacing: '0.05em' }}>
+        {formula}
       </div>
-      {children}
+      {desc && <div style={{ color: '#8B949E', fontSize: '0.7rem', marginTop: '6px', fontStyle: 'italic' }}>{desc}</div>}
     </div>
   );
 }
 
-function FormulaBlock({ label, formula, desc }: { label: string; formula: string; desc: string }) {
+function SectionContainer({ title, color, children, id }: { title: string; color: string; children: React.ReactNode; id?: string }) {
   return (
-    <div style={{ marginBottom: '12px', padding: '10px 12px', borderRadius: '10px', background: 'rgba(0,187,119,0.05)', border: '1px solid rgba(0,187,119,0.12)' }}>
-      <div style={{ fontWeight: 700, marginBottom: '2px', color: 'var(--text-primary)' }}>{label}</div>
-      <code style={{ fontSize: '0.82rem', color: '#00BB77', display: 'block', padding: '4px 0', fontFamily: "'Space Mono', monospace" }}>{formula}</code>
-      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{desc}</div>
+    <div id={id} style={{ display: 'flex', flexDirection: 'column', gap: '20px', background: 'var(--bg-card)', padding: '28px', borderRadius: '16px', border: '1px solid var(--border-color)', boxShadow: '0 4px 16px rgba(0,0,0,0.02)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: `1.5px solid ${color}30`, paddingBottom: '16px' }}>
+        <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>
+          {title}
+        </h3>
+      </div>
+      <div>{children}</div>
     </div>
   );
 }
 
-function MetricCard({ label, value, color }: { label: string; value: string; color: string }) {
+function NLPBaselineSection({ data, isScientific }: { data: NLPBaselineData | null; isScientific: boolean }) {
+  if (!data) return <EmptyState text="Gagal memuat data baseline NLP." />;
   return (
-    <div style={{ padding: '12px', borderRadius: '10px', background: `${color}08`, border: `1px solid ${color}20`, textAlign: 'center' }}>
-      <div style={{ fontSize: '1.2rem', fontWeight: 800, color, fontFamily: "'Space Grotesk', sans-serif" }}>{value}</div>
-      <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '3px' }}>{label}</div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+      {/* Math Proof */}
+      <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800, marginBottom: '4px', textTransform: 'uppercase' }}>Dasar Evaluasi NLP (DIETClassifier)</div>
+        <MathBlock formula="F1 = 2 × (Precision × Recall) / (Precision + Recall)" desc="Harmonic mean dari ketepatan (Precision) dan sensitivitas (Recall) ekstraksi intent & entitas mesin." />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <BigMetric label="Akurasi Intent" value={`${(data.intent.accuracy * 100).toFixed(1)}%`} color="#4090F7" />
+        <BigMetric label="Akurasi Entity" value={`${(data.entity.accuracy * 100).toFixed(1)}%`} color="#EF4444" />
+        <BigMetric label="Macro F1 (NLU)" value={data.intent.macro_f1.toFixed(3)} color="#8B5CF6" />
+        <BigMetric label="Entity Error" value={String(data.errors.entity_errors_count)} color="#F59E0B" />
+      </div>
+
+      <div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <HiClipboardDocumentCheck size={16} color="#4090F7" /> Laporan Per-Kelas Intent (F1-Score Breakdown)
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {Object.entries(data.intent.per_class).map(([name, m]) => (
+            <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 800, minWidth: '100px', color: m.f1 < 0.6 ? '#EF4444' : 'var(--text-primary)' }}>{name}</div>
+              <div style={{ flex: 1, height: '8px', background: 'var(--bg-secondary)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${m.f1 * 100}%`, background: m.f1 > 0.8 ? '#00BB77' : m.f1 > 0.5 ? '#F59E0B' : '#EF4444', borderRadius: '4px' }} />
+              </div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 800, minWidth: '40px', textAlign: 'right', color: m.f1 > 0.8 ? '#00BB77' : 'var(--text-muted)' }}>{(m.f1 * 100).toFixed(0)}%</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {data.errors.high_confidence_errors.length > 0 && (
+        <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#F59E0B', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <HiMagnifyingGlassCircle size={18} /> Deteksi Overconfidence (False Positives)
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {data.errors.high_confidence_errors.slice(0, 3).map((err, i) => (
+              <div key={i} style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.5, background: 'var(--bg-card)', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                🚨 "<em>{err.text}</em>" diprediksi <strong>{err.predicted}</strong> (conf: {err.confidence.toFixed(2)}) padahal seharusnya <strong>{err.true_intent}</strong>.
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {data.gaps.length > 0 && (
+        <div style={{ marginTop: '10px' }}>
+          <h4 style={{ margin: '0 0 10px', fontSize: '0.9rem', color: 'var(--text-primary)' }}>🔍 Identifikasi Gap Riset (Thesis Opportunity)</h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {data.gaps.map((gap, i) => <GapCard key={i} gap={gap} isScientific={isScientific} />)}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function Badge({ children }: { children: React.ReactNode }) {
+function NLPMappingSection({ data }: { data: NLPMappingData | null }) {
+  if (!data) return <EmptyState text="Gagal memuat akurasi Mapping NLP." />;
   return (
-    <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: '5px', background: 'rgba(64,144,247,0.1)', color: '#4090F7', border: '1px solid rgba(64,144,247,0.2)', letterSpacing: '0.03em' }}>
-      {children}
-    </span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+        <BigMetric label="Mapping Accuracy" value={`${(data.overall_accuracy * 100).toFixed(1)}%`} color="#00BB77" />
+        <BigMetric label="Preference Dict" value={String(data.mapping_tables.preference_index_count)} color="#8B5CF6" />
+        <BigMetric label="Cluster Mapping" value={String(data.mapping_tables.preference_cluster_count)} color="#4090F7" />
+      </div>
+      <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.6, textAlign: 'center' }}>
+        Kalkulasi kecocokan konversi Semantic Lexicon (Natural Language Keywords) menjadi vektor fitur matematis mesin.
+      </p>
+    </div>
+  );
+}
+
+function VikorSection({ data }: { data: VikorSensitivityData | null }) {
+  if (!data) return <EmptyState text="Gagal memuat uji VIKOR Sensitivity." />;
+
+  const scnA = data.scenarios['A_efficiency_heavy'];
+  const scnB = data.scenarios['B_performance_heavy'];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+      {/* Sensitivitas Konklusi */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px', borderRadius: '12px', background: data.is_sensitive ? 'rgba(0,187,119,0.08)' : 'rgba(239,68,68,0.08)', border: `1px solid ${data.is_sensitive ? 'rgba(0,187,119,0.25)' : 'rgba(239,68,68,0.25)'}` }}>
+        <span style={{ fontSize: '2.5rem' }}>{data.is_sensitive ? '📈' : '⚠️'}</span>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: '1rem', color: data.is_sensitive ? '#00BB77' : '#EF4444', marginBottom: '4px' }}>
+            {data.is_sensitive ? 'Stabilitas MCDM: Sistem Terbukti Dinamis' : 'Stabilitas MCDM: Sistem Kaku'}
+          </div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{data.sensitivity_proof}</div>
+        </div>
+      </div>
+
+      {/* Math Proof */}
+      <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 800, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Pembuktian Matematis VIKOR</div>
+        <MathBlock formula="S_j = Σ [ w_i × (f_i^* - f_{ij}) / (f_i^* - f_i^⁻) ]" desc="Perhitungan Utility Measure (Sj) murni berdasarkan bobot preferensi (w)." />
+        <MathBlock formula="Q_j = v × (S_j - S^*) / (S^⁻ - S^*) + (1-v) × (R_j - R^*) / (R^⁻ - R^*)" desc="Perhitungan Nilai Kompromi (Qj). Nilai minimal = Ranking Terbaik." />
+        <MathBlock formula="Q(a_2) - Q(a_1) ≥ 1 / (N - 1)" desc="Condition 1: Acceptable Advantage (Batas Keunggulan Tepat)." />
+      </div>
+
+      {/* Tabel Komparasi Aktual (Backend Data) */}
+      {scnA && scnB && (
+        <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
+          <div style={{ background: 'var(--bg-secondary)', padding: '12px 16px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)' }}>
+            Perbandingan Aktual Nilai Q (Skenario A vs B)
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)' }}>
+
+            {/* Skenario A */}
+            <div style={{ padding: '16px', borderRight: '1px dashed var(--border-color)' }}>
+              <div style={{ fontSize: '0.7rem', color: '#00BB77', fontWeight: 800, textTransform: 'uppercase', marginBottom: '12px' }}>Skenario A (Bobot Efisiensi Tinggi)</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {scnA.top_5.slice(0, 3).map(car => (
+                  <div key={car.rank} style={{ background: 'var(--bg-card)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: '#00BB77', color: '#fff', borderRadius: '4px', fontWeight: 800, marginRight: '6px' }}>#{car.rank}</span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)' }}>{car.brand} {car.model}</span>
+                    </div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>Q: {car.VIKOR_Q.toFixed(4)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skenario B */}
+            <div style={{ padding: '16px' }}>
+              <div style={{ fontSize: '0.7rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', marginBottom: '12px' }}>Skenario B (Bobot Performa Tinggi)</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {scnB.top_5.slice(0, 3).map(car => (
+                  <div key={car.rank} style={{ background: 'var(--bg-card)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: '#EF4444', color: '#fff', borderRadius: '4px', fontWeight: 800, marginRight: '6px' }}>#{car.rank}</span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)' }}>{car.brand} {car.model}</span>
+                    </div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>Q: {car.VIKOR_Q.toFixed(4)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ClusteringSection({ clusterData, clusterDetail }: { clusterData: ClusterEval | null; clusterDetail: ClusterDetailData | null }) {
+  if (!clusterData || !clusterDetail) return <EmptyState text="Gagal memuat evaluasi Clustering." />;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+      {/* Math Proof */}
+      <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 800, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Evaluasi Matematis HAC (Agglomerative)</div>
+        <MathBlock formula="s(i) = [b(i) - a(i)] / max[a(i), b(i)]" desc="Silhouette Measurement: Kalkulasi kohesi intenal a(i) vs separasi antar-cluster b(i)." />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+        <BigMetric label="Silhouette" value={clusterDetail.stability.current_silhouette.toFixed(3)} color="#8B5CF6" />
+        <BigMetric label="Cluster (K)" value={String(clusterData.n_clusters)} color="#00BB77" />
+        <BigMetric label="Features" value={String(clusterData.features_used.length)} color="#4090F7" />
+        <BigMetric label="Stability" value={clusterDetail.stability.current_silhouette > 0.4 ? 'Stable' : 'Weak'} color="#EF4444" />
+      </div>
+
+      {/* Stability Sequence K=3..7 */}
+      <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-secondary)', padding: '12px 16px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)' }}>
+          Kalkulasi Kepadatan (Silhoutte ∀ K ∈ {"{3..7}"})
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0' }}>
+          {clusterDetail.stability.silhouette_per_k.map(s => (
+            <div key={s.k} style={{ flex: '1 1 auto', padding: '12px', textAlign: 'center', borderRight: '1px dashed var(--border-color)', background: s.k === clusterDetail.stability.best_k.k ? 'rgba(139,92,246,0.1)' : 'transparent' }}>
+              <div style={{ fontSize: '0.65rem', color: s.k === clusterDetail.stability.best_k.k ? '#8B5CF6' : 'var(--text-muted)', fontWeight: 800, marginBottom: '4px' }}>{s.k === clusterDetail.stability.best_k.k && '⭐'} K={s.k}</div>
+              <div style={{ fontSize: '0.9rem', fontWeight: 800, color: s.k === clusterDetail.stability.best_k.k ? '#8B5CF6' : 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>{s.silhouette?.toFixed(4) || 'N/A'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>📌 Validasi Fitur Semantic Grup:</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+          {clusterData.features_used.map(f => (
+            <span key={f} style={{ fontSize: '0.65rem', padding: '4px 10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-secondary)' }}>{f}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ text }: { text: string }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)', background: 'var(--bg-card)', borderRadius: '12px', border: '1px dashed var(--border-color)' }}>
+      <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>⚠️</div>
+      <div style={{ fontSize: '0.8rem' }}>{text}</div>
+    </div>
+  );
+}
+
+function BigMetric({ label, value, color }: { label: string; value: string; color: string }) {
+  return (
+    <div style={{ padding: '16px 10px', borderRadius: '12px', background: `${color}0A`, border: `1px solid ${color}20`, textAlign: 'center' }}>
+      <div style={{ fontSize: '1.4rem', fontWeight: 800, color, fontFamily: "'Space Grotesk', sans-serif" }}>{value}</div>
+      <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '6px' }}>{label}</div>
+    </div>
+  );
+}
+
+function GapCard({ gap, isScientific }: { gap: NLPGap; isScientific: boolean }) {
+  const isCritical = gap.severity === 'critical';
+  const accentColor = isCritical ? '#EF4444' : '#F59E0B';
+  return (
+    <div style={{ padding: '14px', borderRadius: '10px', background: `${accentColor}06`, border: `1px solid ${accentColor}20` }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+        <span style={{ fontSize: '0.65rem', padding: '4px 8px', borderRadius: '4px', background: `${accentColor}1A`, color: accentColor, fontWeight: 800, textTransform: 'uppercase' }}>
+          {isScientific ? (isCritical ? 'CRITICAL GAP' : 'WARNING') : 'Saran Perbaikan'}
+        </span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--text-primary)', marginBottom: '4px' }}>[{gap.component}] {gap.issue}</div>
+          <div style={{ fontSize: '0.75rem', padding: '8px 12px', borderRadius: '8px', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', lineHeight: 1.5, border: '1px solid var(--border-color)' }}>
+            <strong>💡 Research Item:</strong> {gap.research_opportunity}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

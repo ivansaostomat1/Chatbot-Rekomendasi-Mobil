@@ -38,40 +38,22 @@ Aplikasi ini menggunakan teknologi modern dan didesain berbasis *microservices*:
 
 ---
 
-## 🛠️ Cara Menjalankan (Untuk Development)
+## 📘 Panduan Pengoperasian
 
-Jika kamu ingin mengutak-atik kode dan melihat *live-reload*, jalankan 3 komponen ini di terminal terpisah:
+Untuk memudahkan pencarian, dokumentasi telah dipecah menjadi beberapa bagian:
 
-**1. Menyalakan Backend & VIKOR (FastAPI)**
-```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate   # (Windows) atau source venv/bin/activate (Mac/Linux)
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
+1.  **[🚀 Cara Menjalankan Bot (Daily)](docs/RUN.md)** - Buka ini setiap hari untuk menyalakan sistem.
+2.  **[💿 Instalasi & Setup Awal](docs/INSTALL.md)** - Gunakan ini jika Anda baru melakukan *clone* atau pindah laptop.
+3.  **[🛠 Maintenance & Tuning](docs/MAINTENANCE.md)** - Panduan melatih ulang model (*re-train*) dan perbaikan *error*.
 
-**2. Menyalakan NLP Engine (Rasa)**
-Butuh 2 terminal.
-Terminal Pertama (Rasa API Server):
-```bash
-cd backend/rasa
-venv\Scripts\activate
-rasa run --enable-api --cors "*"
-```
-Terminal Kedua (Rasa Custom Actions):
-```bash
-cd backend/rasa
-venv\Scripts\activate
-rasa run actions
-```
+---
 
-**3. Menyalakan UI (Next.js)**
-```bash
-cd frontend
-npm install
-npm run dev
+## ⚡ Quick Start (Windows)
+Jika Anda sudah melakukan instalasi, cukup jalankan perintah berikut di terminal utama:
+```powershell
+.\run_all.bat
 ```
+Script ini akan membuka semua terminal yang dibutuhkan secara otomatis.
 
 ---
 

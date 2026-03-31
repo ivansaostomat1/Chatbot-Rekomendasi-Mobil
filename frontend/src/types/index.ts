@@ -191,3 +191,57 @@ export interface ClusterDetailData {
   features_used: string[];
 }
 
+// ── NLP Baseline + Gap Analysis ──
+
+export interface NLPClassMetrics {
+  precision: number;
+  recall: number;
+  f1: number;
+  support: number;
+  confused_with: Record<string, number>;
+}
+
+export interface NLPGap {
+  component: string;
+  issue: string;
+  detail: string;
+  severity: 'critical' | 'warning';
+  research_opportunity: string;
+}
+
+export interface HighConfError {
+  text: string;
+  true_intent: string;
+  predicted: string;
+  confidence: number;
+}
+
+export interface NLPBaselineData {
+  intent: {
+    per_class: Record<string, NLPClassMetrics>;
+    accuracy: number;
+    weighted_f1: number;
+    macro_f1: number;
+  };
+  entity: {
+    per_class: Record<string, NLPClassMetrics>;
+    accuracy: number;
+    weighted_f1: number;
+    macro_f1: number;
+  };
+  errors: {
+    intent_errors: { text: string; intent: string; intent_prediction: { name: string; confidence: number } }[];
+    entity_errors_count: number;
+    high_confidence_errors: HighConfError[];
+  };
+  gaps: NLPGap[];
+  model_config: {
+    epochs: number;
+    train_split: string;
+    test_split: string;
+    architecture: string;
+    featurizers: string[];
+    total_intents: number;
+    total_entity_types: number;
+  };
+}

@@ -445,6 +445,183 @@ def eval_nlp_mapping():
 
 
 # ======================================================
+# NLP BASELINE EVALUATION + GAP ANALYSIS
+# ======================================================
+
+@app.get("/evaluasi/nlp/baseline")
+def eval_nlp_baseline():
+    """
+    Read Rasa baseline test results (intent + entity) and compute gap analysis.
+    These results are from train/test split (80/20) evaluation.
+    """
+    import json
+    import os
+
+    base_path = os.path.join(os.path.dirname(__file__), "..", "rasa", "results", "baseline")
+
+    try:
+        # Read intent report
+        intent_path = os.path.join(base_path, "intent_report.json")
+        with open(intent_path, "r") as f:
+            intent_report = json.load(f)
+
+        # Read entity (DIET) report
+        entity_path = os.path.join(base_path, "DIETClassifier_report.json")
+        with open(entity_path, "r") as f:
+            entity_report = json.load(f)
+
+        # Read error files
+        intent_errors_path = os.path.join(base_path, "intent_errors.json")
+        with open(intent_errors_path, "r") as f:
+            intent_errors = json.load(f)
+
+        entity_errors_path = os.path.join(base_path, "DIETClassifier_errors.json")
+        with open(entity_errors_path, "r") as f:
+            entity_errors = json.load(f)
+
+        SKIP_KEYS = {"accuracy", "macro avg", "micro avg", "weighted avg"}
+
+        # --- Build per-intent metrics ---
+        intent_classes = {}
+        for key, val in intent_report.items():
+            if key in SKIP_KEYS:
+                continue
+            if isinstance(val, dict) and "f1-score" in val:
+                intent_classes[key] = {
+                    "precision": round(val.get("precision", 0), 4),
+                    "recall": round(val.get("recall", 0), 4),
+                    "f1": round(val.get("f1-score", 0), 4),
+                    "support": val.get("support", 0),
+                    "confused_with": val.get("confused_with", {}),
+                }
+
+        # --- Build per-entity metrics ---
+        entity_classes = {}
+        for key, val in entity_report.items():
+            if key in SKIP_KEYS:
+                continue
+            if isinstance(val, dict) and "f1-score" in val:
+                entity_classes[key] = {
+                    "precision": round(val.get("precision", 0), 4),
+                    "recall": round(val.get("recall", 0), 4),
+                    "f1": round(val.get("f1-score", 0), 4),
+                    "support": val.get("support", 0),
+                    "confused_with": val.get("confused_with", {}),
+                }
+
+        # --- Gap Analysis ---
+        gaps = []
+
+        # Intent gaps
+        for name, metrics in intent_classes.items():
+            if metrics["f1"] < 0.8:
+                severity = "critical" if metrics["f1"] < 0.5 else "warning"
+                confused = metrics.get("confused_with", {})
+                confused_str = ", ".join([f"salah dikenali sebagai '{k}' ({v}x)" for k, v in confused.items()])
+                gaps.append({
+                    "component": "Intent Classification",
+                    "issue": f"Intent '{name}' memiliki F1-score rendah: {metrics['f1']:.1%}",
+                    "detail": f"Precision={metrics['precision']:.1%}, Recall={metrics['recall']:.1%}, Support={metrics['support']} sampel. {confused_str}",
+                    "severity": severity,
+                    "research_opportunity": f"Hyperparameter tuning pada DIETClassifier (epochs, embedding dimension, transformer layer) untuk meningkatkan klasifikasi intent '{name}'.",
+                })
+
+        # Entity gaps
+        for name, metrics in entity_classes.items():
+            if metrics["f1"] < 0.8:
+                severity = "critical" if metrics["f1"] < 0.5 else "warning"
+                confused = metrics.get("confused_with", {})
+                confused_str = ", ".join([f"tertukar dengan '{k}' ({v}x)" for k, v in confused.items()])
+                gaps.append({
+                    "component": "Entity Extraction",
+                    "issue": f"Entity '{name}' memiliki F1-score rendah: {metrics['f1']:.1%}",
+                    "detail": f"Precision={metrics['precision']:.1%}, Recall={metrics['recall']:.1%}, Support={metrics['support']} sampel. {confused_str}",
+                    "severity": severity,
+                    "research_opportunity": f"Optimalisasi entity recognition untuk '{name}': augmentasi training data, fine-tuning DIET loss weights, atau eksplorasi CRF layer tambahan.",
+                })
+
+        # High-confidence misclassifications
+        high_conf_errors = []
+        for err in intent_errors:
+            conf = err.get("intent_prediction", {}).get("confidence", 0)
+            if conf > 0.8:
+                high_conf_errors.append({
+                    "text": err["text"],
+                    "true_intent": err["intent"],
+                    "predicted": err["intent_prediction"]["name"],
+                    "confidence": round(conf, 4),
+                })
+
+        if high_conf_errors:
+            gaps.append({
+                "component": "Confidence Calibration",
+                "issue": f"{len(high_conf_errors)} kesalahan prediksi dengan confidence >80%",
+                "detail": "Model memberikan skor confidence tinggi pada prediksi yang salah — indikasi overfitting atau kurangnya variasi data training.",
+                "severity": "critical",
+                "research_opportunity": "Implementasi confidence calibration (temperature scaling, Platt scaling) atau regularization pada DIET untuk mengurangi overconfident predictions.",
+            })
+
+        # Macro avg gap
+        intent_macro = intent_report.get("macro avg", {})
+        entity_macro = entity_report.get("macro avg", {})
+        macro_gap = abs(
+            intent_report.get("weighted avg", {}).get("f1-score", 0)
+            - intent_macro.get("f1-score", 0)
+        )
+        if macro_gap > 0.2:
+            gaps.append({
+                "component": "Class Imbalance",
+                "issue": f"Gap antara Weighted F1 ({intent_report.get('weighted avg', {}).get('f1-score', 0):.1%}) dan Macro F1 ({intent_macro.get('f1-score', 0):.1%}) = {macro_gap:.1%}",
+                "detail": "Perbedaan besar antara weighted dan macro average menunjukkan performa timpang antar kelas — kelas minoritas performanya jauh lebih rendah.",
+                "severity": "warning",
+                "research_opportunity": "Data augmentation untuk kelas minoritas, class weight balancing pada DIET loss function, atau stratified sampling saat training.",
+            })
+
+        # Overall model config context
+        model_config = {
+            "epochs": 200,
+            "train_split": "80%",
+            "test_split": "20%",
+            "architecture": "DIET (Dual Intent and Entity Transformer)",
+            "featurizers": [
+                "WhitespaceTokenizer",
+                "RegexFeaturizer",
+                "LexicalSyntacticFeaturizer",
+                "CountVectorsFeaturizer (word)",
+                "CountVectorsFeaturizer (char_wb, 3-5 ngram)",
+            ],
+            "total_intents": len(intent_classes),
+            "total_entity_types": len(entity_classes),
+        }
+
+        return {
+            "intent": {
+                "per_class": intent_classes,
+                "accuracy": intent_report.get("accuracy", 0),
+                "weighted_f1": intent_report.get("weighted avg", {}).get("f1-score", 0),
+                "macro_f1": intent_macro.get("f1-score", 0),
+            },
+            "entity": {
+                "per_class": entity_classes,
+                "accuracy": entity_report.get("accuracy", 0),
+                "weighted_f1": entity_report.get("weighted avg", {}).get("f1-score", 0),
+                "macro_f1": entity_macro.get("f1-score", 0),
+            },
+            "errors": {
+                "intent_errors": intent_errors,
+                "entity_errors_count": len(entity_errors),
+                "high_confidence_errors": high_conf_errors,
+            },
+            "gaps": gaps,
+            "model_config": model_config,
+        }
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Baseline results not found. Run 'rasa test nlu' first.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ======================================================
 # VIKOR SENSITIVITY ANALYSIS
 # ======================================================
 

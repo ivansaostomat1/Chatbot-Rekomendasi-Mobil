@@ -22,6 +22,11 @@ nlu:
     - canggih
     - fitur lengkap
     - nyaman
+    - lincah
+    - gesit
+    - handling
+    - bertenaga
+    - tarikannya kuat
 
     - 1
     - pilih 1
@@ -92,6 +97,13 @@ nlu:
     - banjir
     - jalan rusak
     - nanjak
+    - lincah
+    - gesit
+    - handling
+    - stabil
+    - bertenaga
+    - tarikan kuat
+    - akselerasi
 
 - lookup: hard_filter
   examples: |
@@ -150,7 +162,11 @@ nlu:
     - carikan saya [Toyota](brand) [500 jutaan](budget)
     - saya pengen cari mobil yang enak buat [ngebut](preference) tapi budget cuma [300 juta](budget), dapet mobil apa?
     - budget saya [1-5M](budget) tapi pengen mobil yang bisa diajak [lari](preference), kira-kira dapet mobil apa?
-    - budget [7M](budget) dapet mobil apa?
+    - saya butuh mobil yang [lincah](preference) dan [gesit](preference) buat selap-selip di kota dengan budget [200jt](budget)
+    - mobil yang [handlingnya mantap](preference) buat di tikungan budget [1m](budget)
+    - mobil [paling stabil](preference) di harga [500jt](budget) dapet apa?
+    - saya cari mobil yang [bertenaga](preference) dan [tarikannya kuat](preference) buat nanjak budget [400jt](brand)
+    - [sedan](body_type) yang [lincah](preference) dan [gesit](preference) budget [600jt](budget)
     - budget [2M](budget) pengen dapet mobil yang cocok untuk [offroad](preference)
     - kasih saya mobil [offroad](preference) budget [400 juta](budget) yang enak buat [keluarga](preference) juga
     - saya mau beli mobil yang cocok [disegala medan](preference), tapi budget [700 juta - 1M](budget), dapet mobil apa?

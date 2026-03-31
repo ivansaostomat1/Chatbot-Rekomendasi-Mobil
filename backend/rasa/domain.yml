@@ -5,9 +5,11 @@ intents:
   - ask_recommendation
   - choose_preference
   - nlu_fallback
+  - ask_comparison
 
 actions:
   - action_recommend_car
+  - action_compare_budget
 responses:
 
   utter_default:

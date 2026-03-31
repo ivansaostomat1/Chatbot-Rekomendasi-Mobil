@@ -26,6 +26,7 @@ class CarRecommendation(BaseModel):
     VIKOR_IS_COMPROMISE: Optional[bool] = None
     VIKOR_STATUS: Optional[str] = None
     INDEX_PRICE: Optional[float] = None
+    insight: Optional[str] = None
 
     model_config = {
         "from_attributes": True
@@ -39,6 +40,7 @@ class CarRecommendation(BaseModel):
 class RecommendationResponse(BaseModel):
 
     recommendations: List[CarRecommendation]
+    comparison_insight: Optional[str] = None
 
 
 # ======================================================
@@ -59,6 +61,7 @@ class ChatRequest(BaseModel):
 
     min_budget: Optional[int] = None
     max_budget: Optional[int] = None
+    previous_max_budget: Optional[int] = None
 
     top_n: int = Field(default=5, ge=1, le=20)
 

@@ -15,6 +15,7 @@ from vikor.ranking_engine import recommend_cars
 from .schemas import ChatRequest, HistoryItemResponse
 from .preference_builder import build_recommendation_params
 from .database import init_db, save_chat_history, get_recent_history, delete_chat_history
+from .explainer import generate_car_insights, compare_two_cars
 from contextlib import asynccontextmanager
 
 # ======================================================
@@ -163,6 +164,33 @@ def chat(request: ChatRequest):
         
         print(f"[FASTAPI] Selesai Ranking! Mendapatkan {len(recommendations_data)} mobil.")
 
+        # ======================================================
+        # COMPATIVE INSIGHT (OPTIONAL)
+        # ======================================================
+        comparison_insight = None
+        if request.previous_max_budget and request.max_budget and request.max_budget > request.previous_max_budget:
+            print(f"[FASTAPI] 📊 Running Comparison Analysis (+{request.max_budget - request.previous_max_budget}jt)")
+            
+            # 1. Run base recommendation (original budget)
+            base_params = params.copy()
+            base_params["max_budget"] = request.previous_max_budget
+            base_results = recommend_cars(**base_params, top_n=1)
+            
+            if base_results.get("recommendations") and recommendations_data:
+                base_top = base_results["recommendations"][0]
+                new_top = recommendations_data[0]
+                
+                if base_top["MODEL"] != new_top["MODEL"]:
+                    from .explainer import compare_two_cars # Import inside to avoid circular check if any
+                    comparison_insight = compare_two_cars(new_top, base_top, params.get("weight_dict", {}))
+
+        # ======================================================
+        # GENERATE INDIVIDUAL CAR INSIGHTS
+        # ======================================================
+        for car in recommendations_data:
+            from .explainer import generate_car_insights # Import inside
+            car["insight"] = generate_car_insights(car, params.get("weight_dict", {}))
+
         recommendations = [
             CarRecommendation(**car)
             for car in recommendations_data
@@ -198,7 +226,8 @@ def chat(request: ChatRequest):
         print("==================================================")
 
         return RecommendationResponse(
-            recommendations=recommendations
+            recommendations=recommendations,
+            comparison_insight=comparison_insight
         )
 
     except Exception as e:

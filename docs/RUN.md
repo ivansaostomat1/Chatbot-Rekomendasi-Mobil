@@ -5,7 +5,9 @@ Gunakan panduan ini untuk menyalakan sistem Otobot saat Anda mulai bekerja.
 ## ⚡ Cara Cepat (Khusus Windows)
 Agar menghemat waktu, klik ganda file berikut di folder utama, atau jalankan perintah ini di CMD/Terminal:
 ```powershell
+
 .\run_all.bat
+
 ```
 Script tersebut otomatis membuka 4 terminal dan menyalakan semua sistem sekaligus.
 

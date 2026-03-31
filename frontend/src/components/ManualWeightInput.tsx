@@ -13,8 +13,8 @@ interface ManualWeightInputProps {
 }
 
 const CRITERIA_MAP = [
-  { key: 'INDEX_PERFORMANCE', label: 'Performa ', color: '#F59E0B', icon: '⚡' },
-  { key: 'INDEX_FUN_TO_DRIVE', label: 'Handling', color: '#EF4444', icon: '🛞' },
+  { key: 'INDEX_POWER', label: 'Tenaga & Performa', color: '#F59E0B', icon: '⚡' },
+  { key: 'INDEX_HANDLING', label: 'Stabilitas & Handling', color: '#EF4444', icon: '🛞' },
   { key: 'INDEX_EFFICIENCY', label: 'Efisiensi BBM', color: '#10B981', icon: '⛽' },
   { key: 'INDEX_DRIVER_COMFORT', label: 'Kenyamanan Pengemudi', color: '#6366F1', icon: '🧑‍✈️' },
   { key: 'INDEX_PASSENGER_COMFORT', label: 'Kenyamanan Penumpang', color: '#8B5CF6', icon: '🛋' },

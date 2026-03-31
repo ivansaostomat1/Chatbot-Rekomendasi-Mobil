@@ -9,12 +9,12 @@ import pandas as pd
 # ======================================================
 
 VIKOR_CRITERIA = [
-    "INDEX_PERFORMANCE",
+    "INDEX_POWER",
+    "INDEX_HANDLING",
     "INDEX_EFFICIENCY",
     "INDEX_SAFETY",
-    "INDEX_DRIVER_COMFORT",    # <-- Baru
-    "INDEX_PASSENGER_COMFORT", # <-- Baru
-    "INDEX_FUN_TO_DRIVE",      # <-- Baru
+    "INDEX_DRIVER_COMFORT",
+    "INDEX_PASSENGER_COMFORT",
     "INDEX_TECH",
     "INDEX_SPACE",
     "INDEX_OFFROAD",

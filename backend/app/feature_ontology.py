@@ -1,52 +1,58 @@
+# backend/app/feature_ontology.py
+
 # ======================================================
-# USER PREFERENCE → INDEX MAPPING
+# USER PREFERENCE → INDEX MAPPING (SUPPORT LISTS)
 # ======================================================
 
 PREFERENCE_INDEX_MAP = {
 
     # Efficiency
-    "irit": "INDEX_EFFICIENCY",
-    "hemat": "INDEX_EFFICIENCY",
-    "bbm": "INDEX_EFFICIENCY",
+    "irit": ["INDEX_EFFICIENCY"],
+    "hemat": ["INDEX_EFFICIENCY"],
+    "bbm": ["INDEX_EFFICIENCY"],
 
-    # Performance
-    "kencang": "INDEX_PERFORMANCE",
-    "ngebut": "INDEX_FUN_TO_DRIVE",
-    "responsif": "INDEX_FUN_TO_DRIVE",
-    "fun": "INDEX_FUN_TO_DRIVE",
-    "sporty": "INDEX_FUN_TO_DRIVE",
-    "enak dikendarai": "INDEX_FUN_TO_DRIVE",
-    "gesit": "INDEX_FUN_TO_DRIVE",
+    # Power & Handling (Multi-Index Support)
+    "sporty": ["INDEX_POWER", "INDEX_HANDLING", "INDEX_DRIVER_COMFORT"],
+    "performa": ["INDEX_POWER", "INDEX_HANDLING"],
+    "kencang": ["INDEX_POWER", "INDEX_HANDLING"],
+    "ngebut": ["INDEX_POWER"],
+    "responsif": ["INDEX_POWER"],
+    "tenaga": ["INDEX_POWER"],
+    "nanjak": ["INDEX_POWER"],
+
+    "lincah": ["INDEX_HANDLING"],
+    "gesit": ["INDEX_HANDLING"],
+    "handling": ["INDEX_HANDLING"],
+    "enak dikendarai": ["INDEX_HANDLING", "INDEX_DRIVER_COMFORT"],
+    "fun": ["INDEX_HANDLING"],
+    "stabil": ["INDEX_HANDLING"],
 
     # Comfort
-    "nyaman": "INDEX_PASSENGER_COMFORT",
-    "driver nyaman": "INDEX_DRIVER_COMFORT",
+    "nyaman": ["INDEX_PASSENGER_COMFORT"],
+    "driver nyaman": ["INDEX_DRIVER_COMFORT"],
 
     # Space
-    "keluarga": "INDEX_SPACE",
-    "luas": "INDEX_SPACE",
-    "kabinnya luas": "INDEX_SPACE",
+    "keluarga": ["INDEX_SPACE"],
+    "luas": ["INDEX_SPACE"],
+    "kabinnya luas": ["INDEX_SPACE"],
 
     # Safety
-    "aman": "INDEX_SAFETY",
+    "aman": ["INDEX_SAFETY"],
 
     # Technology
-    "teknologi": "INDEX_TECH",
-    "fitur": "INDEX_TECH",
-    "fitur lengkap": "INDEX_TECH",
-    "modern": "INDEX_TECH",
-    "canggih": "INDEX_TECH",
+    "teknologi": ["INDEX_TECH"],
+    "fitur": ["INDEX_TECH"],
+    "fitur lengkap": ["INDEX_TECH"],
+    "modern": ["INDEX_TECH"],
+    "canggih": ["INDEX_TECH"],
 
     # Luxury
-    "mewah": "INDEX_LUXURY",
-    "luxury": "INDEX_LUXURY",
+    "mewah": ["INDEX_LUXURY"],
+    "luxury": ["INDEX_LUXURY"],
 
     # Offroad
-    "banjir": "INDEX_OFFROAD",
-    "jalan rusak": "INDEX_OFFROAD",
-
-    # Misc
-    "nanjak": "INDEX_PERFORMANCE"
+    "banjir": ["INDEX_OFFROAD"],
+    "jalan rusak": ["INDEX_OFFROAD"],
 }
 
 

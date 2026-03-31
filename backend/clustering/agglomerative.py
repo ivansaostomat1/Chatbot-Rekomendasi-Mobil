@@ -9,22 +9,16 @@ from sklearn.metrics import silhouette_score
 
 
 # ======================================================
-# FEATURES UNTUK CLUSTERING
+# FEATURES UNTUK CLUSTERING (STRUKTURAL & ARSITEKTURAL)
 # ======================================================
 
 CLUSTER_FEATURES = [
-    "INDEX_PERFORMANCE",
-    "INDEX_EFFICIENCY",
-    "INDEX_SAFETY",
-    "INDEX_DRIVER_COMFORT",    # <-- Baru
-    "INDEX_PASSENGER_COMFORT", # <-- Baru
-    "INDEX_FUN_TO_DRIVE",      # <-- Baru    
-    "INDEX_TECH",
-    "INDEX_SPACE",
-    "INDEX_OFFROAD",
-    "INDEX_LUXURY",
-    "INDEX_POPULARITY",
-    "INDEX_PRICE"
+    "INDEX_POWER",      # Tenaga
+    "INDEX_HANDLING",   # Kelincahan/Aerodinamika
+    "INDEX_EFFICIENCY", # Keiritan
+    "INDEX_SPACE",      # Kapasitas/Ukuran
+    "INDEX_OFFROAD",    # Ketangguhan
+    "INDEX_PRICE"       # Level Harga
 ]
 
 # ======================================================
@@ -71,7 +65,7 @@ def detect_optimal_clusters(X, min_k=4, max_k=8):
     return best_k
 
 # ======================================================
-# CLUSTER PROFILING (MURNI DATA-DRIVEN TANPA PRICE BIAS)
+# CLUSTER PROFILING (SEMANTIC MAPPING)
 # ======================================================
 
 def assign_cluster_profiles(df):
@@ -86,32 +80,36 @@ def assign_cluster_profiles(df):
 
         scores = {}
 
+        # City Car: Irit, Kecil, Murah
         scores["City Car"] = (
             p["INDEX_EFFICIENCY"] +
             p["INDEX_PRICE"] -
             p["INDEX_SPACE"]
         )
 
+        # Family Car: Luas, Nyaman (proxy by Space), Aman (proxy by Power/Handling Balance)
         scores["Family Car"] = (
             p["INDEX_SPACE"] +
-            p["INDEX_PASSENGER_COMFORT"] +
-            p["INDEX_SAFETY"]
+            p["INDEX_HANDLING"]
         )
 
+        # Tough SUV / Offroad: GC Tinggi, Tenaga Oke
         scores["Offroad"] = (
             p["INDEX_OFFROAD"] +
-            p["INDEX_PERFORMANCE"]
+            p["INDEX_POWER"]
         )
 
+        # Performance / Sports: Tenaga Tinggi, Handling Tinggi (Ceper)
         scores["Performance"] = (
-            p["INDEX_PERFORMANCE"] +
-            p["INDEX_FUN_TO_DRIVE"]
+            p["INDEX_POWER"] +
+            p["INDEX_HANDLING"]
         )
 
+        # Luxury / Premium: Mahal, Tenaga Tinggi, Kabin Luas
         scores["Luxury"] = (
-            p["INDEX_LUXURY"] +
-            p["INDEX_TECH"] +
-            p["INDEX_DRIVER_COMFORT"]
+            p["INDEX_POWER"] +
+            p["INDEX_SPACE"] -
+            p.get("INDEX_PRICE", 0) # Minus karena price index tinggi = murah, premium = mahal (low score)
         )
 
         score_table.append((cluster_id, scores))
@@ -119,7 +117,6 @@ def assign_cluster_profiles(df):
     labels = ["City Car","Family Car","Offroad","Performance","Luxury"]
 
     cluster_labels = {}
-
     used_clusters = set()
 
     for label in labels:
@@ -140,7 +137,7 @@ def assign_cluster_profiles(df):
             cluster_labels[best_cluster] = label
             used_clusters.add(best_cluster)
 
-    df["CLUSTER_NAME"] = df["CLUSTER_ID"].map(cluster_labels)
+    df["CLUSTER_NAME"] = df["CLUSTER_ID"].map(cluster_labels).fillna("General")
 
     return df, cluster_labels
 
@@ -151,7 +148,9 @@ def assign_cluster_profiles(df):
 def perform_clustering(df):
     X, features = build_feature_matrix(df)
 
-    n_clusters = 5
+    # Biarkan algoritma menentukan K terbaik untuk sebaran yang lebih merata
+    n_clusters = detect_optimal_clusters(X)
+    print(f"[CLUSTERING] Optimal K detected: {n_clusters}")
 
     model = AgglomerativeClustering(
         n_clusters=n_clusters,
@@ -161,8 +160,6 @@ def perform_clustering(df):
     labels = model.fit_predict(X)
 
     df = df.copy()
-    
-    # Simpan hasil label ke kolom CLUSTER_ID
     df["CLUSTER_ID"] = labels
 
     # Terapkan penamaan cluster otomatis

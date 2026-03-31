@@ -24,14 +24,27 @@ def build_weight_dict(preference_terms, weight_input):
         if term not in PREFERENCE_INDEX_MAP:
             continue
 
-        index_name = PREFERENCE_INDEX_MAP[term]
+        indices = PREFERENCE_INDEX_MAP[term]
+        
+        # Pastikan indices adalah list (mendukung legacy string mapping juga)
+        if isinstance(indices, str):
+            indices = [indices]
 
         weight = float(weight_input.get(term, 0))
 
-        weight_dict[index_name] = max(
-            weight,
-            weight_dict.get(index_name, 0)
-        )
+        for index_name in indices:
+            # Sesuai permintaan user: Popularity tidak di-bobot oleh user
+            if index_name == "INDEX_POPULARITY":
+                continue
+
+            weight_dict[index_name] = max(
+                weight,
+                weight_dict.get(index_name, 0)
+            )
+
+    # Sesuai permintaan user: Value For Money (INDEX_PRICE) selalu maksimal (10)
+    # Ini memastikan VIKOR selalu memprioritaskan balance kualitas vs harga yang kompetitif.
+    weight_dict["INDEX_PRICE"] = 10.0
 
     return weight_dict
 

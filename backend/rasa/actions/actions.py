@@ -37,45 +37,45 @@ PREFERENCE_CLUSTER_MAP = {
 }
 
 PREFERENCE_INDEX_MAP = {
-    "irit": "INDEX_EFFICIENCY", "hemat": "INDEX_EFFICIENCY", "bbm": "INDEX_EFFICIENCY",
-    "kencang": "INDEX_PERFORMANCE", "nggak lelet": "INDEX_PERFORMANCE", "ngebut": "INDEX_FUN_TO_DRIVE", "responsif": "INDEX_FUN_TO_DRIVE",
-    "fun": "INDEX_FUN_TO_DRIVE", "sporty": "INDEX_FUN_TO_DRIVE", "enak dikendarai": "INDEX_FUN_TO_DRIVE", "gesit": "INDEX_FUN_TO_DRIVE", "lincah": "INDEX_FUN_TO_DRIVE", "enak dibawa ": "INDEX_FUN_TO_DRIVE", "handlingnya enak": "INDEX_FUN_TO_DRIVE",
-    "nyaman": "INDEX_PASSENGER_COMFORT", "driver nyaman": "INDEX_DRIVER_COMFORT",
-    "keluarga": "INDEX_SPACE", "luas": "INDEX_SPACE", "kabinnya luas": "INDEX_SPACE",
-    "aman": "INDEX_SAFETY", "teknologi": "INDEX_TECH", "fitur": "INDEX_TECH", "fitur lengkap": "INDEX_TECH", "modern": "INDEX_TECH", "canggih": "INDEX_TECH",
-    "mewah": "INDEX_LUXURY", "luxury": "INDEX_LUXURY", "banjir": "INDEX_OFFROAD", "jalan rusak": "INDEX_OFFROAD", "nanjak": "INDEX_PERFORMANCE"
+    "irit": ["INDEX_EFFICIENCY"], "hemat": ["INDEX_EFFICIENCY"], "bbm": ["INDEX_EFFICIENCY"],
+    "kencang": ["INDEX_POWER", "INDEX_HANDLING"], "nggak lelet": ["INDEX_POWER", "INDEX_HANDLING"], "ngebut": ["INDEX_POWER"], "responsif": ["INDEX_POWER"],
+    "fun": ["INDEX_HANDLING"], "sporty": ["INDEX_POWER", "INDEX_HANDLING", "INDEX_DRIVER_COMFORT"], "enak dikendarai": ["INDEX_HANDLING", "INDEX_DRIVER_COMFORT"], "gesit": ["INDEX_HANDLING"], "lincah": ["INDEX_HANDLING"], "enak dibawa": ["INDEX_HANDLING"], "handlingnya enak": ["INDEX_HANDLING"],
+    "nyaman": ["INDEX_PASSENGER_COMFORT"], "driver nyaman": ["INDEX_DRIVER_COMFORT"],
+    "keluarga": ["INDEX_SPACE"], "luas": ["INDEX_SPACE"], "kabinnya luas": ["INDEX_SPACE"],
+    "aman": ["INDEX_SAFETY"], "teknologi": ["INDEX_TECH"], "fitur": ["INDEX_TECH"], "fitur lengkap": ["INDEX_TECH"], "modern": ["INDEX_TECH"], "canggih": ["INDEX_TECH"],
+    "mewah": ["INDEX_LUXURY"], "luxury": ["INDEX_LUXURY"], "banjir": ["INDEX_OFFROAD"], "jalan rusak": ["INDEX_OFFROAD"], "nanjak": ["INDEX_POWER"]
 }
 
 CLUSTER_PROFILES = {
     "Family Car": {
-        "INDEX_PERFORMANCE": 4, "INDEX_FUN_TO_DRIVE": 3, "INDEX_EFFICIENCY": 7,
+        "INDEX_POWER": 4, "INDEX_HANDLING": 5, "INDEX_EFFICIENCY": 7,
         "INDEX_DRIVER_COMFORT": 6, "INDEX_PASSENGER_COMFORT": 8, "INDEX_SAFETY": 8,
         "INDEX_TECH": 6, "INDEX_SPACE": 9, "INDEX_OFFROAD": 2,
-        "INDEX_LUXURY": 3, "INDEX_POPULARITY": 5, "INDEX_PRICE": 6,
+        "INDEX_LUXURY": 3, "INDEX_PRICE": 10,
     },
     "City Car": {
-        "INDEX_PERFORMANCE": 4, "INDEX_FUN_TO_DRIVE": 4, "INDEX_EFFICIENCY": 9,
+        "INDEX_POWER": 4, "INDEX_HANDLING": 7, "INDEX_EFFICIENCY": 9,
         "INDEX_DRIVER_COMFORT": 6, "INDEX_PASSENGER_COMFORT": 7, "INDEX_SAFETY": 6,
         "INDEX_TECH": 7, "INDEX_SPACE": 5, "INDEX_OFFROAD": 1,
-        "INDEX_LUXURY": 2, "INDEX_POPULARITY": 6, "INDEX_PRICE": 8,
+        "INDEX_LUXURY": 2, "INDEX_PRICE": 10,
     },
     "Offroad": {
-        "INDEX_PERFORMANCE": 8, "INDEX_FUN_TO_DRIVE": 6, "INDEX_EFFICIENCY": 3,
+        "INDEX_POWER": 8, "INDEX_HANDLING": 4, "INDEX_EFFICIENCY": 3,
         "INDEX_DRIVER_COMFORT": 5, "INDEX_PASSENGER_COMFORT": 5, "INDEX_SAFETY": 7,
         "INDEX_TECH": 5, "INDEX_SPACE": 7, "INDEX_OFFROAD": 9,
-        "INDEX_LUXURY": 3, "INDEX_POPULARITY": 4, "INDEX_PRICE": 4,
+        "INDEX_LUXURY": 3, "INDEX_PRICE": 10,
     },
     "Performance": {
-        "INDEX_PERFORMANCE": 9, "INDEX_FUN_TO_DRIVE": 9, "INDEX_EFFICIENCY": 3,
+        "INDEX_POWER": 9, "INDEX_HANDLING": 9, "INDEX_EFFICIENCY": 3,
         "INDEX_DRIVER_COMFORT": 7, "INDEX_PASSENGER_COMFORT": 4, "INDEX_SAFETY": 6,
         "INDEX_TECH": 7, "INDEX_SPACE": 3, "INDEX_OFFROAD": 2,
-        "INDEX_LUXURY": 5, "INDEX_POPULARITY": 5, "INDEX_PRICE": 4,
+        "INDEX_LUXURY": 5, "INDEX_PRICE": 10,
     },
     "Luxury": {
-        "INDEX_PERFORMANCE": 7, "INDEX_FUN_TO_DRIVE": 6, "INDEX_EFFICIENCY": 3,
+        "INDEX_POWER": 7, "INDEX_HANDLING": 7, "INDEX_EFFICIENCY": 3,
         "INDEX_DRIVER_COMFORT": 9, "INDEX_PASSENGER_COMFORT": 9, "INDEX_SAFETY": 8,
         "INDEX_TECH": 9, "INDEX_SPACE": 7, "INDEX_OFFROAD": 2,
-        "INDEX_LUXURY": 10, "INDEX_POPULARITY": 5, "INDEX_PRICE": 2,
+        "INDEX_LUXURY": 10, "INDEX_PRICE": 10,
     },
 }
 
@@ -132,8 +132,22 @@ SECONDARY_PREFERENCE_TERMS = {
 STOPWORDS = {
     "cari", "mau", "ingin", "butuh", "yang", "dan", "atau",
     "untuk", "dengan", "ada", "punya", "dong", "nih", "yg",
-    "saya", "aku", "gue", "gw",
+    "saya", "aku", "gue", "gw", "kalo", "bisa", "saja", "apa",
+    "siapa", "dimana", "kapan", "bagaimana", "kenapa", "yg",
 }
+
+# ======================================================
+# RELEVANT KEYWORDS FOR SAFETY NET
+# ======================================================
+
+VALID_REFINE_KEYWORDS = (
+    set(PREFERENCE_INDEX_MAP.keys()) | 
+    ALL_NEED_TERMS | 
+    {"bensin", "diesel", "hybrid", "listrik", "ev", "hibrida", "solar", "battery"} |
+    {"suv", "mpv", "sedan", "hatchback", "coupe", "wagon", "sport", "city car"} |
+    {"toyota", "honda", "suzuki", "mitsubishi", "nissan", "mazda", "hyundai", "kia", "wuling", "chery", "daihatsu", "byd", "mg", "gwm", "bmw", "mercedes"} |
+    {"sunroof", "panoramic", "camera", "360", "charger", "wireless", "apple", "android"}
+)
 
 
 # ======================================================
@@ -214,7 +228,7 @@ def parse_budget(text):
 # EXTRACT ENTITIES (FIX 2: Clean entity split)
 # ======================================================
 
-def extract_entities(entities):
+def extract_entities(entities, text=None):
 
     preference_terms = []
     need_terms = []
@@ -284,6 +298,29 @@ def extract_entities(entities):
 
             min_budget, max_budget = parse_budget(value)
 
+    # ======================================================
+    # FIX 6: MANUAL KEYWORD EXTRACTION (SAFETY NET)
+    # If Rasa missed some obvious keywords in short refinements.
+    # ======================================================
+    if text:
+        text_lower = text.lower()
+        
+        # Powertrain check
+        for p in ["bensin", "diesel", "hybrid", "listrik", "ev", "hibrida"]:
+            p_clean = "hybrid" if p == "hibrida" else p
+            if p in text_lower and p_clean not in powertrain_entities:
+                powertrain_entities.append(p_clean)
+        
+        # Body type check
+        for b in ["suv", "mpv", "sedan", "hatchback", "coupe", "wagon"]:
+            if b in text_lower and b not in body_entities:
+                body_entities.append(b)
+        
+        # BRAND check (common ones)
+        for br in ["toyota", "honda", "suzuki", "mitsubishi", "nissan", "mazda", "hyundai", "kia", "wuling", "chery", "daihatsu"]:
+            if br in text_lower and br not in brand_entities:
+                brand_entities.append(br)
+
     return {
         "need_terms": list(set(need_terms)),
         "preference_terms": preference_terms,
@@ -327,10 +364,10 @@ def build_backend_payload(parsed: dict, user_message: str = None) -> dict:
     # (bukan untuk VIKOR — VIKOR pakai manual_weights dari user)
     # ──────────────────────────────────────────────────────
     GLOBAL_DEFAULT = {
-        "INDEX_PERFORMANCE": 5, "INDEX_FUN_TO_DRIVE": 5, "INDEX_EFFICIENCY": 5,
+        "INDEX_POWER": 5, "INDEX_HANDLING": 5, "INDEX_EFFICIENCY": 5,
         "INDEX_DRIVER_COMFORT": 5, "INDEX_PASSENGER_COMFORT": 5, "INDEX_SAFETY": 5,
         "INDEX_TECH": 5, "INDEX_SPACE": 5, "INDEX_OFFROAD": 5,
-        "INDEX_LUXURY": 5, "INDEX_POPULARITY": 5, "INDEX_PRICE": 5,
+        "INDEX_LUXURY": 5, "INDEX_PRICE": 10,
     }
     base_weight_profile = dict(CLUSTER_PROFILES.get(cluster_name, GLOBAL_DEFAULT))
 
@@ -341,8 +378,14 @@ def build_backend_payload(parsed: dict, user_message: str = None) -> dict:
         weight_input[p] = boost_score
         
         if p in PREFERENCE_INDEX_MAP:
-            idx_name = PREFERENCE_INDEX_MAP[p]
-            base_weight_profile[idx_name] = max(base_weight_profile.get(idx_name, 0), boost_score)
+            indices = PREFERENCE_INDEX_MAP[p]
+            if isinstance(indices, str):
+                indices = [indices]
+            for idx_name in indices:
+                base_weight_profile[idx_name] = max(base_weight_profile.get(idx_name, 0), boost_score)
+                
+    # Sesuai permintaan user: VFM (Price) selalu maksimal (10)
+    base_weight_profile["INDEX_PRICE"] = 10.0
 
     entities_combined = (
         parsed["feature_entities"]
@@ -407,7 +450,7 @@ class ActionRecommendCar(Action):
         print(f"[RASA ACTION] Menerima pesan: '{text}'")
         print(f"[RASA ACTION] Entities dari NLU: {entities}")
 
-        parsed = extract_entities(entities)
+        parsed = extract_entities(entities, text=text)
 
         # =================================================
         # FIX 1: DETECT NEW QUERY → RESET ALL CONTEXT
@@ -417,11 +460,12 @@ class ActionRecommendCar(Action):
 
         # =================================================
         # FIX 5: GUARD AGAINST EMPTY INPUTS (OUT OF DOMAIN CHAT)
-        # Jika sama sekali tidak ada entitas yang tertangkap dari NLU 
-        # (contoh chat asal: "jokowi", "makan", dll) dan ia tidak terdeteksi 
-        # sebagai trigger new_query, kita tolak langsung dari action.
+        # We only reject if it's NOT a new query AND it has NO entities AND it has NO relevant keywords.
+        # This prevents "kalo bisa yang bensin saja" from being rejected even if NLU misses "bensin".
         # =================================================
-        if not entities and not new_query:
+        has_car_keywords = any(k in text.lower() for k in VALID_REFINE_KEYWORDS)
+        
+        if not entities and not new_query and not has_car_keywords:
             print(f"[RASA ACTION] ❌ TERDETEKSI PESAN ASAL/OUT-OF-DOMAIN: '{text}'. Mengeksekusi fallback action.")
             dispatcher.utter_message(response="utter_default")
             return []
@@ -518,4 +562,109 @@ class ActionRecommendCar(Action):
             SlotSet("powertrain", parsed["powertrain_entities"]),
             SlotSet("body_type", parsed["body_entities"]),
             SlotSet("hard_filter", parsed["hard_filter_entities"]),
+        ]
+
+
+class ActionCompareBudget(Action):
+
+    def name(self):
+        return "action_compare_budget"
+
+    def run(self, dispatcher, tracker, domain):
+        text = tracker.latest_message.get("text", "")
+        entities = tracker.latest_message.get("entities", [])
+        
+        # 1. Dapatkan budget lama dari slot
+        prev_max_budget = tracker.get_slot("max_budget")
+        
+        # 2. Parse budget baru dari pesan user
+        parsed = extract_entities(entities, text=text)
+        new_max_budget = parsed["max_budget"]
+        new_min_budget = parsed["min_budget"]
+
+        # Jika user tidak menyebut budget baru secara spesifik, tapi tanya "kalau nambah"
+        # Kita bisa asumsikan increment (misal default +50jt jika sulit di-parse)
+        if not new_max_budget and prev_max_budget:
+            # Cari angka di text (misal "nambah 50jt")
+            numbers = re.findall(r"\d+", text.lower().replace("jt", "000000"))
+            if numbers:
+                increment = int(numbers[0])
+                if increment < 1000: # Masih dalam satuan Juta (misal "nambah 50")
+                    increment *= 1_000_000
+                new_max_budget = prev_max_budget + increment
+            else:
+                # Default increment if nothing found
+                new_max_budget = prev_max_budget + 50_000_000
+
+        if not new_max_budget:
+            dispatcher.utter_message(text="Berapa budget baru yang ingin kamu bandingkan?")
+            return []
+
+        # 3. Kumpulkan kriteria lain dari slot (Context Persistence)
+        current_slots = {
+            "preference_terms": tracker.get_slot("preference") or [],
+            "need_terms": tracker.get_slot("need") or [],
+            "entities": (
+                (tracker.get_slot("feature") or []) +
+                (tracker.get_slot("brand") or []) +
+                (tracker.get_slot("powertrain") or []) +
+                (tracker.get_slot("body_type") or []) +
+                (tracker.get_slot("hard_filter") or [])
+            ),
+            "min_budget": new_min_budget or tracker.get_slot("min_budget"),
+            "max_budget": new_max_budget,
+            "previous_max_budget": prev_max_budget
+        }
+
+        payload = build_backend_payload({
+            "need_terms": current_slots["need_terms"],
+            "preference_terms": current_slots["preference_terms"],
+            "feature_entities": tracker.get_slot("feature") or [],
+            "body_entities": tracker.get_slot("body_type") or [],
+            "powertrain_entities": tracker.get_slot("powertrain") or [],
+            "brand_entities": tracker.get_slot("brand") or [],
+            "hard_filter_entities": tracker.get_slot("hard_filter") or [],
+            "min_budget": current_slots["min_budget"],
+            "max_budget": current_slots["max_budget"]
+        }, text)
+        
+        # Tambahkan previous_max_budget ke payload
+        payload["previous_max_budget"] = prev_max_budget
+
+        print(f"[RASA ACTION] 📊 Comparing budget: {prev_max_budget} -> {new_max_budget}")
+
+        # Langsung panggil backend (Search Mode)
+        try:
+            response = requests.post(API_URL, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            
+            cars = data.get("recommendations", [])
+            comparison_insight = data.get("comparison_insight")
+
+            if not cars:
+                dispatcher.utter_message(text="Maaf, saya tidak menemukan mobil yang cocok dengan budget baru tersebut.")
+                return []
+
+            # Format Response
+            msg = f"Baik, dengan budget baru maksimal Rp{new_max_budget:,.0f}...\n\n"
+            if comparison_insight:
+                msg += f"💡 **Analisa:** {comparison_insight}\n\n"
+            
+            msg += format_car_recommendation(cars)
+            
+            # Tambahkan detail insight per mobil
+            msg += "\nKenapa mobil ini?\n"
+            for car in cars[:2]:
+                msg += f"- {car['MODEL']}: {car.get('insight', 'Pilihan seimbang.')}\n"
+
+            dispatcher.utter_message(text=msg)
+
+        except Exception as e:
+            print(f"[RASA ACTION] Error calling backend: {e}")
+            dispatcher.utter_message(text="Maaf, terjadi kendala saat memproses perbandingan budget.")
+
+        return [
+            SlotSet("max_budget", new_max_budget),
+            SlotSet("min_budget", new_min_budget) if new_min_budget else SlotSet("min_budget", tracker.get_slot("min_budget"))
         ]

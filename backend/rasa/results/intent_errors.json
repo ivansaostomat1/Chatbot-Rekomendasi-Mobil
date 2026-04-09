@@ -1,0 +1,186 @@
+[
+  {
+    "text": "permisi",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9994997978210449
+    }
+  },
+  {
+    "text": "assalamualaikum",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9218480587005615
+    }
+  },
+  {
+    "text": "hei",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9959123730659485
+    }
+  },
+  {
+    "text": "p",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9821601510047913
+    }
+  },
+  {
+    "text": "good morning",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9329811334609985
+    }
+  },
+  {
+    "text": "bisa kita restart?",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.9999237060546875
+    }
+  },
+  {
+    "text": "saya mau cari mobil berbeda",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9977145195007324
+    }
+  },
+  {
+    "text": "rekomendasi tempat makan enak di jakarta",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9966313242912292
+    }
+  },
+  {
+    "text": "cara beli saham untuk pemula",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9506331086158752
+    }
+  },
+  {
+    "text": "rekomendasi film netflix terbaru",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.7675274610519409
+    }
+  },
+  {
+    "text": "ambil nomor tiga",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.5962206721305847
+    }
+  },
+  {
+    "text": "saya suka yang kedua",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "kayaknya yang nyaman deh",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9991901516914368
+    }
+  },
+  {
+    "text": "nomor dua dong",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.9999980926513672
+    }
+  },
+  {
+    "text": "saya mau yang sporty",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "pilihan tiga kayaknya cocok",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.8249258399009705
+    }
+  },
+  {
+    "text": "yang hemat aja lah",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.904476523399353
+    }
+  },
+  {
+    "text": "ambil yang paling gesit",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9983798265457153
+    }
+  },
+  {
+    "text": "yang nyaman lebih cocok buat saya",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999995231628418
+    }
+  },
+  {
+    "text": "ada rekomendasi mobil untuk ibu rumah tangga?",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.9963247179985046
+    }
+  },
+  {
+    "text": "saya mau ganti mobil, ada saran?",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "EV yang bagus untuk harian budget 800jt",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.8190224170684814
+    }
+  },
+  {
+    "text": "budget 650 juta vs yang tadi beda banyak ga?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9998422861099243
+    }
+  }
+]

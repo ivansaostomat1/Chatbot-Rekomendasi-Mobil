@@ -1,0 +1,166 @@
+version: "3.1"
+
+# ============================================================
+# TEST SET INDEPENDEN — RASA NLU EVALUATION
+# Dibuat untuk Tugas Akhir: Evaluasi Akurasi NLU
+#
+# ATURAN PENTING:
+# - Semua kalimat di file ini BELUM PERNAH ada di nlu.yml
+# - Dirancang untuk menguji generalisasi model, bukan hafalan
+# - Mencakup kasus normal, kasus ambigu, dan edge case
+# - Gunakan dengan: rasa test nlu --nlu test_nlu.yml
+# ============================================================
+
+nlu:
+
+# ============================================================
+# INTENT: greet
+# Target: 10 contoh
+# Strategi: variasi salam yang tidak ada di training
+# ============================================================
+- intent: greet
+  examples: |
+    - permisi
+    - met pagi
+    - selamat siang
+    - selamat sore
+    - assalamualaikum
+    - hei
+    - p
+    - halo selamat datang
+    - hai kak
+    - good morning
+
+# ============================================================
+# INTENT: start_search
+# Target: 10 contoh
+# Strategi: kalimat reset/mulai ulang dengan kata berbeda
+# ============================================================
+- intent: start_search
+  examples: |
+    - dari awal lagi ya
+    - bisa kita restart?
+    - saya mau ubah pencarian
+    - clear semua kriteria
+    - mulai baru lagi dong
+    - hapus semua pilihan tadi
+    - saya mau cari mobil berbeda
+    - ganti semua filter
+    - batal, saya cari yang lain
+    - ulangi dari nol
+
+# ============================================================
+# INTENT: out_of_scope
+# Target: 10 contoh
+# Strategi: topik yang jelas di luar domain mobil
+# ============================================================
+- intent: out_of_scope
+  examples: |
+    - rekomendasi tempat makan enak di jakarta
+    - berapa kurs dollar hari ini
+    - cara beli saham untuk pemula
+    - jadwal bioskop hari ini
+    - apa resep nasi goreng yang enak
+    - cariin saya laptop murah
+    - gimana cara daftar BPJS
+    - tolong buatkan surat lamaran kerja
+    - rekomendasi film netflix terbaru
+    - berapa harga tiket pesawat jakarta bali
+
+# ============================================================
+# INTENT: choose_preference
+# Target: 15 contoh
+# Strategi: campuran kata pilihan, angka, dan kalimat pendek
+# KASUS AMBIGU DISENGAJA — untuk membuktikan overlap dengan
+# ask_recommendation
+# ============================================================
+- intent: choose_preference
+  examples: |
+    - yang pertama aja
+    - ambil nomor tiga
+    - saya suka yang kedua
+    - pilih yang paling irit
+    - kayaknya yang nyaman deh
+    - oke pilih kencang
+    - yang keempat kelihatannya bagus
+    - prefer yang teknologi
+    - nomor dua dong
+    - saya mau yang sporty
+    - pilihan tiga kayaknya cocok
+    - yang hemat aja lah
+    - ambil yang paling gesit
+    - saya pilih nomor satu
+    - yang nyaman lebih cocok buat saya
+
+# ============================================================
+# INTENT: ask_recommendation
+# Target: 40 contoh — paling banyak karena intent utama
+# Strategi: variasi kalimat baru, gaya bahasa berbeda,
+# kombinasi entity yang belum ada di training
+# ============================================================
+- intent: ask_recommendation
+  examples: |
+    - ada rekomendasi mobil untuk ibu rumah tangga?
+    - kira kira mobil apa yang paling worth dibeli sekarang?
+    - pengen beli mobil tapi bingung mau yang mana
+    - tolong pilihkan mobil yang paling pas buat saya
+    - mobil apa yang cocok untuk orang tua?
+    - saya mau ganti mobil, ada saran?
+    - mobil terbaik di kelasnya apa ya?
+    - carikan mobil yang enak buat road trip
+    - saya cari [Hyundai](brand) yang [irit](preference)
+    - ada [Honda](brand) yang bagus buat [harian](preference)?
+    - mau beli [Kia](brand) budget [400 juta](budget)
+    - pengen [Mazda](brand) yang [sporty](preference) budget [600jt](budget)
+    - cari [SUV](body_type) yang [aman](preference) buat keluarga budget [800 juta](budget)
+    - [hatchback](body_type) murah yang [irit](preference) ada ga?
+    - mau [MPV](body_type) yang [luas](preference) budget [500jt](budget)
+    - ada [sedan](body_type) yang [nyaman](preference) dibawah [700 juta](budget)?
+    - cari mobil [hybrid](powertrain) yang [hemat](preference)
+    - [EV](powertrain) yang bagus untuk [harian](preference) budget [800jt](budget)
+    - mau mobil [diesel](powertrain) yang [bertenaga](preference) budget [600 juta](budget)
+    - mobil yang ada [sunroof](feature) nya budget [500jt](budget)
+    - cari yang ada [360 camera](feature) nya dong
+    - butuh mobil dengan [apple carplay](feature) budget [400 juta](budget)
+    - mau yang [ground clearance tinggi](hard_filter) budget [700jt](budget)
+    - butuh mobil untuk [keluarga besar](hard_filter) budget [900 juta](budget)
+    - yang aman dari [banjir](hard_filter) budget [600jt](budget)
+    - budget pas-pasan sekitar [200 juta](budget) dapet mobil apa?
+    - punya uang [2 miliar](budget) mau beli mobil mewah
+    - sekitar [350 juta](budget) bisa dapet apa ya?
+    - budget [1.5M](budget) cocoknya beli apa?
+    - ada rekomendasi di kisaran [900 jutaan](budget)?
+    - mau beli [Toyota](brand) tapi bukan [SUV](body_type) budget [500jt](budget)
+    - [Suzuki](brand) yang [irit](preference) dan [nyaman](preference) apa ya?
+    - pengen [Nissan](brand) yang [tangguh](preference) budget [700 juta](budget)
+    - cari [Mitsubishi](brand) yang cocok buat [offroad](preference)
+    - mobil yang [responsif](preference) dan [teknologi](preference) nya canggih budget [1M](budget)
+    - yang paling [mewah](preference) di budget [1.5M](budget) apa?
+    - cari yang [lincah](preference) buat di kota padat budget [300jt](budget)
+    - butuh mobil yang [stabil](preference) buat perjalanan jauh budget [800jt](budget)
+    - ada yang [sporty](preference) tapi tetap [nyaman](preference) budget [700 juta](budget)?
+    - yang [bertenaga](preference) tapi juga [irit](preference) budget [600jt](budget)
+
+# ============================================================
+# INTENT: ask_comparison
+# Target: 15 contoh
+# Strategi: variasi kalimat perbandingan budget yang berbeda
+# dari training
+# ============================================================
+- intent: ask_comparison
+  examples: |
+    - kalau saya tambah sedikit lagi dapet yang mana?
+    - beda jauh ga kalau budget dinaikkan?
+    - ada pilihan lebih bagus di harga yang lebih tinggi?
+    - worth ga kalau nambah [100 juta](budget) lagi?
+    - kalau budget jadi [1.2M](budget) rekomendasinya beda ga?
+    - dengan [750 juta](budget) pilihan bertambah?
+    - naikin budget ke [950jt](budget) dapet apa tambahan?
+    - apa bedanya kalau budget saya [1.1M](budget)?
+    - kalau uang saya cukup untuk [800 jutaan](budget) gimana?
+    - ada opsi lebih premium kalau budget [2M](budget)?
+    - perbandingan dengan budget [550jt](budget) seperti apa?
+    - kalau mau yang lebih bagus harus nambah berapa?
+    - budget [650 juta](budget) vs yang tadi beda banyak ga?
+    - naik ke [1.5 miliar](budget) dapet mobil apa?
+    - bisa kasih pilihan di budget [480jt](budget)?

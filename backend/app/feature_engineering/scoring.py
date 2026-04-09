@@ -136,8 +136,13 @@ def calculate_indices(df):
     # 10. LUXURY
     df["INDEX_LUXURY"] = build_index(df, ["LEATHER_SEAT", "VENTILATED_SEAT", "MASSAGE_SEAT", "SUNROOF"])
 
-    # 11. POPULARITY
-    df["INDEX_POPULARITY"] = zscore(df["POPULARITY_LOG"])
+    # 11. PRODUCT LIFECYCLE SAFE (dari Tren Wholesale Q4 vs Q1-Q3)
+    # Tinggi = stabil/tumbuh di akhir tahun = opsi aman diskontinyu
+    df["INDEX_LIFECYCLE_SAFE"] = zscore(df["LIFECYCLE_SCORE"])
+
+    # 12. BRAND ECOSYSTEM STRENGTH (dari Retail per Brand)
+    # Tinggi = volume besar beredar = komunitas massal & aftersales kuat
+    df["INDEX_BRAND_STRENGTH"] = zscore(df["BRAND_STRENGTH_SCORE"])
 
     # 12. PRICE (Smaller Harga = Higher Index)
     df["INDEX_PRICE"] = -zscore(df["HARGAOTR"])

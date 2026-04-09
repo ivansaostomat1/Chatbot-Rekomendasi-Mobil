@@ -1,3 +1,5 @@
+version: "3.1"
+
 stories:
 
 - story: greet and ask recommendation
@@ -17,4 +19,47 @@ stories:
 - story: user choose preference
   steps:
   - intent: choose_preference
+  - action: action_recommend_car
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Story multi-turn: percakapan berlanjut setelah rekomendasi
+# Membuktikan sistem bisa handle sesi yang lebih natural
+# ─────────────────────────────────────────────────────────────────────────────
+
+- story: greet then compare budget
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_comparison
+  - action: action_compare_budget
+
+
+- story: recommend then compare budget
+  steps:
+  - intent: ask_recommendation
+  - action: action_recommend_car
+  - intent: ask_comparison
+  - action: action_compare_budget
+
+
+- story: lifestyle then compare budget
+  steps:
+  - intent: ask_recommendation
+    entities:
+    - preference: "anak muda"
+  - action: action_recommend_car
+  - intent: ask_comparison
+  - action: action_compare_budget
+
+
+- story: preference then refine popularity
+  steps:
+  - intent: choose_preference
+    entities:
+    - preference: "kencang"
+  - action: action_recommend_car
+  - intent: choose_preference
+    entities:
+    - preference: "paling laku"
   - action: action_recommend_car

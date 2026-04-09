@@ -112,6 +112,7 @@ function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], con
 export default function ChatbotPage() {
   const { isScientific } = useScientificMode();
   const [messages, setMessages] = useState<ChatMessage[]>(() => [createWelcomeMessage()]);
+  const [savedWeights, setSavedWeights] = useState<Record<string, number> | null>(null);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -121,6 +122,7 @@ export default function ChatbotPage() {
   }, [messages, loading]);
 
   const submitWeights = async (weights: Record<string, number>, payload: Record<string, unknown>, msgId: string) => {
+    setSavedWeights(weights);
     const finalPayload = { ...payload, manual_weights: weights };
     setLoading(true);
 
@@ -194,7 +196,7 @@ export default function ChatbotPage() {
           .join('\n\n');
 
         // Cari balasan custom action jika disediakan oleh actions.py
-        const actionResponse = rasaResponses.find((r: RasaMessage) => r.custom && r.custom.action === "ask_weights");
+        const actionResponse = rasaResponses.find((r: RasaMessage) => r.custom && (r.custom.action === "ask_weights" || r.custom.action === "search_cars"));
         
         // Cari balasan custom recommendations jika disediakan oleh actions.py
         const recResponse = rasaResponses.find((r: RasaMessage) => r.custom && r.custom.recommendations);
@@ -202,13 +204,47 @@ export default function ChatbotPage() {
         const constraint_report = recResponse ? recResponse.custom.constraint_report || null : null;
 
         if (actionResponse) {
-          setMessages(prev => [...prev, {
-            id: `b-${Date.now()}`,
-            role: 'assistant',
-            content: textParts || '...',
-            ask_weights_payload: actionResponse.custom.payload,
-            timestamp: new Date(),
-          }]);
+          const actionType = actionResponse.custom.action;
+          
+          if (actionType === "ask_weights" || (actionType === "search_cars" && !savedWeights)) {
+             setMessages(prev => [...prev, {
+                id: `b-${Date.now()}`,
+                role: 'assistant',
+                content: textParts || 'Silakan atur bobot kriteria yang paling penting menurut Anda.',
+                ask_weights_payload: actionResponse.custom.payload,
+                timestamp: new Date(),
+             }]);
+          } else if (actionType === "search_cars" && savedWeights) {
+             setMessages(prev => [...prev, {
+                id: `b-${Date.now()}-loading`,
+                role: 'assistant',
+                content: textParts || 'Baik, kriteria pencarian sedang saya sesuaikan...',
+                timestamp: new Date(),
+             }]);
+
+             const payload = actionResponse.custom.payload;
+             const finalPayload = { ...payload, manual_weights: savedWeights };
+
+             try {
+                const { data } = await api.post('/chat', finalPayload);
+                setMessages(prev => [...prev, {
+                  id: `b-${Date.now()}-res`,
+                  role: 'assistant',
+                  content: 'Sip! Berdasarkan bobot preferensi yang sebelumnya tersimpan, berikut hasil penyesuaian rekomendasinya:',
+                  recommendations: data.recommendations || [],
+                  constraint_report: data.constraint_report || null,
+                  timestamp: new Date(),
+                }]);
+                try { await fetch('http://localhost:8000/history'); } catch {}
+             } catch (e) {
+                setMessages(prev => [...prev, {
+                  id: `e-${Date.now()}`,
+                  role: 'assistant',
+                  content: '⚠️ Gagal memuat rekomendasi otomatis.',
+                  timestamp: new Date(),
+                }]);
+             }
+          }
         } else {
           setMessages(prev => [...prev, {
             id: `b-${Date.now()}`,
@@ -247,6 +283,7 @@ export default function ChatbotPage() {
     const WELCOME_FRESH = createWelcomeMessage();
     setMessages([WELCOME_FRESH]);
     setInput('');
+    setSavedWeights(null);
     
     // Clear backend
     try {
@@ -266,11 +303,11 @@ export default function ChatbotPage() {
           <RippleGrid
             enableRainbow={true}
             gridColor="#000000ff" 
-            rippleIntensity={0.01}
+            rippleIntensity={0}
             gridSize={10}
-            gridThickness={50}
+            gridThickness={60}
             mouseInteraction={true}
-            mouseInteractionRadius={0.2}
+            mouseInteractionRadius={10}
           />
         </div>
 

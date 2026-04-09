@@ -53,6 +53,19 @@ PREFERENCE_INDEX_MAP = {
     # Offroad
     "banjir": ["INDEX_OFFROAD"],
     "jalan rusak": ["INDEX_OFFROAD"],
+
+    # Brand Strength (Ecosystem)
+    "merek": ["INDEX_BRAND_STRENGTH"],
+    "brand": ["INDEX_BRAND_STRENGTH"],
+    "terkenal": ["INDEX_BRAND_STRENGTH"],
+    "laku": ["INDEX_BRAND_STRENGTH"],
+    "populer": ["INDEX_BRAND_STRENGTH"],
+
+    # Product Lifecycle (Discontinue-Safe)
+    "model baru": ["INDEX_LIFECYCLE_SAFE"],
+    "baru": ["INDEX_LIFECYCLE_SAFE"],
+    "sparepart": ["INDEX_BRAND_STRENGTH", "INDEX_LIFECYCLE_SAFE"],
+    "aman": ["INDEX_SAFETY", "INDEX_BRAND_STRENGTH", "INDEX_LIFECYCLE_SAFE"],
 }
 
 
@@ -62,19 +75,30 @@ PREFERENCE_INDEX_MAP = {
 
 BODY_TYPE_MAP = {
 
-    "suv": "SUV",
+    # MPV
     "mpv": "MPV",
+    "minivan": "MPV",
+    "van": "MPV",
+    
+    # SUV
+    "suv": "SUV",
+    "crossover": "SUV",
+    "cuv": "SUV",
+    "jip": "SUV",
+    "jeep": "SUV",
+    "offroad": "SUV",
+    
+    # Hatchback
+    "hatchback": "HATCHBACK",
+    "city car": "HATCHBACK",
+    "compact": "HATCHBACK",
+    
+    # Sedan
     "sedan": "SEDAN",
-
-    "coupe": "SPORT",
-    "roadster": "SPORT",
-    "convertible": "SPORT",
-
-    "hatchback": "SMALL",
-    "city car": "SMALL",
-
-    "wagon": "WAGON"
+    "saloon": "SEDAN",
+    "coupe": "SEDAN"
 }
+
 
 
 # ======================================================
@@ -93,10 +117,43 @@ POWERTRAIN_MAP = {
 
     "phev": "PHEV",
 
+    "bev": "EV",
     "electric": "EV",
     "ev": "EV",
     "listrik": "EV"
 }
+
+
+
+# ======================================================
+# DRIVETRAIN ONTOLOGY
+# ======================================================
+
+DRIVETRAIN_MAP = {
+    "fwd": "FWD",
+    "penggerak depan": "FWD",
+    
+    "rwd": "RWD",
+    "penggerak belakang": "RWD",
+    
+    "awd": "AWD",
+    "all wheel drive": "AWD",
+    
+    "4wd": "4WD",
+    "4x4": "4WD"
+}
+
+# Mapping numerik hasil preprocessing (sinkron dengan preprocessing.py)
+DRIVETRAIN_ENCODING = {
+    "FWD": 1.0,
+    "RWD": 2.0,
+    "AWD": 3.0,
+    "4WD": 4.0
+}
+
+# Reverse mapping untuk display
+DRIVETRAIN_DECODING = {v: k for k, v in DRIVETRAIN_ENCODING.items()}
+
 
 
 # ======================================================
@@ -123,7 +180,26 @@ FEATURE_CONSTRAINT_MAP = {
     "hud": ("HEAD_UP_DISPLAY", 1),
     "head up display": ("HEAD_UP_DISPLAY", 1),
 
-    "360 camera": ("CAMERA_360", 1)
+    "360 camera": ("CAMERA_360", 1),
+    "kamera 360": ("CAMERA_360", 1),
+    
+    # ADAS & Safety
+    "adas": ("AEB", 1), # Simplified projection representing advanced safety
+    "aeb": ("AEB", 1),
+    "lka": ("LKA", 1),
+    "acc": ("ACC", 1),
+    
+    # Comfort & Misc
+    "kursi elektrik": ("ELECTRIC_SEAT", 1),
+    "electric seat": ("ELECTRIC_SEAT", 1),
+    "kursi pijat": ("MASSAGE_SEAT", 1),
+    "pendingin jok": ("VENTILATED_SEAT", 1),
+    "kulit": ("LEATHER_SEAT", 1),
+    "jok kulit": ("LEATHER_SEAT", 1),
+    "power tailgate": ("POWER_TAILGATE", 1),
+    "pintu lipat otomatis": ("POWER_TAILGATE", 1),
+    "air suspension": ("AIR_SUSPENSION", 1),
+    "suspensi udara": ("AIR_SUSPENSION", 1)
 }
 
 
@@ -262,4 +338,55 @@ BRAND_MAP = {
     "audi": "audi",
     "lexus": "lexus",
     "volvo": "volvo"
+}
+
+
+# ======================================================
+# CLUSTER → WEIGHT PROFILES (Initial UI State)
+# ======================================================
+
+CLUSTER_PROFILES = {
+    "Family Car": {
+        "INDEX_POWER": 4, "INDEX_HANDLING": 5, "INDEX_EFFICIENCY": 7,
+        "INDEX_DRIVER_COMFORT": 6, "INDEX_PASSENGER_COMFORT": 8, "INDEX_SAFETY": 8,
+        "INDEX_TECH": 6, "INDEX_SPACE": 9, "INDEX_OFFROAD": 2,
+        "INDEX_LUXURY": 3, "INDEX_PARTS_AVAILABILITY": 9, "INDEX_MARKET_DEMAND": 7,
+        "INDEX_PRICE": 10,
+    },
+    "City Car": {
+        "INDEX_POWER": 4, "INDEX_HANDLING": 7, "INDEX_EFFICIENCY": 9,
+        "INDEX_DRIVER_COMFORT": 6, "INDEX_PASSENGER_COMFORT": 7, "INDEX_SAFETY": 6,
+        "INDEX_TECH": 7, "INDEX_SPACE": 5, "INDEX_OFFROAD": 1,
+        "INDEX_LUXURY": 2, "INDEX_PARTS_AVAILABILITY": 8, "INDEX_MARKET_DEMAND": 8,
+        "INDEX_PRICE": 10,
+    },
+    "Offroad": {
+        "INDEX_POWER": 8, "INDEX_HANDLING": 4, "INDEX_EFFICIENCY": 3,
+        "INDEX_DRIVER_COMFORT": 5, "INDEX_PASSENGER_COMFORT": 5, "INDEX_SAFETY": 7,
+        "INDEX_TECH": 5, "INDEX_SPACE": 7, "INDEX_OFFROAD": 9,
+        "INDEX_LUXURY": 3, "INDEX_PARTS_AVAILABILITY": 7, "INDEX_MARKET_DEMAND": 5,
+        "INDEX_PRICE": 10,
+    },
+    "Performance": {
+        "INDEX_POWER": 9, "INDEX_HANDLING": 9, "INDEX_EFFICIENCY": 3,
+        "INDEX_DRIVER_COMFORT": 7, "INDEX_PASSENGER_COMFORT": 4, "INDEX_SAFETY": 6,
+        "INDEX_TECH": 7, "INDEX_SPACE": 3, "INDEX_OFFROAD": 2,
+        "INDEX_LUXURY": 5, "INDEX_PARTS_AVAILABILITY": 6, "INDEX_MARKET_DEMAND": 7,
+        "INDEX_PRICE": 10,
+    },
+    "Luxury": {
+        "INDEX_POWER": 7, "INDEX_HANDLING": 7, "INDEX_EFFICIENCY": 3,
+        "INDEX_DRIVER_COMFORT": 9, "INDEX_PASSENGER_COMFORT": 9, "INDEX_SAFETY": 8,
+        "INDEX_TECH": 9, "INDEX_SPACE": 7, "INDEX_OFFROAD": 2,
+        "INDEX_LUXURY": 10, "INDEX_PARTS_AVAILABILITY": 8, "INDEX_MARKET_DEMAND": 6,
+        "INDEX_PRICE": 10,
+    },
+}
+
+GLOBAL_DEFAULT_PROFILE = {
+    "INDEX_POWER": 5, "INDEX_HANDLING": 5, "INDEX_EFFICIENCY": 5,
+    "INDEX_DRIVER_COMFORT": 5, "INDEX_PASSENGER_COMFORT": 5, "INDEX_SAFETY": 5,
+    "INDEX_TECH": 5, "INDEX_SPACE": 5, "INDEX_OFFROAD": 5,
+    "INDEX_LUXURY": 5, "INDEX_PARTS_AVAILABILITY": 5, "INDEX_MARKET_DEMAND": 5,
+    "INDEX_PRICE": 10,
 }

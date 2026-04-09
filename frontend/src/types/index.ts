@@ -17,17 +17,18 @@ export interface CarRecommendation {
   VIKOR_DQ?: number;
   VIKOR_IS_COMPROMISE?: boolean;
   // Criteria index breakdown
-  INDEX_PERFORMANCE?: number;
+  INDEX_POWER?: number;
+  INDEX_HANDLING?: number;
   INDEX_EFFICIENCY?: number;
   INDEX_SAFETY?: number;
   INDEX_DRIVER_COMFORT?: number;
   INDEX_PASSENGER_COMFORT?: number;
-  INDEX_FUN_TO_DRIVE?: number;
   INDEX_TECH?: number;
   INDEX_SPACE?: number;
   INDEX_OFFROAD?: number;
   INDEX_LUXURY?: number;
-  INDEX_POPULARITY?: number;
+  INDEX_LIFECYCLE_SAFE?: number;
+  INDEX_BRAND_STRENGTH?: number;
   INDEX_PRICE?: number;
   INDEX_CLUSTER_MATCH?: number;
 }

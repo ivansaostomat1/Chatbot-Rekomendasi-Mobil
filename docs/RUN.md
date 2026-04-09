@@ -26,7 +26,11 @@ npm run dev
 ### Terminal 2: Backend (FastAPI & Ranking)
 ```bash
 cd backend
-# Aktifkan venv dulu (.\venv\Scripts\activate atau source venv/bin/activate)
+
+.\venv\Scripts\activate
+ atau 
+ source venv/bin/activate
+ 
 uvicorn app.main:app --reload
 ```
 *Layanan berjalan di: `http://localhost:8000`*

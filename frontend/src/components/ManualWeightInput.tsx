@@ -13,18 +13,19 @@ interface ManualWeightInputProps {
 }
 
 const CRITERIA_MAP = [
-  { key: 'INDEX_POWER', label: 'Tenaga & Performa', color: '#F59E0B', icon: '⚡' },
-  { key: 'INDEX_HANDLING', label: 'Stabilitas & Handling', color: '#EF4444', icon: '🛞' },
-  { key: 'INDEX_EFFICIENCY', label: 'Efisiensi BBM', color: '#10B981', icon: '⛽' },
-  { key: 'INDEX_DRIVER_COMFORT', label: 'Kenyamanan Pengemudi', color: '#6366F1', icon: '🧑‍✈️' },
-  { key: 'INDEX_PASSENGER_COMFORT', label: 'Kenyamanan Penumpang', color: '#8B5CF6', icon: '🛋' },
-  { key: 'INDEX_SAFETY', label: 'Keamanan', color: '#00BB77', icon: '🛡' },
-  { key: 'INDEX_TECH', label: 'Teknologi & Fitur', color: '#06B6D4', icon: '📡' },
-  { key: 'INDEX_SPACE', label: 'Luas Kabin', color: '#3B82F6', icon: '📦' },
-  { key: 'INDEX_OFFROAD', label: 'Kemampuan Offroad', color: '#84CC16', icon: '🏔' },
-  { key: 'INDEX_LUXURY', label: 'Kemewahan', color: '#D946EF', icon: '💎' },
-  { key: 'INDEX_POPULARITY', label: 'Popularitas', color: '#F43F5E', icon: '📈' },
-  { key: 'INDEX_PRICE', label: 'Value for Money', color: '#14B8A6', icon: '💰' }
+  { key: 'INDEX_POWER', label: 'Tenaga & Akselerasi', desc: 'Prioritas pada mobil yang kencang, responsif, dan kuat menanjak.', color: '#F59E0B', icon: '⚡' },
+  { key: 'INDEX_HANDLING', label: 'Stabilitas & Kelincahan', desc: 'Fokus pada mobil yang stabil di tikungan dan minim limbung.', color: '#EF4444', icon: '🛞' },
+  { key: 'INDEX_EFFICIENCY', label: 'Efisiensi BBM', desc: 'Memprioritaskan mobil dengan konsumsi bensin yang paling hemat.', color: '#10B981', icon: '⛽' },
+  { key: 'INDEX_DRIVER_COMFORT', label: 'Kenyamanan Pengemudi', desc: 'Cari mobil dengan posisi duduk ergonomis dan fitur setir lengkap.', color: '#6366F1', icon: '🧑‍✈️' },
+  { key: 'INDEX_PASSENGER_COMFORT', label: 'Kenyamanan Penumpang', desc: 'Prioritas kabin kedap, bantalan empuk, dan fitur pelengkap baris belakang.', color: '#8B5CF6', icon: '🛋' },
+  { key: 'INDEX_SAFETY', label: 'Fitur Keamanan', desc: 'Mencari mobil dengan Advanced Driver Assistance (ADAS) & Airbag banyak.', color: '#00BB77', icon: '🛡' },
+  { key: 'INDEX_TECH', label: 'Teknologi & Fitur Modern', desc: 'Mobil canggih dengan layar besar, kamera 360, & integrasi smartphone.', color: '#06B6D4', icon: '📡' },
+  { key: 'INDEX_SPACE', label: 'Keluasan Kabin & Bagasi', desc: 'Memprioritaskan mobil yang lega untuk membawa banyak barang / keluarga.', color: '#3B82F6', icon: '📦' },
+  { key: 'INDEX_OFFROAD', label: 'Keandalan Jalan Rusak', desc: 'Aman untuk jalur berlubang, banjir, atau jalanan rusak (Ground Clearance tinggi).', color: '#84CC16', icon: '🏔' },
+  { key: 'INDEX_LUXURY', label: 'Kesan Mewah & Premium', desc: 'Mobil dengan interior kulit asli, sunroof, panoramic, atau kursi pijat.', color: '#D946EF', icon: '💎' },
+  { key: 'INDEX_LIFECYCLE_SAFE', label: 'Model Aman (Anti-Discontinue)', desc: 'Menghindari mobil yang sudah stop produksi / penjualannya mati di akhir tahun.', color: '#F97316', icon: '⏳' },
+  { key: 'INDEX_BRAND_STRENGTH', label: 'Reputasi & Jaringan Merek', desc: 'Pilih merek dengan populasi terbanyak, rasio depresiasi minim, & bengkel luas.', color: '#F43F5E', icon: '📈' },
+  { key: 'INDEX_PRICE', label: 'Value for Money', desc: 'Mencari harga paling masuk akal (murah) dengan kualitas maksimal.', color: '#14B8A6', icon: '💰' }
 ];
 
 export default function ManualWeightInput({ initialWeights, onSubmit, disabled = false }: ManualWeightInputProps) {
@@ -95,10 +96,13 @@ export default function ManualWeightInput({ initialWeights, onSubmit, disabled =
             gap: '8px',
             boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                <span style={{ fontSize: '1.2rem', filter: `drop-shadow(0 2px 4px ${crit.color}40)` }}>{crit.icon}</span>
-                {crit.label}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <span style={{ fontSize: '1.4rem', filter: `drop-shadow(0 2px 4px ${crit.color}40)`, marginTop: '2px' }}>{crit.icon}</span>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>{crit.label}</span>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.3 }}>{crit.desc}</span>
+                </div>
               </div>
             </div>
             

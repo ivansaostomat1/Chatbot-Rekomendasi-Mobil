@@ -47,23 +47,24 @@ interface HistoryItem {
 }
 
 const INDEX_SHORT: Record<string, string> = {
-  INDEX_PERFORMANCE: '⚡ Perf',
+  INDEX_POWER: '⚡ Power',
+  INDEX_HANDLING: '🛞 Hndl',
   INDEX_EFFICIENCY: '⛽ Eff',
   INDEX_SAFETY: '🛡 Safe',
   INDEX_DRIVER_COMFORT: '🧑‍✈️ DrvCmf',
   INDEX_PASSENGER_COMFORT: '🛋 PsgCmf',
-  INDEX_FUN_TO_DRIVE: '🎮 Fun',
   INDEX_TECH: '📡 Tech',
   INDEX_SPACE: '📦 Space',
   INDEX_OFFROAD: '🏔 Offrd',
   INDEX_LUXURY: '💎 Lux',
-  INDEX_POPULARITY: '📈 Pop',
-  INDEX_PRICE: '💰 Price',
+  INDEX_LIFECYCLE_SAFE: '⏳ Safe',
+  INDEX_BRAND_STRENGTH: '📈 Brand',
+  INDEX_PRICE: '💰 Val',
   INDEX_CLUSTER_MATCH: '🎯 Cluster',
 };
 
 type EvalViewMode = 'history_list' | 'chat_detail' | 'system_metrics';
-type ChatDetailTab = 'nlp' | 'filter' | 'vikor';
+type ChatDetailTab = 'nlp' | 'filter' | 'vikor' | 'trace';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -147,7 +148,7 @@ export default function Navbar() {
             {/* Scientific Mode Toggle */}
             <button
               onClick={toggleScientific}
-              title={isScientific ? 'Mode Ilmiah aktif — klik untuk Mode Awam' : 'Mode Awam aktif — klik untuk Mode Ilmiah'}
+              title={isScientific ? 'Debug Mode aktif — klik untuk Mode Normal' : 'Mode Normal aktif — klik untuk Debug Mode'}
               aria-label="Toggle Scientific Mode"
               style={{
                 display: 'flex', alignItems: 'center', gap: '6px',
@@ -162,7 +163,7 @@ export default function Navbar() {
               <span style={{ display: 'inline-block', width: '28px', height: '16px', borderRadius: '10px', background: isScientific ? '#8B5CF6' : 'var(--border-color)', position: 'relative', transition: 'background 0.3s ease' }}>
                 <span style={{ position: 'absolute', top: '2px', left: isScientific ? '14px' : '2px', width: '12px', height: '12px', borderRadius: '50%', background: '#fff', transition: 'left 0.3s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }} />
               </span>
-              🔬 {isScientific ? 'Ilmiah' : 'Simpel'}
+              🔬 {isScientific ? 'Debug Mode' : 'Normal'}
             </button>
 
             {isScientific && (
@@ -299,7 +300,7 @@ export default function Navbar() {
                       </div>
 
                       {/* TABS FOR DETAILS */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)', gap: '8px', padding: '4px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)', gap: '8px', padding: '4px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
                         <button onClick={() => setChatTab('nlp')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'nlp' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'nlp' ? '#4090F7' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'nlp' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
                           <HiMicrophone size={16} /> 1. NLP Pemahaman
                         </button>
@@ -307,7 +308,10 @@ export default function Navbar() {
                           <HiAdjustmentsHorizontal size={16} /> 2. Kategori Filter
                         </button>
                         <button onClick={() => setChatTab('vikor')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'vikor' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'vikor' ? '#00BB77' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'vikor' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
-                          <HiChartBar size={16} /> 3. Pembobotan VIKOR
+                          <HiChartBar size={16} /> 3. Skoring VIKOR
+                        </button>
+                        <button onClick={() => setChatTab('trace')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'trace' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'trace' ? '#F59E0B' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'trace' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                          <HiClipboardDocumentCheck size={16} /> 4. Execution Trace Log
                         </button>
                       </div>
 
@@ -456,9 +460,47 @@ export default function Navbar() {
                       </div>
                     )}
 
-                  </div>
-                </div>
-            )}
+                        {/* TRACE TAB */}
+                        {chatTab === 'trace' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', animation: 'fadeIn 0.2s ease', background: '#0f172a', borderRadius: '12px', padding: '16px', border: '1px solid #1e293b' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#4ade80', marginBottom: '8px' }}>
+                              <HiClipboardDocumentCheck size={18} />
+                              <span style={{ fontSize: '0.8rem', fontWeight: 800, fontFamily: "'Fira Code', monospace" }}>SYSTEM_EXECUTION_TRACE_LOG</span>
+                            </div>
+                            
+                            <div style={{ color: '#94a3b8', fontSize: '0.75rem', fontFamily: "'Fira Code', monospace", display: 'flex', flexDirection: 'column', gap: '8px', lineHeight: 1.5 }}>
+                              <div><span style={{ color: '#4ade80' }}>$</span> SYSTEM_INIT: <span style={{ color: '#e2e8f0' }}>Receiving User Input...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#38bdf8' }}>"{selectedChat.user_message}"</div>
+                              
+                              <div><span style={{ color: '#4ade80' }}>$</span> NLU_DIET: <span style={{ color: '#e2e8f0' }}>Extracting Intent & Preferences...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#fcd34d' }}>Found Preferences: [{selectedChat.nlp_preferences?.join(', ') || 'Ø'}]</div>
+                              <div style={{ paddingLeft: '14px', color: '#fcd34d' }}>Found Target Needs: [{selectedChat.nlp_needs?.join(', ') || 'Ø'}]</div>
+                              
+                              <div><span style={{ color: '#4ade80' }}>$</span> NLU_CRF: <span style={{ color: '#e2e8f0' }}>Extracting Named Entities...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#fcd34d' }}>Found Constraints (X_Entities): [{selectedChat.nlp_entities?.join(', ') || 'Ø'}]</div>
+                              
+                              <div><span style={{ color: '#4ade80' }}>$</span> PIPELINE_HAC: <span style={{ color: '#e2e8f0' }}>Sub-space Clustering (Ward&apos;s Method)...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#a78bfa' }}>Target Cluster Set: C_k = {selectedChat.cluster_name || 'C_Global (All)'}</div>
+                              
+                              <div><span style={{ color: '#4ade80' }}>$</span> PIPELINE_BOOL: <span style={{ color: '#e2e8f0' }}>Applying Ω Hard Constraints...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#a78bfa' }}>Active Logic: {Object.entries(selectedChat.hard_filters_applied || {}).map(([k,v]) => `${k}=${v}`).join(' & ') || 'None'}</div>
+                              <div style={{ paddingLeft: '14px', color: '#a78bfa' }}>Sub-space dimension reduction: N={selectedChat.cars_total} ➔ N&apos;={selectedChat.cars_after_constraint}</div>
+                              
+                              <div><span style={{ color: '#4ade80' }}>$</span> VIKOR_MCDM: <span style={{ color: '#e2e8f0' }}>Building Decision Matrix & Weights...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#fb923c' }}>Weights V_w: {selectedChat.weight_dict_used ? Object.keys(selectedChat.weight_dict_used).length + " parameters applied" : "Uniform 1/n"}</div>
+                              <div style={{ paddingLeft: '14px', color: '#fb923c' }}>Computing PIS (f*) and NIS (f-)... Done.</div>
+                              <div style={{ paddingLeft: '14px', color: '#fb923c' }}>Calculating Utility S_j and Regret R_j... Done.</div>
+                              <div style={{ paddingLeft: '14px', color: '#fb923c' }}>Calculating Q_j (v=0.5)... Done.</div>
+                              <div style={{ paddingLeft: '14px', color: '#fb923c' }}>Verifying Condition 1 & 2 (Acceptable Advantage & Stability)... Done.</div>
+                              
+                              <div><span style={{ color: '#4ade80' }}>$</span> SYSTEM_RETURN: <span style={{ color: '#e2e8f0' }}>Sending JSON Response...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#4ade80', fontWeight: 'bold' }}>Success! Top 1 ➔ {selectedChat.top_recommendations?.[0]?.BRAND} {selectedChat.top_recommendations?.[0]?.MODEL}</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
             {/* LAYER 3: SYSTEM METRICS (SCIENCE DASHBOARD) */}
             {viewMode === 'system_metrics' && (

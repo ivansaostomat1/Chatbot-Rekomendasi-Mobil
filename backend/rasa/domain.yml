@@ -6,6 +6,8 @@ intents:
   - choose_preference
   - nlu_fallback
   - ask_comparison
+  - start_search
+  - out_of_scope
 
 actions:
   - action_recommend_car
@@ -21,15 +23,31 @@ responses:
   utter_ask_detail:
   - text: "Baik, saya sedang mencari mobil yang cocok untuk kamu..."
 
+  utter_ask_budget:
+  - text: "Berapa kisaran budget kamu? 😊"
+
 
 entities:
   - budget
-  - body_type
-  - powertrain
-  - feature
-  - preference
-  - hard_filter
-  - brand
+  - min_seat
+  - body_type:
+      roles:
+        - negated
+  - powertrain:
+      roles:
+        - negated
+  - feature:
+      roles:
+        - negated
+  - preference:
+      roles:
+        - negated
+  - hard_filter:
+      roles:
+        - negated
+  - brand:
+      roles:
+        - negated
 
 slots:
   min_budget:
@@ -40,6 +58,18 @@ slots:
 
   max_budget:
     type: float
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  negated_terms:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  raw_budgets:
+    type: list
     influence_conversation: false
     mappings:
       - type: custom

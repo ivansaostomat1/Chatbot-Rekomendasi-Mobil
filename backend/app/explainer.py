@@ -13,7 +13,8 @@ INDEX_LABELS = {
     "INDEX_SPACE": "Keluasan Kabin",
     "INDEX_OFFROAD": "Kemampuan Offroad/Banjir",
     "INDEX_LUXURY": "Kesan Premium",
-    "INDEX_POPULARITY": "Popularitas di Pasar",
+    "INDEX_LIFECYCLE_SAFE": "Produk Aman (Trend Wholesale Aktual)",
+    "INDEX_BRAND_STRENGTH": "Kekuatan Ekosistem Merek",
     "INDEX_PRICE": "Harga yang Kompetitif",
 }
 
@@ -25,8 +26,8 @@ def generate_car_insights(car_record: dict, weight_dict: dict):
     
     valid_distances = []
     
-    # Kriteria kualitas (semua kecuali harga, match cluster, & popularitas)
-    quality_indices = [c for c in VIKOR_CRITERIA if c not in ["INDEX_PRICE", "INDEX_CLUSTER_MATCH", "INDEX_POPULARITY"]]
+    # Kriteria kualitas (semua kecuali harga dan match cluster)
+    quality_indices = [c for c in VIKOR_CRITERIA if c not in ["INDEX_PRICE", "INDEX_CLUSTER_MATCH"]]
     
     avg_quality = sum([car_record.get(c, 0) for c in quality_indices]) / len(quality_indices)
     price_score = car_record.get("INDEX_PRICE", 1) # 10 = murah, 1 = mahal

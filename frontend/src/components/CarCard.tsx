@@ -61,18 +61,19 @@ const CLUSTER_PROFILES: Record<string, string> = {
 };
 
 const INDEX_LABELS: Record<string, string> = {
-  INDEX_PERFORMANCE:       '⚡ Performance',
-  INDEX_EFFICIENCY:        '⛽ Efficiency',
-  INDEX_SAFETY:            '🛡 Safety',
-  INDEX_DRIVER_COMFORT:    '🧑‍✈️ Driver Comfort',
-  INDEX_PASSENGER_COMFORT: '🛋 Passenger Comfort',
-  INDEX_FUN_TO_DRIVE:      '🎮 Fun to Drive',
-  INDEX_TECH:              '📡 Technology',
-  INDEX_SPACE:             '📦 Space',
-  INDEX_OFFROAD:           '🏔 Off-road',
-  INDEX_LUXURY:            '💎 Luxury',
-  INDEX_POPULARITY:        '📈 Popularity',
-  INDEX_PRICE:             '💰 Value for Money',
+  INDEX_POWER:               '⚡ Power',
+  INDEX_HANDLING:            '🛞 Handling',
+  INDEX_EFFICIENCY:          '⛽ Efficiency',
+  INDEX_SAFETY:              '🛡 Safety',
+  INDEX_DRIVER_COMFORT:      '🧑‍✈️ Driver Comfort',
+  INDEX_PASSENGER_COMFORT:   '🛋 Passenger Comfort',
+  INDEX_TECH:                '📡 Technology',
+  INDEX_SPACE:               '📦 Space',
+  INDEX_OFFROAD:             '🏔 Off-road',
+  INDEX_LUXURY:              '💎 Luxury',
+  INDEX_LIFECYCLE_SAFE:      '⏳ Lifecycle Safe',
+  INDEX_BRAND_STRENGTH:      '📈 Brand Strength',
+  INDEX_PRICE:               '💰 Value for Money',
 };
 
 const SCENARIO_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
@@ -319,7 +320,7 @@ export default function CarCard({ car, rank }: Props) {
             onClick={() => setExpanded(p => !p)}
             style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0 0', color: 'var(--text-muted)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', textTransform: 'uppercase' }}
           >
-            {expanded ? '▲ Sembunyikan Evaluasi' : '▼ Lihat Breakdown & Evaluasi Ilmiah'}
+            {expanded ? '▲ Sembunyikan Evaluasi' : '▼ Lihat Breakdown & Evaluasi Debug'}
           </button>
         )}
 

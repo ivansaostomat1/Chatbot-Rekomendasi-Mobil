@@ -52,12 +52,28 @@ def load_mobil_dataset() -> pd.DataFrame:
 
 def load_wholesales_dataset() -> pd.DataFrame:
     """
-    Load dataset wholesales (popularitas)
+    Load dataset wholesales (ketersediaan unit di dealer / parts availability).
+    Data per BRAND+MODEL+VARIAN -> indikator seberapa besar stok beredar.
+    Tinggi = dealer banyak pesan = spare parts & jaringan servis lebih siap.
     """
 
     wholesales_path = DATA_DIR / "wholesales.csv"
 
     df = _load_csv(wholesales_path)
+
+    return df
+
+
+def load_retail_dataset() -> pd.DataFrame:
+    """
+    Load dataset retail (permintaan pasar aktual dari konsumen akhir).
+    Data per BRAND (agregat bulanan) -> indikator popularitas brand di pasar.
+    Tinggi = banyak dibeli konsumen = brand proven & dipercaya pasar.
+    """
+
+    retail_path = DATA_DIR / "retail.csv"
+
+    df = _load_csv(retail_path)
 
     return df
 
@@ -68,11 +84,18 @@ def load_wholesales_dataset() -> pd.DataFrame:
 
 def load_all_datasets():
     """
-    Load semua dataset yang diperlukan sistem
+    Load semua dataset yang diperlukan sistem.
+
+    Returns: (mobil, wholesales, retail)
+    - mobil     : spesifikasi kendaraan
+    - wholesales: volume per varian  -> proxy ketersediaan parts & dealer network
+    - retail    : volume per brand   -> proxy popularitas & permintaan pasar aktual
     """
 
     mobil = load_mobil_dataset()
 
     wholesales = load_wholesales_dataset()
 
-    return mobil, wholesales
+    retail = load_retail_dataset()
+
+    return mobil, wholesales, retail

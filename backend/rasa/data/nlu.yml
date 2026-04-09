@@ -8,6 +8,54 @@ nlu:
     - hi
     - selamat pagi
     - selamat malam
+    
+- intent: start_search
+  examples: |
+    - cari mobil baru
+    - mulai pencarian baru
+    - ganti pencarian
+    - reset
+    - mulai dari awal
+    - saya mau cari lagi
+    - cari yang lain
+    - ganti kriteria
+    - ulang pencarian
+    - saya mau ganti pilihan
+    - mulai ulang
+    - coba dari awal lagi
+    - pencarian baru
+    - hapus kriteria sebelumnya
+    - ganti mobil yang dicari
+    - ganti mobil
+    - mobil baru
+    - ada mobil
+    - mobil apa
+
+- intent: out_of_scope
+  examples: |
+    - siapa presiden indonesia?
+    - berapa harga bensin sekarang?
+    - rekomendasikan laptop gaming
+    - cuaca hari ini gimana?
+    - carikan saya rumah
+    - kamu bisa ngapain aja?
+    - siapa yang buat kamu?
+    - berapa umur kamu?
+    - apa itu inflasi?
+    - tolong buatkan essay
+    - gimana cara masak rendang?
+    - rekomendasi hp murah dong
+    - harga emas sekarang berapa?
+    - kamu bisa bahasa inggris?
+    - saya mau pesan makanan
+    - makan bang
+    - test
+    - asdfghjkl
+    - tidak nyambung
+    - berita hari ini
+    - siapa presiden indonesia
+    - resep masakan ayam
+    - cuaca hari ini
 
 - intent: choose_preference
   examples: |
@@ -27,24 +75,6 @@ nlu:
     - handling
     - bertenaga
     - tarikannya kuat
-
-    - 1
-    - pilih 1
-    - nomor 1
-    - pilihan 1
-    - 2
-    - pilih 2
-    - nomor 2
-    - pilihan 2
-
-    - 3
-    - pilih 3
-    - nomor 3
-    - pilihan 3
-    - 4
-    - pilih 4
-    - nomor 4
-    - pilihan 4
 
 - lookup: body_type
   examples: |
@@ -104,6 +134,24 @@ nlu:
     - bertenaga
     - tarikan kuat
     - akselerasi
+    - sparepart gampang
+    - bengkel banyak
+    - aftersales
+    - perawatan mudah
+    - onderdil
+    - paling laku
+    - populer
+    - laris
+    - harga bekas
+    - kuliah
+    - anak muda
+    - harian
+    - daily
+    - kantor
+    - kerja
+    - mobil kedua
+    - pemula
+    - perjalanan jauh
 
 - lookup: hard_filter
   examples: |
@@ -132,6 +180,31 @@ nlu:
 
 - intent: ask_recommendation
   examples: |
+    - kalau bisa jangan [suv]{"entity":"body_type", "role":"negated"}
+    - selain merk [toyota]{"entity":"brand", "role":"negated"} apa ya
+    - cariin [sedan](body_type) tapi bukan yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - anti [diesel]{"entity":"powertrain", "role":"negated"} ya
+    - jangan cari yang [irit]{"entity":"preference", "role":"negated"} malah
+    - cari [suv](body_type) jangan [mpv]{"entity":"body_type", "role":"negated"} dan [sedan]{"entity":"body_type", "role":"negated"}
+    - usahakan bukan [hybrid]{"entity":"powertrain", "role":"negated"}
+    - saya anti [honda]{"entity":"brand", "role":"negated"}
+    - asal jangan [ev]{"entity":"powertrain", "role":"negated"}
+    - pokoknya jangan kasih mobil [listrik]{"entity":"powertrain", "role":"negated"}
+    - jangan [wuling]{"entity":"brand", "role":"negated"} dulu deh
+    - cari [sedan](body_type) keren tapi jangan [toyota]{"entity":"brand", "role":"negated"}
+    - bukan [suv]{"entity":"body_type", "role":"negated"} ya tapi kencang
+    - kalau bisa selain [diesel]{"entity":"powertrain", "role":"negated"} karena bising
+    - butuh mobil keluarga asal bukan [ev]{"entity":"powertrain", "role":"negated"}
+    - budget [1m](budget) tapi jangan [mercedes]{"entity":"brand", "role":"negated"} dulu
+    - usahakan jangan merk [cina]{"entity":"brand", "role":"negated"}
+    - anti [ev]{"entity":"powertrain", "role":"negated"} pokoknya
+    - cari yang [irit](preference) tapi jangan [sedan]{"entity":"body_type", "role":"negated"}
+    - pengen dapet [5](min_seat) seat
+    - saya butuh mobil [7](min_seat) kursi
+    - kalau [8](min_seat) penumpang dapet nggak
+    - cari mobil yang [5](min_seat) seat budget [300 juta](budget)
+    - dengan dana [400jt](budget) mau [6](min_seat) seat
+    - bajet [1m](budget) tapi jangan [mpv]{"entity":"body_type", "role":"negated"}
     - saya ingin mobil murah [irit](preference) dan [nyaman](preference) di harga [300jt](budget)
     - saya ingin mobil paling worth di harga [400-500jt](budget) wajib punya [sunroof](feature) dan [apple carplay](feature)
     - saya mau mobil [nyaman](preference) dan [tangguh](preference) [bebas banjir](hard_filter) di harga [800jt](budget)
@@ -293,3 +366,28 @@ nlu:
     - mobil buat [ngebut](preference)
     - mobil aman dari [banjir](hard_filter)
     - mobil [ground clearance tinggi](hard_filter)
+
+- intent: ask_comparison
+  examples: |
+    - kalau budget ditambah [50jt](budget) dapet apa?
+    - bagaimana kalau budget saya naik jadi [600jt](budget)?
+    - dibandingin sama budget [800jt](budget) enakan mana?
+    - kalau saya tambah budget [100 juta](budget) dapet yang lebih bagus ga?
+    - bandingkan dengan budget [500jt](budget)
+    - kalau dapet [1 milyar](budget) dapet apa aja?
+    - gimana kalau budgetnya saya tambah [200jt](budget)?
+    - nambah [100jt](budget) lagi dapet mobil apa?
+    - kalau budgetnya jadi [700 juta](budget) ada pilihan lain?
+    - kalau budget saya nambah [100jt](budget) dapet apa?
+    - kalau nambah [50 juta](budget) bisa dapet yang lebih bagus?
+    - gimana kalau budget saya [800jt](budget)?
+    - bandingkan dengan budget [1M](budget)
+    - kalau budget dinaikkan ke [600jt](budget) dapet apa?
+    - kalau budget saya [700 juta](budget) bisa dapet yang mana?
+    - dengan budget [500jt](budget) ada pilihan lain ga?
+    - nambah [200 juta](budget) lagi kira-kira dapet apa?
+    - kalau budget saya tambah jadi [900jt](budget) rekomendasinya berubah ga?
+    - ada yang lebih bagus di harga [1.2M](budget)?
+    - budget saya mau saya naikkan ke [1M](budget) dapet apa?
+    - opsi lain kalau budget [600 jutaan](budget)?
+    - kalau saya extend budget ke [800jt](budget) pilihan bertambah ga?

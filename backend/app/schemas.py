@@ -26,6 +26,8 @@ class CarRecommendation(BaseModel):
     VIKOR_IS_COMPROMISE: Optional[bool] = None
     VIKOR_STATUS: Optional[str] = None
     INDEX_PRICE: Optional[float] = None
+    DRIVE_SYS: Optional[str] = None
+    POWERTRAIN: Optional[str] = None
     insight: Optional[str] = None
 
     model_config = {
@@ -58,6 +60,8 @@ class ChatRequest(BaseModel):
     weight_input: Dict[str, float] = Field(default_factory=dict)
 
     entities: List[str] = Field(default_factory=list)
+    negated_terms: List[str] = Field(default_factory=list)
+    raw_budgets: List[str] = Field(default_factory=list)
 
     min_budget: Optional[int] = None
     max_budget: Optional[int] = None
@@ -90,8 +94,10 @@ class RecommendationRequest(BaseModel):
 
     body_type: Optional[str] = None
     powertrain: Optional[str] = None
+    drive_sys: Optional[str] = None
 
     feature_constraints: Optional[Dict[str, int]] = Field(default_factory=dict)
+    negated_terms: List[str] = Field(default_factory=list)
 
     min_seat: Optional[int] = None
     min_ground_clearance: Optional[float] = None

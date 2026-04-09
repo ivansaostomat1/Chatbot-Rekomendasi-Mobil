@@ -26,6 +26,8 @@ from app.query_guard import apply_query_guard
 from app.feature_inspector import generate_feature_summary
 from app.constraint_analyzer import analyze_constraints
 from .vikor import vikor_rank, validate_compromise_solution, build_weight_vector, VIKOR_CRITERIA
+from app.feature_ontology import DRIVETRAIN_DECODING
+
 
 
 # ======================================================
@@ -44,9 +46,9 @@ def init_dataset():
 
     global FEATURE_SUMMARY
 
-    mobil, wholesales = load_all_datasets()
+    mobil, wholesales, retail = load_all_datasets()
 
-    df = generate_feature_dataset(mobil, wholesales)
+    df = generate_feature_dataset(mobil, wholesales, retail)
 
     df = perform_clustering(df)
 
@@ -62,7 +64,7 @@ def init_dataset():
     print("\nRare Features (<5% coverage):")
 
     for f, data in FEATURE_SUMMARY["rare_features"].items():
-        print(f"{f} → {data['coverage_ratio']*100:.1f}%")
+        print(f"{f} -> {data['coverage_ratio']*100:.1f}%")
 
     print("\n===============================================\n")
 
@@ -137,8 +139,10 @@ def recommend_cars(
     top_n=5,
     body_type=None,
     powertrain=None,
+    drive_sys=None,
     feature_constraints=None,
     brand=None,
+    negated_terms=None,
     **kwargs
 ):
 
@@ -146,7 +150,8 @@ def recommend_cars(
     print("[VIKOR RANKING ENGINE] Memulai Proses Rekomendasi")
     print(f"[VIKOR RANKING ENGINE] Weights: {weight_dict}")
     print(f"[VIKOR RANKING ENGINE] Feature Constraints: {feature_constraints}")
-    print(f"[VIKOR RANKING ENGINE] Hard Filters: {kwargs}, Budget: {min_budget} - {max_budget}, Target Body: {body_type}")
+    print(f"[VIKOR RANKING ENGINE] Hard Filters (need_terms): {kwargs}, Budget: {min_budget} - {max_budget}")
+    print(f"[VIKOR RANKING ENGINE] Pipeline Guards: Body={body_type}, Powertrain={powertrain}, Drive={drive_sys}")
 
     feature_constraints = feature_constraints or {}
     weight_dict = weight_dict or {}
@@ -167,7 +172,9 @@ def recommend_cars(
             temp_df,
             body_type=run_params.get("body_type"),
             powertrain=run_params.get("powertrain"),
-            feature_constraints=feature_constraints
+            drive_sys=run_params.get("drive_sys"),
+            feature_constraints=feature_constraints,
+            negated_terms=run_params.get("negated_terms")
         )
         if temp_df.empty: return temp_df, constraint_failed, None
 
@@ -205,10 +212,12 @@ def recommend_cars(
     base_params = {
         "body_type": body_type,
         "powertrain": powertrain,
+        "drive_sys": drive_sys,
         "brand": brand,
         "max_budget": max_budget,
         "min_budget": min_budget,
-        "hard_filters": kwargs
+        "hard_filters": kwargs,
+        "negated_terms": negated_terms
     }
 
     # PASS 1: Strict
@@ -285,6 +294,8 @@ def recommend_cars(
     weights_array = build_weight_vector(weight_dict, features_in_df)
     normalized_weights = dict(zip(features_in_df, weights_array))
     constraint_report["normalized_weights"] = normalized_weights
+    constraint_report["final_filtered_n"] = len(filtered_df)
+    constraint_report["total_cars"] = len(DF_CARS)
 
     # ==================================================
     # OUTPUT FORMAT
@@ -314,14 +325,30 @@ def recommend_cars(
         "INDEX_SPACE",
         "INDEX_OFFROAD",
         "INDEX_LUXURY",
-        "INDEX_POPULARITY",
+        "INDEX_PARTS_AVAILABILITY",   # Ketersediaan spare parts & jaringan dealer
+        "INDEX_MARKET_DEMAND",        # Popularitas & permintaan pasar aktual
         "INDEX_PRICE",
-        "INDEX_CLUSTER_MATCH"
+        "INDEX_CLUSTER_MATCH",
+        "DRIVE_SYS",
+        "POWERTRAIN"
     ]
 
     cols = [c for c in cols if c in result.columns]
 
     records = result[cols].to_dict(orient="records")
+
+    # Decode numeric features for front-end visibility (fixing float vs string schema error)
+    for r in records:
+        if r.get("DRIVE_SYS") is not None:
+            val = r["DRIVE_SYS"]
+            try:
+                r["DRIVE_SYS"] = DRIVETRAIN_DECODING.get(float(val), f"CODE_{val}")
+            except:
+                r["DRIVE_SYS"] = str(val)
+        
+        if r.get("POWERTRAIN") is not None:
+             r["POWERTRAIN"] = str(r["POWERTRAIN"])
+
 
     status_msg = ""
     if relax_log:

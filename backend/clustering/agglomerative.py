@@ -165,7 +165,7 @@ def perform_clustering(df):
     # Terapkan penamaan cluster otomatis
     df, profile_dict = assign_cluster_profiles(df)
     
-    print("📈 Karakteristik Otomatis Cluster yang Terbentuk:")
+    print("[CLUSTERING] Karakteristik Otomatis Cluster yang Terbentuk:")
     for cid, cname in profile_dict.items():
         print(f"  - Cluster {cid}: {cname}")
 

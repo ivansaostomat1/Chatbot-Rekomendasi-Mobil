@@ -13,7 +13,7 @@ from .schemas import (
 
 from vikor.ranking_engine import recommend_cars
 from .schemas import ChatRequest, HistoryItemResponse
-from .preference_builder import build_recommendation_params
+from .preference_builder import build_recommendation_params, get_initial_ui_profile
 from .database import init_db, save_chat_history, get_recent_history, delete_chat_history
 from .explainer import generate_car_insights, compare_two_cars
 from contextlib import asynccontextmanager
@@ -91,6 +91,22 @@ def recommend(request: RecommendationRequest):
 # CHAT ENDPOINT (NLP BRIDGE)
 # ======================================================
 
+@app.post("/initial-ui-state")
+def get_initial_ui_state(request: ChatRequest):
+    """
+    DIPANGGIL OLEH RASA: Mendapatkan profil bobot awal untuk slider UI
+    berdasarkan entitas yang terdeteksi NLU.
+    """
+    cluster_name, base_profile = get_initial_ui_profile(
+        preference_terms=request.preference_terms,
+        need_terms=request.need_terms,
+        entities=request.entities
+    )
+    return {
+        "cluster_name": cluster_name,
+        "base_weight_profile": base_profile
+    }
+
 @app.post("/chat", response_model=RecommendationResponse)
 def chat(request: ChatRequest):
 
@@ -100,6 +116,7 @@ def chat(request: ChatRequest):
 
     try:
         from app.feature_ontology import NEED_CLUSTER_MAP, NEED_HARD_FILTER_MAP
+        from app.query_guard import parse_budget_strings
 
         print("[FASTAPI] Membangun parameter rekomendasi...")
         params = build_recommendation_params(
@@ -107,6 +124,8 @@ def chat(request: ChatRequest):
             weight_input=request.weight_input,
             entities=request.entities,
         )
+        cluster_inferred = params.get("cluster_name")
+        print(f"[FASTAPI] 🎯 Cluster dari preference_terms {request.preference_terms}: '{cluster_inferred or 'Global (Tidak Terdeteksi)'}' ")
         # ──────────────────────────────────────────────────────
         # SINGLE SOURCE OF TRUTH: user manual_weights → VIKOR
         # NLP weight_input hanya dipakai kalau user tidak atur manual
@@ -115,8 +134,12 @@ def chat(request: ChatRequest):
             print(f"[FASTAPI] ✅ PURE USER-DRIVEN: Menggunakan manual_weights dari frontend: {request.manual_weights}")
             params["weight_dict"] = request.manual_weights
 
-        params["min_budget"] = request.min_budget
-        params["max_budget"] = request.max_budget
+        # Parse budget if raw_budgets exist, else fallback to min/max_budget
+        parsed_min, parsed_max = parse_budget_strings(request.raw_budgets)
+        
+        params["min_budget"] = request.min_budget if request.min_budget is not None else parsed_min
+        params["max_budget"] = request.max_budget if request.max_budget is not None else parsed_max
+        
         params.update({
             "min_seat": request.min_seat,
             "min_ground_clearance": request.min_ground_clearance,
@@ -150,6 +173,15 @@ def chat(request: ChatRequest):
                         params[filter_key] = filter_val
                         print(f"[FASTAPI] Hard filter dari need '{need_lower}': {filter_key}={filter_val}")
 
+        # Terapkan negated_terms (Hard Exclusion) — mobil yang harus dibuang dari dataset
+        if request.negated_terms:
+            params["negated_terms"] = request.negated_terms
+            print(f"[FASTAPI] [NEGATION] Negated Terms (Exclusion Aktif): {request.negated_terms}")
+
+        # Terapkan drive_sys (AWD/RWD/FWD) dari entitas
+        if params.get("drive_sys"):
+            print(f"[FASTAPI] [DRIVE] Drive System filter aktif: {params['drive_sys']}")
+
         print(f"[FASTAPI] Parameter hasil build: {params}")
         print("[FASTAPI] Memanggil VIKOR Ranking Engine (recommend_cars)...")
 
@@ -169,7 +201,7 @@ def chat(request: ChatRequest):
         # ======================================================
         comparison_insight = None
         if request.previous_max_budget and request.max_budget and request.max_budget > request.previous_max_budget:
-            print(f"[FASTAPI] 📊 Running Comparison Analysis (+{request.max_budget - request.previous_max_budget}jt)")
+            print(f"[FASTAPI] [STATS] Running Comparison Analysis (+{request.max_budget - request.previous_max_budget}jt)")
             
             # 1. Run base recommendation (original budget)
             base_params = params.copy()
@@ -214,8 +246,8 @@ def chat(request: ChatRequest):
                     "must_have_sunroof": params.get("must_have_sunroof"),
                     "must_have_wireless_tech": params.get("must_have_wireless_tech")
                 },
-                cars_total=612,
-                cars_after_constraint=constraint_report.get("hard_filters", {}).get("remaining_cars", 0),
+                cars_total=constraint_report.get("total_cars", 612),
+                cars_after_constraint=constraint_report.get("final_filtered_n", 0),
                 top_recommendations=recommendations_data,
                 weight_dict_used=constraint_report.get("normalized_weights", {})
             )

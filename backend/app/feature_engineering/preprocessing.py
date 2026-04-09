@@ -139,31 +139,128 @@ def encode_granular_features(df):
 
 
 # ======================================================
-# MERGE POPULARITY
+# MERGE PRODUCT LIFECYCLE (dari Wholesale per Varian)
 # ======================================================
 
-def merge_popularity(df, wholesales):
+def merge_product_lifecycle_safe(df, wholesales):
+    """
+    Menggabungkan data wholesale ke dataset mobil untuk mengekstrak Discontinue-Safe Index.
+
+    Wholesale mencerminkan tren pemesanan dealer ke pabrik.
+    Indeks ini membandingkan volume wholesale di Kuartal Akhir (Q4: Okt, Nov, Des)
+    melawan 3 Kuartal sebelumnya (Q1-Q3: Jan-Sep).
+      - Jika Q4 drop drastis mendekati 0 -> Sinyal model mau diskontinyu/ganti model.
+      - Jika Q4 stabil atau naik -> Model aman secara product lifecycle.
+
+    Join: BRAND + MODEL + VARIAN (level varian)
+    Output: LIFECYCLE_SCORE
+    """
 
     keys = ["BRAND", "MODEL", "VARIAN"]
 
-    wholesales["TOTAL_2025"] = safe_numeric(wholesales["TOTAL_2025"])
+    wholesales = wholesales.copy()
 
-    # NORMALIZE KEYS DI KEDUA DATASET
+    # Hitung rata-rata
+    q1_q3_cols = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP"]
+    q4_cols = ["OCT", "NOV", "DEC"]
+
+    for col in q1_q3_cols + q4_cols:
+        wholesales[col] = safe_numeric(wholesales[col])
+
+    wholesales["Q1_Q3_AVG"] = wholesales[q1_q3_cols].mean(axis=1)
+    wholesales["Q4_AVG"] = wholesales[q4_cols].mean(axis=1)
+
+    # Normalize keys
     for key in keys:
         wholesales[key] = wholesales[key].apply(normalize_text)
         df[key] = df[key].apply(normalize_text)
 
     df = df.merge(
-        wholesales[keys + ["TOTAL_2025"]],
+        wholesales[keys + ["Q1_Q3_AVG", "Q4_AVG"]],
         on=keys,
         how="left"
     )
 
-    df["TOTAL_2025"] = df["TOTAL_2025"].fillna(0)
+    df["Q1_Q3_AVG"] = df["Q1_Q3_AVG"].fillna(0)
+    df["Q4_AVG"] = df["Q4_AVG"].fillna(0)
 
-    df["POPULARITY_LOG"] = np.log1p(df["TOTAL_2025"])
+    # Growth / Momentum formula: ln(1 + Q4) - ln(1 + Q1_Q3)
+    df["LIFECYCLE_SCORE"] = np.log1p(df["Q4_AVG"]) - np.log1p(df["Q1_Q3_AVG"])
 
     return df
+
+
+# ======================================================
+# BRAND ALIAS MAP
+# Beberapa brand di mobil.csv/wholesale.csv merupakan sub-brand
+# yang tidak ada di retail.csv. Mapping ini mengelompokkan
+# sub-brand ke parent brand agar bisa di-join dengan data retail.
+# ======================================================
+
+BRAND_ALIAS_MAP = {
+    "mercedes-amg": "mercedes-benz",
+    "mercedes-maybach": "mercedes-benz",
+}
+
+
+def apply_brand_alias(brand: str) -> str:
+    """Map sub-brand ke parent brand untuk keperluan join dengan retail."""
+    return BRAND_ALIAS_MAP.get(brand, brand)
+
+
+# ======================================================
+# MERGE BRAND STRENGTH (dari Retail per Brand)
+# ======================================================
+
+def merge_brand_strength(df, retail):
+    """
+    Menggabungkan data retail ke dataset mobil.
+
+    Retail mencerminkan penyerapan pasar aktual ke konsumen.
+    Volume retail brand raksasa menciptakan "Ecosystem Strength" secara organik:
+      - Harga jual kembali yang stabil
+      - Jaringan aftersales independen luas
+      - Komunitas yang massive (safe-choice brand)
+
+    Join: BRAND only (retail hanya level brand)
+    Output: BRAND_STRENGTH_SCORE (log-transformed total penjualan retail tahunan)
+
+    NOTE: Sub-brand (MERCEDES-AMG, MERCEDES-MAYBACH) di-alias ke parent
+          brand (MERCEDES-BENZ) agar mendapat kekuatan brand yang sama.
+    """
+
+    retail = retail.copy()
+
+    # Normalize brand di keduanya
+    retail["BRAND"] = retail["BRAND"].apply(normalize_text)
+    df["BRAND"] = df["BRAND"].apply(normalize_text)
+
+    # Buat temporary join key dengan alias mapping
+    df["_BRAND_JOIN"] = df["BRAND"].apply(apply_brand_alias)
+    retail["_BRAND_JOIN"] = retail["BRAND"].apply(apply_brand_alias)
+
+    # Hitung total retail tahunan dari semua kolom bulan
+    month_cols = [c for c in retail.columns if c not in ["BRAND", "_BRAND_JOIN"]]
+    for col in month_cols:
+        retail[col] = safe_numeric(retail[col])
+
+    retail["RETAIL_TOTAL"] = retail[month_cols].sum(axis=1)
+
+    # Merge per parent brand (via join key)
+    df = df.merge(
+        retail[["_BRAND_JOIN", "RETAIL_TOTAL"]],
+        on="_BRAND_JOIN",
+        how="left"
+    )
+
+    # Cleanup temporary column
+    df.drop(columns=["_BRAND_JOIN"], inplace=True)
+
+    df["RETAIL_TOTAL"] = df["RETAIL_TOTAL"].fillna(0)
+    df["BRAND_STRENGTH_SCORE"] = np.log1p(df["RETAIL_TOTAL"])
+
+    return df
+
 
 
 # ======================================================

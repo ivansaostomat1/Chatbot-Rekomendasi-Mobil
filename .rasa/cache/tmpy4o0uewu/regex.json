@@ -1,0 +1,26 @@
+[
+  {
+    "name": "body_type",
+    "pattern": "(\\bsuv\\b|\\bmpv\\b|\\bsedan\\b|\\bhatchback\\b|\\bcoupe\\b|\\bwagon\\b)"
+  },
+  {
+    "name": "powertrain",
+    "pattern": "(\\bhybrid\\b|\\bbensin\\b|\\bdiesel\\b|\\blistrik\\b|\\bev\\b)"
+  },
+  {
+    "name": "feature",
+    "pattern": "(\\bsunroof\\b|\\bpanoramic\\ sunroof\\b|\\bapple\\ carplay\\b|\\bandroid\\ auto\\b|\\bwireless\\ charger\\b|\\b360\\ camera\\b)"
+  },
+  {
+    "name": "preference",
+    "pattern": "(\\birit\\b|\\bhemat\\b|\\bbbm\\b|\\bkencang\\b|\\bngebut\\b|\\bresponsif\\b|\\bsporty\\b|\\bfun\\b|\\bnyaman\\b|\\bempuk\\b|\\bsenyap\\b|\\bluas\\b|\\bkabin\\ luas\\b|\\baman\\b|\\bsafety\\b|\\bteknologi\\b|\\bfitur\\b|\\bmodern\\b|\\bmewah\\b|\\bluxury\\b|\\bbanjir\\b|\\bjalan\\ rusak\\b|\\bnanjak\\b|\\blincah\\b|\\bgesit\\b|\\bhandling\\b|\\bstabil\\b|\\bbertenaga\\b|\\btarikan\\ kuat\\b|\\bakselerasi\\b|\\bsparepart\\ gampang\\b|\\bbengkel\\ banyak\\b|\\baftersales\\b|\\bperawatan\\ mudah\\b|\\bonderdil\\b|\\bpaling\\ laku\\b|\\bpopuler\\b|\\blaris\\b|\\bharga\\ bekas\\b|\\bkuliah\\b|\\banak\\ muda\\b|\\bharian\\b|\\bdaily\\b|\\bkantor\\b|\\bkerja\\b|\\bmobil\\ kedua\\b|\\bpemula\\b|\\bperjalanan\\ jauh\\b)"
+  },
+  {
+    "name": "hard_filter",
+    "pattern": "(\\bkeluarga\\ besar\\b|\\bbebas\\ banjir\\b|\\bbanjir\\b)"
+  },
+  {
+    "name": "brand",
+    "pattern": "(\\btoyota\\b|\\bhonda\\b|\\bsuzuki\\b|\\bmitsubishi\\b|\\bnissan\\b|\\bmazda\\b|\\bhyundai\\b|\\bkia\\b|\\bwuling\\b|\\bchery\\b|\\bbmw\\b|\\bmercedes\\b|\\bbenz\\b|\\baudi\\b|\\blexus\\b|\\bvolvo\\b)"
+  }
+]

@@ -13,7 +13,7 @@ echo [3/4] Memulai Rasa Core (NLP Server)...
 start cmd /k "title Rasa Core (NLP) && cd backend\rasa && call ..\venv\Scripts\activate && rasa run --enable-api --cors ""*"""
 
 echo [4/4] Memulai Rasa Actions (Custom Logic)...
-start cmd /k "title Rasa Actions (Logic) && cd backend\rasa && call ..\venv\Scripts\activate && rasa run actions"
+start cmd /k "title Rasa Actions (Logic) && cd backend\rasa && call ..\venv\Scripts\activate && rasa run actions --auto-reload"
 
 echo.
 echo Semua layanan sedang dinyalakan di terminal terpisah!

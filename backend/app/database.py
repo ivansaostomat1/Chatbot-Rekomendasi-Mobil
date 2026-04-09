@@ -3,6 +3,8 @@ import json
 import os
 from datetime import datetime
 from typing import List, Dict, Any
+from app.feature_ontology import DRIVETRAIN_DECODING
+
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "history.db")
 
@@ -97,6 +99,19 @@ def get_recent_history(limit: int = 15) -> List[Dict[str, Any]]:
         item["top_recommendations"] = json.loads(item["top_recommendations"]) if item["top_recommendations"] else []
         item["weight_dict_used"] = json.loads(item.get("weight_dict_used") or "{}") if item.get("weight_dict_used") else {}
         
+        # Sanitize recommendations to ensure DRIVE_SYS and POWERTRAIN are strings (fixes Pydantic validation errors)
+        for car in item["top_recommendations"]:
+            if "DRIVE_SYS" in car and car["DRIVE_SYS"] is not None:
+                val = car["DRIVE_SYS"]
+                try:
+                    # Jika numeric label (float/int), decode menggunakan ontologi
+                    car["DRIVE_SYS"] = DRIVETRAIN_DECODING.get(float(val), str(val))
+                except (ValueError, TypeError):
+                    car["DRIVE_SYS"] = str(val)
+            
+            if "POWERTRAIN" in car and car["POWERTRAIN"] is not None:
+                car["POWERTRAIN"] = str(car["POWERTRAIN"])
+
         result.append(item)
     
     return result

@@ -30,9 +30,8 @@ class CarRecommendation(BaseModel):
     POWERTRAIN: Optional[str] = None
     insight: Optional[str] = None
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True
 
 
 # ======================================================
@@ -131,6 +130,5 @@ class HistoryItemResponse(BaseModel):
     cars_after_constraint: int
     top_recommendations: List[CarRecommendation]
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True

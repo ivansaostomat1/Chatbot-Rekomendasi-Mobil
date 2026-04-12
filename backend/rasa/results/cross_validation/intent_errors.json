@@ -1,0 +1,266 @@
+[
+  {
+    "text": "hi",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9963552951812744
+    }
+  },
+  {
+    "text": "reset",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.7138780355453491
+    }
+  },
+  {
+    "text": "mobil apa",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "berapa harga bensin sekarang?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "carikan saya rumah",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "harga emas sekarang berapa?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "tarikannya kuat",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9983886480331421
+    }
+  },
+  {
+    "text": "selamat malam, saya cari BYD yang ada panoramic sunroof",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "greet",
+      "confidence": 0.9639977216720581
+    }
+  },
+  {
+    "text": "bandingkan dengan budget 500jt",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999126195907593
+    }
+  },
+  {
+    "text": "bandingkan dengan budget 1M",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "cari yang lain",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.6590822339057922
+    }
+  },
+  {
+    "text": "apa itu inflasi?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.9050382971763611
+    }
+  },
+  {
+    "text": "yang irit",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "fitur lengkap",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "kalau dapet 1 milyar dapet apa aja?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.6719780564308167
+    }
+  },
+  {
+    "text": "ada yang lebih bagus di harga 1.2M?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9985547661781311
+    }
+  },
+  {
+    "text": "rekomendasikan laptop gaming",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "nyaman",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "bertenaga",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9987163543701172
+    }
+  },
+  {
+    "text": "saya lagi suka mobil Geely, ada jenis apa aja?",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.936015784740448
+    }
+  },
+  {
+    "text": "opsi lain kalau budget 600 jutaan?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999990463256836
+    }
+  },
+  {
+    "text": "rekomendasi hp murah dong",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "test",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.8105751276016235
+    }
+  },
+  {
+    "text": "tidak nyambung",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.994529664516449
+    }
+  },
+  {
+    "text": "kencang",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999998807907104
+    }
+  },
+  {
+    "text": "kalau 8 penumpang dapet nggak",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.981227695941925
+    }
+  },
+  {
+    "text": "mobil JAECOO ada apa aja?",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.9971603155136108
+    }
+  },
+  {
+    "text": "DENZA harganya berapa?",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "kalau budget saya 700 juta bisa dapet yang mana?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "saya mau cari lagi",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.5856423377990723
+    }
+  },
+  {
+    "text": "asdfghjkl",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "greet",
+      "confidence": 0.5095482468605042
+    }
+  },
+  {
+    "text": "teknologi",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999227523803711
+    }
+  },
+  {
+    "text": "dengan budget 500jt ada pilihan lain ga?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.9954816102981567
+    }
+  }
+]

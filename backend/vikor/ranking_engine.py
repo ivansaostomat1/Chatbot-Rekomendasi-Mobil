@@ -411,9 +411,9 @@ def recommend_cars(
             return str(val)
 
     MAP_SUNROOF = {0: "Tidak Ada", 1: "Moonroof", 2: "Panoramic"}
-    MAP_CARPLAY = {0: "Tidak Ada", 1: "Wired", 2: "Wireless"}
-    MAP_AA      = {0: "Tidak Ada", 1: "Wired", 2: "Wireless", 3: "Built-in"}
-    MAP_JOK     = {0: "Fabric", 1: "Recycled", 2: "Synthetic", 3: "Leather", 4: "Nappa"}
+    MAP_CARPLAY = {0: "Tidak Ada", 1: "Kabel (Wired)", 2: "Nirkabel (Wireless)"}
+    MAP_AA      = {0: "Tidak Ada", 1: "Kabel (Wired)", 2: "Nirkabel (Wireless)", 3: "Built-in"}
+    MAP_JOK     = {0: "Kain (Fabric)", 1: "Bahan Daur Ulang", 2: "Kulit Sintetis (Synthetic)", 3: "Kulit Asli (Leather)", 4: "Kulit Nappa"}
     MAP_BINARY  = {1: "Ada", 0: "Tidak Ada"}
     
     for r in records:
@@ -428,7 +428,7 @@ def recommend_cars(
             if feat in r: r[feat] = decode_feature(r[feat], MAP_BINARY)
             
         # Parking Brake
-        r["PARKING_BRAKE"] = decode_feature(r.get("PARKING_BRAKE"), {1: "Electric", 0: "Manual"}, "Manual")
+        r["PARKING_BRAKE"] = decode_feature(r.get("PARKING_BRAKE"), {1: "Elektrik (EPB)", 0: "Manual"}, "Manual")
 
         # 2. Level ADAS Summary
         adas_score = sum([1 for f in ["AEB", "ACC", "LKA"] if r.get(f, 0) >= 1])

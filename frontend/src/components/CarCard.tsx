@@ -288,7 +288,7 @@ export default function CarCard({ car, rank }: Props) {
           
           {/* Dimensional & Clearance */}
           <SpecItem icon="🏔️" label="Ground Clearance" value={car.GROUND_CLEARANCE ? `${car.GROUND_CLEARANCE} mm` : '-'} />
-          <SpecItem icon="📏" label="Dimensi (PxLxT)" value={car.LONG ? `${car.LONG}x${car.WIDTH}x${car.HEIGHT}` : '-'} fullWidth />
+          <SpecItem icon="📏" label="Dimensi (PxLxT)" value={car.LONG ? `${car.LONG} x ${car.WIDTH} x ${car.HEIGHT} mm` : '-'} fullWidth />
         </div>
 
         {/* ── Features Highlights (Brochure Style) ── */}
@@ -324,7 +324,9 @@ export default function CarCard({ car, rank }: Props) {
               {car.SUNROOF && car.SUNROOF !== "Tidak Ada" && <DetailBadge label={car.SUNROOF} icon="☀️" type="comfort" />}
               {car.POWER_TAILGATE === "Ada" && <DetailBadge label="Power Tailgate" icon="🚪" type="comfort" />}
               {car.AUTO_HOLD === "Ada" && <DetailBadge label="Auto Hold" icon="🅿️" type="comfort" />}
-              {car.LEATHER_SEAT && car.LEATHER_SEAT !== "Fabric" && <DetailBadge label={car.LEATHER_SEAT} icon="🛋️" type="comfort" />}
+              {car.LEATHER_SEAT && !["Fabric", "Kain (Fabric)", "Kain"].includes(car.LEATHER_SEAT) && (
+                <DetailBadge label={`Jok ${car.LEATHER_SEAT}`} icon="🛋️" type="comfort" />
+              )}
               {car.AMBIENT_LIGHT === "Ada" && <DetailBadge label="Ambient Light" icon="🌈" type="comfort" />}
             </div>
           </div>

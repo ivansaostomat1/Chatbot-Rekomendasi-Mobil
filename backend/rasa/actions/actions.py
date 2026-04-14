@@ -14,7 +14,6 @@ API_UI_URL = "http://localhost:8000/initial-ui-state"
 # ======================================================
 
 def extract_entities(entities, text=None):
-
     preference_terms = []
     feature_entities = []
     body_entities = []
@@ -23,69 +22,76 @@ def extract_entities(entities, text=None):
     hard_filter_entities = []
     negated_entities = []
     raw_budgets = []
-
-    for e in entities:
-        value = str(e.get("value", "")).lower().strip()
-        entity_type = e.get("entity")
-
-    # HEURISTIK KESELAMATAN (Negation Safety Net)
-    # Jika NLU gagal mendeteksi role='negated', kita cek kata-kata di sekitarnya
-    negation_keywords = ["jangan", "tidak", "bukan", "anti", "selain", "asal jangan", "gamau", "ga mau"]
+    min_seat = None
+    must_have_sunroof = False
     
+    # Check if text contains numbered list markers (e.g. "1. ", "2. ")
+    list_markers = []
+    if text:
+        list_markers = re.findall(r'(\d+)\.\s', text)
+
     for e in entities:
         value = str(e.get("value", "")).lower().strip()
         entity_type = e.get("entity")
-        start = e.get("start", 0)
         
         # 1. CEK ML ROLE
         is_negated = (e.get("role") == "negated")
-        
-        # 2. CEK HEURISTIK (Backup jika ML gagal)
-        if not is_negated and text:
-            # Ambil potongan teks sebelum entitas (misal 15 karakter sebelumnya)
-            context_before = text[max(0, start-15):start].lower()
-            for kw in negation_keywords:
-                if kw in context_before:
-                    print(f"[RASA ACTION] [SAFETY NET] Terdeteksi kata negasi '{kw}' sebelum '{value}'. Menandai sebagai negated.")
-                    is_negated = True
-                    break
-
         if is_negated:
-            print(f"[RASA ACTION] [NEGATED] Mengabaikan entitas '{value}' ({entity_type}) karena di-tag sebagai 'negated'.")
             negated_entities.append(value)
             continue
 
+        # 2. FILTER NUMBERED LIST (Ignore markers like "1" in "1. bensin")
+        if entity_type in ["min_seat", "budget"]:
+            if value in list_markers:
+                print(f"[RASA ACTION] [FILTER] Mengabaikan '{value}' karena terdeteksi sebagai nomor urut list.")
+                continue
+
         if entity_type == "preference":
             sub_values = re.split(r'[,;/]+', value)
-            sub_values = [v.strip() for v in sub_values if v.strip()]
-            for sv in sub_values:
-                if len(sv) > 1:
-                    preference_terms.append(sv)
+            for sv in [v.strip() for v in sub_values if v.strip()]:
+                if len(sv) > 1: preference_terms.append(sv)
 
         elif entity_type == "feature":
             feature_entities.append(value)
+            if any(kw in value for kw in ["sunroof", "moonroof", "panoramic"]):
+                must_have_sunroof = True
 
         elif entity_type == "body_type":
             body_entities.append(value)
-
         elif entity_type == "powertrain":
             powertrain_entities.append(value)
-
         elif entity_type == "brand":
             brand_entities.append(value)
-
         elif entity_type == "hard_filter":
             hard_filter_entities.append(value)
 
         elif entity_type == "min_seat":
             try:
-                seat_count = int(re.search(r'\d+', value).group())
-                hard_filter_entities.append(f"{seat_count} seat")
-            except:
-                pass
+                match = re.search(r'\d+', value)
+                if match:
+                    seat_val = int(match.group())
+                    if 2 <= seat_val <= 8:
+                        min_seat = seat_val
+                        hard_filter_entities.append(f"{seat_val} seat")
+                    else:
+                        print(f"[RASA ACTION] [FILTER] Seat {seat_val} di luar skala 2-8.")
+            except: pass
 
         elif entity_type == "budget":
-            raw_budgets.append(value)
+            # Budget Guard: Abaikan angka kecil (< 20) kecuali ada unit "jt/juta"
+            is_small = False
+            try:
+                numeric_part = re.search(r'[\d\.,]+', value)
+                if numeric_part:
+                    num = float(numeric_part.group().replace(',', ''))
+                    if num < 20 and not any(kw in value for kw in ["jt", "juta", "milyar"]):
+                        is_small = True
+            except: pass
+
+            if is_small:
+                print(f"[RASA ACTION] [FILTER] Mengabaikan budget mencurigakan '{value}' (terlalu kecil).")
+            else:
+                raw_budgets.append(value)
 
     return {
         "preference_terms": preference_terms,
@@ -95,7 +101,9 @@ def extract_entities(entities, text=None):
         "brand_entities": brand_entities,
         "hard_filter_entities": hard_filter_entities,
         "negated_entities": negated_entities,
-        "raw_budgets": raw_budgets
+        "raw_budgets": raw_budgets,
+        "min_seat": min_seat,
+        "must_have_sunroof": must_have_sunroof
     }
 
 
@@ -137,7 +145,7 @@ class ActionRecommendCar(Action):
 
         # Pendelegasian Out Of Scope ke fallback policy / utter_default
         if intent_name == "out_of_scope":
-            print(f"[RASA ACTION] ❌ TERDETEKSI PESAN OUT-OF-DOMAIN: '{text}'. Mengeksekusi fallback action.")
+            print(f"[RASA ACTION] [OUT-OF-SCOPE] TERDETEKSI PESAN OUT-OF-DOMAIN: '{text}'. Mengeksekusi fallback action.")
             dispatcher.utter_message(response="utter_default")
             return []
 
@@ -145,11 +153,11 @@ class ActionRecommendCar(Action):
         new_query = (intent_name == "start_search")
 
         if new_query:
-            print("[RASA ACTION] 🔄 NEW QUERY DETECTED → Mereset seluruh konteks sesi.")
+            print("[RASA ACTION] [RESET] NEW QUERY DETECTED -> Mereset seluruh konteks sesi.")
             prev_min_budget = None
             prev_max_budget = None
         else:
-            print("[RASA ACTION] 🔄 Menggabungkan Kriteria dengan memori konteks melalui OOP.")
+            print("[RASA ACTION] [CONTEXT] Menggabungkan Kriteria dengan memori konteks melalui OOP.")
             prev_min_budget = tracker.get_slot("min_budget")
             prev_max_budget = tracker.get_slot("max_budget")
 
@@ -176,7 +184,9 @@ class ActionRecommendCar(Action):
             "negated_terms": merged_context["negated_terms"],
             "raw_budgets": merged_context["raw_budgets"],
             "min_budget": prev_min_budget,
-            "max_budget": prev_max_budget
+            "max_budget": prev_max_budget,
+            "min_seat": merged_context.get("min_seat"),
+            "must_have_sunroof": merged_context.get("must_have_sunroof", False)
         }
 
         print(f"[RASA ACTION] Meminta profil bobot dan klasterisasi dari backend...")
@@ -188,15 +198,82 @@ class ActionRecommendCar(Action):
             })
             ui_resp.raise_for_status()
             ui_data = ui_resp.json()
-            
+
             payload["cluster_name"] = ui_data.get("cluster_name", "Global")
+            payload["cluster_display_name"] = ui_data.get("cluster_display_name", payload["cluster_name"])
             payload["base_weight_profile"] = ui_data.get("base_weight_profile", {})
-            
-            print(f"[RASA ACTION] Terdeteksi cluster: {payload['cluster_name']}")
+
+            print(f"[RASA ACTION] Terdeteksi cluster: {payload['cluster_name']} ({payload['cluster_display_name']})")
         except Exception as e:
             print(f"[RASA ACTION] [ERROR] Gagal mengambil profil awal: {e}")
             payload["cluster_name"] = "Global"
             payload["base_weight_profile"] = {}
+
+        # ─────────────────────────────────────────────────────────────────────────────
+        # PERBAIKAN: Handle Budget-Only Query
+        #
+        # LOGIKA LAMA (bermasalah):
+        #   Kondisi hanya cek `not new_query` → jika user follow-up dengan jawaban
+        #   preferensi yang panjang (misal "irit dan nyaman kalau bisa canggih"),
+        #   intent masih bisa terklasifikasi sebagai ask_recommendation bukan
+        #   choose_preference, sehingga has_preferences bisa tetap kosong karena
+        #   entity tidak ter-extract sempurna.
+        #
+        # LOGIKA BARU:
+        #   Cek apakah ada budget yang tersimpan di slot (dari turn sebelumnya).
+        #   Jika ada budget lama + preferensi baru terdeteksi → langsung proses.
+        #   Jika hanya budget baru tanpa preferensi → minta preferensi.
+        #   Ini memastikan alur 2-turn tetap berjalan meski entity extraction
+        #   tidak sempurna di turn pertama.
+        # ─────────────────────────────────────────────────────────────────────────────
+
+        has_preferences = any([
+            merged_context["preference_terms"],
+            merged_context["feature_entities"],
+            merged_context["brand_entities"],
+            merged_context["powertrain_entities"],
+            merged_context["body_entities"],
+            merged_context["hard_filter_entities"]
+        ])
+        has_budget = bool(merged_context["raw_budgets"])
+
+        # Cek apakah ada budget yang sudah tersimpan dari turn sebelumnya
+        has_previous_budget = bool(
+            tracker.get_slot("raw_budgets") or
+            tracker.get_slot("min_budget") or
+            tracker.get_slot("max_budget")
+        )
+
+        # SKENARIO 1: User hanya sebut budget, belum ada preferensi sama sekali di context
+        if has_budget and not has_preferences and not new_query:
+            print("[RASA ACTION] [FOLLOW-UP] User hanya menyebut budget. Meminta preferensi tambahan.")
+            dispatcher.utter_message(response="utter_ask_initial_preference")
+            return [
+                SlotSet("raw_budgets", merged_context["raw_budgets"]),
+            ]
+
+        # SKENARIO 2: Cek apakah butuh Refinement (Bahan bakar, Kursi, Fitur)
+        # Dilakukan jika (Has Budget + Has Prefs) tapi info teknis masih sangat minim
+        is_refined = tracker.get_slot("refinement_stage")
+        needs_refinement = not any([
+            merged_context["powertrain_entities"],
+            merged_context["feature_entities"],
+            tracker.get_slot("min_seat")
+        ])
+
+        if has_budget and has_preferences and not is_refined and needs_refinement and not new_query:
+            print("[RASA ACTION] [REFINEMENT] Mencoba melengkapi data (Bahan bakar, Kursi, Fitur).")
+            dispatcher.utter_message(response="utter_ask_refinement")
+            return [
+                SlotSet("preference", merged_context["preference_terms"]),
+                SlotSet("raw_budgets", merged_context["raw_budgets"]),
+                SlotSet("refinement_stage", True)
+            ]
+
+        # SKENARIO 3: User baru memberikan preferensi sebagai follow-up dari budget sebelumnya
+        # (has_previous_budget = True, has_preferences = True)
+        if has_previous_budget and has_preferences:
+            print(f"[RASA ACTION] [FOLLOW-UP RESOLVED] Budget dari sesi sebelumnya ditemukan + preferensi baru.")
 
         if new_query:
             print(f"[RASA ACTION] [NEW QUERY] Meminta input bobot manual dari frontend.")
@@ -229,6 +306,7 @@ class ActionRecommendCar(Action):
             SlotSet("hard_filter", merged_context["hard_filter_entities"]),
             SlotSet("raw_budgets", merged_context["raw_budgets"]),
             SlotSet("negated_terms", merged_context["negated_terms"]),
+            SlotSet("refinement_stage", False if new_query else tracker.get_slot("refinement_stage")),
         ]
 
 
@@ -240,11 +318,11 @@ class ActionCompareBudget(Action):
     def run(self, dispatcher, tracker, domain):
         text = tracker.latest_message.get("text", "")
         entities = tracker.latest_message.get("entities", [])
-        
+
         prev_max_budget = tracker.get_slot("max_budget")
-        
+
         parsed = extract_entities(entities, text=text)
-        
+
         payload = {
             "preference_terms": tracker.get_slot("preference") or [],
             "need_terms": tracker.get_slot("need") or [],
@@ -256,11 +334,11 @@ class ActionCompareBudget(Action):
                 (tracker.get_slot("hard_filter") or [])
             ),
             "min_budget": tracker.get_slot("min_budget"),
-            "max_budget": tracker.get_slot("max_budget"), 
+            "max_budget": tracker.get_slot("max_budget"),
             "previous_max_budget": prev_max_budget,
             "raw_budgets": parsed["raw_budgets"]
         }
-        
+
         if not parsed["raw_budgets"]:
             numbers = re.findall(r"\d+", text.lower().replace("jt", "000000"))
             if numbers:
@@ -282,7 +360,7 @@ class ActionCompareBudget(Action):
             response = requests.post(API_URL, json=payload)
             response.raise_for_status()
             data = response.json()
-            
+
             cars = data.get("recommendations", [])
             comparison_insight = data.get("comparison_insight")
 
@@ -293,9 +371,9 @@ class ActionCompareBudget(Action):
             msg = f"Baik, membandingkan opsi dengan budget yang diatur ulang:\n\n"
             if comparison_insight:
                 msg += f"💡 **Analisa:** {comparison_insight}\n\n"
-            
+
             msg += format_car_recommendation(cars)
-            
+
             msg += "\nKenapa mobil ini?\n"
             for car in cars[:2]:
                 msg += f"- {car['MODEL']}: {car.get('insight', 'Pilihan seimbang.')}\n"

@@ -262,3 +262,130 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ── Specs Grid ── */
+.specsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.specItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.specItem:hover {
+  border-color: var(--rank-color, var(--text-muted));
+  background: var(--bg-card);
+}
+
+.specIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.specDetails {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.specLabel {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.specValue {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Full width for certain spec items like Dimensions */
+.specFullWidth {
+  grid-column: span 2;
+}
+
+/* ── Features Section ── */
+.featureSection {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+}
+
+.featureGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.categoryLabel {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.featureList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badgeSafety {
+  background: rgba(239, 68, 68, 0.08);
+  color: #EF4444;
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+.badgeTech {
+  background: rgba(59, 130, 246, 0.08);
+  color: #3B82F6;
+  border-color: rgba(59, 130, 246, 0.15);
+}
+
+.badgeComfort {
+  background: rgba(16, 185, 129, 0.08);
+  color: #10B981;
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.badgeAccent {
+  background: var(--rank-bg, rgba(234, 179, 8, 0.1));
+  color: var(--rank-color, #EAB308);
+  border-color: var(--rank-border, rgba(234, 179, 8, 0.3));
+}

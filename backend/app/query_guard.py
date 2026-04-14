@@ -4,7 +4,7 @@ import pandas as pd
 from typing import Optional, Tuple, List
 import re
 
-from app.feature_ontology import (
+from .feature_ontology import (
     BODY_TYPE_MAP, POWERTRAIN_MAP, DRIVETRAIN_MAP, 
     DRIVETRAIN_ENCODING, FEATURE_CONSTRAINT_MAP, BRAND_MAP
 )

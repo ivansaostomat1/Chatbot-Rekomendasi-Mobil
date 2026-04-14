@@ -129,7 +129,7 @@ export default function ChatbotPage() {
     try {
       console.log("[FRONTEND] Mengirim bobot manual ke FastAPI", finalPayload);
       const { data } = await api.post('/chat', finalPayload);
-      
+
       const recs = data.recommendations || [];
       const constraint_report = data.constraint_report || null;
 
@@ -144,7 +144,7 @@ export default function ChatbotPage() {
         timestamp: new Date(),
       }]);
 
-      try { await fetch('http://localhost:8000/history'); } catch {}
+      try { await fetch('http://localhost:8000/history'); } catch { }
     } catch (e) {
       setMessages(prev => [...prev, {
         id: `e-${Date.now()}`,
@@ -175,7 +175,7 @@ export default function ChatbotPage() {
       console.log(`[FRONTEND UI] User menekan tombol kirim dengan isi pesan: "${text}"`);
       // 1. Send text to Rasa via API
       const rasaResponses = await sendChatMessage(text);
-      
+
       // Rasa returns an array of messages: [{ recipient_id: "user", text: "...", custom: {...} }]
       interface RasaMessage {
         recipient_id?: string;
@@ -187,7 +187,7 @@ export default function ChatbotPage() {
           constraint_report?: ConstraintReport;
         };
       }
-      
+
       if (Array.isArray(rasaResponses) && rasaResponses.length > 0) {
         // Gabungkan semua balasan teks jika ada banyak text
         const textParts = rasaResponses
@@ -197,7 +197,7 @@ export default function ChatbotPage() {
 
         // Cari balasan custom action jika disediakan oleh actions.py
         const actionResponse = rasaResponses.find((r: RasaMessage) => r.custom && (r.custom.action === "ask_weights" || r.custom.action === "search_cars"));
-        
+
         // Cari balasan custom recommendations jika disediakan oleh actions.py
         const recResponse = rasaResponses.find((r: RasaMessage) => r.custom && r.custom.recommendations);
         const recs = recResponse ? recResponse.custom.recommendations || [] : [];
@@ -205,45 +205,45 @@ export default function ChatbotPage() {
 
         if (actionResponse) {
           const actionType = actionResponse.custom.action;
-          
+
           if (actionType === "ask_weights" || (actionType === "search_cars" && !savedWeights)) {
-             setMessages(prev => [...prev, {
-                id: `b-${Date.now()}`,
-                role: 'assistant',
-                content: textParts || 'Silakan atur bobot kriteria yang paling penting menurut Anda.',
-                ask_weights_payload: actionResponse.custom.payload,
-                timestamp: new Date(),
-             }]);
+            setMessages(prev => [...prev, {
+              id: `b-${Date.now()}`,
+              role: 'assistant',
+              content: textParts || 'Silakan atur bobot kriteria yang paling penting menurut Anda.',
+              ask_weights_payload: actionResponse.custom.payload,
+              timestamp: new Date(),
+            }]);
           } else if (actionType === "search_cars" && savedWeights) {
-             setMessages(prev => [...prev, {
-                id: `b-${Date.now()}-loading`,
+            setMessages(prev => [...prev, {
+              id: `b-${Date.now()}-loading`,
+              role: 'assistant',
+              content: textParts || 'Baik, kriteria pencarian sedang saya sesuaikan...',
+              timestamp: new Date(),
+            }]);
+
+            const payload = actionResponse.custom.payload;
+            const finalPayload = { ...payload, manual_weights: savedWeights };
+
+            try {
+              const { data } = await api.post('/chat', finalPayload);
+              setMessages(prev => [...prev, {
+                id: `b-${Date.now()}-res`,
                 role: 'assistant',
-                content: textParts || 'Baik, kriteria pencarian sedang saya sesuaikan...',
+                content: 'Sip! Berdasarkan bobot preferensi yang sebelumnya tersimpan, berikut hasil penyesuaian rekomendasinya:',
+                recommendations: data.recommendations || [],
+                constraint_report: data.constraint_report || null,
                 timestamp: new Date(),
-             }]);
-
-             const payload = actionResponse.custom.payload;
-             const finalPayload = { ...payload, manual_weights: savedWeights };
-
-             try {
-                const { data } = await api.post('/chat', finalPayload);
-                setMessages(prev => [...prev, {
-                  id: `b-${Date.now()}-res`,
-                  role: 'assistant',
-                  content: 'Sip! Berdasarkan bobot preferensi yang sebelumnya tersimpan, berikut hasil penyesuaian rekomendasinya:',
-                  recommendations: data.recommendations || [],
-                  constraint_report: data.constraint_report || null,
-                  timestamp: new Date(),
-                }]);
-                try { await fetch('http://localhost:8000/history'); } catch {}
-             } catch (e) {
-                setMessages(prev => [...prev, {
-                  id: `e-${Date.now()}`,
-                  role: 'assistant',
-                  content: '⚠️ Gagal memuat rekomendasi otomatis.',
-                  timestamp: new Date(),
-                }]);
-             }
+              }]);
+              try { await fetch('http://localhost:8000/history'); } catch { }
+            } catch (e) {
+              setMessages(prev => [...prev, {
+                id: `e-${Date.now()}`,
+                role: 'assistant',
+                content: '⚠️ Gagal memuat rekomendasi otomatis.',
+                timestamp: new Date(),
+              }]);
+            }
           }
         } else {
           setMessages(prev => [...prev, {
@@ -263,9 +263,9 @@ export default function ChatbotPage() {
           timestamp: new Date(),
         }]);
       }
-      
+
       // Refresh history
-      try { await fetch('http://localhost:8000/history'); } catch {}
+      try { await fetch('http://localhost:8000/history'); } catch { }
 
     } catch {
       setMessages(prev => [...prev, {
@@ -284,7 +284,7 @@ export default function ChatbotPage() {
     setMessages([WELCOME_FRESH]);
     setInput('');
     setSavedWeights(null);
-    
+
     // Clear backend
     try {
       await sendChatMessage('/restart');
@@ -297,12 +297,12 @@ export default function ChatbotPage() {
     <div className={styles.pageLayout}>
       {/* ── Main Chat Area ── */}
       <main className={styles.chatMain} style={{ position: 'relative', overflow: 'hidden' }}>
-        
+
         {/* ── Ripple Grid Animation (Only for Chat Background) ── */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, opacity: 10, pointerEvents: 'none' }}>
           <RippleGrid
             enableRainbow={true}
-            gridColor="#000000ff" 
+            gridColor="#000000ff"
             rippleIntensity={0}
             gridSize={10}
             gridThickness={60}
@@ -338,87 +338,87 @@ export default function ChatbotPage() {
 
         {/* Messages */}
         <div className={styles.chatBody} style={{ position: 'relative', zIndex: 1 }}>
-        {messages.map(msg => {
-          const payload = msg.ask_weights_payload as any;
-          return (
-            <div key={msg.id}>
-              <MsgBubble msg={msg} />
-              
-              {payload && isScientific && (
-                <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
-                  <div style={{ fontWeight: 800, marginBottom: '10px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <RiRobot2Fill size={16} style={{ color: '#4090F7' }} /> Otobot menangkap:
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                        <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Target Klaster:</span>
-                        <span style={{ fontWeight: 800, color: '#8B5CF6' }}>{payload.cluster_name || "Global"}</span>
+          {messages.map(msg => {
+            const payload = msg.ask_weights_payload as any;
+            return (
+              <div key={msg.id}>
+                <MsgBubble msg={msg} />
+
+                {payload && isScientific && (
+                  <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
+                    <div style={{ fontWeight: 800, marginBottom: '10px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <RiRobot2Fill size={16} style={{ color: '#4090F7' }} /> Otobot menangkap:
                     </div>
-                    {payload.entities?.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                        <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Target Klaster:</span>
+                        <span style={{ fontWeight: 800, color: '#8B5CF6' }}>{payload.cluster_display_name || payload.cluster_name || "Global"}</span>
+                      </div>
+                      {payload.entities?.length > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                           <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Filter Syarat:</span>
                           <span style={{ color: '#4090F7', fontWeight: 600 }}>{payload.entities.join(", ")}</span>
-                      </div>
-                    )}
-                    {(payload.min_budget || payload.max_budget) && (
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                        </div>
+                      )}
+                      {(payload.min_budget || payload.max_budget) && (
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                           <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Batas Budget:</span>
                           <span style={{ color: '#00BB77', fontWeight: 700 }}>
-                            {payload.min_budget ? `Rp ${(payload.min_budget/1000000).toLocaleString('id-ID')} Jt` : 'Rp 0'} 
-                            {' - '} 
-                            {payload.max_budget ? `Rp ${(payload.max_budget/1000000).toLocaleString('id-ID')} Jt` : 'Tak Terbatas'}
+                            {payload.min_budget ? `Rp ${(payload.min_budget / 1000000).toLocaleString('id-ID')} Jt` : 'Rp 0'}
+                            {' - '}
+                            {payload.max_budget ? `Rp ${(payload.max_budget / 1000000).toLocaleString('id-ID')} Jt` : 'Tak Terbatas'}
                           </span>
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--border-color)', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-                     Saya telah menyiapkan profil bobot rekomendasi awal berdasarkan klaster spesifik Anda. Silakan putuskan di bawah ini 👇
-                  </div>
-                </div>
-              )}
-
-              {/* Simplified summary for Awam mode */}
-              {payload && !isScientific && (
-                <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
-                    <RiRobot2Fill size={16} style={{ color: '#4090F7' }} />
-                    <span style={{ fontWeight: 700 }}>
-                      🔍 Mencari {payload.cluster_name ? `mobil ${payload.cluster_name}` : 'mobil'}
-                      {payload.entities?.length > 0 && ` (${payload.entities.join(', ')})`}
-                      {(payload.min_budget || payload.max_budget) && (
-                        <> dengan budget {payload.min_budget ? `Rp ${(payload.min_budget/1000000).toLocaleString('id-ID')} Jt` : 'Rp 0'}{' - '}{payload.max_budget ? `Rp ${(payload.max_budget/1000000).toLocaleString('id-ID')} Jt` : 'Tak Terbatas'}</>
+                        </div>
                       )}
-                    </span>
+                    </div>
+                    <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--border-color)', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                      Saya telah menyiapkan profil bobot rekomendasi awal berdasarkan klaster spesifik Anda. Silakan putuskan di bawah ini 👇
+                    </div>
                   </div>
-                  <div style={{ marginTop: '8px', color: 'var(--text-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
-                    Atur prioritas Anda di bawah, lalu tekan tombol untuk mendapatkan rekomendasi 👇
+                )}
+
+                {/* Simplified summary for Awam mode */}
+                {payload && !isScientific && (
+                  <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
+                      <RiRobot2Fill size={16} style={{ color: '#4090F7' }} />
+                      <span style={{ fontWeight: 700 }}>
+                        🔍 Mencari {payload.cluster_display_name || payload.cluster_name ? `mobil ${payload.cluster_display_name || payload.cluster_name}` : 'mobil'}
+                        {payload.entities?.length > 0 && ` (${payload.entities.join(', ')})`}
+                        {(payload.min_budget || payload.max_budget) && (
+                          <> dengan budget {payload.min_budget ? `Rp ${(payload.min_budget / 1000000).toLocaleString('id-ID')} Jt` : 'Rp 0'}{' - '}{payload.max_budget ? `Rp ${(payload.max_budget / 1000000).toLocaleString('id-ID')} Jt` : 'Tak Terbatas'}</>
+                        )}
+                      </span>
+                    </div>
+                    <div style={{ marginTop: '8px', color: 'var(--text-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                      Atur prioritas Anda di bawah, lalu tekan tombol untuk mendapatkan rekomendasi 👇
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {payload && (
-                <ManualWeightInput 
-                  initialWeights={payload.base_weight_profile || {}} 
-                  onSubmit={(w) => submitWeights(w, payload, msg.id)}
-                  disabled={loading}
-                />
-              )}
+                {payload && (
+                  <ManualWeightInput
+                    initialWeights={payload.base_weight_profile || {}}
+                    onSubmit={(w) => submitWeights(w, payload, msg.id)}
+                    disabled={loading}
+                  />
+                )}
 
-              {msg.recommendations && msg.recommendations.length > 0 && (
-                <RankedCars cars={msg.recommendations} constraintReport={msg.constraint_report} />
-              )}
-            </div>
-          );
-        })}
+                {msg.recommendations && msg.recommendations.length > 0 && (
+                  <RankedCars cars={msg.recommendations} constraintReport={msg.constraint_report} />
+                )}
+              </div>
+            );
+          })}
           {loading && (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '180px', margin: '16px 0', opacity: 0.9 }}>
               <div style={{ padding: '16px 20px', borderRadius: '14px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
                 <RiRobot2Fill size={18} style={{ color: '#4090F7', animation: 'pulse 2s infinite' }} />
-                <TextType 
+                <TextType
                   text={[
-                    "Otobot sedang menganalisis kebutuhan Anda...", 
-                    "Sistem sedang menyaring kandidat mobil terbaik...", 
-                    "Menghitung bobot ranking VIKOR...", 
+                    "Otobot sedang menganalisis kebutuhan Anda...",
+                    "Sistem sedang menyaring kandidat mobil terbaik...",
+                    "Menghitung bobot ranking VIKOR...",
                     "Sebentar lagi selesai..."
                   ]}
                   typingSpeed={30}
@@ -445,7 +445,7 @@ export default function ChatbotPage() {
             <input
               className={styles.input}
               type="text"
-              placeholder="Ceritakan kebutuhan mobil Anda... (mis: SUV irit budget 500 juta)"
+              placeholder="Ceritakan kebutuhan atau preferensi dan budget mobil Anda..."
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}

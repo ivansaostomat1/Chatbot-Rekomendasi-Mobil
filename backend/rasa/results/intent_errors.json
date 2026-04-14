@@ -1,94 +1,30 @@
 [
   {
-    "text": "permisi",
-    "intent": "greet",
-    "intent_prediction": {
-      "name": "choose_preference",
-      "confidence": 0.9994997978210449
-    }
-  },
-  {
-    "text": "assalamualaikum",
-    "intent": "greet",
-    "intent_prediction": {
-      "name": "choose_preference",
-      "confidence": 0.9218480587005615
-    }
-  },
-  {
-    "text": "hei",
-    "intent": "greet",
-    "intent_prediction": {
-      "name": "choose_preference",
-      "confidence": 0.9959123730659485
-    }
-  },
-  {
-    "text": "p",
-    "intent": "greet",
-    "intent_prediction": {
-      "name": "choose_preference",
-      "confidence": 0.9821601510047913
-    }
-  },
-  {
-    "text": "good morning",
-    "intent": "greet",
-    "intent_prediction": {
-      "name": "choose_preference",
-      "confidence": 0.9329811334609985
-    }
-  },
-  {
-    "text": "bisa kita restart?",
+    "text": "reset",
     "intent": "start_search",
     "intent_prediction": {
       "name": "out_of_scope",
-      "confidence": 0.9999237060546875
+      "confidence": 0.9016255736351013
     }
   },
   {
-    "text": "saya mau cari mobil berbeda",
-    "intent": "start_search",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.9977145195007324
-    }
-  },
-  {
-    "text": "rekomendasi tempat makan enak di jakarta",
-    "intent": "out_of_scope",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.9966313242912292
-    }
-  },
-  {
-    "text": "cara beli saham untuk pemula",
-    "intent": "out_of_scope",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.9506331086158752
-    }
-  },
-  {
-    "text": "rekomendasi film netflix terbaru",
+    "text": "apa itu inflasi?",
     "intent": "out_of_scope",
     "intent_prediction": {
       "name": "start_search",
-      "confidence": 0.7675274610519409
+      "confidence": 0.9975064396858215
     }
   },
   {
-    "text": "ambil nomor tiga",
-    "intent": "choose_preference",
+    "text": "test",
+    "intent": "out_of_scope",
     "intent_prediction": {
-      "name": "start_search",
-      "confidence": 0.5962206721305847
+      "name": "choose_preference",
+      "confidence": 0.6641865968704224
     }
   },
   {
-    "text": "saya suka yang kedua",
+    "text": "fitur lengkap",
     "intent": "choose_preference",
     "intent_prediction": {
       "name": "ask_recommendation",
@@ -96,91 +32,379 @@
     }
   },
   {
-    "text": "kayaknya yang nyaman deh",
+    "text": "utamakan fitur",
     "intent": "choose_preference",
     "intent_prediction": {
       "name": "ask_recommendation",
-      "confidence": 0.9991901516914368
+      "confidence": 0.9999485015869141
     }
   },
   {
-    "text": "nomor dua dong",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "out_of_scope",
-      "confidence": 0.9999980926513672
-    }
-  },
-  {
-    "text": "saya mau yang sporty",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 1.0
-    }
-  },
-  {
-    "text": "pilihan tiga kayaknya cocok",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.8249258399009705
-    }
-  },
-  {
-    "text": "yang hemat aja lah",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.904476523399353
-    }
-  },
-  {
-    "text": "ambil yang paling gesit",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.9983798265457153
-    }
-  },
-  {
-    "text": "yang nyaman lebih cocok buat saya",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.9999995231628418
-    }
-  },
-  {
-    "text": "ada rekomendasi mobil untuk ibu rumah tangga?",
-    "intent": "ask_recommendation",
-    "intent_prediction": {
-      "name": "out_of_scope",
-      "confidence": 0.9963247179985046
-    }
-  },
-  {
-    "text": "saya mau ganti mobil, ada saran?",
+    "text": "selain hitam ada warna apa lagi?",
     "intent": "ask_recommendation",
     "intent_prediction": {
       "name": "start_search",
-      "confidence": 1.0
+      "confidence": 0.9994754195213318
     }
   },
   {
-    "text": "EV yang bagus untuk harian budget 800jt",
+    "text": "tidak mau manual ya harus matic",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.999995231628418
+    }
+  },
+  {
+    "text": "buat naik gunung kira kira yg kuat di 500jt apa",
     "intent": "ask_recommendation",
     "intent_prediction": {
       "name": "ask_comparison",
-      "confidence": 0.8190224170684814
+      "confidence": 0.9025646448135376
     }
   },
   {
-    "text": "budget 650 juta vs yang tadi beda banyak ga?",
+    "text": "DENZA harganya berapa?",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "carikan Wuling yang irit dan nyaman",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "ada yang lebih bagus di harga 1.2M?",
     "intent": "ask_comparison",
     "intent_prediction": {
       "name": "ask_recommendation",
-      "confidence": 0.9998422861099243
+      "confidence": 0.9892063140869141
+    }
+  },
+  {
+    "text": "hi",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.5636971592903137
+    }
+  },
+  {
+    "text": "cari yang lain",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.7660573124885559
+    }
+  },
+  {
+    "text": "rekomendasikan laptop gaming",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "carikan saya rumah",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.999955415725708
+    }
+  },
+  {
+    "text": "tidak nyambung",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9762911796569824
+    }
+  },
+  {
+    "text": "butuh yg kuat buat jalan rusak sama kadang banjir",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9849633574485779
+    }
+  },
+  {
+    "text": "lagi cari yg kecil tapi gesit buat jalan sempit",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9998468160629272
+    }
+  },
+  {
+    "text": "kalau 8 penumpang dapet nggak",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.999971866607666
+    }
+  },
+  {
+    "text": "sedan yang lincah dan gesit budget 600jt",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "mobil JAECOO ada apa aja?",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.9999568462371826
+    }
+  },
+  {
+    "text": "selamat malam",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9978026747703552
+    }
+  },
+  {
+    "text": "mobil apa",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "tolong buatkan essay",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9811641573905945
+    }
+  },
+  {
+    "text": "saya mau pesan makanan",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.6396976709365845
+    }
+  },
+  {
+    "text": "tarikannya kuat",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "yang tangguh untuk medan berat",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "dipake macet macetan pengen yg tetep nyaman",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "saya gamau yang boros mending yang irit",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9999561309814453
+    }
+  },
+  {
+    "text": "nyari kendaraan yg tetep nyaman walau dipake stop and go pas macet2an",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "di kota padat enaknya pake kendaraan kecil tapi nyaman apa ya",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9999998807907104
+    }
+  },
+  {
+    "text": "cari yg kecil tapi gesit buat parkir di tempat sempit",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "enak dibawa ngebut dan irit harga 1m",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "kalau dapet 1 milyar dapet apa aja?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9916662573814392
+    }
+  },
+  {
+    "text": "kalau budget saya 700 jutaan bisa dapet yang mana?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "rekomendasi hp murah dong",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "ngebut",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "butuh kendaraan buat commute kantor tiap hari yg konsumsi bbm nya irit banget",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "cari yg tahan jalan jelek ga bikin was was",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9997977614402771
+    }
+  },
+  {
+    "text": "lagi cari yg kecil tapi lincah buat mobilitas tinggi",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "nambah 200 juta lagi kira-kira dapet apa?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "hai",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9437415599822998
+    }
+  },
+  {
+    "text": "ada mobil",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.979339063167572
+    }
+  },
+  {
+    "text": "makan bang",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9637578129768372
+    }
+  },
+  {
+    "text": "asdfghjkl",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.9969984292984009
+    }
+  },
+  {
+    "text": "pengen kendaraan compact yg gampang dibawa di kota padat tapi tetep enak duduknya",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "pengen tarikan responsif biar enak pas stop and go",
+    "intent": "choose_preference",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "kalau bisa jangan suv",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.9831324219703674
+    }
+  },
+  {
+    "text": "kalau bisa selain diesel karena bising",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.9957751631736755
+    }
+  },
+  {
+    "text": "mobil tangguh yg kuat jalan rusak + becek + kadang banjir",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "kalau sering keluar kota, yg paling irit di 500jtan apa ya",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.7802353501319885
     }
   }
 ]

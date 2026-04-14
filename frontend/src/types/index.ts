@@ -31,6 +31,54 @@ export interface CarRecommendation {
   INDEX_BRAND_STRENGTH?: number;
   INDEX_PRICE?: number;
   INDEX_CLUSTER_MATCH?: number;
+
+  // --- Detail Spesifikasi ---
+  BODY_TYPE?: string;
+  FUEL?: string;
+  CC?: number;
+  HORSE_POWER?: number;
+  TORQUE?: number;
+  TRANSMISSION?: string;
+  SEAT?: number;
+  GROUND_CLEARANCE?: number;
+  LONG?: number;
+  WIDTH?: number;
+  HEIGHT?: number;
+  WHEELBASE?: number;
+  EV_RANGE_KM?: number;
+  BATTERY?: number;
+  POWERTRAIN?: string;
+  DRIVE_SYS?: string;
+  insight?: string;
+
+  // --- Fitur Brochure / Sales ---
+  AIRBAGS?: number;
+  ABS?: number;
+  EBD?: number;
+  ESC?: number;
+  TCS?: number;
+  AEB?: number;
+  ACC?: number;
+  LKA?: number;
+  RCTA?: number;
+  LANE_CENTERING?: number;
+  LEVEL_ADAS?: string; 
+
+  APPLE_CARPLAY?: string;
+  ANDROID_AUTO?: string;
+  WIRELESS_CHARGER?: string;
+  SUNROOF?: string;
+  POWER_TAILGATE?: string;
+  ELECTRIC_SEAT?: string;
+  VENTILATED_SEAT?: string;
+  MASSAGE_SEAT?: string;
+  CAMERA_360?: string;
+  HEAD_UP_DISPLAY?: string;
+  REAR_SEAT_ENTERTAINMENT?: string;
+  LEATHER_SEAT?: string;
+  AMBIENT_LIGHT?: string;
+  PARKING_BRAKE?: string;
+  AUTO_HOLD?: string;
 }
 
 export interface ConstraintReport {

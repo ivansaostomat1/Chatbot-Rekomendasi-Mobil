@@ -44,10 +44,10 @@ class DialogueContextManager:
         # Logging yang sangat detail untuk membantu debug/skripsi
         if current or prev:
             print(f"  [{field_name.upper()}]")
-            print(f"   ├─ P : {prev}")
-            print(f"   ├─ L : {current}")
-            print(f"   ├─ - : {[x for x in combined if x in self.negated]}")
-            print(f"   └─ R : {final_list}")
+            print(f"   |- P : {prev}")
+            print(f"   |- L : {current}")
+            print(f"   |- - : {[x for x in combined if x in self.negated]}")
+            print(f"   \- R : {final_list}")
             
         return final_list
 
@@ -65,6 +65,10 @@ class DialogueContextManager:
             # Budget tidak di-_merge (jangan digabungkan), tapi jika baru di-set, timpa yang lama
             "raw_budgets": self.new_parsed.get("raw_budgets") or self._get_prev("raw_budgets"),
             
+            # Technical Constraints
+            "min_seat": self.new_parsed.get("min_seat") or self.tracker.get_slot("min_seat"),
+            "must_have_sunroof": self.new_parsed.get("must_have_sunroof") or self.tracker.get_slot("must_have_sunroof"),
+
             # Negated terms yang sudah diakumulasikan dan di-deduplikasi
             "negated_terms": self.negated
         }
@@ -72,9 +76,9 @@ class DialogueContextManager:
         # Log budget memory behavior
         if result["raw_budgets"]:
             print(f"  [RAW_BUDGETS]")
-            print(f"   ├─ P : {self._get_prev('raw_budgets')}")
-            print(f"   ├─ L : {self.new_parsed.get('raw_budgets')}")
-            print(f"   └─ R : {result['raw_budgets']}")
+            print(f"   |- P : {self._get_prev('raw_budgets')}")
+            print(f"   |- L : {self.new_parsed.get('raw_budgets')}")
+            print(f"   \- R : {result['raw_budgets']}")
             
         print("DONE [CONTEXT MANAGER] Selesai Menggabungkan Context!")
         print("="*50 + "\n")

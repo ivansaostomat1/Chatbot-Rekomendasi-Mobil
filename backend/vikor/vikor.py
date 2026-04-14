@@ -59,6 +59,11 @@ def build_weight_vector(weight_dict, criteria):
 # ======================================================
 
 def vikor_rank(df, weight_dict=None, v=0.5):
+    # Safety Check: Stop early if no cars remain after filtering
+    if df.empty:
+        print(" [VIKOR] Warning: Empty dataframe. Skipping calc.")
+        return df.copy()
+
 
     features = [c for c in VIKOR_CRITERIA if c in df.columns]
 
@@ -160,7 +165,7 @@ def validate_compromise_solution(df):
 
     if m < 2:
         if m == 1:
-            df.loc[0, "VIKOR_STATUS"] = "Pemenang Mutlak ⭐"
+            df.loc[0, "VIKOR_STATUS"] = "Pemenang Mutlak"
         return df
 
     Q1 = df.loc[0, "VIKOR_Q"]
@@ -178,19 +183,19 @@ def validate_compromise_solution(df):
 
     if condition1 and condition2:
         # Menang mutlak (Cuma peringkat 1 yang dapat bintang)
-        df.loc[0, "VIKOR_STATUS"] = "Pemenang Mutlak ⭐"
+        df.loc[0, "VIKOR_STATUS"] = "Pemenang Mutlak"
         df["VIKOR_IS_COMPROMISE"] = False
 
     elif not condition1:
         # Kompromi (Peringkat 1, 2, dst yang masuk threshold dapat bintang)
         threshold = Q1 + DQ
         compromise_idx = df.index[df["VIKOR_Q"] <= threshold].tolist()
-        df.loc[compromise_idx, "VIKOR_STATUS"] = "Rekomendasi Setara ⭐"
+        df.loc[compromise_idx, "VIKOR_STATUS"] = "Rekomendasi Setara"
         df["VIKOR_IS_COMPROMISE"] = True
 
     else:
         # Kompromi (Hanya Peringkat 1 dan 2 yang dapat bintang)
-        df.loc[[0, 1], "VIKOR_STATUS"] = "Rekomendasi Setara ⭐"
+        df.loc[[0, 1], "VIKOR_STATUS"] = "Rekomendasi Setara"
         df["VIKOR_IS_COMPROMISE"] = True
 
     df["VIKOR_Q1"] = Q1

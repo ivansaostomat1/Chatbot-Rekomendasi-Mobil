@@ -28,9 +28,58 @@ class CarRecommendation(BaseModel):
     INDEX_PRICE: Optional[float] = None
     DRIVE_SYS: Optional[str] = None
     POWERTRAIN: Optional[str] = None
+    
+    # --- Detail Spesifikasi Tambahan ---
+    BODY_TYPE: Optional[str] = Field(None, alias="BODY TYPE")
+    FUEL: Optional[str] = None
+    CC: Optional[float] = None
+    HORSE_POWER: Optional[float] = Field(None, alias="HORSE POWER (HP)")
+    TORQUE: Optional[float] = Field(None, alias="TORQUE (Nm)")
+    TRANSMISSION: Optional[str] = None
+    SEAT: Optional[int] = None
+    GROUND_CLEARANCE: Optional[float] = Field(None, alias="GROUND CLEARANCE")
+    LONG: Optional[float] = None
+    WIDTH: Optional[float] = None
+    HEIGHT: Optional[float] = None
+    WHEELBASE: Optional[float] = None
+    EV_RANGE_KM: Optional[float] = None
+    BATTERY: Optional[float] = Field(None, alias="BATTERY (KWH)")
+    
+    # --- Fitur Brochure / Sales ---
+    # Keselamatan & ADAS
+    AIRBAGS: Optional[int] = None
+    ABS: Optional[float] = None
+    EBD: Optional[float] = None
+    ESC: Optional[float] = None
+    TCS: Optional[float] = None
+    AEB: Optional[float] = None
+    ACC: Optional[float] = None
+    LKA: Optional[float] = None
+    RCTA: Optional[float] = None
+    LANE_CENTERING: Optional[float] = None
+    LEVEL_ADAS: Optional[str] = None # Derived in backend
+    
+    # Tech & Comfort
+    APPLE_CARPLAY: Optional[str] = None
+    ANDROID_AUTO: Optional[str] = None
+    WIRELESS_CHARGER: Optional[str] = None
+    SUNROOF: Optional[str] = None
+    POWER_TAILGATE: Optional[str] = None
+    ELECTRIC_SEAT: Optional[str] = None
+    VENTILATED_SEAT: Optional[str] = None
+    MASSAGE_SEAT: Optional[str] = None
+    CAMERA_360: Optional[str] = None
+    HEAD_UP_DISPLAY: Optional[str] = None
+    REAR_SEAT_ENTERTAINMENT: Optional[str] = None
+    LEATHER_SEAT: Optional[str] = None
+    AMBIENT_LIGHT: Optional[str] = None
+    PARKING_BRAKE: Optional[str] = None
+    AUTO_HOLD: Optional[str] = None
+    
     insight: Optional[str] = None
 
     class Config:
+        allow_population_by_field_name = True
         orm_mode = True
 
 
@@ -41,6 +90,7 @@ class CarRecommendation(BaseModel):
 class RecommendationResponse(BaseModel):
 
     recommendations: List[CarRecommendation]
+    constraint_report: Optional[Dict[str, Any]] = None
     comparison_insight: Optional[str] = None
 
 

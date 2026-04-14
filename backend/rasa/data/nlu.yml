@@ -8,7 +8,7 @@ nlu:
     - hi
     - selamat pagi
     - selamat malam
-    
+
 - intent: start_search
   examples: |
     - cari mobil baru
@@ -57,6 +57,11 @@ nlu:
     - resep masakan ayam
     - cuaca hari ini
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Intent: choose_preference
+# PERBAIKAN: Ditambahkan contoh multi-preferensi dalam 1 kalimat natural
+# agar DIET tidak jatuh ke nlu_fallback ketika user menjawab dengan frasa panjang
+# ─────────────────────────────────────────────────────────────────────────────
 - intent: choose_preference
   examples: |
     - irit
@@ -75,6 +80,89 @@ nlu:
     - handling
     - bertenaga
     - tarikannya kuat
+    - irit dan nyaman
+    - yang irit tapi nyaman
+    - hemat dan nyaman
+    - nyaman dan irit
+    - irit sama nyaman
+    - irit dan canggih
+    - nyaman dan canggih
+    - irit nyaman canggih
+    - irit dan nyaman kalau bisa canggih
+    - kalau bisa yang irit dan canggih
+    - yang penting irit sama nyaman
+    - mau yang irit tapi tetap nyaman
+    - utamakan kenyamanan dan irit bbm
+    - saya mau yang hemat dan nyaman
+    - pengen yang kencang tapi tetap nyaman
+    - nyaman dan irit fitur canggih kalau ada
+    - saya prioritaskan kenyamanan dan hemat bahan bakar
+    - yang gesit dan lincah tapi irit
+    - mau yang bertenaga tapi tetap irit
+    - yang teknologinya bagus dan nyaman
+    - canggih nyaman dan kalau bisa irit juga
+    - yang nyaman buat harian dan hemat bbm
+    - kenyamanan sama fitur canggih
+    - yang penting nyaman dan bertenaga
+    - irit dan aman
+    - nyaman untuk [keluarga](preference)
+    - aman untuk [keluarga](preference)
+    - bagus dan nyaman untuk [keluarga](preference)
+    - untuk [keluarga](preference) yang nyaman
+    - buat [keluarga](preference) yang irit
+    - mobil untuk [keluarga](preference) bensin
+    - mobil [keluarga](preference) [7](min_seat) seat
+    - yang [irit](preference) buat [keluarga](preference)
+    - mau yang [nyaman](preference) dan [irit](preference) buat [keluarga](preference)
+    - 1. [bensin](powertrain) 2. [7](min_seat) seat 3. [sunroof](feature)
+    - 1. [hybrid](powertrain) 2. [5](min_seat) orang 3. [kamera 360](feature)
+    - [bensin](powertrain), [7](min_seat) seat, [kamera 360](feature)
+    - [hybrid](powertrain), [5](min_seat) kursi, [sunroof](feature)
+    - [6](min_seat) orang
+    - muat [8](min_seat) penumpang
+    - kursi [2](min_seat) saja
+    - saya butuh yang [bensin](powertrain)
+    - pengen yang [hybrid](powertrain) aja
+    - cari mobil [listrik](powertrain)
+    - ada yang [diesel](powertrain) ga?
+    - yang ada [sunroof](feature) dong
+    - butuh [360 camera](feature) buat parkir
+    - mau yang [7](min_seat) kursi
+    - saya butuh [5](min_seat) seat aja
+    - harian yang irit
+    - harian dan irit
+    - harian yang nyaman
+    - daily driver yang irit
+    - yang enak buat harian
+    - enak buat harian dan irit
+    - yang stylish dan canggih
+    - modern dan canggih
+    - mewah dan nyaman
+    - teknologi canggih dan nyaman
+    - performa bagus tapi irit
+    - kencang tapi irit bbm
+    - nyaman tapi tetap kencang
+    - irit tapi bertenaga
+    - tangguh dan nyaman
+    - tangguh dan irit
+    - yang tangguh untuk medan berat
+    - bisa offroad dan nyaman
+    - ground clearance tinggi dan nyaman
+    - butuh kendaraan buat commute kantor tiap hari yg konsumsi bbm nya irit banget
+    - opsi kendaraan yg paling nyaman buat perjalanan lintas kota jarak jauh
+    - pengen kendaraan compact yg gampang dibawa di kota padat tapi tetep enak duduknya
+    - cari mobil yg jok belakangnya lega buat ortu biar nyaman
+    - pengen yg irit banget soalnya dipake tiap hari nonstop
+    - butuh yg kuat buat jalan rusak sama kadang banjir
+    - pengen tarikan responsif biar enak pas stop and go
+    - lagi butuh yg muat banyak orang tapi tetep nyaman
+    - lagi cari yg lincah buat dipake di kota padat
+    - cari yg tahan jalan jelek ga bikin was was
+    - lagi cari yg kecil tapi gesit buat jalan sempit
+    - lagi cari yg kecil tapi lincah buat mobilitas tinggi
+    - dipake macet macetan pengen yg tetep nyaman
+    - butuh yg hemat bbm buat perjalanan jauh rutin
+    - lagi nyari yg jok belakangnya lega buat ortu
 
 - lookup: body_type
   examples: |
@@ -199,6 +287,48 @@ nlu:
     - usahakan jangan merk [cina]{"entity":"brand", "role":"negated"}
     - anti [ev]{"entity":"powertrain", "role":"negated"} pokoknya
     - cari yang [irit](preference) tapi jangan [sedan]{"entity":"body_type", "role":"negated"}
+    - saya gamau yang [boros]{"entity":"preference", "role":"negated"} mending yang [irit](preference)
+    - asal bukan merk [eropa]{"entity":"brand", "role":"negated"} soalnya mahal
+    - jangan kasih saya mobil [bekas]{"entity":"preference", "role":"negated"} maunya yang baru
+    - selain [hitam]{"entity":"preference", "role":"negated"} ada warna apa lagi?
+    - tidak mau [manual]{"entity":"powertrain", "role":"negated"} ya harus matic
+    - pokoknya bukan [pickup]{"entity":"body_type", "role":"negated"}
+    - gweh cari mobil tenaga gede buat nyalip truk di tol tapi tetep nyaman
+    - nyari kendaraan yg tetep nyaman walau dipake stop and go pas macet2an
+    - mobil yg akselerasinya responsif biar enak pas stop and go pas amcet
+    - mobil yg lincah buat selap selip gang sempit + parkir gampang
+    - pengen mobil irit bgtt soalnya dipake bolak balik kantor tiap hari
+    - butuh mobil yg kabinnya luas buat bawa [keluarga](preference) + barang banyak
+    - mobil tangguh yg kuat jalan rusak + becek + kadang banjir
+    - nyari kendaraan tenaga gede buat nyalip di tol biar ga nanggung
+    - di kota padat enaknya pake kendaraan kecil tapi nyaman apa ya
+    - pengen mobil kecil tapi handlingnya enak buat zig zag macet
+    - mobil yg bbm nya hemat buat perjalanan jauh luar kota
+    - butuh yg lincah buat selap selip macet di jalan sempit
+    - lagi cari yg kabinnya luas buat bawa [keluarga](preference) + barang
+    - cari yg kecil tapi gesit buat parkir di tempat sempit
+    - anak muda yg suka mobil keren cocoknya apa di [2m](budget)
+    - menurut lo kendaraan apa yang cocok buat anak muda di harga [300jtan](budget)
+    - saya mau mobil murah tapi [irit](preference) bbm di kisaran [200 jutaan](budget)
+    - rekomendasi kendaraan super [hemat](preference) bbm sekitar [300jt](budget) yang paling worth apa
+    - gw pengen mobil murah tapi [irit](preference) bbm di kisaran [200 jutaan](budget)
+    - buat daily ke kantor enaknya pake apa yang [hemat](preference) di [250jt](budget)
+    - kalau sering keluar kota, yg paling [irit](preference) di [500jtan](budget) apa ya
+    - dipake macet + stop and go, enaknya ambil apa di [300jt](budget)
+    - buat kota, yg kecil tapi [fitur lengkap](preference) di [300jt](budget) apa ya
+    - macet + perjalanan jauh pengen tetep [nyaman](preference), ambil apa di [500jt](budget)
+    - mobil apa ya yang cocok buat anak muda harga [300jtan](budget)
+    - butuh mobil buat harian ke kantor yang [hemat](preference) di [250jt](budget)
+    - mobil yang enak buat jalan jauh harga [600jt](budget) apa ya
+    - tolong rekomendasiin mobil keluarga yang [nyaman](preference) di budget [500jt](budget) dong
+    - gue lagi nyari yang [irit](preference) tapi looknya [sporty](preference) di [400jt](budget)
+    - menurut lo ada yg worth it ga di kelas [1m](budget)
+    - gue prefer [suspensi empuk](preference) buat jalan jelek di kisaran [450jt](budget)
+    - [fitur lengkap](preference) di [600jt](budget) itu biasanya dapet apa aja sih
+    - gue lagi cari yg [kenceng](preference) tapi ga [boros]{"entity":"preference", "role":"negated"} di [500jt](budget)
+    - buat naik gunung kira kira yg kuat di [500jt](budget) apa
+    - buat usaha tapi tetep [nyaman](preference) dipake, enaknya apa di [300jt](budget)
+    - butuh yg [stabil](preference) buat ngebut
     - pengen dapet [5](min_seat) seat
     - saya butuh mobil [7](min_seat) kursi
     - kalau [8](min_seat) penumpang dapet nggak
@@ -211,7 +341,11 @@ nlu:
     - mobil yang [enak dikendarai](preference) dan [responsif](preference) di harga [700jt](budget) apa ya
     - mobil [nyaman](preference) dan paling enak buat penumpang di budget kurang dari [2m](budget)
     - saya cari mobil [nyaman](preference) untuk dibawah sendiri untuk kuliahan dengan budget [400jt](budget) butuh [wireless apple carplay](feature) dan [android auto](feature)
-    - saya cari mobil [250jt](budget)
+    - saya cari mobil [250jtan](budget)
+    - budget [400jtan](budget)
+    - saya ada budget [500 jutaan](budget)
+    - cari mobil budget [300jt](budget) dong
+    - carikan mobil dengan harga [600 juta](budget)
     - saya cari mobil untuk [keluarga besar](hard_filter) dengan budget [600jt](budget)
     - mobil yang [irit](preference) tapi [kencang](preference) budget [350jt](budget)
     - enak dibawa [ngebut](preference) dan [irit](preference) harga [1m](budget)
@@ -371,11 +505,11 @@ nlu:
   examples: |
     - kalau budget ditambah [50jt](budget) dapet apa?
     - bagaimana kalau budget saya naik jadi [600jt](budget)?
-    - dibandingin sama budget [800jt](budget) enakan mana?
+    - dibandingin sama budget [800jtan](budget) enakan mana?
     - kalau saya tambah budget [100 juta](budget) dapet yang lebih bagus ga?
     - bandingkan dengan budget [500jt](budget)
     - kalau dapet [1 milyar](budget) dapet apa aja?
-    - gimana kalau budgetnya saya tambah [200jt](budget)?
+    - gimana kalau budgetnya saya tambah [200jtan](budget)?
     - nambah [100jt](budget) lagi dapet mobil apa?
     - kalau budgetnya jadi [700 juta](budget) ada pilihan lain?
     - kalau budget saya nambah [100jt](budget) dapet apa?
@@ -383,7 +517,7 @@ nlu:
     - gimana kalau budget saya [800jt](budget)?
     - bandingkan dengan budget [1M](budget)
     - kalau budget dinaikkan ke [600jt](budget) dapet apa?
-    - kalau budget saya [700 juta](budget) bisa dapet yang mana?
+    - kalau budget saya [700 jutaan](budget) bisa dapet yang mana?
     - dengan budget [500jt](budget) ada pilihan lain ga?
     - nambah [200 juta](budget) lagi kira-kira dapet apa?
     - kalau budget saya tambah jadi [900jt](budget) rekomendasinya berubah ga?

@@ -155,6 +155,35 @@ function Badge({ children }: { children: React.ReactNode }) {
   );
 }
 
+function SpecItem({ icon, label, value, fullWidth }: { icon: string; label: string; value: string | number; fullWidth?: boolean }) {
+  return (
+    <div className={`${styles.specItem} ${fullWidth ? styles.specFullWidth : ''}`}>
+      <span className={styles.specIcon}>{icon}</span>
+      <div className={styles.specDetails}>
+        <span className={styles.specLabel}>{label}</span>
+        <span className={styles.specValue} title={String(value)}>{value}</span>
+      </div>
+    </div>
+  );
+}
+
+
+function DetailBadge({ label, icon, type }: { label: string; icon: string; type: 'safety' | 'tech' | 'comfort' | 'accent' }) {
+  const typeClass = {
+    safety: styles.badgeSafety,
+    tech: styles.badgeTech,
+    comfort: styles.badgeComfort,
+    accent: styles.badgeAccent
+  }[type];
+
+  return (
+    <div className={`${styles.badge} ${typeClass}`}>
+      <span>{icon}</span>
+      <span>{label}</span>
+    </div>
+  );
+}
+
 
 export default function CarCard({ car, rank }: Props) {
   const { isScientific } = useScientificMode();
@@ -236,6 +265,69 @@ export default function CarCard({ car, rank }: Props) {
               {car.CLUSTER_NAME}
             </span>
           )}
+        </div>
+
+        {/* ── Specs Grid ── */}
+        <div className={styles.specsGrid}>
+          <SpecItem icon="🏷️" label="Tipe Bodi" value={car.BODY_TYPE || '-'} />
+          <SpecItem icon="⚙️" label="Transmisi" value={car.TRANSMISSION || '-'} />
+          <SpecItem icon="⛽" label="Bahan Bakar" value={car.FUEL || '-'} />
+          <SpecItem icon="👥" label="Kapasitas" value={car.SEAT ? `${car.SEAT} Kursi` : '-'} />
+          
+          {/* Engine / Battery Row */}
+          {car.CC ? (
+            <SpecItem icon="🚀" label="Mesin" value={`${Math.round(car.CC)} cc`} />
+          ) : car.BATTERY ? (
+            <SpecItem icon="🔋" label="Baterai" value={`${car.BATTERY} kWh`} />
+          ) : (
+            <SpecItem icon="⚙️" label="Penggerak" value={car.POWERTRAIN || '-'} />
+          )}
+          
+          {/* Performance */}
+          <SpecItem icon="🐎" label="Tenaga" value={car.HORSE_POWER ? `${Math.round(car.HORSE_POWER)} HP` : '-'} />
+          
+          {/* Dimensional & Clearance */}
+          <SpecItem icon="🏔️" label="Ground Clearance" value={car.GROUND_CLEARANCE ? `${car.GROUND_CLEARANCE} mm` : '-'} />
+          <SpecItem icon="📏" label="Dimensi (PxLxT)" value={car.LONG ? `${car.LONG}x${car.WIDTH}x${car.HEIGHT}` : '-'} fullWidth />
+        </div>
+
+        {/* ── Features Highlights (Brochure Style) ── */}
+        <div className={styles.featureSection}>
+          {/* Group 1: Keselamatan & ADAS */}
+          <div className={styles.featureGroup}>
+            <div className={styles.categoryLabel}>🛡️ Keselamatan & ADAS</div>
+            <div className={styles.featureList}>
+              {car.LEVEL_ADAS && car.LEVEL_ADAS !== "Dasar" && <DetailBadge label={`ADAS ${car.LEVEL_ADAS}`} icon="🤖" type="safety" />}
+              {car.AIRBAGS && car.AIRBAGS > 0 && <DetailBadge label={`${car.AIRBAGS} Airbags`} icon="🎈" type="safety" />}
+              {car.ABS === 1 && <DetailBadge label="ABS+EBD" icon="🛑" type="safety" />}
+              {car.ESC === 1 && <DetailBadge label="Stability Control" icon="🛞" type="safety" />}
+              {car.RCTA === 1 && <DetailBadge label="RCTA" icon="🚨" type="safety" />}
+            </div>
+          </div>
+
+          {/* Group 2: Tech & Entertainment */}
+          <div className={styles.featureGroup}>
+            <div className={styles.categoryLabel}>📱 Teknologi & Hiburan</div>
+            <div className={styles.featureList}>
+              {car.APPLE_CARPLAY && car.APPLE_CARPLAY !== "Tidak Ada" && <DetailBadge label={`CarPlay ${car.APPLE_CARPLAY}`} icon="🍎" type="tech" />}
+              {car.ANDROID_AUTO && car.ANDROID_AUTO !== "Tidak Ada" && <DetailBadge label={`Android Auto ${car.ANDROID_AUTO}`} icon="🤖" type="tech" />}
+              {car.WIRELESS_CHARGER === "Ada" && <DetailBadge label="Wireless Charger" icon="⚡" type="tech" />}
+              {car.CAMERA_360 === "Ada" && <DetailBadge label="Camera 360°" icon="🎥" type="tech" />}
+              {car.HEAD_UP_DISPLAY === "Ada" && <DetailBadge label="HUD" icon="👓" type="tech" />}
+            </div>
+          </div>
+
+          {/* Group 3: Kenyamanan & Interior */}
+          <div className={styles.featureGroup}>
+            <div className={styles.categoryLabel}>✨ Kenyamanan & Interior</div>
+            <div className={styles.featureList}>
+              {car.SUNROOF && car.SUNROOF !== "Tidak Ada" && <DetailBadge label={car.SUNROOF} icon="☀️" type="comfort" />}
+              {car.POWER_TAILGATE === "Ada" && <DetailBadge label="Power Tailgate" icon="🚪" type="comfort" />}
+              {car.AUTO_HOLD === "Ada" && <DetailBadge label="Auto Hold" icon="🅿️" type="comfort" />}
+              {car.LEATHER_SEAT && car.LEATHER_SEAT !== "Fabric" && <DetailBadge label={car.LEATHER_SEAT} icon="🛋️" type="comfort" />}
+              {car.AMBIENT_LIGHT === "Ada" && <DetailBadge label="Ambient Light" icon="🌈" type="comfort" />}
+            </div>
+          </div>
         </div>
 
         {/* Cluster Semantic Profile (Scientific Only) */}

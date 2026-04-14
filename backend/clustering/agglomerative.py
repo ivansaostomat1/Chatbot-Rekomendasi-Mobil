@@ -80,41 +80,45 @@ def assign_cluster_profiles(df):
 
         scores = {}
 
-        # City Car: Irit, Kecil, Murah
-        scores["City Car"] = (
+        # Urban Agility (City Car): Irit, Lincah (Handling), Murah (Price index tinggi)
+        scores["Urban Agility"] = (
             p["INDEX_EFFICIENCY"] +
+            p["INDEX_HANDLING"] +
             p["INDEX_PRICE"] -
             p["INDEX_SPACE"]
         )
 
-        # Family Car: Luas, Nyaman (proxy by Space), Aman (proxy by Power/Handling Balance)
-        scores["Family Car"] = (
+        # Family Comfort: Luas, Nyaman (proxy by Space), Aman (proxy by Handling/Power Balance)
+        scores["Family Comfort"] = (
             p["INDEX_SPACE"] +
             p["INDEX_HANDLING"]
         )
 
-        # Tough SUV / Offroad: GC Tinggi, Tenaga Oke
-        scores["Offroad"] = (
+        # Rugged Explorer: Ketangguhan (Offroad), Tenaga
+        scores["Rugged Explorer"] = (
             p["INDEX_OFFROAD"] +
             p["INDEX_POWER"]
         )
 
-        # Performance / Sports: Tenaga Tinggi, Handling Tinggi (Ceper)
-        scores["Performance"] = (
+        # High-End Performance: Tenaga Tinggi, Handling Tinggi, Prestisius (price index rendah = mahal)
+        # Menghapus Luxury karena digabung ke sini
+        scores["High-End Performance"] = (
             p["INDEX_POWER"] +
-            p["INDEX_HANDLING"]
+            p["INDEX_HANDLING"] -
+            p.get("INDEX_PRICE", 0)
         )
 
-        # Luxury / Premium: Mahal, Tenaga Tinggi, Kabin Luas
-        scores["Luxury"] = (
-            p["INDEX_POWER"] +
-            p["INDEX_SPACE"] -
-            p.get("INDEX_PRICE", 0) # Minus karena price index tinggi = murah, premium = mahal (low score)
+        # Practical All-Rounder: Serba pas, lumayan irit (7), lumayan lega (7), harga oke (10)
+        # Mencari cluster yang deviasinya paling kecil dari "Rata-rata ideal"
+        scores["Practical All-Rounder"] = (
+            p["INDEX_EFFICIENCY"] +
+            p["INDEX_SPACE"] +
+            p["INDEX_PRICE"]
         )
 
         score_table.append((cluster_id, scores))
 
-    labels = ["City Car","Family Car","Offroad","Performance","Luxury"]
+    labels = ["Urban Agility", "Family Comfort", "Rugged Explorer", "High-End Performance", "Practical All-Rounder"]
 
     cluster_labels = {}
     used_clusters = set()

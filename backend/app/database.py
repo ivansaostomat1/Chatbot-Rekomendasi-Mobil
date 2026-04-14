@@ -2,8 +2,18 @@ import sqlite3
 import json
 import os
 from datetime import datetime
-from typing import List, Dict, Any
-from app.feature_ontology import DRIVETRAIN_DECODING
+from typing import List, Dict, Any, Any as AnyType
+import numpy as np
+from .feature_ontology import DRIVETRAIN_DECODING
+
+class NumpyEncoder(json.JSONEncoder):
+    """Custom encoder to handle NumPy types during JSON serialization."""
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, np.generic):
+            return obj.item()
+        return super(NumpyEncoder, self).default(obj)
 
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "history.db")
@@ -44,7 +54,7 @@ def save_chat_history(
     nlp_preferences: List[str],
     nlp_needs: List[str],
     nlp_entities: List[str],
-    cluster_name: str,
+    cluster_name: Any,
     hard_filters_applied: Dict[str, Any],
     cars_total: int,
     cars_after_constraint: int,
@@ -52,12 +62,20 @@ def save_chat_history(
     weight_dict_used: Dict[str, float] = None
 ):
     """Menyimpan satu record evaluasi pencarian ke database."""
-    nlp_preferences_json = json.dumps(nlp_preferences)
-    nlp_needs_json = json.dumps(nlp_needs)
-    nlp_entities_json = json.dumps(nlp_entities)
-    hard_filters_json = json.dumps(hard_filters_applied)
-    recommendations_json = json.dumps(top_recommendations)
-    weight_dict_json = json.dumps(weight_dict_used or {})
+    # Robust Stringification: SQLite tidak suka list/dict mentah di parameter binding
+    # Gunakan NumpyEncoder untuk menangani tipe data np.float64
+    nlp_preferences_json = json.dumps(nlp_preferences, cls=NumpyEncoder)
+    nlp_needs_json = json.dumps(nlp_needs, cls=NumpyEncoder)
+    nlp_entities_json = json.dumps(nlp_entities, cls=NumpyEncoder)
+    hard_filters_json = json.dumps(hard_filters_applied, cls=NumpyEncoder)
+    recommendations_json = json.dumps([r for r in top_recommendations], cls=NumpyEncoder)
+    weight_dict_json = json.dumps(weight_dict_used or {}, cls=NumpyEncoder)
+    
+    # Pastikan cluster_name adalah string (jika multi-cluster)
+    if isinstance(cluster_name, list):
+        cluster_name = ", ".join(cluster_name)
+    else:
+        cluster_name = str(cluster_name or "Global")
 
     timestamp = datetime.now().isoformat()
 

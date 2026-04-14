@@ -1,71 +1,71 @@
 # backend/app/feature_ontology.py
 
 # ======================================================
-# USER PREFERENCE → INDEX MAPPING (SUPPORT LISTS)
+# USER PREFERENCE --- INDEX MAPPING (SUPPORT LISTS)
 # ======================================================
 
 PREFERENCE_INDEX_MAP = {
 
     # Efficiency
-    "irit": ["INDEX_EFFICIENCY"],
-    "hemat": ["INDEX_EFFICIENCY"],
-    "bbm": ["INDEX_EFFICIENCY"],
+    "irit": ["efficiency"],
+    "hemat": ["efficiency"],
+    "bbm": ["efficiency"],
 
     # Power & Handling (Multi-Index Support)
-    "sporty": ["INDEX_POWER", "INDEX_HANDLING", "INDEX_DRIVER_COMFORT"],
-    "performa": ["INDEX_POWER", "INDEX_HANDLING"],
-    "kencang": ["INDEX_POWER", "INDEX_HANDLING"],
-    "ngebut": ["INDEX_POWER"],
-    "responsif": ["INDEX_POWER"],
-    "tenaga": ["INDEX_POWER"],
-    "nanjak": ["INDEX_POWER"],
+    "sporty": ["power", "handling", "driver_comfort"],
+    "performa": ["power", "handling"],
+    "kencang": ["power", "handling"],
+    "ngebut": ["power"],
+    "responsif": ["power"],
+    "tenaga": ["power"],
+    "nanjak": ["power"],
 
-    "lincah": ["INDEX_HANDLING"],
-    "gesit": ["INDEX_HANDLING"],
-    "handling": ["INDEX_HANDLING"],
-    "enak dikendarai": ["INDEX_HANDLING", "INDEX_DRIVER_COMFORT"],
-    "fun": ["INDEX_HANDLING"],
-    "stabil": ["INDEX_HANDLING"],
+    "lincah": ["handling"],
+    "gesit": ["handling"],
+    "handling": ["handling"],
+    "enak dikendarai": ["handling", "driver_comfort"],
+    "fun": ["handling"],
+    "stabil": ["handling"],
 
     # Comfort
-    "nyaman": ["INDEX_PASSENGER_COMFORT"],
-    "driver nyaman": ["INDEX_DRIVER_COMFORT"],
+    "nyaman": ["passenger_comfort", "driver_comfort"],
+    "driver nyaman": ["driver_comfort"],
 
     # Space
-    "keluarga": ["INDEX_SPACE"],
-    "luas": ["INDEX_SPACE"],
-    "kabinnya luas": ["INDEX_SPACE"],
+    "keluarga": ["space"],
+    "luas": ["space"],
+    "kabinnya luas": ["space"],
 
     # Safety
-    "aman": ["INDEX_SAFETY"],
+    "aman": ["safety"],
 
     # Technology
-    "teknologi": ["INDEX_TECH"],
-    "fitur": ["INDEX_TECH"],
-    "fitur lengkap": ["INDEX_TECH"],
-    "modern": ["INDEX_TECH"],
-    "canggih": ["INDEX_TECH"],
+    "teknologi": ["tech"],
+    "fitur": ["tech"],
+    "fitur lengkap": ["tech"],
+    "modern": ["tech"],
+    "canggih": ["tech"],
 
     # Luxury
-    "mewah": ["INDEX_LUXURY"],
-    "luxury": ["INDEX_LUXURY"],
+    "mewah": ["luxury"],
+    "luxury": ["luxury"],
 
     # Offroad
-    "banjir": ["INDEX_OFFROAD"],
-    "jalan rusak": ["INDEX_OFFROAD"],
+    "banjir": ["offroad"],
+    "jalan rusak": ["offroad"],
 
     # Brand Strength (Ecosystem)
-    "merek": ["INDEX_BRAND_STRENGTH"],
-    "brand": ["INDEX_BRAND_STRENGTH"],
-    "terkenal": ["INDEX_BRAND_STRENGTH"],
-    "laku": ["INDEX_BRAND_STRENGTH"],
-    "populer": ["INDEX_BRAND_STRENGTH"],
+    "merek": ["brand_strength"],
+    "brand": ["brand_strength"],
+    "terkenal": ["brand_strength"],
+    "laku": ["brand_strength"],
+    "populer": ["brand_strength"],
 
     # Product Lifecycle (Discontinue-Safe)
-    "model baru": ["INDEX_LIFECYCLE_SAFE"],
-    "baru": ["INDEX_LIFECYCLE_SAFE"],
-    "sparepart": ["INDEX_BRAND_STRENGTH", "INDEX_LIFECYCLE_SAFE"],
-    "aman": ["INDEX_SAFETY", "INDEX_BRAND_STRENGTH", "INDEX_LIFECYCLE_SAFE"],
+    "model baru": ["lifecycle"],
+    "baru": ["lifecycle"],
+    "sparepart": ["brand_strength", "lifecycle"],
+    "aman": ["safety", "brand_strength", "lifecycle"],
 }
 
 
@@ -100,29 +100,20 @@ BODY_TYPE_MAP = {
 }
 
 
-
 # ======================================================
 # POWERTRAIN ONTOLOGY
 # ======================================================
 
 POWERTRAIN_MAP = {
-
-    "bensin": "ICE",
-    "petrol": "ICE",
-    "diesel": "ICE",
-
-    "hybrid": "HYBRID",
-    "hev": "HYBRID",
-    "mhev": "HYBRID",
-
-    "phev": "PHEV",
-
-    "bev": "EV",
-    "electric": "EV",
-    "ev": "EV",
-    "listrik": "EV"
+    "bensin": "Bensin",
+    "gasoline": "Bensin",
+    "diesel": "Diesel",
+    "solar": "Diesel",
+    "hybrid": "Hybrid",
+    "listrik": "Listrik",
+    "ev": "Listrik",
+    "bev": "Listrik"
 }
-
 
 
 # ======================================================
@@ -130,263 +121,221 @@ POWERTRAIN_MAP = {
 # ======================================================
 
 DRIVETRAIN_MAP = {
-    "fwd": "FWD",
-    "penggerak depan": "FWD",
-    
-    "rwd": "RWD",
-    "penggerak belakang": "RWD",
-    
-    "awd": "AWD",
-    "all wheel drive": "AWD",
-    
-    "4wd": "4WD",
-    "4x4": "4WD"
+    "fwd": 1,
+    "rwd": 2,
+    "awd": 3,
+    "4wd": 4,
+    "4x4": 4
 }
 
-# Mapping numerik hasil preprocessing (sinkron dengan preprocessing.py)
+DRIVETRAIN_DECODING = {
+    1.0: "FWD",
+    2.0: "RWD",
+    3.0: "AWD",
+    4.0: "4WD",
+    4.4: "4WD" # Handling legacy float
+}
+
 DRIVETRAIN_ENCODING = {
+    1: 1.0,
+    2: 2.0,
+    3: 3.0,
+    4: 4.0,
     "FWD": 1.0,
     "RWD": 2.0,
     "AWD": 3.0,
     "4WD": 4.0
 }
 
-# Reverse mapping untuk display
-DRIVETRAIN_DECODING = {v: k for k, v in DRIVETRAIN_ENCODING.items()}
+
+# ======================================================
+# TRANSMISSION ONTOLOGY
+# ======================================================
+
+TRANSMISSION_MAP = {
+    "mt": 1.0,
+    "at": 2.0,
+    "cvt": 3.0,
+    "dct": 4.0,
+    "single speed": 5.0,
+    "dht": 6.0,
+    "amt": 7.0
+}
+
+TRANSMISSION_DECODING = {
+    1.0: "MT",
+    2.0: "AT",
+    3.0: "CVT",
+    4.0: "DCT",
+    5.0: "Single Speed",
+    6.0: "DHT",
+    7.0: "AMT"
+}
 
 
 
 # ======================================================
-# FEATURE CONSTRAINT MAP
+# FEATURE ONTOLOGY (Direct Mapping)
 # ======================================================
 
 FEATURE_CONSTRAINT_MAP = {
-
-    "sunroof": ("SUNROOF", 1),
-    "moonroof": ("SUNROOF", 1),
-    "panoramic": ("SUNROOF", 2),
-
-    "ventilated seat": ("VENTILATED_SEAT", 1),
-    "massage seat": ("MASSAGE_SEAT", 1),
-
-    "apple carplay": ("APPLE_CARPLAY", 1),
-    "wireless carplay": ("APPLE_CARPLAY", 2),
-
-    "android auto": ("ANDROID_AUTO", 1),
-    "wireless android auto": ("ANDROID_AUTO", 2),
-
-    "wireless charger": ("WIRELESS_CHARGER", 1),
-
-    "hud": ("HEAD_UP_DISPLAY", 1),
-    "head up display": ("HEAD_UP_DISPLAY", 1),
-
-    "360 camera": ("CAMERA_360", 1),
-    "kamera 360": ("CAMERA_360", 1),
-    
-    # ADAS & Safety
-    "adas": ("AEB", 1), # Simplified projection representing advanced safety
-    "aeb": ("AEB", 1),
-    "lka": ("LKA", 1),
-    "acc": ("ACC", 1),
-    
-    # Comfort & Misc
-    "kursi elektrik": ("ELECTRIC_SEAT", 1),
-    "electric seat": ("ELECTRIC_SEAT", 1),
-    "kursi pijat": ("MASSAGE_SEAT", 1),
-    "pendingin jok": ("VENTILATED_SEAT", 1),
-    "kulit": ("LEATHER_SEAT", 1),
-    "jok kulit": ("LEATHER_SEAT", 1),
-    "power tailgate": ("POWER_TAILGATE", 1),
-    "pintu lipat otomatis": ("POWER_TAILGATE", 1),
-    "air suspension": ("AIR_SUSPENSION", 1),
-    "suspensi udara": ("AIR_SUSPENSION", 1)
+    "sunroof": {"must_have_sunroof": True},
+    "moonroof": {"must_have_sunroof": True},
+    "panoramic": {"must_have_sunroof": True},
+    "kamera 360": {"must_have_camera_360": True},
+    "kamera": {"must_have_camera_360": True},
+    "carplay": {"must_have_wireless_tech": True},
+    "android auto": {"must_have_wireless_tech": True},
+    "led": {"must_have_led": True},
 }
 
 
 # ======================================================
-# HARD FILTER ONTOLOGY
+# HARD FILTERS (Technical constraints)
 # ======================================================
 
 HARD_FILTER_MAP = {
-
-    "keluarga besar": {
-        "min_seat": 7
-    },
-
-    "keluarga": {
-        "min_seat": 6
-    },
-
-    "keluarga kecil": {
-        "min_seat": 5
-    },
-
-    "bebas banjir": {
-        "min_ground_clearance": 180
-    },
-
-    "banjir": {
-        "min_ground_clearance": 180
-    }
-}
-
-
-# ======================================================
-# PREFERENCE → CLUSTER MAP
-# ======================================================
-
-PREFERENCE_CLUSTER_MAP = {
-
-    "irit": "City Car",
-    "hemat": "City Car",
-    "bbm": "City Car",
-
-    "keluarga": "Family Car",
-    "luas": "Family Car",
-
-    "kencang": "Performance",
-    "ngebut": "Performance",
-    "responsif": "Performance",
-    "sporty": "Performance",
-
-    "banjir": "Offroad",
-    "jalan rusak": "Offroad",
-
-    "luxury": "Luxury",
-    "mewah": "Luxury"
-}
-
-
-# ======================================================
-# NEED → CLUSTER MAP (untuk need_terms yang punya cluster jelas)
-# ======================================================
-
-NEED_CLUSTER_MAP = {
-    "keluarga": "Family Car",
-    "keluarga besar": "Family Car",
-    "keluarga kecil": "Family Car",
-    "mudik": "Family Car",
-    "offroad": "Offroad",
-    "banjir": "Offroad",
-    "bebas banjir": "Offroad",
-    "mewah": "Luxury",
-}
-
-
-# ======================================================
-# NEED → HARD FILTER MAP (untuk need_terms)
-# ======================================================
-
-NEED_HARD_FILTER_MAP = {
-    "keluarga": {"min_seat": 6},
     "keluarga besar": {"min_seat": 7},
-    "keluarga kecil": {"min_seat": 5},
-    "offroad": {"min_ground_clearance": 180},
-    "banjir": {"min_ground_clearance": 180},
-    "bebas banjir": {"min_ground_clearance": 180},
+    "7 orang": {"min_seat": 7},
+    "7 seat": {"min_seat": 7},
+    "7 penumpang": {"min_seat": 7},
+    "5 orang": {"min_seat": 5},
+    "5 seat": {"min_seat": 5},
+    "banjir": {"min_ground_clearance": 190},
 }
 
 
 # ======================================================
-# LIFESTYLE NEEDS — ambigu, tidak punya cluster langsung
-# Jika user hanya menyebut ini tanpa preference jelas → tanya prioritas
-# ======================================================
-
-LIFESTYLE_NEEDS = {
-    "kuliah",
-    "anak muda",
-    "harian",
-    "daily",
-    "kantor",
-    "kerja",
-    "mobil kedua",
-    "pemula",
-    "perjalanan jauh",
-}
-
-
-# ======================================================
-# CLUSTERED NEEDS — punya cluster & hard filter jelas
-# ======================================================
-
-CLUSTERED_NEEDS = set(NEED_CLUSTER_MAP.keys())
-
-
-# ======================================================
-# BRAND MAP
+# BRAND ONTOLOGY
 # ======================================================
 
 BRAND_MAP = {
-
-    "toyota": "toyota",
-    "honda": "honda",
-    "suzuki": "suzuki",
-    "mitsubishi": "mitsubishi",
-    "nissan": "nissan",
-    "mazda": "mazda",
-    "hyundai": "hyundai",
-    "kia": "kia",
-    "wuling": "wuling",
-    "chery": "chery",
-
-    "bmw": "bmw",
-
-    "mercedes": "mercedes-benz",
-    "mercedes benz": "mercedes-benz",
-    "benz": "mercedes-benz",
-
-    "audi": "audi",
-    "lexus": "lexus",
-    "volvo": "volvo"
+    "toyota": "Toyota",
+    "honda": "Honda",
+    "suzuki": "Suzuki",
+    "mitsubishi": "Mitsubishi",
+    "daihatsu": "Daihatsu",
+    "hyundai": "Hyundai",
+    "kia": "Kia",
+    "wuling": "Wuling",
+    "mazda": "Mazda",
+    "nissan": "Nissan"
 }
 
 
 # ======================================================
-# CLUSTER → WEIGHT PROFILES (Initial UI State)
+# SCIENTIFIC PREFERENCE --- CLUSTER (For Context Guard)
 # ======================================================
 
+PREFERENCE_CLUSTER_MAP = {
+    "irit": "Urban Agility",
+    "efisien": "Urban Agility",
+    "bandel": "Urban Agility",
+    "keluarga": "Family Comfort",
+    "nyaman": "Family Comfort",
+    "luas": "Family Comfort",
+    "tangguh": "Rugged Explorer",
+    "banjir": "Rugged Explorer",
+    "offroad": "Rugged Explorer",
+    "kencang": "High-End Performance",
+    "performa": "High-End Performance",
+    "sporty": "High-End Performance",
+    "mewah": "High-End Performance",
+    "premium": "High-End Performance",
+    "seimbang": "Practical All-Rounder",
+    "lengkap": "Practical All-Rounder"
+}
+
+
+# ======================================================
+# CLUSTER --- WEIGHT PROFILES (Initial UI State)
+# ======================================================
+
+CLUSTER_UI_NAMES = {
+    "Urban Agility": "Si Gesit Perkotaan",
+    "Family Comfort": "Kenyamanan Keluarga",
+    "Rugged Explorer": "Penjelajah Tangguh",
+    "High-End Performance": "Performa Eksklusif",
+    "Practical All-Rounder": "Pilihan Serbaguna",
+    "Global": "Kategori Umum"
+}
+
+# Mapping between Frontend Short Keys (UI) and Backend Criteria (VIKOR)
+UI_TO_INDEX_MAP = {
+    "power": "INDEX_POWER",
+    "handling": "INDEX_HANDLING",
+    "efficiency": "INDEX_EFFICIENCY",
+    "driver_comfort": "INDEX_DRIVER_COMFORT",
+    "passenger_comfort": "INDEX_PASSENGER_COMFORT",
+    "safety": "INDEX_SAFETY",
+    "tech": "INDEX_TECH",
+    "space": "INDEX_SPACE",
+    "offroad": "INDEX_OFFROAD",
+    "luxury": "INDEX_LUXURY",
+    "lifecycle": "INDEX_LIFECYCLE_SAFE",
+    "brand_strength": "INDEX_BRAND_STRENGTH",
+    "price": "INDEX_PRICE",
+}
+
 CLUSTER_PROFILES = {
-    "Family Car": {
-        "INDEX_POWER": 4, "INDEX_HANDLING": 5, "INDEX_EFFICIENCY": 7,
-        "INDEX_DRIVER_COMFORT": 6, "INDEX_PASSENGER_COMFORT": 8, "INDEX_SAFETY": 8,
-        "INDEX_TECH": 6, "INDEX_SPACE": 9, "INDEX_OFFROAD": 2,
-        "INDEX_LUXURY": 3, "INDEX_PARTS_AVAILABILITY": 9, "INDEX_MARKET_DEMAND": 7,
-        "INDEX_PRICE": 10,
+    "Urban Agility": {
+        "power": 5, "handling": 8, "efficiency": 10,
+        "driver_comfort": 6, "passenger_comfort": 5, "safety": 7,
+        "tech": 8, "space": 5, "offroad": 1,
+        "luxury": 2, "lifecycle": 8, "brand_strength": 8,
+        "price": 10,
     },
-    "City Car": {
-        "INDEX_POWER": 4, "INDEX_HANDLING": 7, "INDEX_EFFICIENCY": 9,
-        "INDEX_DRIVER_COMFORT": 6, "INDEX_PASSENGER_COMFORT": 7, "INDEX_SAFETY": 6,
-        "INDEX_TECH": 7, "INDEX_SPACE": 5, "INDEX_OFFROAD": 1,
-        "INDEX_LUXURY": 2, "INDEX_PARTS_AVAILABILITY": 8, "INDEX_MARKET_DEMAND": 8,
-        "INDEX_PRICE": 10,
+    "Family Comfort": {
+        "power": 4, "handling": 5, "efficiency": 8,
+        "driver_comfort": 6, "passenger_comfort": 10, "safety": 9,
+        "tech": 7, "space": 10, "offroad": 2,
+        "luxury": 4, "lifecycle": 9, "brand_strength": 8,
+        "price": 10,
     },
-    "Offroad": {
-        "INDEX_POWER": 8, "INDEX_HANDLING": 4, "INDEX_EFFICIENCY": 3,
-        "INDEX_DRIVER_COMFORT": 5, "INDEX_PASSENGER_COMFORT": 5, "INDEX_SAFETY": 7,
-        "INDEX_TECH": 5, "INDEX_SPACE": 7, "INDEX_OFFROAD": 9,
-        "INDEX_LUXURY": 3, "INDEX_PARTS_AVAILABILITY": 7, "INDEX_MARKET_DEMAND": 5,
-        "INDEX_PRICE": 10,
+    "Rugged Explorer": {
+        "power": 8, "handling": 6, "efficiency": 4,
+        "driver_comfort": 6, "passenger_comfort": 5, "safety": 8,
+        "tech": 5, "space": 7, "offroad": 10,
+        "luxury": 3, "lifecycle": 7, "brand_strength": 6,
+        "price": 10,
     },
-    "Performance": {
-        "INDEX_POWER": 9, "INDEX_HANDLING": 9, "INDEX_EFFICIENCY": 3,
-        "INDEX_DRIVER_COMFORT": 7, "INDEX_PASSENGER_COMFORT": 4, "INDEX_SAFETY": 6,
-        "INDEX_TECH": 7, "INDEX_SPACE": 3, "INDEX_OFFROAD": 2,
-        "INDEX_LUXURY": 5, "INDEX_PARTS_AVAILABILITY": 6, "INDEX_MARKET_DEMAND": 7,
-        "INDEX_PRICE": 10,
+    "High-End Performance": {
+        "power": 10, "handling": 9, "efficiency": 3,
+        "driver_comfort": 8, "passenger_comfort": 7, "safety": 9,
+        "tech": 9, "space": 4, "offroad": 2,
+        "luxury": 10, "lifecycle": 6, "brand_strength": 8,
+        "price": 10,
     },
-    "Luxury": {
-        "INDEX_POWER": 7, "INDEX_HANDLING": 7, "INDEX_EFFICIENCY": 3,
-        "INDEX_DRIVER_COMFORT": 9, "INDEX_PASSENGER_COMFORT": 9, "INDEX_SAFETY": 8,
-        "INDEX_TECH": 9, "INDEX_SPACE": 7, "INDEX_OFFROAD": 2,
-        "INDEX_LUXURY": 10, "INDEX_PARTS_AVAILABILITY": 8, "INDEX_MARKET_DEMAND": 6,
-        "INDEX_PRICE": 10,
+    "Practical All-Rounder": {
+        "power": 6, "handling": 7, "efficiency": 7,
+        "driver_comfort": 8, "passenger_comfort": 7, "safety": 7,
+        "tech": 7, "space": 7, "offroad": 4,
+        "luxury": 5, "lifecycle": 8, "brand_strength": 7,
+        "price": 10,
     },
 }
 
 GLOBAL_DEFAULT_PROFILE = {
-    "INDEX_POWER": 5, "INDEX_HANDLING": 5, "INDEX_EFFICIENCY": 5,
-    "INDEX_DRIVER_COMFORT": 5, "INDEX_PASSENGER_COMFORT": 5, "INDEX_SAFETY": 5,
-    "INDEX_TECH": 5, "INDEX_SPACE": 5, "INDEX_OFFROAD": 5,
-    "INDEX_LUXURY": 5, "INDEX_PARTS_AVAILABILITY": 5, "INDEX_MARKET_DEMAND": 5,
-    "INDEX_PRICE": 10,
+    "power": 5, "handling": 5, "efficiency": 5,
+    "driver_comfort": 5, "passenger_comfort": 5, "safety": 5,
+    "tech": 5, "space": 5, "offroad": 5,
+    "luxury": 5, "lifecycle": 5, "brand_strength": 5,
+    "price": 10,
+}
+
+# ======================================================
+# NEED --- CLUSTER & HARD FILTERS
+# ======================================================
+
+NEED_CLUSTER_MAP = {
+    "keluarga": "Family Comfort",
+    "harian": "Urban Agility",
+    "mewah": "High-End Performance",
+    "tangguh": "Rugged Explorer",
+    "sporty": "High-End Performance"
+}
+
+NEED_HARD_FILTER_MAP = {
+    "keluarga": {"min_seat": 7},
+    "tangguh": {"min_ground_clearance": 190}
 }

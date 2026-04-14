@@ -1,4 +1,4 @@
-# chatbot-rekomendasi-mobil/backend/app/main.py
+﻿# chatbot-rekomendasi-mobil/backend/app/main.py
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,9 +11,13 @@ from .schemas import (
     CarRecommendation
 )
 
-from vikor.ranking_engine import recommend_cars
+from vikor.ranking_engine import recommend_cars, FEATURE_SUMMARY
 from .schemas import ChatRequest, HistoryItemResponse
-from .preference_builder import build_recommendation_params, get_initial_ui_profile
+from .preference_builder import (
+    build_recommendation_params, 
+    UI_TO_INDEX_MAP
+)
+from .feature_engineering.preference_weight_map import build_ui_state
 from .database import init_db, save_chat_history, get_recent_history, delete_chat_history
 from .explainer import generate_car_insights, compare_two_cars
 from contextlib import asynccontextmanager
@@ -62,7 +66,7 @@ def root():
 # MAIN RECOMMENDATION ENDPOINT
 # ======================================================
 
-@app.post("/recommend", response_model=RecommendationResponse)
+@app.post("/recommend", response_model=RecommendationResponse, response_model_by_alias=False)
 def recommend(request: RecommendationRequest):
     request_data = request.dict()
     try:
@@ -95,19 +99,22 @@ def recommend(request: RecommendationRequest):
 def get_initial_ui_state(request: ChatRequest):
     """
     DIPANGGIL OLEH RASA: Mendapatkan profil bobot awal untuk slider UI
-    berdasarkan entitas yang terdeteksi NLU.
+    berdasarkan entitas/preferensi yang terdeteksi NLU.
     """
-    cluster_name, base_profile = get_initial_ui_profile(
-        preference_terms=request.preference_terms,
-        need_terms=request.need_terms,
-        entities=request.entities
+    # Gabungkan preference_terms dan need_terms untuk mapping yang lebih akurat
+    all_prefs = request.preference_terms + request.need_terms
+    
+    result = build_ui_state(
+        preference_terms=all_prefs,
+        entity_terms=request.entities
     )
-    return {
-        "cluster_name": cluster_name,
-        "base_weight_profile": base_profile
-    }
+    
+    print(f"[UI-STATE] Combined prefs: {all_prefs}")
+    print(f"[UI-STATE] Response: {result}")
+    
+    return result
 
-@app.post("/chat", response_model=RecommendationResponse)
+@app.post("/chat", response_model=RecommendationResponse, response_model_by_alias=False)
 def chat(request: ChatRequest):
 
     print("==================================================")
@@ -125,14 +132,27 @@ def chat(request: ChatRequest):
             entities=request.entities,
         )
         cluster_inferred = params.get("cluster_name")
-        print(f"[FASTAPI] 🎯 Cluster dari preference_terms {request.preference_terms}: '{cluster_inferred or 'Global (Tidak Terdeteksi)'}' ")
-        # ──────────────────────────────────────────────────────
-        # SINGLE SOURCE OF TRUTH: user manual_weights → VIKOR
+        print(f"[FASTAPI] [CLUSTER] Cluster dari preference_terms {request.preference_terms}: '{cluster_inferred or 'Global (Tidak Terdeteksi)'}' ")
+        # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # SINGLE SOURCE OF TRUTH: user manual_weights --- VIKOR
         # NLP weight_input hanya dipakai kalau user tidak atur manual
-        # ──────────────────────────────────────────────────────
+        # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # BRIDGE: Map Internal Keys -> UI Keys (INDEX_...)
+        # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        from .preference_builder import UI_TO_INDEX_MAP
+        from .feature_ontology import CLUSTER_UI_NAMES
         if request.manual_weights:
-            print(f"[FASTAPI] ✅ PURE USER-DRIVEN: Menggunakan manual_weights dari frontend: {request.manual_weights}")
-            params["weight_dict"] = request.manual_weights
+            # Map frontend short keys to internal INDEX_ keys 
+            from .feature_ontology import UI_TO_INDEX_MAP
+            mapped_weights = {
+                UI_TO_INDEX_MAP.get(k, k): v 
+                for k, v in request.manual_weights.items()
+            }
+            # FORCE: 'Value For Money' (Price) must always be 10.0 as per user requirement
+            mapped_weights["INDEX_PRICE"] = 10.0
+            
+            print(f"[FASTAPI] [USER-DRIVEN] Menggunakan manual_weights (mapped): {mapped_weights}")
+            params["weight_dict"] = mapped_weights
 
         # Parse budget if raw_budgets exist, else fallback to min/max_budget
         parsed_min, parsed_max = parse_budget_strings(request.raw_budgets)
@@ -148,7 +168,7 @@ def chat(request: ChatRequest):
         })
 
         # ======================================================
-        # PROSES NEED_TERMS → CLUSTER + HARD FILTERS
+        # PROSES NEED_TERMS --- CLUSTER + HARD FILTERS
         # need_terms yang punya cluster jelas (keluarga, offroad, dll.)
         # di-map ke cluster_name dan hard filter yang tepat.
         # Ini mengoverride cluster yang mungkin sudah ditemukan dari preference_terms.
@@ -160,12 +180,12 @@ def chat(request: ChatRequest):
         for need in need_terms:
             need_lower = need.lower().strip()
 
-            # Map need → cluster (override preference-based cluster)
+            # Map need --- cluster (override preference-based cluster)
             if need_lower in NEED_CLUSTER_MAP:
                 params["cluster_name"] = NEED_CLUSTER_MAP[need_lower]
                 print(f"[FASTAPI] Cluster dari need '{need_lower}': {params['cluster_name']}")
 
-            # Map need → hard filters (kemudian merge, prioritaskan yang lebih besar)
+            # Map need --- hard filters (kemudian merge, prioritaskan yang lebih besar)
             if need_lower in NEED_HARD_FILTER_MAP:
                 for filter_key, filter_val in NEED_HARD_FILTER_MAP[need_lower].items():
                     current = params.get(filter_key)
@@ -173,7 +193,7 @@ def chat(request: ChatRequest):
                         params[filter_key] = filter_val
                         print(f"[FASTAPI] Hard filter dari need '{need_lower}': {filter_key}={filter_val}")
 
-        # Terapkan negated_terms (Hard Exclusion) — mobil yang harus dibuang dari dataset
+        # Terapkan negated_terms (Hard Exclusion) --- mobil yang harus dibuang dari dataset
         if request.negated_terms:
             params["negated_terms"] = request.negated_terms
             print(f"[FASTAPI] [NEGATION] Negated Terms (Exclusion Aktif): {request.negated_terms}")
@@ -232,33 +252,34 @@ def chat(request: ChatRequest):
         
         # Simpan History secara Sinkron
         try:
+            # Pastikan cluster_name adalah string (bukan list) agar SQLite tidak error
+            db_cluster_name = params.get("cluster_name", "Global")
+            if isinstance(db_cluster_name, list):
+                db_cluster_name = ", ".join(db_cluster_name)
+
             save_chat_history(
                 user_message=request.user_message or "",
                 nlp_preferences=request.preference_terms,
                 nlp_needs=request.need_terms,
                 nlp_entities=request.entities,
-                cluster_name=params.get("cluster_name"),
-                hard_filters_applied={
-                    "min_seat": params.get("min_seat"),
-                    "min_ground_clearance": params.get("min_ground_clearance"),
-                    "min_budget": params.get("min_budget"),
-                    "max_budget": params.get("max_budget"),
-                    "must_have_sunroof": params.get("must_have_sunroof"),
-                    "must_have_wireless_tech": params.get("must_have_wireless_tech")
-                },
-                cars_total=constraint_report.get("total_cars", 612),
-                cars_after_constraint=constraint_report.get("final_filtered_n", 0),
-                top_recommendations=recommendations_data,
-                weight_dict_used=constraint_report.get("normalized_weights", {})
+                cluster_name=db_cluster_name,
+                hard_filters_applied=params, 
+                cars_total=FEATURE_SUMMARY.get("total_cars", 0) if FEATURE_SUMMARY else 612,
+                cars_after_constraint=constraint_report.get("budget", {}).get("remaining_cars", 0),
+                top_recommendations=[car.dict() for car in recommendations],
+                weight_dict_used=params.get("weight_dict")
             )
-            print("[FASTAPI] ✅ Berhasil menyimpan History Evaluasi ke DB.")
+            print("[FASTAPI] [SUCCESS] Berhasil menyimpan History Evaluasi ke DB.")
         except Exception as e:
-            print(f"[FASTAPI] ⚠️ Gagal menyimpan History Evaluasi: {e}")
+            print(f"[FASTAPI] [ERROR] Gagal menyimpan History Evaluasi: {e}")
 
+        print(f"[FASTAPI] Final constraint_report keys: {constraint_report.keys() if constraint_report else 'None'}")
+        
         print("==================================================")
 
         return RecommendationResponse(
             recommendations=recommendations,
+            constraint_report=constraint_report,
             comparison_insight=comparison_insight
         )
 
@@ -384,11 +405,11 @@ def eval_rekomendasi():
 @app.get("/evaluasi/nlp/mapping")
 def eval_nlp_mapping():
     """
-    Evaluate NLP → Decision Mapping Accuracy.
-    Tests: preference→INDEX, preference→Cluster, need→Cluster
+    Evaluate NLP --- Decision Mapping Accuracy.
+    Tests: preference---INDEX, preference---Cluster, need---Cluster
     """
     try:
-        from app.feature_ontology import (
+        from .feature_ontology import (
             PREFERENCE_INDEX_MAP,
             PREFERENCE_CLUSTER_MAP,
             NEED_CLUSTER_MAP
@@ -396,35 +417,37 @@ def eval_nlp_mapping():
 
         # --- Test dataset for mapping accuracy ---
         test_cases = [
-            # preference → INDEX mapping
+            # preference --- INDEX mapping
             {"input": "irit", "type": "preference_index", "expected": "INDEX_EFFICIENCY"},
             {"input": "hemat", "type": "preference_index", "expected": "INDEX_EFFICIENCY"},
-            {"input": "kencang", "type": "preference_index", "expected": "INDEX_PERFORMANCE"},
+            {"input": "kencang", "type": "preference_index", "expected": "INDEX_POWER"},
             {"input": "nyaman", "type": "preference_index", "expected": "INDEX_PASSENGER_COMFORT"},
             {"input": "aman", "type": "preference_index", "expected": "INDEX_SAFETY"},
             {"input": "teknologi", "type": "preference_index", "expected": "INDEX_TECH"},
             {"input": "mewah", "type": "preference_index", "expected": "INDEX_LUXURY"},
             {"input": "banjir", "type": "preference_index", "expected": "INDEX_OFFROAD"},
-            {"input": "sporty", "type": "preference_index", "expected": "INDEX_FUN_TO_DRIVE"},
+            {"input": "sporty", "type": "preference_index", "expected": "INDEX_HANDLING"},
             {"input": "luas", "type": "preference_index", "expected": "INDEX_SPACE"},
             {"input": "canggih", "type": "preference_index", "expected": "INDEX_TECH"},
-            {"input": "ngebut", "type": "preference_index", "expected": "INDEX_FUN_TO_DRIVE"},
-            # preference → Cluster mapping
-            {"input": "irit", "type": "preference_cluster", "expected": "City Car"},
-            {"input": "keluarga", "type": "preference_cluster", "expected": "Family Car"},
-            {"input": "kencang", "type": "preference_cluster", "expected": "Performance"},
-            {"input": "banjir", "type": "preference_cluster", "expected": "Offroad"},
-            {"input": "mewah", "type": "preference_cluster", "expected": "Luxury"},
-            {"input": "sporty", "type": "preference_cluster", "expected": "Performance"},
-            {"input": "hemat", "type": "preference_cluster", "expected": "City Car"},
-            {"input": "luas", "type": "preference_cluster", "expected": "Family Car"},
-            # need → Cluster mapping
-            {"input": "keluarga", "type": "need_cluster", "expected": "Family Car"},
-            {"input": "keluarga besar", "type": "need_cluster", "expected": "Family Car"},
-            {"input": "offroad", "type": "need_cluster", "expected": "Offroad"},
-            {"input": "banjir", "type": "need_cluster", "expected": "Offroad"},
-            {"input": "mewah", "type": "need_cluster", "expected": "Luxury"},
-            {"input": "mudik", "type": "need_cluster", "expected": "Family Car"},
+            {"input": "ngebut", "type": "preference_index", "expected": "INDEX_POWER"},
+            
+            # preference --- Cluster mapping
+            {"input": "irit", "type": "preference_cluster", "expected": "Urban Agility"},
+            {"input": "keluarga", "type": "preference_cluster", "expected": "Family Comfort"},
+            {"input": "kencang", "type": "preference_cluster", "expected": "High-End Performance"},
+            {"input": "banjir", "type": "preference_cluster", "expected": "Rugged Explorer"},
+            {"input": "mewah", "type": "preference_cluster", "expected": "High-End Performance"},
+            {"input": "sporty", "type": "preference_cluster", "expected": "High-End Performance"},
+            {"input": "hemat", "type": "preference_cluster", "expected": "Urban Agility"},
+            {"input": "luas", "type": "preference_cluster", "expected": "Family Comfort"},
+            
+            # need --- Cluster mapping
+            {"input": "keluarga", "type": "need_cluster", "expected": "Family Comfort"},
+            {"input": "keluarga besar", "type": "need_cluster", "expected": "Family Comfort"},
+            {"input": "offroad", "type": "need_cluster", "expected": "Rugged Explorer"},
+            {"input": "banjir", "type": "need_cluster", "expected": "Rugged Explorer"},
+            {"input": "mewah", "type": "need_cluster", "expected": "High-End Performance"},
+            {"input": "mudik", "type": "need_cluster", "expected": "Family Comfort"},
         ]
 
         results = []
@@ -617,7 +640,7 @@ def eval_nlp_baseline():
             gaps.append({
                 "component": "Confidence Calibration",
                 "issue": f"{len(high_conf_errors)} kesalahan prediksi dengan confidence >80%",
-                "detail": "Model memberikan skor confidence tinggi pada prediksi yang salah — indikasi overfitting atau kurangnya variasi data training.",
+                "detail": "Model memberikan skor confidence tinggi pada prediksi yang salah --- indikasi overfitting atau kurangnya variasi data training.",
                 "severity": "critical",
                 "research_opportunity": "Implementasi confidence calibration (temperature scaling, Platt scaling) atau regularization pada DIET untuk mengurangi overconfident predictions.",
             })
@@ -633,7 +656,7 @@ def eval_nlp_baseline():
             gaps.append({
                 "component": "Class Imbalance",
                 "issue": f"Gap antara Weighted F1 ({intent_report.get('weighted avg', {}).get('f1-score', 0):.1%}) dan Macro F1 ({intent_macro.get('f1-score', 0):.1%}) = {macro_gap:.1%}",
-                "detail": "Perbedaan besar antara weighted dan macro average menunjukkan performa timpang antar kelas — kelas minoritas performanya jauh lebih rendah.",
+                "detail": "Perbedaan besar antara weighted dan macro average menunjukkan performa timpang antar kelas --- kelas minoritas performanya jauh lebih rendah.",
                 "severity": "warning",
                 "research_opportunity": "Data augmentation untuk kelas minoritas, class weight balancing pada DIET loss function, atau stratified sampling saat training.",
             })
@@ -750,12 +773,12 @@ def eval_vikor_sensitivity():
 
         return {
             "is_sensitive": is_sensitive,
-            "sensitivity_proof": "Ranking berubah sesuai bobot preferensi → sistem terbukti sensitif." if is_sensitive else "Ranking sama untuk semua skenario → perlu cek data.",
+            "sensitivity_proof": "Ranking berubah sesuai bobot preferensi --- sistem terbukti sensitif." if is_sensitive else "Ranking sama untuk semua skenario --- perlu cek data.",
             "scenarios": scenario_results,
             "formula": {
-                "Q": "Q = v(S - S*) / (S⁻ - S*) + (1-v)(R - R*) / (R⁻ - R*)",
+                "Q": "Q = v(S - S*) / (S--- - S*) + (1-v)(R - R*) / (R--- - R*)",
                 "v": 0.5,
-                "interpretation": "Semakin kecil Q → semakin optimal. Perubahan weight → ∂Q/∂w menghasilkan ranking berbeda."
+                "interpretation": "Semakin kecil Q --- semakin optimal. Perubahan weight --- ---Q/---w menghasilkan ranking berbeda."
             }
         }
     except Exception as e:
@@ -816,11 +839,11 @@ def eval_clustering_detail():
         # Silhouette interpretation
         current_silhouette = float(silhouette_score(X, df["CLUSTER_ID"].values))
         if current_silhouette > 0.5:
-            interpretation = "Bagus — cluster terbentuk jelas & terpisah."
+            interpretation = "Bagus --- cluster terbentuk jelas & terpisah."
         elif current_silhouette > 0.2:
-            interpretation = "Cukup — struktur cluster moderat."
+            interpretation = "Cukup --- struktur cluster moderat."
         else:
-            interpretation = "Lemah — cluster kurang terpisah."
+            interpretation = "Lemah --- cluster kurang terpisah."
 
         return {
             "stability": {

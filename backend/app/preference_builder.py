@@ -1,4 +1,5 @@
-# backend/app/preference_builder.py
+﻿# backend/app/preference_builder.py
+from typing import List
 
 from app.feature_ontology import (
     PREFERENCE_INDEX_MAP,
@@ -12,6 +13,10 @@ from app.feature_ontology import (
     CLUSTER_PROFILES,
     GLOBAL_DEFAULT_PROFILE
 )
+from .feature_engineering.preference_weight_map import (
+    resolve_preference_weights,
+    detect_cluster_from_weights
+)
 
 
 # ======================================================
@@ -22,6 +27,10 @@ from app.feature_ontology import (
 # namun user belum menyetel bobot manual (via slider di frontend).
 # Ini menggantikan logika boost yang sebelumnya ada di actions.py (Rasa).
 NLP_DEFAULT_BOOST = 8.0
+
+# Mapping between Frontend Short Keys (UI) and Backend Criteria (VIKOR)
+# UI_TO_INDEX_MAP moved to feature_ontology.py
+from .feature_ontology import UI_TO_INDEX_MAP
 
 def build_weight_dict(preference_terms, weight_input):
 
@@ -43,12 +52,13 @@ def build_weight_dict(preference_terms, weight_input):
         weight = float(weight_input.get(term, NLP_DEFAULT_BOOST))
         source = "manual" if term in weight_input else "NLP_DEFAULT_BOOST"
 
-        for index_name in indices:
+        for u_key in indices:
+            index_name = UI_TO_INDEX_MAP.get(u_key, u_key)
             weight_dict[index_name] = max(
                 weight,
                 weight_dict.get(index_name, 0)
             )
-            print(f"  ⚙️ [BUILD_WEIGHT] '{term}' → {index_name} = {weight} ({source})")
+            print(f"  [BUILD_WEIGHT] '{term}' --- {index_name} = {weight} ({source})")
 
     # Sesuai permintaan user: Value For Money (INDEX_PRICE) selalu maksimal (10)
     # Ini memastikan VIKOR selalu memprioritaskan balance kualitas vs harga yang kompetitif.
@@ -104,22 +114,21 @@ def extract_drive_sys(entities):
 # BUILD CLUSTER
 # ======================================================
 
-def extract_cluster(preference_terms):
-
-    clusters = []
-
-    for term in preference_terms:
-
-        term = term.lower()
-
-        if term in PREFERENCE_CLUSTER_MAP:
-            clusters.append(PREFERENCE_CLUSTER_MAP[term])
-
-    if not clusters:
-        return None
-
-    # ambil cluster yang paling sering muncul
-    return max(set(clusters), key=clusters.count)
+def extract_cluster(all_terms: List[str]) -> List[str]:
+    """
+    Scientific clustering based on aggregated weights from ALL terms 
+    (preferences AND hard constraints like 'keluarga besar').
+    """
+    if not all_terms:
+        return ["Global"]
+        
+    # Agregasi bobot dari semua terms (termasuk hard constraints)
+    weights = resolve_preference_weights(all_terms)
+    
+    # Deteksi cluster list dari profile bobot hasil agregasi
+    clusters = detect_cluster_from_weights(weights)
+    
+    return clusters
 
 def get_initial_ui_profile(preference_terms, need_terms=[], entities=[]):
     """
@@ -127,15 +136,15 @@ def get_initial_ui_profile(preference_terms, need_terms=[], entities=[]):
     berdasarkan seluruh entitas yang terdeteksi (preferences, needs, features).
     """
     # Merge all terms for maximum context coverage
-    all_terms = preference_terms + need_terms + entities
+    all_terms = list(set(preference_terms + need_terms + entities))
     
-    cluster_name = extract_cluster(all_terms) or "Global"
+    clusters = extract_cluster(all_terms)
+    primary_cluster = clusters[0]
     
-    # Load base profile
-    base_profile = dict(CLUSTER_PROFILES.get(cluster_name, GLOBAL_DEFAULT_PROFILE))
+    # Load base profile dari primary cluster (Internal keys)
+    base_raw = dict(CLUSTER_PROFILES.get(primary_cluster, GLOBAL_DEFAULT_PROFILE))
     
     # Boost based on all detected terms related to preference indices (NLP_DEFAULT_BOOST = 8.0)
-    # Ini memberikan kesan "Chatbot mengerti Anda" saat slider pertama kali muncul.
     for term in all_terms:
         if term in PREFERENCE_INDEX_MAP:
             indices = PREFERENCE_INDEX_MAP[term]
@@ -143,9 +152,15 @@ def get_initial_ui_profile(preference_terms, need_terms=[], entities=[]):
                 indices = [indices]
             for idx in indices:
                 # Masukkan boost jika lebih tinggi dari base profile
-                base_profile[idx] = max(base_profile.get(idx, 0), 8.0)
+                base_raw[idx] = max(base_raw.get(idx, 0), 8.0)
+    
+    # BRIDGE: Map Internal Keys -> UI Keys (INDEX_...)
+    base_profile = {}
+    for short_key, val in base_raw.items():
+        ui_key = UI_TO_INDEX_MAP.get(short_key, short_key)
+        base_profile[ui_key] = val
                 
-    return cluster_name, base_profile
+    return primary_cluster, base_profile
 
 # ======================================================
 # BUILD FEATURE CONSTRAINTS
@@ -185,12 +200,14 @@ def build_hard_filters(entities):
             for k, v in HARD_FILTER_MAP[text].items():
                 filters[k] = v
                 
-        # Dynamic Seat Parsing from Safety Net
+        # Dynamic Seat Parsing from Safety Net (Scale 2-8 only)
         if "seat" in text or "penumpang" in text or "kursi" in text:
             import re
             nums = re.findall(r'\d+', text)
             if nums:
-                filters["min_seat"] = int(nums[0])
+                val = int(nums[0])
+                if 2 <= val <= 8:
+                    filters["min_seat"] = val
 
     return filters
 
@@ -225,7 +242,9 @@ def build_recommendation_params(
         weight_input
     )
 
-    params["cluster_name"] = extract_cluster(preference_terms)
+    # Broaden cluster detection using ALL context
+    all_context = list(set(preference_terms + entities))
+    params["cluster_name"] = extract_cluster(all_context)
 
     params["body_type"] = extract_body_type(entities)
 
@@ -244,3 +263,4 @@ def build_recommendation_params(
     )
 
     return params
+

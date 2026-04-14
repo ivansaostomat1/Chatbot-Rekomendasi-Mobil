@@ -6,8 +6,14 @@ echo ==================================================
 echo [1/4] Memulai Next.js Frontend (UI)...
 start cmd /k "title Frontend (UI) && cd frontend && npm run dev"
 
-echo [2/4] Memulai FastAPI Backend (API & Ranking)...
+echo [2/4] Memulai FastAPI Backend (API ^& Ranking)...
 start cmd /k "title FastAPI (Backend) && cd backend && call venv\Scripts\activate && uvicorn app.main:app --reload"
+
+set /p train="Apakah Anda ingin melatih ulang (train) Rasa model? (y/n): "
+if /i "%train%"=="y" (
+    echo [0/4] Melatih model Rasa... (Mohon tunggu)
+    cd backend\rasa && call ..\venv\Scripts\activate && rasa train && cd ..\..
+)
 
 echo [3/4] Memulai Rasa Core (NLP Server)...
 start cmd /k "title Rasa Core (NLP) && cd backend\rasa && call ..\venv\Scripts\activate && rasa run --enable-api --cors ""*"""

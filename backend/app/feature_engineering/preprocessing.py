@@ -3,6 +3,9 @@
 import pandas as pd
 import numpy as np
 
+from ..feature_ontology import TRANSMISSION_MAP
+
+
 
 def safe_numeric(series):
 
@@ -86,8 +89,9 @@ def encode_granular_features(df):
         "SPEEDOMETER": {"analog": 0, "digital": 1},
         "WIRELESS_CHARGER": {"no": 0, "yes": 1},
         "DRIVE_SYS": {"fwd": 1, "rwd": 2, "awd": 3, "4wd": 4},
-        "TRANSMISSION": {"mt": 1, "at": 2, "cvt": 3, "dct": 4},
+        "TRANSMISSION": TRANSMISSION_MAP,
         "POWER_TAILGATE": {"no": 0, "yes": 1},
+
         "AMBIENT_LIGHT": {"no": 0, "yes": 1},
         "HEAD_UP_DISPLAY": {"no": 0, "yes": 1},
 

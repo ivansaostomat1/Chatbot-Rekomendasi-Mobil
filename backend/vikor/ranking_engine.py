@@ -3,6 +3,7 @@
 import os
 import sys
 import pandas as pd
+import numpy as np
 
 # ======================================================
 # PATH INJECTION
@@ -26,7 +27,7 @@ from app.query_guard import apply_query_guard
 from app.feature_inspector import generate_feature_summary
 from app.constraint_analyzer import analyze_constraints
 from .vikor import vikor_rank, validate_compromise_solution, build_weight_vector, VIKOR_CRITERIA
-from app.feature_ontology import DRIVETRAIN_DECODING
+from app.feature_ontology import DRIVETRAIN_DECODING, TRANSMISSION_DECODING
 
 
 
@@ -176,16 +177,16 @@ def recommend_cars(
             feature_constraints=feature_constraints,
             negated_terms=run_params.get("negated_terms")
         )
-        if temp_df.empty: return temp_df, constraint_failed, None
+        if temp_df.empty: return temp_df, constraint_failed, {}
 
         # 2. Brand
         cur_brand = run_params.get("brand")
         if cur_brand:
             temp_df = filter_brand(temp_df, cur_brand)
-            if temp_df.empty: return temp_df, False, None
+            if temp_df.empty: return temp_df, False, {}
 
         # 3. Analyze logic (run only on strict pass)
-        report = None
+        report = {}
         if analyze:
             report = analyze_constraints(
                 temp_df,
@@ -223,6 +224,10 @@ def recommend_cars(
     # PASS 1: Strict
     filtered_df, is_failed, constraint_report = apply_pipeline(base_params.copy(), analyze=True)
     
+    # Safety Check: Ensure constraint_report is always a dict
+    if constraint_report is None:
+        constraint_report = {}
+
     if is_failed:
         print("[VIKOR RANKING ENGINE] Feature constraint terlalu ketat, mencoba relax...")
         return {"recommendations": [], "constraint_report": constraint_report}
@@ -255,7 +260,8 @@ def recommend_cars(
         if not filtered_df.empty:
             break
             
-    constraint_report["relax_notes"] = relax_log
+    if constraint_report is not None:
+        constraint_report["relax_notes"] = relax_log
 
     if filtered_df.empty:
         print("[VIKOR RANKING ENGINE] Dataset tetap kosong setelah semua relax strategy dikerahkan.")
@@ -268,14 +274,21 @@ def recommend_cars(
     filtered_df["INDEX_CLUSTER_MATCH"] = 0.0
 
     if cluster_name:
-        filtered_df["CLUSTER_SCORE"] = (filtered_df["CLUSTER_NAME"] == cluster_name).astype(int)
+        if isinstance(cluster_name, list):
+            # Jika multi-cluster: score 1 jika cocok dengan SALAH SATU cluster target
+            filtered_df["CLUSTER_SCORE"] = filtered_df["CLUSTER_NAME"].isin(cluster_name).astype(int)
+            log_name = ", ".join(cluster_name)
+        else:
+            filtered_df["CLUSTER_SCORE"] = (filtered_df["CLUSTER_NAME"] == cluster_name).astype(int)
+            log_name = cluster_name
+
         filtered_df["INDEX_CLUSTER_MATCH"] = filtered_df["CLUSTER_SCORE"] * 0.2
 
         # Tambahkan bobot prioritas ke cluster filter agar VIKOR mempertimbangkannya
         if "INDEX_CLUSTER_MATCH" not in weight_dict:
-            weight_dict["INDEX_CLUSTER_MATCH"] = 1.0  # Bobot yang cukup besar agar ranking naik
+            weight_dict["INDEX_CLUSTER_MATCH"] = 1.0  # Bobot agar ranking naik
 
-        print(f"[VIKOR RANKING ENGINE] Soft Constraint Cluster '{cluster_name}' diterapkan (boost).")
+        print(f"[VIKOR RANKING ENGINE] Soft Constraint Cluster '{log_name}' diterapkan (boost).")
 
     # ==================================================
     # VIKOR RANKING
@@ -301,6 +314,18 @@ def recommend_cars(
     # OUTPUT FORMAT
     # ==================================================
 
+    # --- RENAMING & SELECTION ---
+    HEADER_TO_FIELD_MAP = {
+        "BODY TYPE": "BODY_TYPE",
+        "HORSE POWER (HP)": "HORSE_POWER",
+        "TORQUE (Nm)": "TORQUE",
+        "GROUND CLEARANCE": "GROUND_CLEARANCE",
+        "BATTERY (KWH)": "BATTERY"
+    }
+    
+    # Rename columns to match Pydantic schema field names
+    result = result.rename(columns=HEADER_TO_FIELD_MAP)
+
     cols = [
         "BRAND",
         "MODEL",
@@ -310,11 +335,11 @@ def recommend_cars(
         "VIKOR_S",
         "VIKOR_R",
         "VIKOR_Q",
+        "VIKOR_STATUS",
         "VIKOR_Q1",
         "VIKOR_Q2",
         "VIKOR_DQ",
         "VIKOR_IS_COMPROMISE",
-        "VIKOR_STATUS",
         "INDEX_POWER",
         "INDEX_HANDLING",
         "INDEX_EFFICIENCY",
@@ -325,30 +350,146 @@ def recommend_cars(
         "INDEX_SPACE",
         "INDEX_OFFROAD",
         "INDEX_LUXURY",
-        "INDEX_PARTS_AVAILABILITY",   # Ketersediaan spare parts & jaringan dealer
-        "INDEX_MARKET_DEMAND",        # Popularitas & permintaan pasar aktual
+        "INDEX_LIFECYCLE_SAFE",
+        "INDEX_BRAND_STRENGTH",
         "INDEX_PRICE",
         "INDEX_CLUSTER_MATCH",
         "DRIVE_SYS",
-        "POWERTRAIN"
+        "POWERTRAIN",
+        "BODY_TYPE",
+        "FUEL",
+        "CC",
+        "HORSE_POWER",
+        "TORQUE",
+        "TRANSMISSION",
+        "SEAT",
+        "GROUND_CLEARANCE",
+        "LONG",
+        "WIDTH",
+        "HEIGHT",
+        "WHEELBASE",
+        "EV_RANGE_KM",
+        "BATTERY",
+        "AIRBAGS",
+        "ABS",
+        "EBD",
+        "ESC",
+        "TCS",
+        "AEB",
+        "ACC",
+        "LKA",
+        "RCTA",
+        "LANE_CENTERING",
+        "APPLE_CARPLAY",
+        "ANDROID_AUTO",
+        "WIRELESS_CHARGER",
+        "SUNROOF",
+        "POWER_TAILGATE",
+        "ELECTRIC_SEAT",
+        "VENTILATED_SEAT",
+        "MASSAGE_SEAT",
+        "CAMERA_360",
+        "HEAD_UP_DISPLAY",
+        "REAR_SEAT_ENTERTAINMENT",
+        "LEATHER_SEAT",
+        "AMBIENT_LIGHT",
+        "PARKING_BRAKE",
+        "AUTO_HOLD"
     ]
 
     cols = [c for c in cols if c in result.columns]
 
     records = result[cols].to_dict(orient="records")
 
-    # Decode numeric features for front-end visibility (fixing float vs string schema error)
+    # --- Decoding / Processing Layer ---
+    def decode_feature(val, mapping, default="Tidak Ada"):
+        if val is None or pd.isna(val): return default
+        try:
+            v = float(val)
+            return mapping.get(v, default)
+        except:
+            return str(val)
+
+    MAP_SUNROOF = {0: "Tidak Ada", 1: "Moonroof", 2: "Panoramic"}
+    MAP_CARPLAY = {0: "Tidak Ada", 1: "Wired", 2: "Wireless"}
+    MAP_AA      = {0: "Tidak Ada", 1: "Wired", 2: "Wireless", 3: "Built-in"}
+    MAP_JOK     = {0: "Fabric", 1: "Recycled", 2: "Synthetic", 3: "Leather", 4: "Nappa"}
+    MAP_BINARY  = {1: "Ada", 0: "Tidak Ada"}
+    
     for r in records:
+        # 1. Standard Decoding
+        r["SUNROOF"] = decode_feature(r.get("SUNROOF"), MAP_SUNROOF)
+        r["APPLE_CARPLAY"] = decode_feature(r.get("APPLE_CARPLAY"), MAP_CARPLAY)
+        r["ANDROID_AUTO"] = decode_feature(r.get("ANDROID_AUTO"), MAP_AA)
+        r["LEATHER_SEAT"] = decode_feature(r.get("LEATHER_SEAT"), MAP_JOK, "Fabric")
+        
+        # Binary ones
+        for feat in ["WIRELESS_CHARGER", "POWER_TAILGATE", "CAMERA_360", "HEAD_UP_DISPLAY", "AMBIENT_LIGHT", "AUTO_HOLD"]:
+            if feat in r: r[feat] = decode_feature(r[feat], MAP_BINARY)
+            
+        # Parking Brake
+        r["PARKING_BRAKE"] = decode_feature(r.get("PARKING_BRAKE"), {1: "Electric", 0: "Manual"}, "Manual")
+
+        # 2. Level ADAS Summary
+        adas_score = sum([1 for f in ["AEB", "ACC", "LKA"] if r.get(f, 0) >= 1])
+        if adas_score == 3: r["LEVEL_ADAS"] = "Lengkap (Pro)"
+        elif adas_score >= 1: r["LEVEL_ADAS"] = "Standar"
+        else: r["LEVEL_ADAS"] = "Dasar"
+
+        # 3. Existing Drivetrain & Transmission Decoding
         if r.get("DRIVE_SYS") is not None:
             val = r["DRIVE_SYS"]
             try:
                 r["DRIVE_SYS"] = DRIVETRAIN_DECODING.get(float(val), f"CODE_{val}")
             except:
                 r["DRIVE_SYS"] = str(val)
+
+        if r.get("TRANSMISSION") is not None:
+            val = r["TRANSMISSION"]
+            try:
+                r["TRANSMISSION"] = TRANSMISSION_DECODING.get(float(val), f"CODE_{val}")
+            except:
+                r["TRANSMISSION"] = str(val)
         
         if r.get("POWERTRAIN") is not None:
              r["POWERTRAIN"] = str(r["POWERTRAIN"])
 
+    # --- 4. NUMPY SANITIZATION (CRITICAL FOR JSON SERIALIZATION) ---
+    # FastAPI's default JSON encoder cannot handle numpy.float64 objects.
+    # We must explicitly convert them to standard Python floats/ints.
+    def sanitize_dict(d):
+        if not isinstance(d, dict): return d
+        new_d = {}
+        for k, v in d.items():
+            if isinstance(v, dict):
+                new_d[k] = sanitize_dict(v)
+            elif isinstance(v, list):
+                new_d[k] = [sanitize_dict(i) if isinstance(i, dict) else (float(i) if isinstance(i, (np.floating, np.float64)) else (int(i) if isinstance(i, (np.integer, np.int64)) else i)) for i in v]
+            elif isinstance(v, (np.floating, np.float64, np.float32)):
+                new_d[k] = float(v)
+            elif isinstance(v, (np.integer, np.int64, np.int32)):
+                new_d[k] = int(v)
+            elif isinstance(v, np.bool_):
+                new_d[k] = bool(v)
+            elif pd.isna(v):
+                new_d[k] = None
+            else:
+                new_d[k] = v
+        return new_d
+
+    for r in records:
+        for key, val in r.items():
+            if isinstance(val, (np.floating, np.float64, np.float32)):
+                r[key] = float(val)
+            elif isinstance(val, (np.integer, np.int64, np.int32)):
+                r[key] = int(val)
+            elif isinstance(val, np.bool_):
+                r[key] = bool(val)
+            elif pd.isna(val):
+                r[key] = None
+
+    if constraint_report:
+        constraint_report = sanitize_dict(constraint_report)
 
     status_msg = ""
     if relax_log:

@@ -9,7 +9,8 @@ start cmd /k "title Frontend (UI) && cd frontend && npm run dev"
 echo [2/4] Memulai FastAPI Backend (API ^& Ranking)...
 start cmd /k "title FastAPI (Backend) && cd backend && call venv\Scripts\activate && uvicorn app.main:app --reload"
 
-set /p train="Apakah Anda ingin melatih ulang (train) Rasa model? (y/n): "
+set "train=n"
+set /p "train=Apakah Anda ingin melatih ulang (train) Rasa model? (y/n): "
 if /i "%train%"=="y" (
     echo [0/4] Melatih model Rasa... (Mohon tunggu)
     cd backend\rasa && call ..\venv\Scripts\activate && rasa train && cd ..\..

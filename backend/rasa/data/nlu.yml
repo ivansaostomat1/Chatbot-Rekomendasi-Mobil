@@ -8,6 +8,25 @@ nlu:
     - hi
     - selamat pagi
     - selamat malam
+    - permisi
+    - met pagi
+    - selamat siang
+    - selamat sore
+    - hei
+    - halo selamat datang
+    - hai kak
+    - good morning
+    - p
+    - alo
+    - hola
+    - yo
+    - hey
+    - hai bang
+    - halo bos
+    - selamat datang
+    - pagi
+    - sore
+    - malam
 
 - intent: start_search
   examples: |
@@ -30,6 +49,16 @@ nlu:
     - mobil baru
     - ada mobil
     - mobil apa
+    - dari awal lagi ya
+    - bisa kita restart?
+    - saya mau ubah pencarian
+    - clear semua kriteria
+    - mulai baru lagi dong
+    - hapus semua pilihan tadi
+    - saya mau cari mobil berbeda
+    - ganti semua filter
+    - batal saya cari yang lain
+    - ulangi dari nol
 
 - intent: out_of_scope
   examples: |
@@ -56,6 +85,33 @@ nlu:
     - siapa presiden indonesia
     - resep masakan ayam
     - cuaca hari ini
+    - rekomendasi tempat makan enak di jakarta
+    - berapa kurs dollar hari ini
+    - cara beli saham untuk pemula
+    - jadwal bioskop hari ini
+    - apa resep nasi goreng yang enak
+    - cariin saya laptop murah
+    - gimana cara daftar BPJS
+    - tolong buatkan surat lamaran kerja
+    - rekomendasi film netflix terbaru
+    - berapa harga tiket pesawat jakarta bali
+    - mau beli hp baru
+    - rekomendasi sepatu nike
+    - cara bikin kopi enak
+    - jadwal kereta api hari ini
+    - beli tiket konser dimana
+    - berapa gaji UMR jakarta
+    - cara investasi saham bagi pemula
+    - rekomendasi kamera mirrorless murah
+    - cara memperbaiki laptop hang
+    - jadwal imsakiyah hari ini
+    - cara daftar NPWP online
+    - rekomendasi novel terbaru
+    - berapa biaya umroh 2025
+    - cara masak soto ayam
+    - info lowongan kerja terbaru
+    - gimana cara download film gratis
+    - rekomendasi tempat wisata di bali
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Intent: choose_preference
@@ -268,6 +324,28 @@ nlu:
 
 - intent: ask_recommendation
   examples: |
+    - budget [200](budget) juta
+    - budget [200](budget) juta [7](min_seat) kursi
+    - [300](budget) juta [5](min_seat) seater
+    - harga [400](budget) juta [7](min_seat) penumpang
+    - cari [5](min_seat) kursi harga [250](budget) juta
+    - cari mobil [7](min_seat) kursi budget [500 juta](budget)
+    - saya butuh yang [7](min_seat) seater
+    - minimal [6](min_seat) tempat duduk
+    - muat [8](min_seat) penumpang
+    - mobil [5](min_seat) seat
+    - untuk [7](min_seat) orang sekeluarga
+    - butuh [7](min_seat) jok
+    - yang bisa bawa [8](min_seat) orang
+    - cari yang [4](min_seat) kursi saja
+    - saya perlu [7](min_seat) seater buat keluarga
+    - mobil [2](min_seat) seat aja
+    - setidaknya [5](min_seat) penumpang
+    - kapasitas [7](min_seat) orang
+    - [6](min_seat) tempat duduk
+    - [7](min_seat) seater
+    - [5](min_seat) kursi
+    - [8](min_seat) penumpang
     - kalau bisa jangan [suv]{"entity":"body_type", "role":"negated"}
     - selain merk [toyota]{"entity":"brand", "role":"negated"} apa ya
     - cariin [sedan](body_type) tapi bukan yang [listrik]{"entity":"powertrain", "role":"negated"}
@@ -492,15 +570,6 @@ nlu:
     - mobil yang [canggih](preference)
     - mobil [teknologi](preference)
     - mobil dengan fitur [canggih](preference)
-    - mobil [irit](preference)
-    - mobil [hemat bbm](preference)
-    - mobil [nyaman](preference)
-    - mobil paling [nyaman](preference)
-    - mobil [kencang](preference)
-    - mobil buat [ngebut](preference)
-    - mobil aman dari [banjir](hard_filter)
-    - mobil [ground clearance tinggi](hard_filter)
-
 - intent: ask_comparison
   examples: |
     - kalau budget ditambah [50jt](budget) dapet apa?
@@ -525,3 +594,11 @@ nlu:
     - budget saya mau saya naikkan ke [1M](budget) dapet apa?
     - opsi lain kalau budget [600 jutaan](budget)?
     - kalau saya extend budget ke [800jt](budget) pilihan bertambah ga?
+    - kalau saya tambah sedikit lagi dapet yang mana?
+    - beda jauh ga kalau budget dinaikkan?
+    - ada pilihan lebih bagus di harga yang lebih tinggi?
+    - worth ga kalau nambah [100 juta](budget) lagi?
+    - kalau budget jadi [1.2M](budget) rekomendasinya beda ga?
+    - dengan [750 juta](budget) pilihan bertambah?
+    - naikin budget ke [950jt](budget) dapet apa tambahan?
+    - apa bedanya kalau budget saya [1.1M](budget)?

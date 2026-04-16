@@ -570,6 +570,7 @@ nlu:
     - mobil yang [canggih](preference)
     - mobil [teknologi](preference)
     - mobil dengan fitur [canggih](preference)
+    
 - intent: ask_comparison
   examples: |
     - kalau budget ditambah [50jt](budget) dapet apa?

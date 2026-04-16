@@ -279,11 +279,18 @@ UI_TO_INDEX_MAP = {
 
 CLUSTER_PROFILES = {
     "Urban Agility": {
-        "power": 5, "handling": 8, "efficiency": 10,
-        "driver_comfort": 6, "passenger_comfort": 5, "safety": 7,
-        "tech": 8, "space": 5, "offroad": 1,
-        "luxury": 2, "lifecycle": 8, "brand_strength": 8,
-        "price": 10,
+    "power": 5, "handling": 6, "efficiency": 10,   # handling diturunkan dari 8 → 6
+    "driver_comfort": 8, "passenger_comfort": 5, "safety": 7,
+    "tech": 6, "space": 5, "offroad": 1,            # tech diturunkan dari 8 → 6
+    "luxury": 2, "lifecycle": 7, "brand_strength": 7, # lifecycle & brand_strength diturunkan
+    "price": 10,
+    },
+    "Practical All-Rounder": {
+    "power": 6, "handling": 7, "efficiency": 7,
+    "driver_comfort": 7, "passenger_comfort": 7, "safety": 7,  # driver_comfort diturunkan 8→7
+    "tech": 7, "space": 7, "offroad": 4,
+    "luxury": 5, "lifecycle": 8, "brand_strength": 7,
+    "price": 10,
     },
     "Family Comfort": {
         "power": 4, "handling": 5, "efficiency": 8,
@@ -305,14 +312,7 @@ CLUSTER_PROFILES = {
         "tech": 9, "space": 4, "offroad": 2,
         "luxury": 10, "lifecycle": 6, "brand_strength": 8,
         "price": 10,
-    },
-    "Practical All-Rounder": {
-        "power": 6, "handling": 7, "efficiency": 7,
-        "driver_comfort": 8, "passenger_comfort": 7, "safety": 7,
-        "tech": 7, "space": 7, "offroad": 4,
-        "luxury": 5, "lifecycle": 8, "brand_strength": 7,
-        "price": 10,
-    },
+    }
 }
 
 GLOBAL_DEFAULT_PROFILE = {

@@ -36,6 +36,7 @@ export interface CarRecommendation {
   BODY_TYPE?: string;
   FUEL?: string;
   CC?: number;
+  IS_TURBO?: boolean;
   HORSE_POWER?: number;
   TORQUE?: number;
   TRANSMISSION?: string;

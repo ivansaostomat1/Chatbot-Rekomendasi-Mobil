@@ -30,6 +30,9 @@ def normalize_text(x):
 
 def clean_numeric_columns(df):
 
+    if "CC" in df.columns:
+        df["IS_TURBO"] = df["CC"].astype(str).str.contains(r't', case=False, na=False)
+
     numeric_cols = [
 
         "HORSE POWER (HP)",

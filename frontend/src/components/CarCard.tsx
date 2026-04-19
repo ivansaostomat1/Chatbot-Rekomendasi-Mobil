@@ -269,14 +269,14 @@ export default function CarCard({ car, rank }: Props) {
 
         {/* ── Specs Grid ── */}
         <div className={styles.specsGrid}>
-          <SpecItem icon="🏷️" label="Tipe Bodi" value={car.BODY_TYPE || '-'} />
+          <SpecItem icon="🏷️" label="Tipe Bodi" value={car.BODY_TYPE ? car.BODY_TYPE.toUpperCase() : '-'} />
           <SpecItem icon="⚙️" label="Transmisi" value={car.TRANSMISSION || '-'} />
-          <SpecItem icon="⛽" label="Bahan Bakar" value={car.FUEL || '-'} />
+          <SpecItem icon="⛽" label="Bahan Bakar" value={car.FUEL ? car.FUEL.toUpperCase() : '-'} />
           <SpecItem icon="👥" label="Kapasitas" value={car.SEAT ? `${car.SEAT} Kursi` : '-'} />
           
           {/* Engine / Battery Row */}
           {car.CC ? (
-            <SpecItem icon="🚀" label="Mesin" value={`${Math.round(car.CC)} cc`} />
+            <SpecItem icon="🚀" label="Mesin" value={`${Math.round(car.CC)} cc${car.IS_TURBO ? ' Turbo' : ''}`} />
           ) : car.BATTERY ? (
             <SpecItem icon="🔋" label="Baterai" value={`${car.BATTERY} kWh`} />
           ) : (
@@ -321,8 +321,8 @@ export default function CarCard({ car, rank }: Props) {
           <div className={styles.featureGroup}>
             <div className={styles.categoryLabel}>✨ Kenyamanan & Interior</div>
             <div className={styles.featureList}>
-              {car.SUNROOF && car.SUNROOF !== "Tidak Ada" && <DetailBadge label={car.SUNROOF} icon="☀️" type="comfort" />}
-              {car.POWER_TAILGATE === "Ada" && <DetailBadge label="Power Tailgate" icon="🚪" type="comfort" />}
+              {car.SUNROOF && car.SUNROOF !== "Tidak Ada" && <DetailBadge label={`Tipe Sunroof: ${car.SUNROOF}`} icon="☀️" type="comfort" />}
+              {car.POWER_TAILGATE === "Ada" && <DetailBadge label="Bagasi: Power Tailgate" icon="🚪" type="comfort" />}
               {car.AUTO_HOLD === "Ada" && <DetailBadge label="Auto Hold" icon="🅿️" type="comfort" />}
               {car.LEATHER_SEAT && !["Fabric", "Kain (Fabric)", "Kain"].includes(car.LEATHER_SEAT) && (
                 <DetailBadge label={`Jok ${car.LEATHER_SEAT}`} icon="🛋️" type="comfort" />

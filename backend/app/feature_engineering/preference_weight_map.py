@@ -1,4 +1,4 @@
-﻿# backend/app/feature_engineering/preference_weight_map.py
+# backend/app/feature_engineering/preference_weight_map.py
 #
 # PETA PREFERENSI --- BOBOT VIKOR
 # ---------------------------------------------------------------------------
@@ -36,7 +36,7 @@ import numpy as np
 from numpy.linalg import norm
 from typing import Dict, List
 from .semantic_mapper import get_mapper
-from ..feature_ontology import GLOBAL_DEFAULT_PROFILE, CLUSTER_PROFILES
+from ..feature_ontology import GLOBAL_DEFAULT_PROFILE, CLUSTER_PROFILES, PREFERENCE_CLUSTER_MAP
 
 # ======================================================
 # KAMUS UTAMA: PREFERENSI --- BOBOT MULTI-KRITERIA
@@ -626,13 +626,23 @@ def resolve_preference_weights(
     return final_weights
 
 # ======================================================
-# CLUSTER DETECTION - COSINE SIMILARITY (BARU)
+# CLUSTER DETECTION - COSINE SIMILARITY + HARD OVERRIDE
 # ======================================================
-def detect_cluster_from_weights(weights: Dict[str, float]) -> List[str]:
+def detect_cluster_from_weights(weights: Dict[str, float], preference_terms: List[str] = None) -> List[str]:
     """
-    Mendeteksi cluster berdasarkan kemiripan kosinus antara vektor bobot user
-    dan vektor centroid setiap cluster di CLUSTER_PROFILES.
+    Mendeteksi cluster berdasarkan kemiripan kosinus, namun DIOVERRIDE 
+    oleh pemetaan eksplisit dari PREFERENCE_CLUSTER_MAP jika kata kunci cocok.
     """
+    # 1. HARD OVERRIDE CHECK
+    if preference_terms:
+        for term in preference_terms:
+            t_clean = term.strip().lower()
+            if t_clean in PREFERENCE_CLUSTER_MAP:
+                matched_cluster = PREFERENCE_CLUSTER_MAP[t_clean]
+                print(f"[CLUSTER] [HARD OVERRIDE] Kata kunci '{t_clean}' langsung di-map ke '{matched_cluster}'.")
+                return [matched_cluster]
+
+    # 2. COSINE SIMILARITY CHECK (FALLBACK)
     user_vector = np.array([weights.get(c, 5.0) for c in ALL_CRITERIA])
 
     best_cluster = None
@@ -677,7 +687,7 @@ def build_ui_state(
     entity_terms = entity_terms or []
 
     weights = resolve_preference_weights(preference_terms, entity_terms)
-    clusters = detect_cluster_from_weights(weights)
+    clusters = detect_cluster_from_weights(weights, preference_terms=preference_terms)
     primary_cluster = clusters[0]
 
     cluster_profile = dict(CLUSTER_PROFILES.get(primary_cluster, GLOBAL_DEFAULT_PROFILE))

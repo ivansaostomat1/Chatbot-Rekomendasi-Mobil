@@ -179,14 +179,14 @@ TRANSMISSION_DECODING = {
 # ======================================================
 
 FEATURE_CONSTRAINT_MAP = {
-    "sunroof": {"must_have_sunroof": True},
-    "moonroof": {"must_have_sunroof": True},
-    "panoramic": {"must_have_sunroof": True},
-    "kamera 360": {"must_have_camera_360": True},
-    "kamera": {"must_have_camera_360": True},
-    "carplay": {"must_have_wireless_tech": True},
-    "android auto": {"must_have_wireless_tech": True},
-    "led": {"must_have_led": True},
+    "sunroof": ("SUNROOF", 1),
+    "moonroof": ("SUNROOF", 1),
+    "panoramic": ("SUNROOF", 2),
+    "kamera 360": ("CAMERA_360", 1),
+    "kamera": ("CAMERA_360", 1),
+    "carplay": ("APPLE_CARPLAY", 1),
+    "android auto": ("ANDROID_AUTO", 1),
+    "led": ("LED_HEADLIGHT", 1),
 }
 
 

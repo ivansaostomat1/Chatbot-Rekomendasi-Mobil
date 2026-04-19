@@ -1,66 +1,10 @@
 [
   {
-    "text": "mobil keluarga 7 seat",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.9488394260406494
-    }
-  },
-  {
-    "text": "1. hybrid 2. 5 orang 3. kamera 360",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.598962664604187
-    }
-  },
-  {
-    "text": "6 orang",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.6098014116287231
-    }
-  },
-  {
     "text": "muat 8 penumpang",
     "intent": "choose_preference",
     "intent_prediction": {
       "name": "ask_recommendation",
-      "confidence": 0.9906988739967346
-    }
-  },
-  {
-    "text": "kursi 2 saja",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.6116377711296082
-    }
-  },
-  {
-    "text": "mau yang 7 kursi",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.5722751021385193
-    }
-  },
-  {
-    "text": "saya butuh 5 seat aja",
-    "intent": "choose_preference",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.9899051785469055
-    }
-  },
-  {
-    "text": "kalau budget saya 700 jutaan bisa dapet yang mana?",
-    "intent": "ask_comparison",
-    "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.5169113278388977
+      "confidence": 0.547163188457489
     }
   }
 ]

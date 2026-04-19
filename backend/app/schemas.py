@@ -33,6 +33,7 @@ class CarRecommendation(BaseModel):
     BODY_TYPE: Optional[str] = Field(None, alias="BODY TYPE")
     FUEL: Optional[str] = None
     CC: Optional[float] = None
+    IS_TURBO: Optional[bool] = None
     HORSE_POWER: Optional[float] = Field(None, alias="HORSE POWER (HP)")
     TORQUE: Optional[float] = Field(None, alias="TORQUE (Nm)")
     TRANSMISSION: Optional[str] = None

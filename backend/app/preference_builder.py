@@ -1,4 +1,4 @@
-﻿# backend/app/preference_builder.py
+# backend/app/preference_builder.py
 from typing import List
 
 from app.feature_ontology import (
@@ -126,7 +126,7 @@ def extract_cluster(all_terms: List[str]) -> List[str]:
     weights = resolve_preference_weights(all_terms)
     
     # Deteksi cluster list dari profile bobot hasil agregasi
-    clusters = detect_cluster_from_weights(weights)
+    clusters = detect_cluster_from_weights(weights, preference_terms=all_terms)
     
     return clusters
 

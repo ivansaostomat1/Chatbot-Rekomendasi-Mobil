@@ -359,6 +359,7 @@ def recommend_cars(
         "BODY_TYPE",
         "FUEL",
         "CC",
+        "IS_TURBO",
         "HORSE_POWER",
         "TORQUE",
         "TRANSMISSION",

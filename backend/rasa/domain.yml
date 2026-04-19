@@ -38,7 +38,7 @@ responses:
   - text: "Baik, mobil dengan budget tersebut ya. Biar makin pas rekomendasinya, kamu lebih suka mobil yang gimana? Contoh: irit bbm, nyaman, canggih, atau untuk keluarga?"
 
   utter_ask_refinement:
-  - text: "Baik, saya catat✍️. Untuk hasil yang lebih presisi, apakah ada preferensi khusus terkait: \n1. **Bahan bakar** (Bensin, Diesel, Hybrid, atau Listrik)? \n2. **Jumlah kursi** (misal: 5 atau 7 seat)? \n3. **Fitur tambahan** (misal: Sunroof, Kamera 360, atau Apple Carplay)? \n\nAtau langsung saya carikan sekarang? 😊"
+  - text: "Baik, saya catat✍️. Untuk hasil yang lebih presisi, apakah ada preferensi khusus terkait:\n\n1. **Bahan bakar** (misal: Bensin, Diesel, Hybrid, Listrik)\n2. **Kapasitas** (misal: 5 seat, 7 seat, bagasi besar)\n3. **Fitur tambahan** (misal: Sunroof, Kamera 360, Apple Carplay, Jok Elektrik, Jok Kulit, atau Layar Belakang)\n\n💡 *Contoh ketik: \"hybrid 5 seat aja\", \"ada jok kulit\", atau ketik \"langsung carikan\" jika sudah cukup.* 😊"
 
 
 entities:

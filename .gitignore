@@ -17,12 +17,13 @@ __pycache__/
 Thumbs.db
 
 # Rasa cache & trained models (jangan push ke GitHub, ukurannya besar)
+.rasa/
+**/models/
 backend/.rasa/
 backend/rasa/.rasa/
-backend/rasa/models/
-*.tar.gz
+backend/backup.rar
+backend/rasa.rar
 *.rar
-*.zip
 # Docs (draft internal)
 docs/PROPOSAL_EXAMPLE.md
 docs/RESEARCH_NOTES.md

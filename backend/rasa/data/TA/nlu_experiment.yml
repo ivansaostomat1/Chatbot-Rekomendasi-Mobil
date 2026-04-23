@@ -175,6 +175,7 @@ nlu:
     - [bensin](powertrain), [7](min_seat) seat, [kamera 360](feature)
     - [hybrid](powertrain), [5](min_seat) kursi, [sunroof](feature)
     - [6](min_seat) orang
+    - muat [8](min_seat) penumpang
     - kursi [2](min_seat) saja
     - saya butuh yang [bensin](powertrain)
     - pengen yang [hybrid](powertrain) aja
@@ -301,6 +302,25 @@ nlu:
     - keluarga besar
     - bebas banjir
     - banjir
+
+- lookup: budget
+  examples: |
+    - 100 jutaan
+    - 150 juta
+    - 200 jutaan
+    - 250 juta
+    - 300 juta
+    - 400 juta
+    - 500 juta
+    - 1 miliar
+    - 100jtan
+    - 150jt
+    - 200jtan
+    - 300jt
+    - 500jt
+    - 1M
+    - 2M
+
 
 - lookup: brand
   examples: |

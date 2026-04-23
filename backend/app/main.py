@@ -1,4 +1,4 @@
-﻿# chatbot-rekomendasi-mobil/backend/app/main.py
+# chatbot-rekomendasi-mobil/backend/app/main.py
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,6 +38,18 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+# ======================================================
+# STATIC FILES (RASA RESULTS)
+# ======================================================
+import os
+from fastapi.staticfiles import StaticFiles
+
+# Mount Rasa results directory to serve images like confusion matrix
+results_path = os.path.join(os.path.dirname(__file__), "..", "rasa", "results")
+if os.path.exists(results_path):
+    app.mount("/rasa-results", StaticFiles(directory=results_path), name="rasa-results")
+
 
 
 # ======================================================
@@ -541,7 +553,7 @@ def eval_nlp_baseline():
     import json
     import os
 
-    base_path = os.path.join(os.path.dirname(__file__), "..", "rasa", "results", "baseline")
+    base_path = os.path.join(os.path.dirname(__file__), "..", "rasa", "results")
 
     try:
         # Read intent report

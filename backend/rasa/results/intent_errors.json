@@ -1,10 +1,18 @@
 [
   {
     "text": "muat 8 penumpang",
-    "intent": "choose_preference",
+    "intent": "ask_recommendation",
     "intent_prediction": {
-      "name": "ask_recommendation",
-      "confidence": 0.547163188457489
+      "name": "choose_preference",
+      "confidence": 0.7498776912689209
+    }
+  },
+  {
+    "text": "muat 8 penumpang",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "choose_preference",
+      "confidence": 0.7498776912689209
     }
   }
 ]

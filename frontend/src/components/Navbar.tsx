@@ -3,7 +3,8 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { HiMoon, HiSun, HiXMark, HiTrash, HiArrowLeft, HiMicrophone, HiAdjustmentsHorizontal, HiChartBar, HiClipboardDocumentCheck, HiMagnifyingGlassCircle } from 'react-icons/hi2';
+import { HiMoon, HiSun, HiXMark, HiTrash, HiArrowLeft, HiMicrophone, HiAdjustmentsHorizontal, HiChartBar, HiClipboardDocumentCheck, HiMagnifyingGlassCircle, HiBeaker } from 'react-icons/hi2';
+import Link from 'next/link';
 import Folder from './Folder';
 import styles from './Navbar.module.css';
 import { useScientificMode } from '@/lib/ScientificModeContext';
@@ -167,9 +168,26 @@ export default function Navbar() {
             </button>
 
             {isScientific && (
-              <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginRight: '6px' }} title="Evaluasi Sistem">
-                <Folder size={0.25} color="#f79809ff" onClick={openEvalWindow} />
-              </div>
+              <>
+                <Link
+                  href="/debug-nlu"
+                  title="Buka Dashboard Kualitas NLU (Visual)"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    padding: '5px 12px', borderRadius: '20px', cursor: 'pointer',
+                    fontSize: '0.72rem', fontWeight: 700,
+                    border: '1.5px solid rgba(0,187,119,0.5)',
+                    background: 'rgba(0,187,119,0.1)',
+                    color: '#00BB77',
+                    transition: 'all 0.3s ease', marginRight: '6px',
+                  }}
+                >
+                  <HiBeaker size={14} /> NLU
+                </Link>
+                <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginRight: '6px' }} title="Evaluasi Sistem">
+                  <Folder size={0.25} color="#f79809ff" onClick={openEvalWindow} />
+                </div>
+              </>
             )}
             <button className={styles.themeToggle} onClick={toggleTheme} aria-label="Toggle theme">
               {mounted ? (theme === 'dark' ? <HiSun size={17} /> : <HiMoon size={17} />) : <span style={{ width: 17, height: 17 }} />}
@@ -510,6 +528,19 @@ export default function Navbar() {
                 </button>
 
                 <SectionContainer title="🧠 1. NLU Research Dashboard (Baseline Results)" color="#EF4444" id="nlp-baseline">
+                  <div style={{ marginBottom: '16px', textAlign: 'right' }}>
+                    <Link 
+                      href="/debug-nlu" 
+                      style={{ 
+                        display: 'inline-flex', alignItems: 'center', gap: '6px', 
+                        fontSize: '0.75rem', fontWeight: 700, color: '#fff', 
+                        background: '#00BB77', padding: '6px 14px', borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0,187,119,0.2)'
+                      }}
+                    >
+                      <HiBeaker size={14} /> Buka Dashboard NLU Full (Visual)
+                    </Link>
+                  </div>
                   <NLPBaselineSection data={nlpBaseline} isScientific={isScientific} />
                 </SectionContainer>
                 <SectionContainer title="🎯 2. NLP Strategic Decision Mapping" color="#4090F7" id="nlp-mapping">

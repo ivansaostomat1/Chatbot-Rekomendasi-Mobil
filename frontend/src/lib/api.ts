@@ -2,7 +2,9 @@ import axios from "axios";
 import {
   ClusterEvalData,
   RecommendationEvalData,
-  NLPEvalData
+  NLPEvalData,
+  NLPMappingData,
+  NLPBaselineData
 } from "@/types";
 
 /* ================================
@@ -86,9 +88,17 @@ export async function getRecommendationEval(): Promise<RecommendationEvalData> {
 ================================ */
 
 export async function getNLPEval(): Promise<NLPEvalData> {
-
   const { data } = await api.get("/evaluasi/nlp");
+  return data;
+}
 
+export async function getNLPMappingEval(): Promise<NLPMappingData> {
+  const { data } = await api.get("/evaluasi/nlp/mapping");
+  return data;
+}
+
+export async function getNLPBaselineEval(): Promise<NLPBaselineData> {
+  const { data } = await api.get("/evaluasi/nlp/baseline");
   return data;
 }
 

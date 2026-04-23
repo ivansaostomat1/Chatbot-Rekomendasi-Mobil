@@ -19,7 +19,10 @@ Thumbs.db
 # Rasa cache & trained models (jangan push ke GitHub, ukurannya besar)
 backend/.rasa/
 backend/rasa/.rasa/
-
+backend/rasa/models/
+*.tar.gz
+*.rar
+*.zip
 # Docs (draft internal)
 docs/PROPOSAL_EXAMPLE.md
 docs/RESEARCH_NOTES.md

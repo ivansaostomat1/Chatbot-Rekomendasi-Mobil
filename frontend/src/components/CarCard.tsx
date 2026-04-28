@@ -9,6 +9,8 @@ import { useScientificMode } from '@/lib/ScientificModeContext';
 interface Props {
   car: CarRecommendation;
   rank: number;
+  expanded?: boolean;
+  onToggleExpand?: () => void;
 }
 
 const RANK_CONFIG = [
@@ -185,9 +187,12 @@ function DetailBadge({ label, icon, type }: { label: string; icon: string; type:
 }
 
 
-export default function CarCard({ car, rank }: Props) {
+export default function CarCard({ car, rank, expanded: propExpanded, onToggleExpand }: Props) {
   const { isScientific } = useScientificMode();
-  const [expanded, setExpanded] = useState(false);
+  const [localExpanded, setLocalExpanded] = useState(false);
+  const expanded = propExpanded !== undefined ? propExpanded : localExpanded;
+  const toggleExpanded = onToggleExpand || (() => setLocalExpanded(p => !p));
+  
   const [evalTab, setEvalTab] = useState<'index' | 'nlp' | 'vikor' | 'cluster'>('index');
 
   // Evaluation data (fetched once when expanded)
@@ -411,7 +416,7 @@ export default function CarCard({ car, rank }: Props) {
         {/* ══════════════════════════════════════════════════ */}
         {isScientific && (
           <button
-            onClick={() => setExpanded(p => !p)}
+            onClick={toggleExpanded}
             style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0 0', color: 'var(--text-muted)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center', textTransform: 'uppercase' }}
           >
             {expanded ? '▲ Sembunyikan Evaluasi' : '▼ Lihat Breakdown & Evaluasi Debug'}
@@ -709,6 +714,22 @@ export default function CarCard({ car, rank }: Props) {
                         })}
                       </div>
                     </EvalSection>
+
+                    {/* Dendrogram Visualization */}
+                    {clusterData.dendrogram_url && (
+                      <EvalSection title="🌳 Hierarchical Dendrogram" color="#F59E0B">
+                        <div style={{ display: 'flex', justifyContent: 'center', background: 'var(--bg-card)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                          <img 
+                            src={`http://localhost:8000${clusterData.dendrogram_url}`} 
+                            alt="HAC Dendrogram" 
+                            style={{ maxWidth: '100%', height: 'auto', borderRadius: '4px' }}
+                          />
+                        </div>
+                        <div style={{ fontSize: '0.58rem', color: 'var(--text-muted)', marginTop: '6px', textAlign: 'center' }}>
+                          Dendrogram dipotong (truncated) pada 30 node terakhir.
+                        </div>
+                      </EvalSection>
+                    )}
                   </>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-muted)', fontSize: '0.75rem' }}>Memuat data clustering evaluasi...</div>

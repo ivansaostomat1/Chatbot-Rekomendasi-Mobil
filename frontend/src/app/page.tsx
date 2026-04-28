@@ -52,6 +52,7 @@ function MsgBubble({ msg }: { msg: ChatMessage }) {
 
 function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], constraintReport?: ConstraintReport }) {
   const { isScientific } = useScientificMode();
+  const [expanded, setExpanded] = useState(false);
   const weights = constraintReport?.normalized_weights;
   const relaxNotes = constraintReport?.relax_notes;
 
@@ -91,15 +92,15 @@ function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], con
       )}
 
       <div className={styles.carGrid}>
-        {cars[0] && <CarCard car={cars[0]} rank={1} />}
+        {cars[0] && <CarCard car={cars[0]} rank={1} expanded={expanded} onToggleExpand={() => setExpanded(!expanded)} />}
         {cars.slice(1, 3).length > 0 && (
           <div className={styles.carRow}>
-            {cars.slice(1, 3).map((car, i) => <CarCard key={i} car={car} rank={i + 2} />)}
+            {cars.slice(1, 3).map((car, i) => <CarCard key={i} car={car} rank={i + 2} expanded={expanded} onToggleExpand={() => setExpanded(!expanded)} />)}
           </div>
         )}
         {cars.slice(3, 5).length > 0 && (
           <div className={styles.carRow}>
-            {cars.slice(3, 5).map((car, i) => <CarCard key={i} car={car} rank={i + 4} />)}
+            {cars.slice(3, 5).map((car, i) => <CarCard key={i} car={car} rank={i + 4} expanded={expanded} onToggleExpand={() => setExpanded(!expanded)} />)}
           </div>
         )}
       </div>

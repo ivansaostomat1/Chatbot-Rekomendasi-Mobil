@@ -395,8 +395,11 @@ def recommend_cars(
         "LEATHER_SEAT",
         "AMBIENT_LIGHT",
         "PARKING_BRAKE",
-        "AUTO_HOLD"
     ]
+    
+    # Tambahkan semua kolom W_DIST yang dihasilkan VIKOR
+    w_dist_cols = [c for c in result.columns if c.startswith("W_DIST_")]
+    cols.extend(w_dist_cols)
 
     cols = [c for c in cols if c in result.columns]
 

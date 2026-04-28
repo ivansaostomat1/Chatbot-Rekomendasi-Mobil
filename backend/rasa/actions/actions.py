@@ -92,7 +92,7 @@ def extract_entities(entities, text=None):
                 if numeric_part:
                     num = float(numeric_part.group().replace(",", ""))
                     if num < 20 and not any(
-                        kw in value for kw in ["jt", "juta", "milyar"]
+                        kw in value for kw in ["jt", "juta", "milyar", "miliar", "m"]
                     ):
                         is_small = True
             except:

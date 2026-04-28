@@ -32,14 +32,14 @@ graph LR
 
 ### Deskripsi Use Case
 
-| UC | Nama | Aktor | Deskripsi |
-|----|------|-------|-----------|
-| UC-1 | Memulai Percakapan | User | User menyapa chatbot, sistem membalas sapaan |
-| UC-2 | Meminta Rekomendasi Mobil | User | User menyebutkan budget/kebutuhan, sistem memproses NLU → Clustering → VIKOR dan menampilkan Top-N rekomendasi |
-| UC-3 | Memilih/Memperbaiki Preferensi | User | User menyempurnakan kriteria pencarian (preferensi, fitur, powertrain) pada sesi yang sama |
-| UC-4 | Membandingkan Budget | User | User meminta perbandingan hasil rekomendasi dengan budget yang dinaikkan |
-| UC-5 | Mengatur Bobot Kriteria Manual | User | User mengatur slider bobot (Performa, Irit, Kenyamanan, dll.) di UI frontend |
-| UC-6 | Melihat Riwayat Pencarian | User | User melihat atau menghapus riwayat evaluasi pencarian sebelumnya |
+| UC   | Nama                           | Aktor | Deskripsi                                                                                                        |
+| ---- | ------------------------------ | ----- | ---------------------------------------------------------------------------------------------------------------- |
+| UC-1 | Memulai Percakapan             | User  | User menyapa chatbot, sistem membalas sapaan                                                                     |
+| UC-2 | Meminta Rekomendasi Mobil      | User  | User menyebutkan budget/kebutuhan, sistem memproses NLU → Clustering → VIKOR dan menampilkan Top-N rekomendasi |
+| UC-3 | Memilih/Memperbaiki Preferensi | User  | User menyempurnakan kriteria pencarian (preferensi, fitur, powertrain) pada sesi yang sama                       |
+| UC-4 | Membandingkan Budget           | User  | User meminta perbandingan hasil rekomendasi dengan budget yang dinaikkan                                         |
+| UC-5 | Mengatur Bobot Kriteria Manual | User  | User mengatur slider bobot (Performa, Irit, Kenyamanan, dll.) di UI frontend                                     |
+| UC-6 | Melihat Riwayat Pencarian      | User  | User melihat atau menghapus riwayat evaluasi pencarian sebelumnya                                                |
 
 ---
 
@@ -175,7 +175,7 @@ sequenceDiagram
     actor User
     participant FE as Frontend (Next.js)
     participant Rasa as Rasa NLU Server
-    
+  
     User->>FE: Mengetik "Halo"
     FE->>Rasa: POST /webhooks/rest/webhook {message: "Halo"}
     Rasa->>Rasa: NLU Pipeline → intent: greet

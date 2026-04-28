@@ -23,28 +23,33 @@ def generate_car_insights(car_record: dict, weight_dict: dict):
     Menghasilkan narasi alasan kenapa mobil ini direkomendasikan.
     Menggunakan data W_DIST_ yang dihasilkan oleh VIKOR.
     """
-    
+    def safe_get(d, k, default=0):
+        val = d.get(k)
+        return float(val) if val is not None else float(default)
+
     valid_distances = []
     
     # Kriteria kualitas (semua kecuali harga dan match cluster)
     quality_indices = [c for c in VIKOR_CRITERIA if c not in ["INDEX_PRICE", "INDEX_CLUSTER_MATCH"]]
     
-    avg_quality = sum([car_record.get(c, 0) for c in quality_indices]) / len(quality_indices)
-    price_score = car_record.get("INDEX_PRICE", 1) # 10 = murah, 1 = mahal
+    avg_quality = sum([safe_get(car_record, c, 0) for c in quality_indices]) / len(quality_indices)
+    price_score = safe_get(car_record, "INDEX_PRICE", 1) # 10 = murah, 1 = mahal
     
     # VFM Index: Semakin tinggi kualitas dan semakin murah harga -> VFM tinggi
     vfm_score = (avg_quality * price_score) / 10
     
+    if weight_dict is None: weight_dict = {}
+
     for crit in VIKOR_CRITERIA:
         w_dist_key = f"W_DIST_{crit}"
         if w_dist_key in car_record:
-            user_weight = weight_dict.get(crit, 0)
+            user_weight = float(weight_dict.get(crit) or 0)
             if user_weight > 0:
                 valid_distances.append({
                     "crit": crit,
-                    "w_dist": car_record[w_dist_key],
+                    "w_dist": safe_get(car_record, w_dist_key, 999),
                     "label": INDEX_LABELS.get(crit, crit),
-                    "score": car_record.get(crit, 0)
+                    "score": safe_get(car_record, crit, 0)
                 })
 
     # Sort berdasarkan jarak terbobot terkecil (performa terbaik relatif terhadap bobot)
@@ -72,15 +77,21 @@ def compare_two_cars(car_a: dict, car_b: dict, weight_dict: dict):
     Membandingkan Mobil A (baru/lebih mahal) dengan Mobil B (lama/lebih murah).
     Menghasilkan alasan kenapa A layak dipertimbangkan meskipun lebih mahal.
     """
+    def safe_get(d, k, default=0):
+        val = d.get(k)
+        return float(val) if val is not None else float(default)
+
+    if weight_dict is None: weight_dict = {}
+
     diffs = []
     for crit in VIKOR_CRITERIA:
         if crit == "INDEX_PRICE": continue
         
-        score_a = car_a.get(crit, 0)
-        score_b = car_b.get(crit, 0)
+        score_a = safe_get(car_a, crit, 0)
+        score_b = safe_get(car_b, crit, 0)
         
         if score_a > score_b:
-            weight = weight_dict.get(crit, 0.1) # Prioritaskan yang di-bobot user
+            weight = float(weight_dict.get(crit) or 0.1) # Prioritaskan yang di-bobot user
             diffs.append({
                 "crit": crit,
                 "label": INDEX_LABELS.get(crit, crit),

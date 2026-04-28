@@ -113,18 +113,13 @@ nlu:
     - gimana cara download film gratis
     - rekomendasi tempat wisata di bali
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Intent: choose_preference
+# PERBAIKAN: Ditambahkan contoh multi-preferensi dalam 1 kalimat natural
+# agar DIET tidak jatuh ke nlu_fallback ketika user menjawab dengan frasa panjang
+# ─────────────────────────────────────────────────────────────────────────────
 - intent: choose_preference
   examples: |
-    - langsung carikan
-    - langsung aja
-    - cukup
-    - cukup itu saja
-    - tidak ada
-    - ga ada
-    - langsung cari aja
-    - carikan sekarang
-    - itu aja
-    - sudah cukup
     - irit
     - yang irit
     - saya pilih irit
@@ -166,21 +161,30 @@ nlu:
     - kenyamanan sama fitur canggih
     - yang penting nyaman dan bertenaga
     - irit dan aman
-    - butuh kendaraan buat commute kantor tiap hari yg konsumsi bbm nya irit banget
-    - opsi kendaraan yg paling nyaman buat perjalanan lintas kota jarak jauh
-    - pengen kendaraan compact yg gampang dibawa di kota padat tapi tetep enak duduknya
-    - cari mobil yg jok belakangnya lega buat ortu biar nyaman
-    - pengen yg irit banget soalnya dipake tiap hari nonstop
-    - butuh yg kuat buat jalan rusak sama kadang banjir
-    - pengen tarikan responsif biar enak pas stop and go
-    - lagi butuh yg muat banyak orang tapi tetep nyaman
-    - lagi cari yg lincah buat dipake di kota padat
-    - cari yg tahan jalan jelek ga bikin was was
-    - lagi cari yg kecil tapi gesit buat jalan sempit
-    - lagi cari yg kecil tapi lincah buat mobilitas tinggi
-    - dipake macet macetan pengen yg tetep nyaman
-    - butuh yg hemat bbm buat perjalanan jauh rutin
-    - lagi nyari yg jok belakangnya lega buat ortu
+    - nyaman untuk [keluarga](preference)
+    - aman untuk [keluarga](preference)
+    - bagus dan nyaman untuk [keluarga](preference)
+    - untuk [keluarga](preference) yang nyaman
+    - buat [keluarga](preference) yang irit
+    - mobil untuk [keluarga](preference) bensin
+    - mobil [keluarga](preference) [7](min_seat) seat
+    - yang [irit](preference) buat [keluarga](preference)
+    - mau yang [nyaman](preference) dan [irit](preference) buat [keluarga](preference)
+    - 1. [bensin](powertrain) 2. [7](min_seat) seat 3. [sunroof](feature)
+    - 1. [hybrid](powertrain) 2. [5](min_seat) orang 3. [kamera 360](feature)
+    - [bensin](powertrain), [7](min_seat) seat, [kamera 360](feature)
+    - [hybrid](powertrain), [5](min_seat) kursi, [sunroof](feature)
+    - [6](min_seat) orang
+    - muat [8](min_seat) penumpang
+    - kursi [2](min_seat) saja
+    - saya butuh yang [bensin](powertrain)
+    - pengen yang [hybrid](powertrain) aja
+    - cari mobil [listrik](powertrain)
+    - ada yang [diesel](powertrain) ga?
+    - yang ada [sunroof](feature) dong
+    - butuh [360 camera](feature) buat parkir
+    - mau yang [7](min_seat) kursi
+    - saya butuh [5](min_seat) seat aja
     - harian yang irit
     - harian dan irit
     - harian yang nyaman
@@ -200,35 +204,21 @@ nlu:
     - yang tangguh untuk medan berat
     - bisa offroad dan nyaman
     - ground clearance tinggi dan nyaman
-    - [6](min_seat) orang
-    - muat [8](min_seat) penumpang
-    - kursi [2](min_seat) saja
-    - saya butuh yang [bensin](powertrain)
-    - pengen yang [hybrid](powertrain) aja
-    - cari mobil [listrik](powertrain)
-    - ada yang [diesel](powertrain) ga?
-    - yang ada [sunroof](feature) dong
-    - butuh [360 camera](feature) buat parkir
-    - mau yang [7](min_seat) kursi
-    - saya butuh [5](min_seat) seat aja
-    - pokoknya jangan [sedan]{"entity":"body_type", "role":"negated"}
-    - ga mau [listrik]{"entity":"powertrain", "role":"negated"} deh
-    - jangan [suv]{"entity":"body_type", "role":"negated"} dulu
-    - selain [toyota]{"entity":"brand", "role":"negated"} ada apa?
-    - [manual](transmission) aja
-    - maunya yang [matic](transmission)
-    - [cvt](transmission) sudah cukup
-    - jangan [dct]{"entity":"transmission","role":"negated"}
-
-- lookup: transmission
-  examples: |
-    - manual
-    - matic
-    - cvt
-    - dct
-    - amt
-    - single speed
-    - dht
+    - butuh kendaraan buat commute kantor tiap hari yg konsumsi bbm nya irit banget
+    - opsi kendaraan yg paling nyaman buat perjalanan lintas kota jarak jauh
+    - pengen kendaraan compact yg gampang dibawa di kota padat tapi tetep enak duduknya
+    - cari mobil yg jok belakangnya lega buat ortu biar nyaman
+    - pengen yg irit banget soalnya dipake tiap hari nonstop
+    - butuh yg kuat buat jalan rusak sama kadang banjir
+    - pengen tarikan responsif biar enak pas stop and go
+    - lagi butuh yg muat banyak orang tapi tetep nyaman
+    - lagi cari yg lincah buat dipake di kota padat
+    - cari yg tahan jalan jelek ga bikin was was
+    - lagi cari yg kecil tapi gesit buat jalan sempit
+    - lagi cari yg kecil tapi lincah buat mobilitas tinggi
+    - dipake macet macetan pengen yg tetep nyaman
+    - butuh yg hemat bbm buat perjalanan jauh rutin
+    - lagi nyari yg jok belakangnya lega buat ortu
 
 - lookup: body_type
   examples: |
@@ -306,9 +296,6 @@ nlu:
     - mobil kedua
     - pemula
     - perjalanan jauh
-    - hemat bbm
-    - fitur lengkap
-    - suspensi empuk
 
 - lookup: hard_filter
   examples: |
@@ -333,6 +320,7 @@ nlu:
     - 500jt
     - 1M
     - 2M
+
 
 - lookup: brand
   examples: |
@@ -377,58 +365,6 @@ nlu:
     - [7](min_seat) seater
     - [5](min_seat) kursi
     - [8](min_seat) penumpang
-    - 1. [bensin](powertrain) 2. [7](min_seat) seat 3. [sunroof](feature)
-    - 1. [hybrid](powertrain) 2. [5](min_seat) orang 3. [kamera 360](feature)
-    - [bensin](powertrain), [7](min_seat) seat, [kamera 360](feature)
-    - [hybrid](powertrain), [5](min_seat) kursi, [sunroof](feature)
-    - mobil [keluarga](preference) [7](min_seat) seat
-    - yang [irit](preference) buat [keluarga](preference)
-    - mau yang [nyaman](preference) dan [irit](preference) buat [keluarga](preference)
-    - saya mau mobil [manual](transmission) budget [1.3m](budget) yang sporty
-    - cari yang [matic](transmission) aja di kisaran [500jt](budget)
-    - butuh [cvt](transmission) yang halus buat harian budget [400jt](budget)
-    - ada [dct](transmission) yang responsif ga?
-    - mobil [single speed](transmission) untuk listrik harga [600jt](budget)
-    - rekomendasi [amt](transmission) murah di [200jt](budget)
-    - [dht](transmission) buat hybrid budget [700jt](budget)
-    - jangan [cvt]{"entity":"transmission","role":"negated"} saya mau yang lebih responsif
-    - ga suka [manual]{"entity":"transmission","role":"negated"} macet
-    - selain [amt]{"entity":"transmission","role":"negated"} ada apa?
-    - hindari [single speed]{"entity":"transmission","role":"negated"} kurang tenaga
-    - bukan [dct]{"entity":"transmission","role":"negated"} ya
-    - pokoknya jangan yang [hybrid]{"entity":"powertrain","role":"negated"} ribet servisnya
-    - ga mau [listrik]{"entity":"powertrain","role":"negated"} infrastruktur charging belum ada
-    - cari yang bukan [diesel]{"entity":"powertrain","role":"negated"} buat harian
-    - ga suka [bensin]{"entity":"powertrain","role":"negated"} pengen yang lebih irit
-    - bukan yang [ev]{"entity":"powertrain","role":"negated"} ya, takut kehabisan daya
-    - saya skip yang [turbo]{"entity":"powertrain","role":"negated"} deh servisnya mahal
-    - asal bukan [plug-in hybrid]{"entity":"powertrain","role":"negated"} terlalu rumit
-    - cari yang [hemat bbm](preference) tapi jangan yang [hybrid]{"entity":"powertrain","role":"negated"}
-    - hindari yang merk [daihatsu]{"entity":"brand","role":"negated"} ya
-    - rekomendasi selain [suzuki]{"entity":"brand","role":"negated"} dong
-    - saya kurang suka [mitsubishi]{"entity":"brand","role":"negated"} ada yang lain?
-    - bukan [bmw]{"entity":"brand","role":"negated"} soalnya suku cadangnya susah
-    - jangan dari [china]{"entity":"brand","role":"negated"} deh kurang percaya
-    - ga mau [chery]{"entity":"brand","role":"negated"} atau [omoda]{"entity":"brand","role":"negated"}
-    - apapun asal bukan [wuling]{"entity":"brand","role":"negated"} atau [baic]{"entity":"brand","role":"negated"}
-    - coba yang selain [hyundai]{"entity":"brand","role":"negated"} bisa ga?
-    - anti merk [korea]{"entity":"brand","role":"negated"} deh
-    - budget [500jt](budget) tapi exclude [toyota]{"entity":"brand","role":"negated"} ya
-    - jangan yang [sport]{"entity":"preference","role":"negated"} terlalu boros
-    - ga mau yang [mewah]{"entity":"preference","role":"negated"} cukup fungsional
-    - ga perlu yang [kencang]{"entity":"preference","role":"negated"} yang penting irit
-    - jangan yang [rewel]{"entity":"preference","role":"negated"} soal perawatan
-    - tidak perlu yang [prestige]{"entity":"preference","role":"negated"} yang penting nyaman
-    - jangan kasih rekomendasi [hatchback]{"entity":"body_type","role":"negated"} ya
-    - ga mau [truck]{"entity":"body_type","role":"negated"} cari yang lebih nyaman
-    - bukan [minibus]{"entity":"body_type","role":"negated"} kesannya angkutan
-    - hindari [van]{"entity":"body_type","role":"negated"} terlalu besar
-    - selain [coupe]{"entity":"body_type","role":"negated"} ada rekomendasi apa?
-    - jangan yang [crossover]{"entity":"body_type","role":"negated"} terlalu tinggi
-    - cari yang [mpv](body_type) tapi jangan [suv]{"entity":"body_type","role":"negated"}
-    - ga mau yang [sedan]{"entity":"body_type","role":"negated"} butuh yang lebih tinggi
-    - skip [pickup]{"entity":"body_type","role":"negated"} dan [suv]{"entity":"body_type","role":"negated"} ya
-    - pokoknya bukan [city car]{"entity":"body_type","role":"negated"} kurang lega
     - kalau bisa jangan [suv]{"entity":"body_type", "role":"negated"}
     - selain merk [toyota]{"entity":"brand", "role":"negated"} apa ya
     - cariin [sedan](body_type) tapi bukan yang [listrik]{"entity":"powertrain", "role":"negated"}
@@ -452,7 +388,7 @@ nlu:
     - asal bukan merk [eropa]{"entity":"brand", "role":"negated"} soalnya mahal
     - jangan kasih saya mobil [bekas]{"entity":"preference", "role":"negated"} maunya yang baru
     - selain [hitam]{"entity":"preference", "role":"negated"} ada warna apa lagi?
-    - tidak mau [manual]{"entity":"transmission", "role":"negated"} ya harus matic
+    - tidak mau [manual]{"entity":"powertrain", "role":"negated"} ya harus matic
     - pokoknya bukan [pickup]{"entity":"body_type", "role":"negated"}
     - gweh cari mobil tenaga gede buat nyalip truk di tol tapi tetep nyaman
     - nyari kendaraan yg tetep nyaman walau dipake stop and go pas macet2an
@@ -653,7 +589,7 @@ nlu:
     - mobil yang [canggih](preference)
     - mobil [teknologi](preference)
     - mobil dengan fitur [canggih](preference)
-
+    
 - intent: ask_comparison
   examples: |
     - kalau budget ditambah [50jt](budget) dapet apa?

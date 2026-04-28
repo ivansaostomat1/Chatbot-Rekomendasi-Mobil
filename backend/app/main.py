@@ -21,6 +21,8 @@ from .feature_engineering.preference_weight_map import build_ui_state
 from .database import init_db, save_chat_history, get_recent_history, delete_chat_history
 from .explainer import generate_car_insights, compare_two_cars
 from contextlib import asynccontextmanager
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 # ======================================================
 # FASTAPI APP INITIALIZATION
@@ -38,6 +40,15 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    print(f"OMGGG VALIDATION ERROR: {exc.errors()}")
+    print(f"OMGGG REQUEST BODY: {exc.body}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors(), "body": exc.body},
+    )
 
 # ======================================================
 # STATIC FILES (RASA RESULTS)

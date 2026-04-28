@@ -147,6 +147,10 @@ def vikor_rank(df, weight_dict=None, v=0.5):
     result["VIKOR_R"] = R
     result["VIKOR_Q"] = Q
 
+    # Save weighted distances for explainer insights
+    for i, c in enumerate(features):
+        result[f"W_DIST_{c}"] = weights[i] * D[:, i]
+
     result = result.sort_values("VIKOR_Q")
 
     return result

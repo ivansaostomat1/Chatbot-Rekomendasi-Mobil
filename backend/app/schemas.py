@@ -113,13 +113,13 @@ class ChatRequest(BaseModel):
     negated_terms: List[str] = Field(default_factory=list)
     raw_budgets: List[str] = Field(default_factory=list)
 
-    min_budget: Optional[int] = None
-    max_budget: Optional[int] = None
-    previous_max_budget: Optional[int] = None
+    min_budget: Optional[float] = None
+    max_budget: Optional[float] = None
+    previous_max_budget: Optional[float] = None
 
     top_n: int = Field(default=5, ge=1, le=20)
 
-    min_seat: Optional[int] = None
+    min_seat: Optional[float] = None
     min_ground_clearance: Optional[float] = None
     must_have_sunroof: Optional[bool] = False
     must_have_wireless_tech: Optional[bool] = False

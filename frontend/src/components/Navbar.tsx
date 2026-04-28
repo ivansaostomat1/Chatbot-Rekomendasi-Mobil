@@ -787,6 +787,25 @@ function ClusteringSection({ clusterData, clusterDetail }: { clusterData: Cluste
           ))}
         </div>
       </div>
+
+      {/* Dendrogram Visualization */}
+      {clusterDetail.dendrogram_url && (
+        <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
+          <div style={{ background: 'var(--bg-secondary)', padding: '12px 16px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>🌳</span> Hierarchical Dendrogram (Ward Linkage)
+          </div>
+          <div style={{ padding: '16px', background: 'var(--bg-card)', display: 'flex', justifyContent: 'center' }}>
+            <img 
+              src={`http://localhost:8000${clusterDetail.dendrogram_url}`} 
+              alt="HAC Dendrogram" 
+              style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', border: '1px solid var(--border-color)' }}
+            />
+          </div>
+          <div style={{ padding: '10px 16px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+            Dendrogram dipotong (truncated) pada 30 node terakhir untuk mempermudah pembacaan pemisahan klaster utama.
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -44,6 +44,9 @@ responses:
 entities:
   - budget
   - min_seat
+  - transmission:
+      roles:
+        - negated
   - body_type:
       roles:
         - negated
@@ -109,6 +112,13 @@ slots:
       - type: from_entity
         entity: powertrain
 
+  transmission:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: transmission
+        
   feature:
     type: list
     influence_conversation: false

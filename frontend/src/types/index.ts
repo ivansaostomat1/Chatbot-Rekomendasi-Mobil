@@ -239,6 +239,7 @@ export interface ClusterDetailData {
   };
   semantic_validation: Record<string, ClusterProfile>;
   features_used: string[];
+  dendrogram_url?: string;
 }
 
 // ── NLP Baseline + Gap Analysis ──

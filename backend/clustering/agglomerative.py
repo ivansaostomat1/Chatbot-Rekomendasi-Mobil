@@ -7,6 +7,12 @@ from sklearn.cluster import AgglomerativeClustering
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import dendrogram, linkage
+import os
+
 
 # ======================================================
 # FEATURES UNTUK CLUSTERING (STRUKTURAL & ARSITEKTURAL)
@@ -37,6 +43,35 @@ def build_feature_matrix(df):
     X_scaled = scaler.fit_transform(X)
 
     return X_scaled, features
+
+
+# ======================================================
+# DENDROGRAM GENERATOR
+# ======================================================
+
+def generate_dendrogram(X, output_path):
+    """
+    Generate and save HAC dendrogram visualization.
+    Uses ward linkage. Truncates to last 30 merged clusters to keep it readable.
+    """
+    plt.figure(figsize=(10, 6))
+    plt.title("Hierarchical Clustering Dendrogram (Ward)")
+    plt.xlabel("Cluster Size / Car Index")
+    plt.ylabel("Distance (Ward)")
+    
+    Z = linkage(X, method='ward')
+    dendrogram(
+        Z,
+        truncate_mode='lastp',
+        p=30,  # show only the last 30 merged clusters
+        show_leaf_counts=True,
+        leaf_rotation=90.,
+        leaf_font_size=10.,
+        show_contracted=True,
+    )
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150)
+    plt.close()
 
 
 # ======================================================

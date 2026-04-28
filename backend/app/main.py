@@ -857,6 +857,16 @@ def eval_clustering_detail():
         else:
             interpretation = "Lemah --- cluster kurang terpisah."
 
+        from clustering.agglomerative import generate_dendrogram
+        import os
+        
+        results_dir = os.path.join(os.path.dirname(__file__), "..", "rasa", "results")
+        if not os.path.exists(results_dir):
+            os.makedirs(results_dir)
+        dendro_path = os.path.join(results_dir, "hac_dendrogram.png")
+        
+        generate_dendrogram(X, dendro_path)
+
         return {
             "stability": {
                 "silhouette_per_k": stability,
@@ -867,6 +877,7 @@ def eval_clustering_detail():
             },
             "semantic_validation": cluster_profiles,
             "features_used": features_used,
+            "dendrogram_url": "/rasa-results/hac_dendrogram.png"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

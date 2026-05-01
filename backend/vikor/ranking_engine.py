@@ -21,7 +21,7 @@ if backend_dir not in sys.path:
 
 from app.data_loader import load_all_datasets
 from app.feature_engineering.pipeline import generate_feature_dataset
-from clustering.agglomerative import perform_clustering
+from ahp.ahp_engine import get_ahp_weights
 
 from app.query_guard import apply_query_guard
 from app.feature_inspector import generate_feature_summary
@@ -50,8 +50,6 @@ def init_dataset():
     mobil, wholesales, retail = load_all_datasets()
 
     df = generate_feature_dataset(mobil, wholesales, retail)
-
-    df = perform_clustering(df)
 
     if df.empty:
         raise ValueError("Dataset kosong setelah preprocessing")
@@ -134,7 +132,7 @@ def apply_hard_filters(df, req_kwargs: dict):
 
 def recommend_cars(
     weight_dict=None,
-    cluster_name=None,
+    ahp_profile=None,
     max_budget=None,
     min_budget=None,
     top_n=5,
@@ -144,6 +142,7 @@ def recommend_cars(
     feature_constraints=None,
     brand=None,
     negated_terms=None,
+    ahp_weights=None,
     **kwargs
 ):
 
@@ -268,27 +267,16 @@ def recommend_cars(
         return {"recommendations": [], "constraint_report": constraint_report}
 
     # ==================================================
-    # CLUSTER SOFT CONSTRAINT (BOOSTING)
+    # AHP WEIGHT INTEGRATION
     # ==================================================
 
-    filtered_df["INDEX_CLUSTER_MATCH"] = 0.0
-
-    if cluster_name:
-        if isinstance(cluster_name, list):
-            # Jika multi-cluster: score 1 jika cocok dengan SALAH SATU cluster target
-            filtered_df["CLUSTER_SCORE"] = filtered_df["CLUSTER_NAME"].isin(cluster_name).astype(int)
-            log_name = ", ".join(cluster_name)
-        else:
-            filtered_df["CLUSTER_SCORE"] = (filtered_df["CLUSTER_NAME"] == cluster_name).astype(int)
-            log_name = cluster_name
-
-        filtered_df["INDEX_CLUSTER_MATCH"] = filtered_df["CLUSTER_SCORE"] * 0.2
-
-        # Tambahkan bobot prioritas ke cluster filter agar VIKOR mempertimbangkannya
-        if "INDEX_CLUSTER_MATCH" not in weight_dict:
-            weight_dict["INDEX_CLUSTER_MATCH"] = 1.0  # Bobot agar ranking naik
-
-        print(f"[VIKOR RANKING ENGINE] Soft Constraint Cluster '{log_name}' diterapkan (boost).")
+    if ahp_weights and not weight_dict:
+        # Jika AHP weights tersedia dan user belum set manual weights,
+        # gunakan bobot AHP yang sudah tervalidasi konsistensinya (CR < 0.1)
+        weight_dict = ahp_weights
+        print(f"[VIKOR RANKING ENGINE] Menggunakan bobot AHP (Profil: {ahp_profile or 'Dynamic'})")
+    elif not weight_dict:
+        weight_dict = {}
 
     # ==================================================
     # VIKOR RANKING
@@ -331,7 +319,7 @@ def recommend_cars(
         "MODEL",
         "VARIAN",
         "HARGAOTR",
-        "CLUSTER_NAME",
+        "AHP_PROFILE",
         "VIKOR_S",
         "VIKOR_R",
         "VIKOR_Q",
@@ -353,7 +341,7 @@ def recommend_cars(
         "INDEX_LIFECYCLE_SAFE",
         "INDEX_BRAND_STRENGTH",
         "INDEX_PRICE",
-        "INDEX_CLUSTER_MATCH",
+
         "DRIVE_SYS",
         "POWERTRAIN",
         "BODY_TYPE",

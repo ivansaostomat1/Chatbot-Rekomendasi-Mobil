@@ -18,7 +18,7 @@ from .preference_builder import (
     UI_TO_INDEX_MAP
 )
 from .feature_engineering.preference_weight_map import build_ui_state
-from .database import init_db, save_chat_history, get_recent_history, delete_chat_history
+from .database import init_db, save_chat_history, get_recent_history, delete_chat_history, delete_all_chat_history
 from .explainer import generate_car_insights, compare_two_cars
 from contextlib import asynccontextmanager
 from fastapi.exceptions import RequestValidationError
@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Car Recommendation API",
-    description="API sistem rekomendasi mobil menggunakan Clustering + VIKOR",
+    description="API sistem rekomendasi mobil menggunakan AHP + VIKOR",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -145,7 +145,7 @@ def chat(request: ChatRequest):
     print(f"[FASTAPI] Data Request: {request.dict()}")
 
     try:
-        from app.feature_ontology import NEED_CLUSTER_MAP, NEED_HARD_FILTER_MAP
+        from app.feature_ontology import NEED_PROFILE_MAP, NEED_HARD_FILTER_MAP
         from app.query_guard import parse_budget_strings
 
         print("[FASTAPI] Membangun parameter rekomendasi...")
@@ -154,8 +154,8 @@ def chat(request: ChatRequest):
             weight_input=request.weight_input,
             entities=request.entities,
         )
-        cluster_inferred = params.get("cluster_name")
-        print(f"[FASTAPI] [CLUSTER] Cluster dari preference_terms {request.preference_terms}: '{cluster_inferred or 'Global (Tidak Terdeteksi)'}' ")
+        ahp_profile_inferred = params.get("ahp_profile")
+        print(f"[FASTAPI] [AHP] Profil dari preference_terms {request.preference_terms}: '{ahp_profile_inferred or 'Global (Tidak Terdeteksi)'}' ")
         # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
         # SINGLE SOURCE OF TRUTH: user manual_weights --- VIKOR
         # NLP weight_input hanya dipakai kalau user tidak atur manual
@@ -163,7 +163,7 @@ def chat(request: ChatRequest):
         # BRIDGE: Map Internal Keys -> UI Keys (INDEX_...)
         # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
         from .preference_builder import UI_TO_INDEX_MAP
-        from .feature_ontology import CLUSTER_UI_NAMES
+        from .feature_ontology import PROFILE_UI_NAMES
         if request.manual_weights:
             # Map frontend short keys to internal INDEX_ keys 
             from .feature_ontology import UI_TO_INDEX_MAP
@@ -191,10 +191,10 @@ def chat(request: ChatRequest):
         })
 
         # ======================================================
-        # PROSES NEED_TERMS --- CLUSTER + HARD FILTERS
-        # need_terms yang punya cluster jelas (keluarga, offroad, dll.)
-        # di-map ke cluster_name dan hard filter yang tepat.
-        # Ini mengoverride cluster yang mungkin sudah ditemukan dari preference_terms.
+        # PROSES NEED_TERMS --- PROFILE + HARD FILTERS
+        # need_terms yang punya profil jelas (keluarga, offroad, dll.)
+        # di-map ke ahp_profile dan hard filter yang tepat.
+        # Ini mengoverride profil yang mungkin sudah ditemukan dari preference_terms.
         # ======================================================
 
         need_terms = request.need_terms or []
@@ -203,10 +203,10 @@ def chat(request: ChatRequest):
         for need in need_terms:
             need_lower = need.lower().strip()
 
-            # Map need --- cluster (override preference-based cluster)
-            if need_lower in NEED_CLUSTER_MAP:
-                params["cluster_name"] = NEED_CLUSTER_MAP[need_lower]
-                print(f"[FASTAPI] Cluster dari need '{need_lower}': {params['cluster_name']}")
+            # Map need --- profile (override preference-based profile)
+            if need_lower in NEED_PROFILE_MAP:
+                params["ahp_profile"] = NEED_PROFILE_MAP[need_lower]
+                print(f"[FASTAPI] Profil AHP dari need '{need_lower}': {params['ahp_profile']}")
 
             # Map need --- hard filters (kemudian merge, prioritaskan yang lebih besar)
             if need_lower in NEED_HARD_FILTER_MAP:
@@ -275,22 +275,23 @@ def chat(request: ChatRequest):
         
         # Simpan History secara Sinkron
         try:
-            # Pastikan cluster_name adalah string (bukan list) agar SQLite tidak error
-            db_cluster_name = params.get("cluster_name", "Global")
-            if isinstance(db_cluster_name, list):
-                db_cluster_name = ", ".join(db_cluster_name)
+            # Pastikan ahp_profile adalah string (bukan list) agar SQLite tidak error
+            db_ahp_profile = params.get("ahp_profile", "Global")
+            if isinstance(db_ahp_profile, list):
+                db_ahp_profile = ", ".join(db_ahp_profile)
 
             save_chat_history(
                 user_message=request.user_message or "",
                 nlp_preferences=request.preference_terms,
                 nlp_needs=request.need_terms,
                 nlp_entities=request.entities,
-                cluster_name=db_cluster_name,
+                cluster_name=db_ahp_profile,
                 hard_filters_applied=params, 
                 cars_total=FEATURE_SUMMARY.get("total_cars", 0) if FEATURE_SUMMARY else 612,
                 cars_after_constraint=constraint_report.get("budget", {}).get("remaining_cars", 0),
                 top_recommendations=[car.dict() for car in recommendations],
-                weight_dict_used=params.get("weight_dict")
+                weight_dict_used=params.get("weight_dict"),
+                session_id=request.session_id
             )
             print("[FASTAPI] [SUCCESS] Berhasil menyimpan History Evaluasi ke DB.")
         except Exception as e:
@@ -343,52 +344,72 @@ def delete_history(history_id: int):
             detail=f"Gagal menghapus history: {str(e)}"
         )
 
+@app.delete("/history")
+def delete_all_history():
+    """Menghapus seluruh record history."""
+    try:
+        delete_all_chat_history()
+        return {"status": "success", "message": "Seluruh history dihapus."}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Gagal menghapus seluruh history: {str(e)}"
+        )
+
 
 # ======================================================
 # EVALUATION ENDPOINTS
 # ======================================================
 
-@app.get("/evaluasi/clustering")
-def eval_clustering():
-    """Return clustering evaluation metrics."""
+@app.get("/evaluasi/ahp")
+def eval_ahp():
+    """Return AHP evaluation metrics for all predefined profiles."""
     try:
-        from vikor.ranking_engine import DF_CARS
-        from clustering.agglomerative import build_feature_matrix, CLUSTER_FEATURES
-        from sklearn.metrics import silhouette_score
+        from app.feature_ontology import AHP_PROFILES, PROFILE_UI_NAMES
+        from ahp.ahp_engine import evaluate_all_profiles
 
-        df = DF_CARS.copy()
-        X, features_used = build_feature_matrix(df)
+        results = evaluate_all_profiles(AHP_PROFILES)
 
-        labels = df["CLUSTER_ID"].values
-        score = float(silhouette_score(X, labels))
+        # Format response
+        profile_results = {}
+        all_consistent = True
 
-        cluster_counts = df["CLUSTER_NAME"].value_counts().to_dict()
-        total = len(df)
+        for profile_name, result in results.items():
+            is_consistent = result["is_consistent"]
+            if not is_consistent:
+                all_consistent = False
 
-        CLUSTER_COLORS = {
-            "City Car": "#00BB77",
-            "Family Car": "#00A693",
-            "Offroad": "#1E6FD9",
-            "Performance": "#F59E0B",
-            "Luxury": "#8B5CF6",
-        }
+            # Sort weights descending for readability
+            sorted_weights = sorted(
+                result["ahp_weights"].items(),
+                key=lambda x: x[1],
+                reverse=True
+            )
 
-        distribution = [
-            {
-                "name": name,
-                "count": count,
-                "percentage": round(count / total * 100, 1),
-                "color": CLUSTER_COLORS.get(name, "#00A693")
+            profile_results[profile_name] = {
+                "display_name": PROFILE_UI_NAMES.get(profile_name, profile_name),
+                "consistency_ratio": result["consistency_ratio"],
+                "is_consistent": is_consistent,
+                "cr_interpretation": "Konsisten (CR < 0.10)" if is_consistent else "Tidak Konsisten (CR >= 0.10)",
+                "weights": dict(sorted_weights),
+                "top_3_criteria": [
+                    {"name": k.replace("INDEX_", ""), "weight": round(v, 4)}
+                    for k, v in sorted_weights[:3]
+                ],
+                "pairwise_matrix_size": f"{len(result['pairwise_matrix'])}x{len(result['pairwise_matrix'])}",
             }
-            for name, count in cluster_counts.items()
-        ]
 
         return {
-            "silhouette_score": score,
-            "n_clusters": int(df["CLUSTER_ID"].nunique()),
-            "total_cars": total,
-            "cluster_distribution": distribution,
-            "features_used": features_used
+            "method": "Analytic Hierarchy Process (AHP) - Saaty 1980",
+            "total_profiles": len(profile_results),
+            "all_consistent": all_consistent,
+            "consistency_threshold": 0.1,
+            "profiles": profile_results,
+            "formula": {
+                "weight_calculation": "Geometric Mean Method (GMM)",
+                "CR": "CR = CI / RI, where CI = (λmax - n) / (n - 1)",
+                "interpretation": "CR < 0.1 → Matriks perbandingan berpasangan konsisten secara logis."
+            }
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -434,8 +455,8 @@ def eval_nlp_mapping():
     try:
         from .feature_ontology import (
             PREFERENCE_INDEX_MAP,
-            PREFERENCE_CLUSTER_MAP,
-            NEED_CLUSTER_MAP
+            PREFERENCE_PROFILE_MAP,
+            NEED_PROFILE_MAP
         )
 
         # --- Test dataset for mapping accuracy ---
@@ -488,9 +509,9 @@ def eval_nlp_mapping():
             if t == "preference_index":
                 actual = PREFERENCE_INDEX_MAP.get(inp, None)
             elif t == "preference_cluster":
-                actual = PREFERENCE_CLUSTER_MAP.get(inp, None)
+                actual = PREFERENCE_PROFILE_MAP.get(inp, None)
             elif t == "need_cluster":
-                actual = NEED_CLUSTER_MAP.get(inp, None)
+                actual = NEED_PROFILE_MAP.get(inp, None)
             else:
                 actual = None
 
@@ -543,8 +564,8 @@ def eval_nlp_mapping():
             },
             "mapping_tables": {
                 "preference_index_count": len(PREFERENCE_INDEX_MAP),
-                "preference_cluster_count": len(PREFERENCE_CLUSTER_MAP),
-                "need_cluster_count": len(NEED_CLUSTER_MAP),
+                "preference_profile_count": len(PREFERENCE_PROFILE_MAP),
+                "need_profile_count": len(NEED_PROFILE_MAP),
             }
         }
     except Exception as e:
@@ -779,7 +800,7 @@ def eval_vikor_sensitivity():
                         "VIKOR_Q": round(r.get("VIKOR_Q", 0), 4),
                         "VIKOR_S": round(r.get("VIKOR_S", 0), 4),
                         "VIKOR_R": round(r.get("VIKOR_R", 0), 4),
-                        "cluster": r.get("CLUSTER_NAME", ""),
+                        "ahp_profile": r.get("AHP_PROFILE", ""),
                         "INDEX_EFFICIENCY": round(r.get("INDEX_EFFICIENCY", 0), 3),
                         "INDEX_PERFORMANCE": round(r.get("INDEX_PERFORMANCE", 0), 3),
                     }
@@ -809,86 +830,67 @@ def eval_vikor_sensitivity():
 
 
 # ======================================================
-# CLUSTERING DETAILED EVALUATION (STABILITY + SEMANTIC)
+# AHP DETAILED EVALUATION (PAIRWISE + WEIGHT ANALYSIS)
 # ======================================================
 
-@app.get("/evaluasi/clustering/detail")
-def eval_clustering_detail():
+@app.get("/evaluasi/ahp/detail")
+def eval_ahp_detail():
     """
-    Detailed clustering evaluation:
-    1. Stability: silhouette for k=3..7
-    2. Semantic: avg INDEX values per cluster (proves cluster meaning)
+    Detailed AHP evaluation:
+    1. Pairwise comparison matrices per profile
+    2. Weight distribution analysis
+    3. Consistency validation for all profiles
     """
     try:
-        from vikor.ranking_engine import DF_CARS
-        from clustering.agglomerative import build_feature_matrix, CLUSTER_FEATURES
-        from sklearn.cluster import AgglomerativeClustering
-        from sklearn.metrics import silhouette_score
-        import numpy as np
+        from app.feature_ontology import AHP_PROFILES, PROFILE_UI_NAMES
+        from ahp.ahp_engine import evaluate_all_profiles, AHP_CRITERIA
 
-        df = DF_CARS.copy()
-        X, features_used = build_feature_matrix(df)
+        results = evaluate_all_profiles(AHP_PROFILES)
 
-        # 1. Stability: silhouette per k
-        stability = []
-        for k in range(3, 8):
-            try:
-                model = AgglomerativeClustering(n_clusters=k, linkage="ward")
-                labels = model.fit_predict(X)
-                score = float(silhouette_score(X, labels))
-                stability.append({"k": k, "silhouette": round(score, 4)})
-            except Exception:
-                stability.append({"k": k, "silhouette": None})
+        profile_details = {}
+        for profile_name, result in results.items():
+            weights = result["ahp_weights"]
+            sorted_w = sorted(weights.items(), key=lambda x: x[1], reverse=True)
 
-        best_k = max(stability, key=lambda x: x["silhouette"] or 0)
+            # Weight distribution analysis
+            top_weight = sorted_w[0][1] if sorted_w else 0
+            bottom_weight = sorted_w[-1][1] if sorted_w else 0
+            spread = top_weight - bottom_weight
 
-        # 2. Semantic: avg feature per cluster
-        features = [c for c in CLUSTER_FEATURES if c in df.columns]
-        cluster_profiles = {}
-        for cname in df["CLUSTER_NAME"].unique():
-            sub = df[df["CLUSTER_NAME"] == cname]
-            profile = {}
-            for f in features:
-                profile[f] = round(float(sub[f].mean()), 4)
-            # Find top-3 strongest features
-            sorted_feats = sorted(profile.items(), key=lambda x: x[1], reverse=True)
-            cluster_profiles[cname] = {
-                "count": int(len(sub)),
-                "avg_features": profile,
-                "top_features": [{"name": f, "value": v} for f, v in sorted_feats[:3]],
-                "character_summary": " + ".join([f.replace("INDEX_", "") for f, _ in sorted_feats[:3]])
+            profile_details[profile_name] = {
+                "display_name": PROFILE_UI_NAMES.get(profile_name, profile_name),
+                "consistency_ratio": float(result["consistency_ratio"]),
+                "is_consistent": bool(result["is_consistent"]),
+                "weights": dict(sorted_w),
+                "top_criteria": [
+                    {"name": k.replace("INDEX_", ""), "weight": round(v, 4)}
+                    for k, v in sorted_w[:3]
+                ],
+                "bottom_criteria": [
+                    {"name": k.replace("INDEX_", ""), "weight": round(v, 4)}
+                    for k, v in sorted_w[-3:]
+                ],
+                "weight_spread": round(spread, 4),
+                "pairwise_matrix": result["pairwise_matrix"],
+                "criteria_labels": [c.replace("INDEX_", "") for c in AHP_CRITERIA],
             }
 
-        # Silhouette interpretation
-        current_silhouette = float(silhouette_score(X, df["CLUSTER_ID"].values))
-        if current_silhouette > 0.5:
-            interpretation = "Bagus --- cluster terbentuk jelas & terpisah."
-        elif current_silhouette > 0.2:
-            interpretation = "Cukup --- struktur cluster moderat."
-        else:
-            interpretation = "Lemah --- cluster kurang terpisah."
-
-        from clustering.agglomerative import generate_dendrogram
-        import os
-        
-        results_dir = os.path.join(os.path.dirname(__file__), "..", "rasa", "results")
-        if not os.path.exists(results_dir):
-            os.makedirs(results_dir)
-        dendro_path = os.path.join(results_dir, "hac_dendrogram.png")
-        
-        generate_dendrogram(X, dendro_path)
+        # Summary statistics
+        cr_values = [r["consistency_ratio"] for r in results.values()]
+        avg_cr = sum(cr_values) / len(cr_values) if cr_values else 0
 
         return {
-            "stability": {
-                "silhouette_per_k": stability,
-                "best_k": best_k,
-                "current_k": 5,
-                "current_silhouette": round(current_silhouette, 4),
-                "interpretation": interpretation,
+            "method": "Analytic Hierarchy Process (AHP)",
+            "reference": "Saaty, T.L. (1980). The Analytic Hierarchy Process. McGraw-Hill.",
+            "summary": {
+                "total_profiles": len(profile_details),
+                "avg_consistency_ratio": round(avg_cr, 4),
+                "all_consistent": all(r["is_consistent"] for r in results.values()),
+                "criteria_count": len(AHP_CRITERIA),
             },
-            "semantic_validation": cluster_profiles,
-            "features_used": features_used,
-            "dendrogram_url": "/rasa-results/hac_dendrogram.png"
+            "profiles": profile_details,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+

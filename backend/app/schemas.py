@@ -15,7 +15,7 @@ class CarRecommendation(BaseModel):
     VARIAN: str
 
     HARGAOTR: Optional[int]
-    CLUSTER_NAME: Optional[str]
+    AHP_PROFILE: Optional[str]
 
     VIKOR_Q: Optional[float] = None
     VIKOR_S: Optional[float] = None
@@ -102,6 +102,7 @@ class RecommendationResponse(BaseModel):
 class ChatRequest(BaseModel):
 
     user_message: Optional[str] = None
+    session_id: Optional[str] = None
 
     preference_terms: List[str] = Field(default_factory=list)
 
@@ -135,7 +136,7 @@ class RecommendationRequest(BaseModel):
 
     weight_dict: Optional[Dict[str, float]] = Field(default_factory=dict)
     brand: Optional[str] = None
-    cluster_name: Optional[str] = None
+    ahp_profile: Optional[str] = None
 
     max_budget: Optional[int] = None
     min_budget: Optional[int] = None
@@ -169,8 +170,8 @@ class HistoryItemResponse(BaseModel):
     nlp_needs: List[str]
     nlp_entities: List[str]
     
-    # Clustering
-    cluster_name: Optional[str]
+    # AHP Profile
+    ahp_profile: Optional[str]
     hard_filters_applied: Dict[str, Any]  # misal {"min_seat": 6}
     
     # Weights

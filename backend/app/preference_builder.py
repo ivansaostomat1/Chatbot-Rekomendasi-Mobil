@@ -9,13 +9,13 @@ from app.feature_ontology import (
     FEATURE_CONSTRAINT_MAP,
     HARD_FILTER_MAP,
     BRAND_MAP,
-    PREFERENCE_CLUSTER_MAP,
-    CLUSTER_PROFILES,
+    PREFERENCE_PROFILE_MAP,
+    AHP_PROFILES,
     GLOBAL_DEFAULT_PROFILE
 )
 from .feature_engineering.preference_weight_map import (
     resolve_preference_weights,
-    detect_cluster_from_weights
+    detect_profile_from_weights
 )
 
 
@@ -114,9 +114,9 @@ def extract_drive_sys(entities):
 # BUILD CLUSTER
 # ======================================================
 
-def extract_cluster(all_terms: List[str]) -> List[str]:
+def extract_profile(all_terms: List[str]) -> List[str]:
     """
-    Scientific clustering based on aggregated weights from ALL terms 
+    Scientific profile detection based on aggregated weights from ALL terms 
     (preferences AND hard constraints like 'keluarga besar').
     """
     if not all_terms:
@@ -125,10 +125,10 @@ def extract_cluster(all_terms: List[str]) -> List[str]:
     # Agregasi bobot dari semua terms (termasuk hard constraints)
     weights = resolve_preference_weights(all_terms)
     
-    # Deteksi cluster list dari profile bobot hasil agregasi
-    clusters = detect_cluster_from_weights(weights, preference_terms=all_terms)
+    # Deteksi profile list dari profile bobot hasil agregasi
+    profiles = detect_profile_from_weights(weights, preference_terms=all_terms)
     
-    return clusters
+    return profiles
 
 def get_initial_ui_profile(preference_terms, need_terms=[], entities=[]):
     """
@@ -138,11 +138,11 @@ def get_initial_ui_profile(preference_terms, need_terms=[], entities=[]):
     # Merge all terms for maximum context coverage
     all_terms = list(set(preference_terms + need_terms + entities))
     
-    clusters = extract_cluster(all_terms)
-    primary_cluster = clusters[0]
+    profiles = extract_profile(all_terms)
+    primary_profile = profiles[0]
     
-    # Load base profile dari primary cluster (Internal keys)
-    base_raw = dict(CLUSTER_PROFILES.get(primary_cluster, GLOBAL_DEFAULT_PROFILE))
+    # Load base profile dari primary profile (Internal keys)
+    base_raw = dict(AHP_PROFILES.get(primary_profile, GLOBAL_DEFAULT_PROFILE))
     
     # Boost based on all detected terms related to preference indices (NLP_DEFAULT_BOOST = 8.0)
     for term in all_terms:
@@ -160,7 +160,7 @@ def get_initial_ui_profile(preference_terms, need_terms=[], entities=[]):
         ui_key = UI_TO_INDEX_MAP.get(short_key, short_key)
         base_profile[ui_key] = val
                 
-    return primary_cluster, base_profile
+    return primary_profile, base_profile
 
 # ======================================================
 # BUILD FEATURE CONSTRAINTS
@@ -242,9 +242,9 @@ def build_recommendation_params(
         weight_input
     )
 
-    # Broaden cluster detection using ALL context
+    # Broaden profile detection using ALL context
     all_context = list(set(preference_terms + entities))
-    params["cluster_name"] = extract_cluster(all_context)
+    params["ahp_profile"] = extract_profile(all_context)
 
     params["body_type"] = extract_body_type(entities)
 

@@ -36,7 +36,7 @@ import numpy as np
 from numpy.linalg import norm
 from typing import Dict, List
 from .semantic_mapper import get_mapper
-from ..feature_ontology import GLOBAL_DEFAULT_PROFILE, CLUSTER_PROFILES, PREFERENCE_CLUSTER_MAP
+from ..feature_ontology import GLOBAL_DEFAULT_PROFILE, AHP_PROFILES, PREFERENCE_PROFILE_MAP
 
 # ======================================================
 # KAMUS UTAMA: PREFERENSI --- BOBOT MULTI-KRITERIA
@@ -626,30 +626,30 @@ def resolve_preference_weights(
     return final_weights
 
 # ======================================================
-# CLUSTER DETECTION - COSINE SIMILARITY + HARD OVERRIDE
+# PROFILE DETECTION - COSINE SIMILARITY + HARD OVERRIDE
 # ======================================================
-def detect_cluster_from_weights(weights: Dict[str, float], preference_terms: List[str] = None) -> List[str]:
+def detect_profile_from_weights(weights: Dict[str, float], preference_terms: List[str] = None) -> List[str]:
     """
-    Mendeteksi cluster berdasarkan kemiripan kosinus, namun DIOVERRIDE 
-    oleh pemetaan eksplisit dari PREFERENCE_CLUSTER_MAP jika kata kunci cocok.
+    Mendeteksi profil AHP berdasarkan kemiripan kosinus, namun DIOVERRIDE 
+    oleh pemetaan eksplisit dari PREFERENCE_PROFILE_MAP jika kata kunci cocok.
     """
     # 1. HARD OVERRIDE CHECK
     if preference_terms:
         for term in preference_terms:
             t_clean = term.strip().lower()
-            if t_clean in PREFERENCE_CLUSTER_MAP:
-                matched_cluster = PREFERENCE_CLUSTER_MAP[t_clean]
-                print(f"[CLUSTER] [HARD OVERRIDE] Kata kunci '{t_clean}' langsung di-map ke '{matched_cluster}'.")
-                return [matched_cluster]
+            if t_clean in PREFERENCE_PROFILE_MAP:
+                matched_profile = PREFERENCE_PROFILE_MAP[t_clean]
+                print(f"[AHP PROFILE] [HARD OVERRIDE] Kata kunci '{t_clean}' langsung di-map ke '{matched_profile}'.")
+                return [matched_profile]
 
     # 2. COSINE SIMILARITY CHECK (FALLBACK)
     user_vector = np.array([weights.get(c, 5.0) for c in ALL_CRITERIA])
 
-    best_cluster = None
+    best_profile = None
     best_similarity = -1.0
     SIMILARITY_THRESHOLD = 0.5
 
-    for cluster_name, profile in CLUSTER_PROFILES.items():
+    for profile_name, profile in AHP_PROFILES.items():
         centroid = np.array([profile.get(c, 5.0) for c in ALL_CRITERIA])
 
         dot = np.dot(user_vector, centroid)
@@ -661,18 +661,18 @@ def detect_cluster_from_weights(weights: Dict[str, float], preference_terms: Lis
         else:
             similarity = dot / (norm_user * norm_centroid)
 
-        print(f"[CLUSTER] Cosine similarity dengan '{cluster_name}': {similarity:.3f}")
+        print(f"[AHP PROFILE] Cosine similarity dengan '{profile_name}': {similarity:.3f}")
 
         if similarity > best_similarity:
             best_similarity = similarity
-            best_cluster = cluster_name
+            best_profile = profile_name
 
     if best_similarity < SIMILARITY_THRESHOLD:
-        print(f"[CLUSTER] Similarity tertinggi ({best_similarity:.3f}) < threshold ({SIMILARITY_THRESHOLD}). Kembali ke 'Global'.")
+        print(f"[AHP PROFILE] Similarity tertinggi ({best_similarity:.3f}) < threshold ({SIMILARITY_THRESHOLD}). Kembali ke 'Global'.")
         return ["Global"]
     else:
-        print(f"[CLUSTER] Cluster terpilih: '{best_cluster}' (similarity={best_similarity:.3f})")
-        return [best_cluster]
+        print(f"[AHP PROFILE] Profil terpilih: '{best_profile}' (similarity={best_similarity:.3f})")
+        return [best_profile]
 
 # ======================================================
 # ENTRY POINT: build_ui_state
@@ -687,29 +687,29 @@ def build_ui_state(
     entity_terms = entity_terms or []
 
     weights = resolve_preference_weights(preference_terms, entity_terms)
-    clusters = detect_cluster_from_weights(weights, preference_terms=preference_terms)
-    primary_cluster = clusters[0]
+    profiles = detect_profile_from_weights(weights, preference_terms=preference_terms)
+    primary_profile = profiles[0]
 
-    cluster_profile = dict(CLUSTER_PROFILES.get(primary_cluster, GLOBAL_DEFAULT_PROFILE))
+    profile_weights = dict(AHP_PROFILES.get(primary_profile, GLOBAL_DEFAULT_PROFILE))
 
     final_profile = {}
     for c in ALL_CRITERIA:
         nlp_val = weights.get(c, 5.0)
-        cluster_val = cluster_profile.get(c, 5.0)
-        final_profile[c] = max(nlp_val, cluster_val)
+        profile_val = profile_weights.get(c, 5.0)
+        final_profile[c] = max(nlp_val, profile_val)
 
-    from ..feature_ontology import UI_TO_INDEX_MAP, CLUSTER_UI_NAMES
+    from ..feature_ontology import UI_TO_INDEX_MAP, PROFILE_UI_NAMES
 
     ui_profile = {}
     for short_key, val in final_profile.items():
         ui_key = UI_TO_INDEX_MAP.get(short_key, short_key)
         ui_profile[ui_key] = val
 
-    display_name = CLUSTER_UI_NAMES.get(primary_cluster, primary_cluster)
+    display_name = PROFILE_UI_NAMES.get(primary_profile, primary_profile)
 
     return {
-        "cluster_name": primary_cluster,
-        "cluster_display_name": display_name,
-        "all_clusters": clusters,
+        "profile_name": primary_profile,
+        "profile_display_name": display_name,
+        "all_profiles": profiles,
         "base_weight_profile": ui_profile,
     }

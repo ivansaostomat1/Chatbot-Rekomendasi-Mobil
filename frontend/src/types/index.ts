@@ -5,7 +5,7 @@ export interface CarRecommendation {
   MODEL: string;
   VARIAN: string;
   HARGAOTR?: number;
-  CLUSTER_NAME?: string;
+  AHP_PROFILE?: string;
   // VIKOR Core
   VIKOR_S?: number;
   VIKOR_R?: number;
@@ -30,7 +30,7 @@ export interface CarRecommendation {
   INDEX_LIFECYCLE_SAFE?: number;
   INDEX_BRAND_STRENGTH?: number;
   INDEX_PRICE?: number;
-  INDEX_CLUSTER_MATCH?: number;
+
 
   // --- Detail Spesifikasi ---
   BODY_TYPE?: string;
@@ -190,8 +190,8 @@ export interface NLPMappingData {
   };
   mapping_tables: {
     preference_index_count: number;
-    preference_cluster_count: number;
-    need_cluster_count: number;
+    preference_profile_count: number;
+    need_profile_count: number;
   };
 }
 
@@ -203,7 +203,7 @@ export interface SensitivityScenarioItem {
   VIKOR_Q: number;
   VIKOR_S: number;
   VIKOR_R: number;
-  cluster: string;
+  ahp_profile: string | null;
   INDEX_EFFICIENCY: number;
   INDEX_PERFORMANCE: number;
 }

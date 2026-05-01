@@ -224,10 +224,10 @@ BRAND_MAP = {
 
 
 # ======================================================
-# SCIENTIFIC PREFERENCE --- CLUSTER (For Context Guard)
+# SCIENTIFIC PREFERENCE --- PROFILE (For Context Guard)
 # ======================================================
 
-PREFERENCE_CLUSTER_MAP = {
+PREFERENCE_PROFILE_MAP = {
     "irit": "Urban Agility",
     "efisien": "Urban Agility",
     "bandel": "Urban Agility",
@@ -248,10 +248,10 @@ PREFERENCE_CLUSTER_MAP = {
 
 
 # ======================================================
-# CLUSTER --- WEIGHT PROFILES (Initial UI State)
+# PROFILE --- WEIGHT PROFILES (Initial UI State)
 # ======================================================
 
-CLUSTER_UI_NAMES = {
+PROFILE_UI_NAMES = {
     "Urban Agility": "Si Gesit Perkotaan",
     "Family Comfort": "Kenyamanan Keluarga",
     "Rugged Explorer": "Penjelajah Tangguh",
@@ -277,7 +277,7 @@ UI_TO_INDEX_MAP = {
     "price": "INDEX_PRICE",
 }
 
-CLUSTER_PROFILES = {
+AHP_PROFILES = {
     "Urban Agility": {
     "power": 5, "handling": 6, "efficiency": 10,   # handling diturunkan dari 8 → 6
     "driver_comfort": 8, "passenger_comfort": 5, "safety": 7,
@@ -324,10 +324,10 @@ GLOBAL_DEFAULT_PROFILE = {
 }
 
 # ======================================================
-# NEED --- CLUSTER & HARD FILTERS
+# NEED --- PROFILE & HARD FILTERS
 # ======================================================
 
-NEED_CLUSTER_MAP = {
+NEED_PROFILE_MAP = {
     "keluarga": "Family Comfort",
     "harian": "Urban Agility",
     "mewah": "High-End Performance",

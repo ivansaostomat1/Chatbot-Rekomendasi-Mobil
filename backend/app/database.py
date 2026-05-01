@@ -41,11 +41,17 @@ def init_db():
             top_recommendations TEXT
         )
     """)
-    # Auto-migrate: add weight_dict_used column if missing
+    # Auto-migrate: add weight_dict_used and session_id column if missing
     try:
         cursor.execute("SELECT weight_dict_used FROM chat_history LIMIT 1")
     except sqlite3.OperationalError:
         cursor.execute("ALTER TABLE chat_history ADD COLUMN weight_dict_used TEXT DEFAULT '{}'")
+        
+    try:
+        cursor.execute("SELECT session_id FROM chat_history LIMIT 1")
+    except sqlite3.OperationalError:
+        cursor.execute("ALTER TABLE chat_history ADD COLUMN session_id TEXT")
+        
     conn.commit()
     conn.close()
 
@@ -59,9 +65,10 @@ def save_chat_history(
     cars_total: int,
     cars_after_constraint: int,
     top_recommendations: List[Dict[str, Any]],
-    weight_dict_used: Dict[str, float] = None
+    weight_dict_used: Dict[str, float] = None,
+    session_id: str = None
 ):
-    """Menyimpan satu record evaluasi pencarian ke database."""
+    """Menyimpan satu record evaluasi pencarian ke database. Melakukan UPSERT jika session_id ada."""
     # Robust Stringification: SQLite tidak suka list/dict mentah di parameter binding
     # Gunakan NumpyEncoder untuk menangani tipe data np.float64
     nlp_preferences_json = json.dumps(nlp_preferences, cls=NumpyEncoder)
@@ -81,19 +88,49 @@ def save_chat_history(
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO chat_history (
+    
+    # Check if session_id exists
+    existing_id = None
+    if session_id:
+        cursor.execute("SELECT id FROM chat_history WHERE session_id = ?", (session_id,))
+        row = cursor.fetchone()
+        if row:
+            existing_id = row[0]
+
+    if existing_id:
+        # Update existing session
+        cursor.execute("""
+            UPDATE chat_history SET
+                user_message = ?, timestamp = ?,
+                nlp_preferences = ?, nlp_needs = ?, nlp_entities = ?,
+                cluster_name = ?, hard_filters_applied = ?, weight_dict_used = ?,
+                cars_total = ?, cars_after_constraint = ?, top_recommendations = ?
+            WHERE id = ?
+        """, (
             user_message, timestamp,
-            nlp_preferences, nlp_needs, nlp_entities,
-            cluster_name, hard_filters_applied, weight_dict_used,
-            cars_total, cars_after_constraint, top_recommendations
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        user_message, timestamp,
-        nlp_preferences_json, nlp_needs_json, nlp_entities_json,
-        cluster_name, hard_filters_json, weight_dict_json,
-        cars_total, cars_after_constraint, recommendations_json
-    ))
+            nlp_preferences_json, nlp_needs_json, nlp_entities_json,
+            cluster_name, hard_filters_json, weight_dict_json,
+            cars_total, cars_after_constraint, recommendations_json,
+            existing_id
+        ))
+    else:
+        # Insert new session
+        cursor.execute("""
+            INSERT INTO chat_history (
+                user_message, timestamp,
+                nlp_preferences, nlp_needs, nlp_entities,
+                cluster_name, hard_filters_applied, weight_dict_used,
+                cars_total, cars_after_constraint, top_recommendations,
+                session_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            user_message, timestamp,
+            nlp_preferences_json, nlp_needs_json, nlp_entities_json,
+            cluster_name, hard_filters_json, weight_dict_json,
+            cars_total, cars_after_constraint, recommendations_json,
+            session_id
+        ))
+        
     conn.commit()
     conn.close()
 
@@ -130,6 +167,8 @@ def get_recent_history(limit: int = 15) -> List[Dict[str, Any]]:
             if "POWERTRAIN" in car and car["POWERTRAIN"] is not None:
                 car["POWERTRAIN"] = str(car["POWERTRAIN"])
 
+        item["ahp_profile"] = item.pop("cluster_name", None)
+
         result.append(item)
     
     return result
@@ -139,5 +178,13 @@ def delete_chat_history(history_id: int):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM chat_history WHERE id=?", (history_id,))
+    conn.commit()
+    conn.close()
+
+def delete_all_chat_history():
+    """Menghapus seluruh record history."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM chat_history")
     conn.commit()
     conn.close()

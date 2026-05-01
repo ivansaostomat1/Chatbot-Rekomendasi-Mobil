@@ -24,6 +24,10 @@ backend/.rasa/
 backend/rasa/.rasa/
 backend/backup.rar
 backend/rasa.rar
+
+rasa TA/
+
+
 *.rar
 # Docs (draft internal)
 docs/PROPOSAL_EXAMPLE.md

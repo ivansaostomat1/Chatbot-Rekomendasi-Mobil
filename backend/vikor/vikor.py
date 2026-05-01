@@ -22,7 +22,6 @@ VIKOR_CRITERIA = [
     "INDEX_LIFECYCLE_SAFE",       # Ketersediaan spare parts & jaringan dealer (dari wholesale)
     "INDEX_BRAND_STRENGTH",       # Popularitas & permintaan pasar aktual (dari retail)
     "INDEX_PRICE",
-    "INDEX_CLUSTER_MATCH"         # <-- soft constraint boosting
 ]
 
 

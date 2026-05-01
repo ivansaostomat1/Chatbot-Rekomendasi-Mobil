@@ -3,7 +3,7 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { HiMoon, HiSun, HiXMark, HiTrash, HiArrowLeft, HiMicrophone, HiAdjustmentsHorizontal, HiChartBar, HiClipboardDocumentCheck, HiMagnifyingGlassCircle, HiBeaker } from 'react-icons/hi2';
+import { HiMoon, HiSun, HiXMark, HiTrash, HiOutlineTrash, HiArrowLeft, HiMicrophone, HiAdjustmentsHorizontal, HiChartBar, HiClipboardDocumentCheck, HiMagnifyingGlassCircle, HiBeaker } from 'react-icons/hi2';
 import Link from 'next/link';
 import Folder from './Folder';
 import styles from './Navbar.module.css';
@@ -17,19 +17,21 @@ import {
   NLPGap,
 } from '@/types';
 
-interface ClusterDist {
-  name: string;
-  count: number;
-  percentage: number;
-  color: string;
-}
-
-interface ClusterEval {
-  silhouette_score: number;
-  n_clusters: number;
-  total_cars: number;
-  cluster_distribution: ClusterDist[];
-  features_used: string[];
+interface AHPEval {
+  method: string;
+  summary: {
+    total_profiles: number;
+    avg_consistency_ratio: number;
+    all_consistent: boolean;
+    criteria_count: number;
+  };
+  profiles: Record<string, {
+    display_name: string;
+    consistency_ratio: number;
+    is_consistent: boolean;
+    weights: Record<string, number>;
+    top_criteria: Array<{ name: string; weight: number }>;
+  }>;
 }
 
 interface HistoryItem {
@@ -39,7 +41,7 @@ interface HistoryItem {
   nlp_preferences: string[];
   nlp_needs: string[];
   nlp_entities: string[];
-  cluster_name: string | null;
+  ahp_profile: string | null;
   hard_filters_applied: Record<string, string>;
   weight_dict_used: Record<string, number>;
   cars_total: number;
@@ -61,7 +63,7 @@ const INDEX_SHORT: Record<string, string> = {
   INDEX_LIFECYCLE_SAFE: '⏳ Safe',
   INDEX_BRAND_STRENGTH: '📈 Brand',
   INDEX_PRICE: '💰 Val',
-  INDEX_CLUSTER_MATCH: '🎯 Cluster',
+
 };
 
 type EvalViewMode = 'history_list' | 'chat_detail' | 'system_metrics';
@@ -79,12 +81,11 @@ export default function Navbar() {
   const [chatTab, setChatTab] = useState<ChatDetailTab>('nlp');
 
   // Evaluation Data
-  const [clusterData, setClusterData] = useState<ClusterEval | null>(null);
-  const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
+  const [ahpData, setAhpData] = useState<AHPEval | null>(null);
   const [nlpMapping, setNlpMapping] = useState<NLPMappingData | null>(null);
   const [nlpBaseline, setNlpBaseline] = useState<NLPBaselineData | null>(null);
   const [vikorSensitivity, setVikorSensitivity] = useState<VikorSensitivityData | null>(null);
-  const [clusterDetail, setClusterDetail] = useState<ClusterDetailData | null>(null);
+  const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
   const [loadingEval, setLoadingEval] = useState(false);
 
   useEffect(() => {
@@ -98,20 +99,18 @@ export default function Navbar() {
     setViewMode('history_list');
     setLoadingEval(true);
     try {
-      const [clusterRes, historyRes, nlpRes, nlpBaselineRes, vikorRes, clusterDetailRes] = await Promise.all([
-        fetch('http://localhost:8000/evaluasi/clustering'),
+      const [ahpRes, historyRes, nlpRes, nlpBaselineRes, vikorRes] = await Promise.all([
+        fetch('http://localhost:8000/evaluasi/ahp/detail'),
         fetch('http://localhost:8000/history'),
         fetch('http://localhost:8000/evaluasi/nlp/mapping'),
         fetch('http://localhost:8000/evaluasi/nlp/baseline'),
         fetch('http://localhost:8000/evaluasi/vikor/sensitivity'),
-        fetch('http://localhost:8000/evaluasi/clustering/detail'),
       ]);
-      if (clusterRes.ok) setClusterData(await clusterRes.json());
+      if (ahpRes.ok) setAhpData(await ahpRes.json());
       if (historyRes.ok) setHistoryData(await historyRes.json());
       if (nlpRes.ok) setNlpMapping(await nlpRes.json());
       if (nlpBaselineRes.ok) setNlpBaseline(await nlpBaselineRes.json());
       if (vikorRes.ok) setVikorSensitivity(await vikorRes.json());
-      if (clusterDetailRes.ok) setClusterDetail(await clusterDetailRes.json());
     } catch (err) {
       console.error('Failed to fetch eval data:', err);
     } finally {
@@ -125,6 +124,16 @@ export default function Navbar() {
       if (res.ok) setHistoryData(prev => prev.filter(h => h.id !== id));
     } catch (err) {
       console.error('Error deleting history:', err);
+    }
+  };
+
+  const deleteAllHistory = async () => {
+    if (!window.confirm("Apakah Anda yakin ingin menghapus seluruh riwayat konsultasi?")) return;
+    try {
+      const res = await fetch(`http://localhost:8000/history`, { method: 'DELETE' });
+      if (res.ok) setHistoryData([]);
+    } catch (err) {
+      console.error('Error deleting all history:', err);
     }
   };
 
@@ -225,7 +234,7 @@ export default function Navbar() {
                 <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: '6px 0 0' }}>
                   {viewMode === 'history_list' && 'Pilih obrolan Anda untuk melihat logika bagaimana AI memberikan rekomendasi.'}
                   {viewMode === 'chat_detail' && 'Membedah bagaimana pesan Anda diproses secara matematis.'}
-                  {viewMode === 'system_metrics' && 'Data akurasi NLP, stabilitas Clustering, dan sensitivitas MCDM.'}
+                  {viewMode === 'system_metrics' && 'Data akurasi NLP, stabilitas AHP, dan sensitivitas MCDM.'}
                 </p>
               </div>
               <button
@@ -250,6 +259,32 @@ export default function Navbar() {
                   {/* LAYER 1: HISTORY LIST */}
                   {viewMode === 'history_list' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                      {historyData.length > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <button
+                            onClick={deleteAllHistory}
+                            style={{
+                              background: '#EF444420',
+                              color: '#EF4444',
+                              border: '1px solid #EF444440',
+                              padding: '8px 16px',
+                              borderRadius: '8px',
+                              fontSize: '0.8rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = '#EF4444'; e.currentTarget.style.color = '#FFF'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = '#EF444420'; e.currentTarget.style.color = '#EF4444'; }}
+                          >
+                            <HiOutlineTrash size={16} /> Hapus Semua Riwayat
+                          </button>
+                        </div>
+                      )}
+                      
                       {historyData.length === 0 ? (
                         <EmptyState text="Belum ada riwayat konsultasi. Silakan cari mobil terlebih dahulu." />
                       ) : (
@@ -296,7 +331,7 @@ export default function Navbar() {
                         >
                           <HiChartBar size={16} /> Buka Laporan Teknis Keseluruhan Sistem
                         </button>
-                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '8px 0 0' }}>Data Baseline NLP, Uji Sensitivitas VIKOR, dan Cluster Distribution.</p>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '8px 0 0' }}>Data Baseline NLP, Uji Sensitivitas VIKOR, dan Evaluasi AHP.</p>
                       </div>
                     </div>
                   )}
@@ -320,16 +355,16 @@ export default function Navbar() {
                       {/* TABS FOR DETAILS */}
                       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)', gap: '8px', padding: '4px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
                         <button onClick={() => setChatTab('nlp')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'nlp' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'nlp' ? '#4090F7' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'nlp' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
-                          <HiMicrophone size={16} /> 1. NLP Pemahaman
+                          <HiMicrophone size={16} /> 1. Pemahaman Bahasa
                         </button>
                         <button onClick={() => setChatTab('filter')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'filter' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'filter' ? '#8B5CF6' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'filter' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
-                          <HiAdjustmentsHorizontal size={16} /> 2. Kategori Filter
+                          <HiAdjustmentsHorizontal size={16} /> 2. Pemfilteran Data
                         </button>
                         <button onClick={() => setChatTab('vikor')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'vikor' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'vikor' ? '#00BB77' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'vikor' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
-                          <HiChartBar size={16} /> 3. Skoring VIKOR
+                          <HiChartBar size={16} /> 3. Penilaian (Skoring)
                         </button>
                         <button onClick={() => setChatTab('trace')} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: chatTab === 'trace' ? 'var(--bg-card)' : 'transparent', color: chatTab === 'trace' ? '#F59E0B' : 'var(--text-muted)', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: chatTab === 'trace' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
-                          <HiClipboardDocumentCheck size={16} /> 4. Execution Trace Log
+                          <HiClipboardDocumentCheck size={16} /> 4. Log Proses
                         </button>
                       </div>
 
@@ -340,71 +375,69 @@ export default function Navbar() {
                         {chatTab === 'nlp' && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.2s ease' }}>
                             <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 NLU Processing Math (DIET Classifier)</div>
-                              <div style={{ fontSize: '0.75rem', color: '#4090F7', fontFamily: "'Fira Code', 'Courier New', monospace" }}>L_total = L_intent + L_entity + L_mask</div>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>🧠 Pemahaman Bahasa (NLP)</div>
                               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                                Ekstraksi makna dan entitas bahasa alami melalui Dual Intent & Entity Transformer architecture dengan sparse (TF-IDF/ngram) dan dense (ConveRT) featurizers.
+                                Bagaimana sistem mengekstrak maksud dan kata kunci dari kalimat yang Anda ketik menggunakan model kecerdasan buatan (DIET Classifier & CRF).
                               </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
                               <div style={{ padding: '14px', borderRadius: '10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#4090F7', textTransform: 'uppercase' }}>Classification Tensor: Y_pred (Intent)</div>
-                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace", padding: '10px', background: 'rgba(64,144,247,0.08)', borderRadius: '8px', border: '1px solid rgba(64,144,247,0.2)' }}>
-                                  {"P(y|x) = softmax( W_2 · GELU(W_1 · h_{CLS} + b_1) + b_2 )"}<br /><br />
-                                  {"argmax(P) ➔ "} [ {selectedChat.nlp_needs?.length > 0 ? selectedChat.nlp_needs.map(n => `"${n}"`).join(', ') : 'Ø (Fallback)'} ]
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#4090F7', textTransform: 'uppercase' }}>Kategori Kebutuhan (Intent)</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', padding: '10px', background: 'rgba(64,144,247,0.08)', borderRadius: '8px', border: '1px solid rgba(64,144,247,0.2)' }}>
+                                  Sistem menangkap bahwa Anda mencari mobil dengan fokus: <br />
+                                  <strong style={{ color: '#4090F7', marginTop: '4px', display: 'inline-block' }}>[ {selectedChat.nlp_needs?.length > 0 ? selectedChat.nlp_needs.map(n => `"${n}"`).join(', ') : 'Pencarian Umum'} ]</strong>
                                 </div>
                               </div>
 
                               <div style={{ padding: '14px', borderRadius: '10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#EF4444', textTransform: 'uppercase' }}>Sequence Tagging: CRF Layer (Entities)</div>
-                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace", padding: '10px', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)' }}>
-                                  {"arg max_y P(y|X) ∝ exp( Σ_{i} Φ(y_{i-1}, y_i, X, i) )"}<br /><br />
-                                  {"X_entities ➔ "} [ {selectedChat.nlp_entities?.length > 0 ? selectedChat.nlp_entities.map(e => `"${e}"`).join(', ') : 'Ø'} ]
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#EF4444', textTransform: 'uppercase' }}>Syarat Wajib (Entities)</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', padding: '10px', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)' }}>
+                                  Filter spesifik (seperti merek, tipe bodi, atau fitur mutlak) yang Anda minta: <br />
+                                  <strong style={{ color: '#EF4444', marginTop: '4px', display: 'inline-block' }}>[ {selectedChat.nlp_entities?.length > 0 ? selectedChat.nlp_entities.map(e => `"${e}"`).join(', ') : 'Tidak ada batasan khusus'} ]</strong>
                                 </div>
                               </div>
 
                               <div style={{ padding: '14px', borderRadius: '10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#F59E0B', textTransform: 'uppercase' }}>Semantic Lexicon Vector (Mapping Matrix)</div>
-                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace", padding: '10px', background: 'rgba(245,158,11,0.08)', borderRadius: '8px', border: '1px solid rgba(245,158,11,0.2)' }}>
-                                  {"f_{map} : X_{lex} ➔ V_{MCDM}"}<br /><br />
-                                  {"V_mapped ➔ "} [ {selectedChat.nlp_preferences?.length > 0 ? selectedChat.nlp_preferences.map(p => `"${p}"`).join(', ') : 'Ø'} ]
+                                <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#F59E0B', textTransform: 'uppercase' }}>Gaya / Preferensi Kriteria (Lexicon)</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', padding: '10px', background: 'rgba(245,158,11,0.08)', borderRadius: '8px', border: '1px solid rgba(245,158,11,0.2)' }}>
+                                  Kriteria lunak (seperti kata "irit", "nyaman", "kencang") yang memengaruhi pembobotan: <br />
+                                  <strong style={{ color: '#F59E0B', marginTop: '4px', display: 'inline-block' }}>[ {selectedChat.nlp_preferences?.length > 0 ? selectedChat.nlp_preferences.map(p => `"${p}"`).join(', ') : 'Default'} ]</strong>
                                 </div>
                               </div>
                             </div>
                           </div>
                         )}
-                        {/* FILTER & CLUSTER TAB */}
+                        {/* FILTER & AHP TAB */}
                         {chatTab === 'filter' && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.2s ease' }}>
                             <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Sub-space Filtering (HAC Ward&apos;s Method)</div>
-                              <div style={{ fontSize: '0.75rem', color: '#8B5CF6', fontFamily: "'Fira Code', 'Courier New', monospace" }}>{"Δ(A, B) = || x_A - x_B ||²"}</div>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>🛡️ Pemfilteran Syarat & Profil AHP</div>
                               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                                Reduksi dimensi data mobil (Boolean Array Filter) sebelum MCDM dimulai. Hanya mobil yang memenuhi hard constraint (Ω_c) dan centroid klaster terkait yang lolos.
+                                Sistem mencoret kandidat mobil yang tidak sesuai dengan batas budget atau syarat mutlak Anda, lalu memilih profil kriteria awal.
                               </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
                               <div style={{ padding: '20px', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8B5CF6', marginBottom: '12px', textTransform: 'uppercase' }}>Target Cluster Set (C_k)</div>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8B5CF6', marginBottom: '12px', textTransform: 'uppercase' }}>Profil Kriteria Utama</div>
                                 <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>
-                                  {selectedChat.cluster_name || 'C_Global (All)'}
+                                  {selectedChat.ahp_profile || 'Global (Umum)'}
                                 </div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '8px' }}>Centroid pencarian dipersempit.</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '8px' }}>Kumpulan bobot dasar yang disiapkan.</div>
                               </div>
 
                               <div style={{ padding: '20px', borderRadius: '12px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#1E6FD9', marginBottom: '12px', textTransform: 'uppercase' }}>Boolean Constraint Set (Ω)</div>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#1E6FD9', marginBottom: '12px', textTransform: 'uppercase' }}>Penyaringan Data Mobil</div>
                                 <div style={{ width: '100%', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800 }}>Awal (N)</span>
-                                    <span style={{ fontSize: '1.4rem', color: '#EF4444', fontWeight: 800, fontFamily: "'Fira Code', 'Courier New', monospace" }}>{selectedChat.cars_total}</span>
+                                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800 }}>Total Database</span>
+                                    <span style={{ fontSize: '1.4rem', color: '#EF4444', fontWeight: 800 }}>{selectedChat.cars_total}</span>
                                   </div>
                                   <span style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>➔</span>
                                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800 }}>Lolos (N&apos;)</span>
-                                    <span style={{ fontSize: '1.8rem', color: '#00BB77', fontWeight: 800, fontFamily: "'Fira Code', 'Courier New', monospace" }}>{selectedChat.cars_after_constraint}</span>
+                                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800 }}>Lolos Syarat Mutlak</span>
+                                    <span style={{ fontSize: '1.8rem', color: '#00BB77', fontWeight: 800 }}>{selectedChat.cars_after_constraint}</span>
                                   </div>
                                 </div>
                               </div>
@@ -415,27 +448,26 @@ export default function Navbar() {
                         {chatTab === 'vikor' && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.2s ease' }}>
                             <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                               <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>⚖️ MCDM Calculation (VIKOR Core)</div>
-                               <div style={{ fontSize: '0.75rem', color: '#00BB77', fontFamily: "'Fira Code', 'Courier New', monospace" }}>{"Q_j = v * ((S_j - S^*) / (S^- - S^*)) + (1-v) * ((R_j - R^*) / (R^- - R^*))"}</div>
+                               <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>⚖️ Perankingan Akhir (Metode VIKOR)</div>
                                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                                  Dimana v = 0.5 merepresentasikan 'Majority of Criteria' (Utility kompromi berimbang). Nilai Q yang lebih kecil menunjukkan kedekatan terhadap solusi ideal positif (Positive Ideal Solution).
+                                  Sistem memberikan skor kepada setiap kandidat mobil berdasarkan prioritas Anda. Nilai persentase menunjukkan seberapa dekat mobil tersebut dengan spesifikasi ideal Anda.
                                </div>
                             </div>
                             
                             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '16px' }}>
-                              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px', textTransform: 'uppercase' }}>Weight Vector Array (W_j)</div>
+                              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px', textTransform: 'uppercase' }}>Bobot Prioritas yang Digunakan</div>
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: 'var(--bg-secondary)', padding: '12px', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
                                 {selectedChat.weight_dict_used ? Object.entries(selectedChat.weight_dict_used).sort(([, a], [, b]) => b - a).slice(0, 8).map(([k, v]) => (
-                                  <span key={k} style={{ fontSize: '0.72rem', padding: '6px 10px', borderRadius: '6px', background: v > 0.15 ? 'rgba(0,187,119,0.15)' : 'var(--bg-card)', color: v > 0.15 ? '#00BB77' : 'var(--text-muted)', fontWeight: v > 0.15 ? 800 : 600, border: `1px solid ${v > 0.15 ? 'rgba(0,187,119,0.4)' : 'var(--border-color)'}`, fontFamily: "'Fira Code', 'Courier New', monospace" }}>
+                                  <span key={k} style={{ fontSize: '0.72rem', padding: '6px 10px', borderRadius: '6px', background: v > 0.15 ? 'rgba(0,187,119,0.15)' : 'var(--bg-card)', color: v > 0.15 ? '#00BB77' : 'var(--text-muted)', fontWeight: v > 0.15 ? 800 : 600, border: `1px solid ${v > 0.15 ? 'rgba(0,187,119,0.4)' : 'var(--border-color)'}` }}>
                                      {INDEX_SHORT[k] || k.replace('INDEX_', '')}: {v.toFixed(3)}
                                   </span>
-                                )) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>w_j = 1/n (Uniform / Unweighted)</div>}
+                                )) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Bobot Merata (Sama Penting)</div>}
                               </div>
                             </div>
 
                             <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
                               <div style={{ padding: '14px 16px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
-                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)' }}>Matriks S, R, Q (Output Peringkat)</div>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)' }}>Hasil Akhir 3 Mobil Teratas</div>
                               </div>
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
                                 {selectedChat.top_recommendations?.slice(0, 3).map((car, idx) => (
@@ -444,39 +476,18 @@ export default function Navbar() {
                                       <div style={{ background: idx === 0 ? '#00BB77' : 'var(--bg-secondary)', color: idx === 0 ? '#fff' : 'var(--text-secondary)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem' }}>{idx + 1}</div>
                                       <div>
                                         <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{car.BRAND} {car.MODEL}</div>
-                                        <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontFamily: "'Fira Code', 'Courier New', monospace", marginTop: '4px' }}>
-                                          Utility S: {car.VIKOR_S?.toFixed(4) || 'N/A'} <span style={{ opacity: 0.5 }}>|</span> Regret R: {car.VIKOR_R?.toFixed(4) || 'N/A'}
-                                        </div>
                                       </div>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
-                                      <div style={{ fontWeight: 800, fontSize: '0.7rem', color: '#00BB77', textTransform: 'uppercase' }}>Nilai Q</div>
-                                      <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Fira Code', 'Courier New', monospace" }}>{car.VIKOR_Q?.toFixed(4) || 'N/A'}</div>
+                                      <div style={{ fontWeight: 800, fontSize: '0.7rem', color: '#00BB77', textTransform: 'uppercase' }}>Nilai Kelayakan</div>
+                                      <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>{( (1 - (car.VIKOR_Q || 0)) * 100 ).toFixed(1)}%</div>
                                     </div>
                                   </div>
                                 ))}
                               </div>
                             </div>
-                            
-                            {selectedChat.top_recommendations && selectedChat.top_recommendations.length >= 2 && selectedChat.top_recommendations[0] && selectedChat.top_recommendations[1] && (
-                          <div style={{ padding: '16px', marginTop: '4px', background: 'rgba(0,187,119,0.06)', border: '1px solid rgba(0,187,119,0.2)', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Pembuktian Matematis (Acceptable Advantage)</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontFamily: "'Fira Code', 'Courier New', monospace", display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                              <div style={{ background: 'var(--bg-card)', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-                                {"Batas Mutlak DQ = 1 / (N - 1) = "} <strong style={{ color: 'var(--text-primary)' }}>{(1 / (selectedChat.cars_after_constraint - 1 || 1)).toFixed(4)}</strong>
-                              </div>
-                              <div style={{ background: 'var(--bg-card)', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-                                {"Delta Juara: Q(a_2) - Q(a_1) = "} <strong style={{ color: 'var(--text-primary)' }}>{((selectedChat.top_recommendations[1].VIKOR_Q || 0) - (selectedChat.top_recommendations[0].VIKOR_Q || 0)).toFixed(4)}</strong>
-                              </div>
-                            </div>
-
-                            <div style={{ fontSize: '0.75rem', fontWeight: 800, marginTop: '4px', color: ((selectedChat.top_recommendations[1].VIKOR_Q || 0) - (selectedChat.top_recommendations[0].VIKOR_Q || 0)) >= (1 / (selectedChat.cars_after_constraint - 1 || 1)) ? '#00BB77' : '#F59E0B' }}>
-                              {((selectedChat.top_recommendations[1].VIKOR_Q || 0) - (selectedChat.top_recommendations[0].VIKOR_Q || 0)) >= (1 / (selectedChat.cars_after_constraint - 1 || 1)) ? 'Status: Condition 1 Satisfied ✅ (Murni Terbaik)' : 'Status: Condition 1 Failed ⚠️ (Perlu Kompromi)'}
-                            </div>
                           </div>
                         )}
-                      </div>
-                    )}
 
                         {/* TRACE TAB */}
                         {chatTab === 'trace' && (
@@ -497,8 +508,8 @@ export default function Navbar() {
                               <div><span style={{ color: '#4ade80' }}>$</span> NLU_CRF: <span style={{ color: '#e2e8f0' }}>Extracting Named Entities...</span></div>
                               <div style={{ paddingLeft: '14px', color: '#fcd34d' }}>Found Constraints (X_Entities): [{selectedChat.nlp_entities?.join(', ') || 'Ø'}]</div>
                               
-                              <div><span style={{ color: '#4ade80' }}>$</span> PIPELINE_HAC: <span style={{ color: '#e2e8f0' }}>Sub-space Clustering (Ward&apos;s Method)...</span></div>
-                              <div style={{ paddingLeft: '14px', color: '#a78bfa' }}>Target Cluster Set: C_k = {selectedChat.cluster_name || 'C_Global (All)'}</div>
+                              <div><span style={{ color: '#4ade80' }}>$</span> PIPELINE_AHP: <span style={{ color: '#e2e8f0' }}>AHP Profiling (Analytic Hierarchy Process)...</span></div>
+                              <div style={{ paddingLeft: '14px', color: '#a78bfa' }}>Target AHP Profile: P_k = {selectedChat.ahp_profile || 'P_Global (All)'}</div>
                               
                               <div><span style={{ color: '#4ade80' }}>$</span> PIPELINE_BOOL: <span style={{ color: '#e2e8f0' }}>Applying Ω Hard Constraints...</span></div>
                               <div style={{ paddingLeft: '14px', color: '#a78bfa' }}>Active Logic: {Object.entries(selectedChat.hard_filters_applied || {}).map(([k,v]) => `${k}=${v}`).join(' & ') || 'None'}</div>
@@ -549,8 +560,8 @@ export default function Navbar() {
                 <SectionContainer title="🏆 3. VIKOR Sensitivity & MCDM Stability" color="#00BB77" id="vikor">
                   <VikorSection data={vikorSensitivity} />
                 </SectionContainer>
-                <SectionContainer title="📊 4. Hierarchical Clustering (HAC) Validation" color="#8B5CF6" id="clustering">
-                  <ClusteringSection clusterData={clusterData} clusterDetail={clusterDetail} />
+                <SectionContainer title="📊 4. Analytic Hierarchy Process (AHP) Validation" color="#8B5CF6" id="ahp">
+                  <AHPSection ahpData={ahpData} />
                 </SectionContainer>
               </div>
             )}
@@ -662,7 +673,7 @@ function NLPMappingSection({ data }: { data: NLPMappingData | null }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
         <BigMetric label="Mapping Accuracy" value={`${(data.overall_accuracy * 100).toFixed(1)}%`} color="#00BB77" />
         <BigMetric label="Preference Dict" value={String(data.mapping_tables.preference_index_count)} color="#8B5CF6" />
-        <BigMetric label="Cluster Mapping" value={String(data.mapping_tables.preference_cluster_count)} color="#4090F7" />
+        <BigMetric label="Profile Mapping" value={String(data.mapping_tables.preference_profile_count)} color="#4090F7" />
       </div>
       <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.6, textAlign: 'center' }}>
         Kalkulasi kecocokan konversi Semantic Lexicon (Natural Language Keywords) menjadi vektor fitur matematis mesin.
@@ -746,66 +757,47 @@ function VikorSection({ data }: { data: VikorSensitivityData | null }) {
   );
 }
 
-function ClusteringSection({ clusterData, clusterDetail }: { clusterData: ClusterEval | null; clusterDetail: ClusterDetailData | null }) {
-  if (!clusterData || !clusterDetail) return <EmptyState text="Gagal memuat evaluasi Clustering." />;
+function AHPSection({ ahpData }: { ahpData: AHPEval | null }) {
+  if (!ahpData) return <EmptyState text="Gagal memuat evaluasi AHP." />;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
       {/* Math Proof */}
       <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 800, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Evaluasi Matematis HAC (Agglomerative)</div>
-        <MathBlock formula="s(i) = [b(i) - a(i)] / max[a(i), b(i)]" desc="Silhouette Measurement: Kalkulasi kohesi intenal a(i) vs separasi antar-cluster b(i)." />
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 800, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>📐 Evaluasi Matematis AHP (Consistency)</div>
+        <MathBlock formula="CR = CI / RI" desc="Consistency Ratio. Menandakan konsistensi pembobotan matriks pairwise per-profil kriteria. Syarat: CR < 0.1." />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
-        <BigMetric label="Silhouette" value={clusterDetail.stability.current_silhouette.toFixed(3)} color="#8B5CF6" />
-        <BigMetric label="Cluster (K)" value={String(clusterData.n_clusters)} color="#00BB77" />
-        <BigMetric label="Features" value={String(clusterData.features_used.length)} color="#4090F7" />
-        <BigMetric label="Stability" value={clusterDetail.stability.current_silhouette > 0.4 ? 'Stable' : 'Weak'} color="#EF4444" />
+        <BigMetric label="All Consistent" value={ahpData.summary.all_consistent ? "TRUE ✅" : "FALSE ❌"} color={ahpData.summary.all_consistent ? "#00BB77" : "#EF4444"} />
+        <BigMetric label="Avg CR" value={ahpData.summary.avg_consistency_ratio.toFixed(4)} color={ahpData.summary.avg_consistency_ratio < 0.1 ? "#8B5CF6" : "#EF4444"} />
+        <BigMetric label="Total Profil" value={String(ahpData.summary.total_profiles)} color="#4090F7" />
+        <BigMetric label="Total Criteria" value={String(ahpData.summary.criteria_count)} color="#F59E0B" />
       </div>
 
-      {/* Stability Sequence K=3..7 */}
+      {/* Profiles Evaluation */}
       <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
         <div style={{ background: 'var(--bg-secondary)', padding: '12px 16px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)' }}>
-          Kalkulasi Kepadatan (Silhoutte ∀ K ∈ {"{3..7}"})
+          Kalkulasi Konsistensi Per Profil
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0' }}>
-          {clusterDetail.stability.silhouette_per_k.map(s => (
-            <div key={s.k} style={{ flex: '1 1 auto', padding: '12px', textAlign: 'center', borderRight: '1px dashed var(--border-color)', background: s.k === clusterDetail.stability.best_k.k ? 'rgba(139,92,246,0.1)' : 'transparent' }}>
-              <div style={{ fontSize: '0.65rem', color: s.k === clusterDetail.stability.best_k.k ? '#8B5CF6' : 'var(--text-muted)', fontWeight: 800, marginBottom: '4px' }}>{s.k === clusterDetail.stability.best_k.k && '⭐'} K={s.k}</div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 800, color: s.k === clusterDetail.stability.best_k.k ? '#8B5CF6' : 'var(--text-primary)', fontFamily: "'Space Grotesk', sans-serif" }}>{s.silhouette?.toFixed(4) || 'N/A'}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+          {Object.entries(ahpData.profiles).map(([key, p], i, arr) => (
+            <div key={key} style={{ padding: '12px 16px', borderBottom: i !== arr.length - 1 ? '1px dashed var(--border-color)' : 'none', background: 'var(--bg-card)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)' }}>{p.display_name}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '4px', fontFamily: "'Fira Code', monospace" }}>CR: {p.consistency_ratio.toFixed(4)} {p.is_consistent ? '✅' : '❌'}</div>
+              </div>
+              <div style={{ textAlign: 'right', display: 'flex', gap: '4px' }}>
+                {p.top_criteria.slice(0, 3).map((crit, idx) => (
+                  <span key={idx} style={{ padding: '4px 8px', fontSize: '0.65rem', background: 'rgba(64,144,247,0.1)', color: '#4090F7', borderRadius: '4px', fontWeight: 700, border: '1px solid rgba(64,144,247,0.2)' }}>
+                    {crit.name}: {(crit.weight * 100).toFixed(0)}%
+                  </span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>📌 Validasi Fitur Semantic Grup:</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {clusterData.features_used.map(f => (
-            <span key={f} style={{ fontSize: '0.65rem', padding: '4px 10px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-secondary)' }}>{f}</span>
-          ))}
-        </div>
-      </div>
-
-      {/* Dendrogram Visualization */}
-      {clusterDetail.dendrogram_url && (
-        <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
-          <div style={{ background: 'var(--bg-secondary)', padding: '12px 16px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span>🌳</span> Hierarchical Dendrogram (Ward Linkage)
-          </div>
-          <div style={{ padding: '16px', background: 'var(--bg-card)', display: 'flex', justifyContent: 'center' }}>
-            <img 
-              src={`http://localhost:8000${clusterDetail.dendrogram_url}`} 
-              alt="HAC Dendrogram" 
-              style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', border: '1px solid var(--border-color)' }}
-            />
-          </div>
-          <div style={{ padding: '10px 16px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-            Dendrogram dipotong (truncated) pada 30 node terakhir untuk mempermudah pembacaan pemisahan klaster utama.
-          </div>
-        </div>
-      )}
     </div>
   );
 }

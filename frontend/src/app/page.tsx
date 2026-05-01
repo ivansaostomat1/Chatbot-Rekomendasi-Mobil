@@ -67,16 +67,25 @@ function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], con
       {isScientific && weights && Object.keys(weights).length > 0 && (
         <div style={{ marginBottom: '12px', padding: '12px 14px', borderRadius: '12px', background: 'rgba(30,111,217,0.07)', border: '1px solid rgba(30,111,217,0.2)', fontSize: '0.75rem' }}>
           <div style={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4090F7', marginBottom: '8px' }}>📊 Bobot Preferensi (Normalized)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '4px 12px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {Object.entries(weights)
               .filter(([, v]) => v > 0.001)
               .sort(([, a], [, b]) => b - a)
-              .map(([k, v]) => (
-                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
-                  <span>{k.replace('INDEX_', '').replace(/_/g, ' ')}</span>
-                  <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>{(v * 100).toFixed(1)}%</span>
-                </div>
-              ))}
+              .map(([k, v]) => {
+                const isHigh = v > 0.1;
+                return (
+                  <div key={k} style={{ 
+                    display: 'inline-flex', alignItems: 'center', gap: '6px', 
+                    padding: '6px 12px', borderRadius: '20px', 
+                    background: isHigh ? 'rgba(64,144,247,0.15)' : 'var(--bg-card)', 
+                    border: `1px solid ${isHigh ? 'rgba(64,144,247,0.3)' : 'var(--border-color)'}`,
+                    color: isHigh ? '#4090F7' : 'var(--text-secondary)'
+                  }}>
+                    <span style={{ fontWeight: isHigh ? 800 : 600, fontSize: '0.65rem' }}>{k.replace('INDEX_', '').replace(/_/g, ' ')}</span>
+                    <span style={{ fontWeight: 800, fontSize: '0.75rem', color: isHigh ? '#4090F7' : 'var(--text-primary)' }}>{(v * 100).toFixed(1)}%</span>
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}
@@ -114,6 +123,7 @@ export default function ChatbotPage() {
   const { isScientific } = useScientificMode();
   const [messages, setMessages] = useState<ChatMessage[]>(() => [createWelcomeMessage()]);
   const [savedWeights, setSavedWeights] = useState<Record<string, number> | null>(null);
+  const [sessionId, setSessionId] = useState<string>(() => Date.now().toString());
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -124,7 +134,16 @@ export default function ChatbotPage() {
 
   const submitWeights = async (weights: Record<string, number>, payload: Record<string, unknown>, msgId: string) => {
     setSavedWeights(weights);
-    const finalPayload = { ...payload, manual_weights: weights };
+    
+    // Gabungkan semua pesan user sebagai user_message agar tergabung di history
+    const fullConversation = messages.filter(m => m.role === 'user').map(m => m.content).join(" | ");
+    const finalPayload = { 
+      ...payload, 
+      manual_weights: weights, 
+      session_id: sessionId,
+      user_message: fullConversation
+    };
+    
     setLoading(true);
 
     try {
@@ -224,7 +243,13 @@ export default function ChatbotPage() {
             }]);
 
             const payload = actionResponse.custom.payload;
-            const finalPayload = { ...payload, manual_weights: savedWeights };
+            const fullConversation = [...messages, userMsg].filter(m => m.role === 'user').map(m => m.content).join(" | ");
+            const finalPayload = { 
+              ...payload, 
+              manual_weights: savedWeights, 
+              session_id: sessionId,
+              user_message: fullConversation 
+            };
 
             try {
               const { data } = await api.post('/chat', finalPayload);
@@ -285,6 +310,7 @@ export default function ChatbotPage() {
     setMessages([WELCOME_FRESH]);
     setInput('');
     setSavedWeights(null);
+    setSessionId(Date.now().toString());
 
     // Clear backend
     try {
@@ -345,15 +371,15 @@ export default function ChatbotPage() {
               <div key={msg.id}>
                 <MsgBubble msg={msg} />
 
-                {payload && isScientific && (
+                {payload && (
                   <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
                     <div style={{ fontWeight: 800, marginBottom: '10px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <RiRobot2Fill size={16} style={{ color: '#4090F7' }} /> Otobot menangkap:
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                        <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Target Klaster:</span>
-                        <span style={{ fontWeight: 800, color: '#8B5CF6' }}>{payload.cluster_display_name || payload.cluster_name || "Global"}</span>
+                        <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Target Profil:</span>
+                        <span style={{ fontWeight: 800, color: '#8B5CF6' }}>{payload.ahp_profile_display_name || payload.ahp_profile || "Global"}</span>
                       </div>
                       {payload.entities?.length > 0 && (
                         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -373,26 +399,7 @@ export default function ChatbotPage() {
                       )}
                     </div>
                     <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--border-color)', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-                      Saya telah menyiapkan profil bobot rekomendasi awal berdasarkan klaster spesifik Anda. Silakan putuskan di bawah ini 👇
-                    </div>
-                  </div>
-                )}
-
-                {/* Simplified summary for Awam mode */}
-                {payload && !isScientific && (
-                  <div style={{ marginBottom: '12px', background: 'var(--bg-secondary)', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
-                      <RiRobot2Fill size={16} style={{ color: '#4090F7' }} />
-                      <span style={{ fontWeight: 700 }}>
-                        🔍 Mencari {payload.cluster_display_name || payload.cluster_name ? `mobil ${payload.cluster_display_name || payload.cluster_name}` : 'mobil'}
-                        {payload.entities?.length > 0 && ` (${payload.entities.join(', ')})`}
-                        {(payload.min_budget || payload.max_budget) && (
-                          <> dengan budget {payload.min_budget ? `Rp ${(payload.min_budget / 1000000).toLocaleString('id-ID')} Jt` : 'Rp 0'}{' - '}{payload.max_budget ? `Rp ${(payload.max_budget / 1000000).toLocaleString('id-ID')} Jt` : 'Tak Terbatas'}</>
-                        )}
-                      </span>
-                    </div>
-                    <div style={{ marginTop: '8px', color: 'var(--text-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
-                      Atur prioritas Anda di bawah, lalu tekan tombol untuk mendapatkan rekomendasi 👇
+                      Saya telah menyiapkan profil bobot rekomendasi awal berdasarkan profil spesifik Anda. Silakan putuskan di bawah ini 👇
                     </div>
                   </div>
                 )}

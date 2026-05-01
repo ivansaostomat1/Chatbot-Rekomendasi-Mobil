@@ -75,7 +75,7 @@ export default function ManualWeightInput({ initialWeights, onSubmit, disabled =
         <div>
           <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, letterSpacing: '0.02em', color: 'var(--text-primary)' }}>Tuning Preferensi Mesin VIKOR</h3>
           <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-            Sesuaikan prioritas kriteria rekomendasi klaster Anda (0-10) dengan menggeser slider elastis di bawah ini.
+            Sesuaikan prioritas kriteria rekomendasi profil AHP Anda (0-10) dengan menggeser slider elastis di bawah ini.
           </p>
         </div>
       </div>

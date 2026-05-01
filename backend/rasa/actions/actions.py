@@ -123,7 +123,7 @@ def extract_entities(entities, text=None):
                 except:
                     pass
 
-        # 4. FALLBACK CATCHER UNTUK TARGET CLUSTER (PREFERENCE)
+        # 4. FALLBACK CATCHER UNTUK TARGET PROFIL AHP (PREFERENCE)
         # Jika NLP meleset dari term krusial, kita tangkap teks aslinya
         critical_keywords = [
             "keluarga",
@@ -250,7 +250,7 @@ class ActionRecommendCar(Action):
             "must_have_sunroof": merged_context.get("must_have_sunroof", False),
         }
 
-        print(f"[RASA ACTION] Meminta profil bobot dan klasterisasi dari backend...")
+        print(f"[RASA ACTION] Meminta profil bobot dan profil AHP dari backend...")
         try:
             ui_resp = requests.post(
                 API_UI_URL,
@@ -263,18 +263,18 @@ class ActionRecommendCar(Action):
             ui_resp.raise_for_status()
             ui_data = ui_resp.json()
 
-            payload["cluster_name"] = ui_data.get("cluster_name", "Global")
-            payload["cluster_display_name"] = ui_data.get(
-                "cluster_display_name", payload["cluster_name"]
+            payload["ahp_profile"] = ui_data.get("profile_name", "Global")
+            payload["ahp_profile_display_name"] = ui_data.get(
+                "profile_display_name", payload["ahp_profile"]
             )
             payload["base_weight_profile"] = ui_data.get("base_weight_profile", {})
 
             print(
-                f"[RASA ACTION] Terdeteksi cluster: {payload['cluster_name']} ({payload['cluster_display_name']})"
+                f"[RASA ACTION] Terdeteksi profil AHP: {payload['ahp_profile']} ({payload['ahp_profile_display_name']})"
             )
         except Exception as e:
             print(f"[RASA ACTION] [ERROR] Gagal mengambil profil awal: {e}")
-            payload["cluster_name"] = "Global"
+            payload["ahp_profile"] = "Global"
             payload["base_weight_profile"] = {}
 
         # ─────────────────────────────────────────────────────────────────────────────

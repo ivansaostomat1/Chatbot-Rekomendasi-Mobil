@@ -1,6 +1,6 @@
 import axios from "axios";
 import {
-  ClusterEvalData,
+
   RecommendationEvalData,
   NLPEvalData,
   NLPMappingData,
@@ -62,12 +62,12 @@ export async function getFeatureSummary() {
 }
 
 /* ================================
-   CLUSTERING EVALUATION
+   AHP EVALUATION
 ================================ */
 
-export async function getClusteringEval(): Promise<ClusterEvalData> {
+export async function getAHPEval(): Promise<any> {
 
-  const { data } = await api.get("/evaluasi/clustering");
+  const { data } = await api.get("/evaluasi/ahp");
 
   return data;
 }

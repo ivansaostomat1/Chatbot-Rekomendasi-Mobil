@@ -13,6 +13,7 @@ PREFERENCE_INDEX_MAP = {
 
     # Power & Handling (Multi-Index Support)
     "sporty": ["power", "handling", "driver_comfort"],
+    "sport": ["power", "handling", "luxury"],
     "performa": ["power", "handling"],
     "kencang": ["power", "handling"],
     "ngebut": ["power"],
@@ -96,7 +97,8 @@ BODY_TYPE_MAP = {
     # Sedan
     "sedan": "SEDAN",
     "saloon": "SEDAN",
-    "coupe": "SEDAN"
+    "coupe": "SEDAN",
+    "sport": "SEDAN"
 }
 
 
@@ -196,11 +198,11 @@ FEATURE_CONSTRAINT_MAP = {
 
 HARD_FILTER_MAP = {
     "keluarga besar": {"min_seat": 7},
-    "7 orang": {"min_seat": 7},
-    "7 seat": {"min_seat": 7},
-    "7 penumpang": {"min_seat": 7},
-    "5 orang": {"min_seat": 5},
-    "5 seat": {"min_seat": 5},
+    "7 orang": {"exact_seat": 7},
+    "7 seat": {"exact_seat": 7},
+    "7 penumpang": {"exact_seat": 7},
+    "5 orang": {"exact_seat": 5},
+    "5 seat": {"exact_seat": 5},
     "banjir": {"min_ground_clearance": 190},
 }
 
@@ -240,6 +242,9 @@ PREFERENCE_PROFILE_MAP = {
     "kencang": "High-End Performance",
     "performa": "High-End Performance",
     "sporty": "High-End Performance",
+    "sport": "High-End Performance",
+    "fun": "High-End Performance",
+    "fun to drive": "High-End Performance",
     "mewah": "High-End Performance",
     "premium": "High-End Performance",
     "seimbang": "Practical All-Rounder",
@@ -332,7 +337,8 @@ NEED_PROFILE_MAP = {
     "harian": "Urban Agility",
     "mewah": "High-End Performance",
     "tangguh": "Rugged Explorer",
-    "sporty": "High-End Performance"
+    "sporty": "High-End Performance",
+    "sport": "High-End Performance"
 }
 
 NEED_HARD_FILTER_MAP = {

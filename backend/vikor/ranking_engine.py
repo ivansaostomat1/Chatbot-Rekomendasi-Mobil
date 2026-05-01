@@ -114,6 +114,9 @@ def apply_hard_filters(df, req_kwargs: dict):
     if req_kwargs.get("min_seat") is not None:
         df = df[df["SEAT"] >= req_kwargs["min_seat"]]
 
+    if req_kwargs.get("exact_seat") is not None:
+        df = df[df["SEAT"] == req_kwargs["exact_seat"]]
+
     if req_kwargs.get("min_ground_clearance") is not None:
         df = df[df["GROUND CLEARANCE"] >= req_kwargs["min_ground_clearance"]]
 

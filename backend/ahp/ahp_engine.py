@@ -37,9 +37,21 @@ from typing import Dict, List, Tuple, Optional
 # Digunakan untuk menghitung Consistency Ratio (CR)
 # ======================================================
 RANDOM_INDEX = {
-    1: 0.00, 2: 0.00, 3: 0.58, 4: 0.90, 5: 1.12,
-    6: 1.24, 7: 1.32, 8: 1.41, 9: 1.45, 10: 1.49,
-    11: 1.51, 12: 1.48, 13: 1.56, 14: 1.57, 15: 1.59,
+    1: 0.00,
+    2: 0.00,
+    3: 0.58,
+    4: 0.90,
+    5: 1.12,
+    6: 1.24,
+    7: 1.32,
+    8: 1.41,
+    9: 1.45,
+    10: 1.49,
+    11: 1.51,
+    12: 1.48,
+    13: 1.56,
+    14: 1.57,
+    15: 1.59,
 }
 
 # ======================================================
@@ -66,7 +78,10 @@ AHP_CRITERIA = [
 # CORE AHP: CALCULATE WEIGHTS FROM PAIRWISE MATRIX
 # ======================================================
 
-def calculate_ahp_weights(pairwise_matrix: np.ndarray) -> Tuple[np.ndarray, float, bool]:
+
+def calculate_ahp_weights(
+    pairwise_matrix: np.ndarray,
+) -> Tuple[np.ndarray, float, bool]:
     """
     Menghitung bobot prioritas dari matriks perbandingan berpasangan
     menggunakan metode eigenvector (pendekatan geometrik mean).
@@ -131,6 +146,7 @@ def calculate_ahp_weights(pairwise_matrix: np.ndarray) -> Tuple[np.ndarray, floa
 # CONVERT PREFERENCE WEIGHTS → PAIRWISE MATRIX
 # ======================================================
 
+
 def build_pairwise_from_weights(weight_profile: Dict[str, float]) -> np.ndarray:
     """
     Mengonversi profil bobot (skala 0-10) menjadi matriks pairwise comparison
@@ -157,7 +173,9 @@ def build_pairwise_from_weights(weight_profile: Dict[str, float]) -> np.ndarray:
     # Ambil bobot untuk setiap kriteria, default 5.0 (netral)
     raw_weights = []
     for c in AHP_CRITERIA:
-        raw_weights.append(max(weight_profile.get(c, 5.0), 0.5))  # min 0.5 untuk hindari div/0
+        raw_weights.append(
+            max(weight_profile.get(c, 5.0), 0.5)
+        )  # min 0.5 untuk hindari div/0
 
     for i in range(n):
         for j in range(i + 1, n):
@@ -180,23 +198,23 @@ def _ratio_to_saaty(ratio: float) -> float:
     if ratio >= 1.0:
         # Kriteria i lebih penting dari j
         if ratio <= 1.2:
-            return 1.0   # Sama penting
+            return 1.0  # Sama penting
         elif ratio <= 1.5:
-            return 2.0   # Antara sama dan sedikit lebih penting
+            return 2.0  # Antara sama dan sedikit lebih penting
         elif ratio <= 2.0:
-            return 3.0   # Sedikit lebih penting
+            return 3.0  # Sedikit lebih penting
         elif ratio <= 2.5:
-            return 4.0   # Antara sedikit dan cukup lebih penting
+            return 4.0  # Antara sedikit dan cukup lebih penting
         elif ratio <= 3.0:
-            return 5.0   # Cukup lebih penting
+            return 5.0  # Cukup lebih penting
         elif ratio <= 4.0:
-            return 6.0   # Antara cukup dan sangat lebih penting
+            return 6.0  # Antara cukup dan sangat lebih penting
         elif ratio <= 5.0:
-            return 7.0   # Sangat lebih penting
+            return 7.0  # Sangat lebih penting
         elif ratio <= 7.0:
-            return 8.0   # Antara sangat dan mutlak lebih penting
+            return 8.0  # Antara sangat dan mutlak lebih penting
         else:
-            return 9.0   # Mutlak lebih penting
+            return 9.0  # Mutlak lebih penting
     else:
         # Kebalikan: j lebih penting dari i
         # Dikembalikan sebagai desimal (akan di-reciprocal di caller)
@@ -207,9 +225,9 @@ def _ratio_to_saaty(ratio: float) -> float:
 # MAIN ENTRY POINT: GET AHP WEIGHTS
 # ======================================================
 
+
 def get_ahp_weights(
-    preference_weights: Dict[str, float],
-    profile_name: str = "Dynamic"
+    preference_weights: Dict[str, float], profile_name: str = "Dynamic"
 ) -> Dict[str, any]:
     """
     Entry point utama modul AHP.
@@ -245,7 +263,9 @@ def get_ahp_weights(
         ahp_weight_dict[criteria] = round(float(weights[i]), 6)
 
     # Logging
-    print(f"[AHP] Consistency Ratio (CR): {CR:.4f} {'[OK] KONSISTEN' if is_consistent else '[X] TIDAK KONSISTEN'}")
+    print(
+        f"[AHP] Consistency Ratio (CR): {CR:.4f} {'[OK] KONSISTEN' if is_consistent else '[X] TIDAK KONSISTEN'}"
+    )
     print(f"[AHP] Threshold: CR < 0.10")
 
     print(f"[AHP] Bobot AHP yang dihasilkan:")
@@ -269,6 +289,7 @@ def get_ahp_weights(
 # ======================================================
 # EVALUASI: Hitung AHP untuk semua profil statis
 # ======================================================
+
 
 def evaluate_all_profiles(profiles: Dict[str, Dict[str, float]]) -> Dict[str, any]:
     """

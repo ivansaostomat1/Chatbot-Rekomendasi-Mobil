@@ -630,49 +630,47 @@ def resolve_preference_weights(
 # ======================================================
 def detect_profile_from_weights(weights: Dict[str, float], preference_terms: List[str] = None) -> List[str]:
     """
-    Mendeteksi profil AHP berdasarkan kemiripan kosinus, namun DIOVERRIDE 
-    oleh pemetaan eksplisit dari PREFERENCE_PROFILE_MAP jika kata kunci cocok.
+    Mendeteksi profil AHP berdasarkan Hybrid Scoring:
+    Skor = (Cosine Similarity * 10) + (Keyword Match * 50)
+    
+    Ini memastikan kata kunci eksplisit (e.g. 'sport') memiliki bobot penentu yang lebih tinggi
+    daripada kemiripan matematis yang mungkin bias ke profil 'Global/Practical'.
     """
-    # 1. HARD OVERRIDE CHECK
+    user_vector = np.array([weights.get(c, 5.0) for c in ALL_CRITERIA])
+    profile_scores = {}
+    
+    # 1. Hitung base similarity (0.0 - 10.0)
+    for profile_name, profile in AHP_PROFILES.items():
+        centroid = np.array([profile.get(c, 5.0) for c in ALL_CRITERIA])
+        dot = np.dot(user_vector, centroid)
+        norm_user = norm(user_vector)
+        norm_centroid = norm(centroid)
+        
+        similarity = dot / (norm_user * norm_centroid) if (norm_user != 0 and norm_centroid != 0) else 0.0
+        profile_scores[profile_name] = similarity * 10.0
+        
+    # 2. Tambahkan Keyword Bonus (50.0 per match)
     if preference_terms:
         for term in preference_terms:
             t_clean = term.strip().lower()
             if t_clean in PREFERENCE_PROFILE_MAP:
                 matched_profile = PREFERENCE_PROFILE_MAP[t_clean]
-                print(f"[AHP PROFILE] [HARD OVERRIDE] Kata kunci '{t_clean}' langsung di-map ke '{matched_profile}'.")
-                return [matched_profile]
+                profile_scores[matched_profile] = profile_scores.get(matched_profile, 0) + 50.0
+                print(f"[AHP PROFILE] [KEYWORD BONUS] '{t_clean}' memberi bonus +50 ke '{matched_profile}'")
 
-    # 2. COSINE SIMILARITY CHECK (FALLBACK)
-    user_vector = np.array([weights.get(c, 5.0) for c in ALL_CRITERIA])
-
-    best_profile = None
-    best_similarity = -1.0
-    SIMILARITY_THRESHOLD = 0.5
-
-    for profile_name, profile in AHP_PROFILES.items():
-        centroid = np.array([profile.get(c, 5.0) for c in ALL_CRITERIA])
-
-        dot = np.dot(user_vector, centroid)
-        norm_user = norm(user_vector)
-        norm_centroid = norm(centroid)
-
-        if norm_user == 0 or norm_centroid == 0:
-            similarity = 0.0
-        else:
-            similarity = dot / (norm_user * norm_centroid)
-
-        print(f"[AHP PROFILE] Cosine similarity dengan '{profile_name}': {similarity:.3f}")
-
-        if similarity > best_similarity:
-            best_similarity = similarity
-            best_profile = profile_name
-
-    if best_similarity < SIMILARITY_THRESHOLD:
-        print(f"[AHP PROFILE] Similarity tertinggi ({best_similarity:.3f}) < threshold ({SIMILARITY_THRESHOLD}). Kembali ke 'Global'.")
+    # 3. Cari pemenang dengan skor tertinggi
+    sorted_profiles = sorted(profile_scores.items(), key=lambda x: x[1], reverse=True)
+    best_profile, best_score = sorted_profiles[0]
+    
+    print(f"[AHP PROFILE] Hasil Scoring: {sorted_profiles}")
+    
+    # Jika skor sangat rendah (tidak ada match dan similarity hancur), kembali ke Global
+    if best_score < 4.0: 
+        print(f"[AHP PROFILE] Skor terlalu rendah ({best_score:.2f}). Kembali ke 'Global'.")
         return ["Global"]
-    else:
-        print(f"[AHP PROFILE] Profil terpilih: '{best_profile}' (similarity={best_similarity:.3f})")
-        return [best_profile]
+    
+    print(f"[AHP PROFILE] Profil terpilih: '{best_profile}' (Skor total: {best_score:.2f})")
+    return [best_profile]
 
 # ======================================================
 # ENTRY POINT: build_ui_state
@@ -686,8 +684,9 @@ def build_ui_state(
     """
     entity_terms = entity_terms or []
 
-    weights = resolve_preference_weights(preference_terms, entity_terms)
-    profiles = detect_profile_from_weights(weights, preference_terms=preference_terms)
+    # Gabungkan semua konteks (Preferensi + Entitas Teknis) untuk deteksi profil
+    all_context_terms = list(set(preference_terms + entity_terms))
+    profiles = detect_profile_from_weights(weights, preference_terms=all_context_terms)
     primary_profile = profiles[0]
 
     profile_weights = dict(AHP_PROFILES.get(primary_profile, GLOBAL_DEFAULT_PROFILE))

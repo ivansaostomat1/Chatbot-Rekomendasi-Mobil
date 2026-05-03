@@ -1,7 +1,6 @@
 version: "3.1"
 
 intents:
-  - greet
   - ask_recommendation
   - choose_preference
   - nlu_fallback
@@ -17,9 +16,6 @@ responses:
 
   utter_default:
   - text: "Maaf, saya kurang mengerti maksud Anda. Bisa tolong ulangi dengan kata lain? 🤔"
-
-  utter_greet:
-  - text: "Halo! Saya bisa membantu rekomendasi mobil."
 
   utter_ask_detail:
   - text: "Baik, saya sedang mencari mobil yang cocok untuk kamu..."

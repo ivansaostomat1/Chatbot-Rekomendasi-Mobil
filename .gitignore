@@ -24,9 +24,10 @@ backend/.rasa/
 backend/rasa/.rasa/
 backend/backup.rar
 backend/rasa.rar
+backend/rasa/results/
 
 rasa TA/
-
+docs/panduan-evaluasi-rasa.html
 
 *.rar
 # Docs (draft internal)

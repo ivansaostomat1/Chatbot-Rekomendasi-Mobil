@@ -2,13 +2,6 @@ version: "3.1"
 
 stories:
 
-- story: greet and ask recommendation
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: ask_recommendation
-  - action: action_recommend_car
-
 
 - story: direct recommendation
   steps:
@@ -25,13 +18,6 @@ stories:
 # ─────────────────────────────────────────────────────────────────────────────
 # Story multi-turn: percakapan berlanjut setelah rekomendasi
 # ─────────────────────────────────────────────────────────────────────────────
-
-- story: greet then compare budget
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: ask_comparison
-  - action: action_compare_budget
 
 
 - story: recommend then compare budget
@@ -141,20 +127,6 @@ stories:
     - preference: "keluarga"
   - action: action_recommend_car
 
-
-- story: greet then budget only then preference
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: ask_recommendation
-    entities:
-    - budget: "400jt"
-  - action: action_recommend_car
-  - intent: choose_preference
-    entities:
-    - preference: "irit"
-    - preference: "nyaman"
-  - action: action_recommend_car
 
 
 - story: budget only then preference then compare

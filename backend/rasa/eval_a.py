@@ -17,12 +17,12 @@ FOLDS         = 5      # jumlah fold
 # Daftar config yang mau dibandingkan
 # Format: ("nama_label", "path/ke/config.yml")
 CONFIGS = [
-    ("CP_baseline",  "configCP.yml"),
-    ("TAv1_sparse",  "configTAv1.yml"),
-    ("TAv2_indobert","configTAv2.yml"),
-    ("TAv3_hybrid",  "configTAv3.yml"),
-    ("TAv4_deep",    "configTAv4.yml"),
-    ("TAv5_large",   "configTAv5.yml"),
+    ("CP_baseline",         "configCP.yml"),
+    ("TAv1_epoch75",        "configTAv1.yml"),
+    ("TAv2_dropout03",      "configTAv2.yml"),
+    ("TAv3_large_capacity", "configTAv3.yml"),
+    ("TAv4_small_capacity", "configTAv4.yml"),
+    ("TAv5_optimal_combo",  "configTAv5.yml"),
 ]
 # ================================================================
 
@@ -103,6 +103,7 @@ def rename_outputs(results_dir, config_label, run_label):
         "DIETClassifier_confusion_matrix.png",
         "response_selection_report.json",
         "response_selection_errors.json",
+        "output.log",
     ]
 
     renamed = []
@@ -317,8 +318,8 @@ def run_config(config_label, config_path, session_dir):
             log_file=os.path.join(cv_dir, "output.log")
         )
         if success:
-            rename_outputs(cv_dir, config_label, f"cv_run{run_idx}")
             cv_summaries.append(extract_f1_summary(cv_dir))
+            rename_outputs(cv_dir, config_label, f"cv_run{run_idx}")
         else:
             print(f"  CV Run {run_idx} gagal.")
     cv_end = time.time()
@@ -334,7 +335,7 @@ def run_config(config_label, config_path, session_dir):
     train_ok = run_command(
         command=["rasa", "train", "nlu", "--config", config_path],
         description=f"{config_label} — Training",
-        log_file=os.path.join(config_dir, "train_output.log")
+        log_file=os.path.join(config_dir, f"{config_label}_train_output.log")
     )
     if train_ok:
         tt_dir = os.path.join(config_dir, "train_test")
@@ -351,9 +352,9 @@ def run_config(config_label, config_path, session_dir):
             log_file=os.path.join(tt_dir, "output.log")
         )
         if tt_ok:
-            rename_outputs(tt_dir, config_label, "train_test")
             tt_summary = extract_f1_summary(tt_dir)
             train_f1 = tt_summary.get("intent_overall_f1")
+            rename_outputs(tt_dir, config_label, "train_test")
     train_end = time.time()
     train_duration = round(train_end - train_start, 2)
     print(f"  >>> Total Durasi Training + Overfit Test: {train_duration} detik")

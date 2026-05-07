@@ -28,6 +28,8 @@ backend/rasa/results/
 
 rasa TA/
 docs/panduan-evaluasi-rasa.html
+docs/proposal_ta_analysis.md
+docs/sistem_overview.txt
 
 *.rar
 # Docs (draft internal)

@@ -1,0 +1,162 @@
+version: "3.1"
+
+intents:
+  - ask_recommendation
+  - choose_preference
+  - nlu_fallback
+  - ask_comparison
+  - start_search
+  - out_of_scope
+
+actions:
+  - action_recommend_car
+  - action_compare_budget
+
+responses:
+
+  utter_default:
+  - text: "Maaf, saya kurang mengerti maksud Anda. Bisa tolong ulangi dengan kata lain? 🤔"
+
+  utter_ask_detail:
+  - text: "Baik, saya sedang mencari mobil yang cocok untuk kamu..."
+
+  utter_ask_budget:
+  - text: "Berapa kisaran budget kamu? 😊"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # PERBAIKAN: Variasi utter_ask_initial_preference
+  # Sebelumnya hanya 1 respons kaku → diganti jadi 3 variasi yang lebih natural
+  # Memancing user menjawab dengan frasa bebas, bukan hanya kata tunggal
+  # ─────────────────────────────────────────────────────────────────────────────
+  utter_ask_initial_preference:
+  - text: "Baik, budget tersebut ya! Kira-kira kriteria apa yang paling penting buat kamu? Misalnya: irit dan nyaman, kencang, untuk keluarga, atau fitur canggih? 😊"
+  - text: "Siap! Untuk bantu pencarian, ceritain sedikit kebutuhannya — misalnya irit dan nyaman, untuk harian, atau yang kencang? 🚗"
+  - text: "Baik, mobil dengan budget tersebut ya. Biar makin pas rekomendasinya, kamu lebih suka mobil yang gimana? Contoh: irit bbm, nyaman, canggih, atau untuk keluarga?"
+
+  utter_ask_refinement:
+  - text: "Baik, saya catat✍️. Untuk hasil yang lebih presisi, apakah ada preferensi khusus terkait:\n\n1. **Bahan bakar** (misal: Bensin, Diesel, Hybrid, Listrik)\n2. **Kapasitas** (misal: 5 seat, 7 seat, bagasi besar)\n3. **Fitur tambahan** (misal: Sunroof, Kamera 360, Apple Carplay, Jok Elektrik, Jok Kulit, atau Layar Belakang)\n\n💡 *Contoh ketik: \"hybrid 5 seat aja\", \"ada jok kulit\", atau ketik \"langsung carikan\" jika sudah cukup.* 😊"
+
+
+entities:
+  - budget
+  - min_seat
+  - transmission:
+      roles:
+        - negated
+  - body_type:
+      roles:
+        - negated
+  - powertrain:
+      roles:
+        - negated
+  - feature:
+      roles:
+        - negated
+  - preference:
+      roles:
+        - negated
+  - hard_filter:
+      roles:
+        - negated
+  - brand:
+      roles:
+        - negated
+
+slots:
+  min_budget:
+    type: float
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  max_budget:
+    type: float
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  negated_terms:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  raw_budgets:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  brand:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: brand
+
+  body_type:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: body_type
+
+  powertrain:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: powertrain
+
+  transmission:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: transmission
+        
+  feature:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: feature
+
+  preference:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: preference
+
+  hard_filter:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: hard_filter
+
+  need:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  refinement_stage:
+    type: bool
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+  min_seat:
+    type: float
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: min_seat
+
+  must_have_sunroof:
+    type: bool
+    influence_conversation: false
+    mappings:
+      - type: custom

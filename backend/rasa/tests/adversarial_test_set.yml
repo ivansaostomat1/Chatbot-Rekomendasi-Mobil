@@ -1,0 +1,141 @@
+# ============================================================================
+# ADVERSARIAL TEST SET — Tes Ketahanan Model
+# ============================================================================
+# File ini berisi contoh-contoh yang SENGAJA menantang model dengan input
+# yang "menyesatkan" atau sulit diprediksi.
+#
+# TUJUAN: Mengukur seberapa tahan (robust) model terhadap input yang noisy,
+#         ambigu, atau menipu.
+#
+# PENGGUNAAN (untuk Tugas Akhir):
+#   rasa test nlu --nlu tests/adversarial_test_set.yml --config configTAv3.yml --out results/adversarial_test
+#
+# KATEGORI ADVERSARIAL:
+#   1. Typo / Kesalahan Ketik (simulated real user typos)
+#   2. Code-switching (campur bahasa Indonesia + Inggris)
+#   3. Injection-style input (kata kunci misleading)
+#   4. Boundary confusion (input yang berada di perbatasan 2 intent)
+#   5. Number format variations (format angka tidak standar)
+#   6. Repetition & filler words (kata pengisi berlebihan)
+# ============================================================================
+
+version: "3.1"
+
+nlu:
+
+# ── KATEGORI 1: Typo / Kesalahan Ketik ───────────────────────────────────────
+# Mensimulasikan typo yang sering terjadi saat mengetik di HP.
+
+- intent: ask_recommendation
+  examples: |
+    - rekoendasi mobil [irit](preference) buget [300jt](budget)
+    - cariin mbil [SUV](body_type) hrag [500jt](budget)
+    - tlong carikan mobl [kluarga](preference) bdget [400jt](budget)
+    - sya mau mobi [nyamn](preference) bget utk [kluarga](preference) buget [600jt](budget)
+    - rekomendsikan dong mobl [hibrid](powertrain) di bwh [800jt](budget)
+    - cri mobil [hatchbck](body_type) yng [irrit](preference) budgt [250jt](budget)
+    - ada mobl [toyata](brand) yang [7](min_seat) seat bugt [500jt](budget)?
+    - rekom mobul [sedan](body_type) [mewha](preference) buget [1M](budget)
+    - tlong cri mobl [disel](powertrain) yg [tngguh](preference) bugt [400jt](budget)
+    - mobl apa yg bgus di hrga [300jt](budget) yg [irrit](preference) bgt
+
+- intent: start_search
+  examples: |
+    - mullai dari awal
+    - gati pencrian
+    - rset semuana
+    - ulnag pencarian
+    - hapus kritria seblumnya
+
+- intent: out_of_scope
+  examples: |
+    - sipa presidn indnesia?
+    - brapa hrga bensn skrng?
+    - rekomendsikan laptpo gaming
+    - gmana cara msak rendng?
+    - cra beli sahm utk pemla
+
+# ── KATEGORI 2: Code-Switching (Indonesia + Inggris) ─────────────────────────
+# Pencampuran bahasa yang common di kalangan urban Indonesia.
+
+- intent: ask_recommendation
+  examples: |
+    - I need a car yang [irit](preference) with budget [300jt](budget)
+    - cariin mobil yang good for [family](preference) budget around [500jt](budget)
+    - recommend me an [SUV](body_type) yang [fuel efficient](preference) di [400jt](budget)
+    - saya looking for [Toyota](brand) with [automatic](transmission) transmission budget [600jt](budget)
+    - any car with [sunroof](feature) and [360 camera](feature) under [700jt](budget)?
+    - yang best value for money di budget [300jt](budget) apa ya?
+    - cari mobil yang comfortable dan [spacious](preference) budget [500jt](budget)
+
+- intent: start_search
+  examples: |
+    - start over please
+    - let's restart ya
+    - new search dong
+    - clear everything, mulai dari awal
+
+- intent: out_of_scope
+  examples: |
+    - what's the weather today di jakarta?
+    - recommend me a good restaurant dong
+    - how to cook nasi goreng yang enak?
+
+# ── KATEGORI 3: Injection / Misleading Keywords ──────────────────────────────
+# Input yang mengandung kata-kata dari domain mobil tapi sebenarnya out_of_scope.
+
+- intent: out_of_scope
+  examples: |
+    - cara membersihkan AC mobil SUV Toyota budget 300 juta
+    - tips modifikasi knalpot mobil sport agar lebih kencang
+    - harga spare part Honda Jazz transmisi matic berapa ya
+    - review lengkap Toyota Avanza 2025 apakah irit BBM
+    - bagaimana cara klaim asuransi mobil budget 500 juta
+    - dimana bengkel terbaik untuk servis mobil hybrid di Jakarta
+    - cara mengganti oli mesin diesel yang benar
+    - history harga mobil bekas SUV 7 seat tahun 2020
+
+# ── KATEGORI 4: Boundary Confusion ───────────────────────────────────────────
+# Input yang sangat dekat antara ask_recommendation dan out_of_scope.
+
+- intent: ask_recommendation
+  examples: |
+    - emang ada ya mobil bagus di harga segitu? coba cariin [300jt](budget)
+    - serius nanya nih bukan bercanda, ada ga [SUV](body_type) di [200jt](budget)?
+    - iseng nanya aja sih, dapet apa ya di [500jt](budget) yang [irit](preference)?
+    - penasaran aja kalau budget [1M](budget) dapet mobil [mewah](preference) apa
+
+- intent: ask_comparison
+  examples: |
+    - mending [Toyota](brand) atau [Honda](brand) sih di [400jt](budget)?
+    - [SUV](body_type) vs [sedan](body_type) enakan mana buat harian?
+    - lebih worth [hybrid](powertrain) atau [bensin](powertrain) biasa di [600jt](budget)?
+    - bagusan [matic](transmission) atau [cvt](transmission) ya?
+    - [hatchback](body_type) sama [sedan](body_type) bedanya apa sih di [300jt](budget)?
+
+# ── KATEGORI 5: Variasi Format Angka ─────────────────────────────────────────
+# Format penulisan angka/budget yang tidak standar.
+
+- intent: ask_recommendation
+  examples: |
+    - budget saya [tiga ratus juta](budget) cari yang [irit](preference)
+    - punya [setengah miliar](budget) cari [SUV](body_type)
+    - dana [400rb ribu... eh salah, 400jt](budget) hehe
+    - budget [400-500](budget) juta an lah kira-kira
+    - kira2 [300](budget) sampe [500 juta](budget) deh
+    - budgetnya [lima ratus](budget) lah ya
+    - sekitar [4 ratus juta](budget) kurang lebih
+    - bujet [200k](budget)... eh [200jt](budget) maksudnya haha
+    - [empat ratus juta rupiah](budget) buat mobil [keluarga](preference)
+    - [1 milyar](budget) dapet apa yang [mewah](preference)?
+
+# ── KATEGORI 6: Repetition & Filler Words ────────────────────────────────────
+# Banyak kata pengisi, pengulangan, atau padding yang noisy.
+
+- intent: ask_recommendation
+  examples: |
+    - hmm jadi gini loh ya jadi saya tuh pengen banget cari mobil yang [irit](preference) gitu loh di budget [300jt](budget) gitu
+    - eeee apa ya eee mobil yang bagus tuh apa ya yang [nyaman](preference) gitu budget [500jt](budget) kira kira
+    - ok ok ok jadi saya mau itu loh yang [SUV](body_type) itu tuh yang harganya [700jt](budget) gitu
+    - nah itu dia nah saya tuh carinya yang [irit](preference) yang [irit](preference) banget budget [200jt](budget) gitu loh
+    - ya kan ya kan saya kan pengen yang [keluarga](preference) punya ya yang [7](min_seat) seat itu loh budget [400jt](budget)

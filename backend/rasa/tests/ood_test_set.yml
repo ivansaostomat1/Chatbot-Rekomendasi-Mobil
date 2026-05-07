@@ -1,0 +1,137 @@
+# ============================================================================
+# OUT-OF-DISTRIBUTION (OOD) TEST SET
+# ============================================================================
+# File ini berisi contoh-contoh yang SENGAJA berbeda dari training data (nlu.yml)
+# untuk menguji kemampuan generalisasi model NLU.
+#
+# TUJUAN: Mengukur seberapa baik model menangani input yang "tidak biasa"
+#         dibandingkan pola-pola yang ada di training data.
+#
+# PENGGUNAAN (untuk Tugas Akhir):
+#   rasa test nlu --nlu tests/ood_test_set.yml --config configTAv3.yml --out results/ood_test
+#
+# KATEGORI OOD:
+#   1. Bahasa sangat formal (berbeda dari gaya casual di training data)
+#   2. Bahasa sangat informal/slang ekstrem
+#   3. Entitas baru yang tidak ada di lookup table
+#   4. Struktur kalimat yang tidak biasa
+#   5. Input minimalis (sangat pendek)
+#   6. Input verbose (sangat panjang)
+# ============================================================================
+
+version: "3.1"
+
+nlu:
+
+# ── KATEGORI 1: Bahasa Sangat Formal ─────────────────────────────────────────
+# Training data kebanyakan semi-formal/casual. Ini menguji bahasa formal.
+
+- intent: ask_recommendation
+  examples: |
+    - Saya bermaksud untuk mencari kendaraan roda empat dengan spesifikasi [hemat bahan bakar](preference) serta memiliki kapasitas [7](min_seat) penumpang dengan anggaran sebesar [400 juta](budget) rupiah
+    - Mohon dibantu memberikan rekomendasi kendaraan bermotor tipe [SUV](body_type) dengan kisaran harga [800 juta](budget) yang dilengkapi fitur [keselamatan](preference) terkini
+    - Perkenankan saya meminta saran mengenai kendaraan bermerk [Toyota](brand) dengan sistem penggerak [hybrid](powertrain) yang sesuai untuk keperluan dinas
+    - Saya hendak mengajukan permintaan rekomendasi mobil dengan transmisi [otomatis](transmission) dan memiliki fitur [panoramic sunroof](feature) dengan budget tidak melebihi [1 miliar](budget)
+    - Bisakah Anda merekomendasikan kendaraan yang memadai untuk keperluan [keluarga](preference) dengan anggaran berkisar [500 juta](budget) hingga [700 juta](budget)?
+
+# ── KATEGORI 2: Bahasa Slang Ekstrem ─────────────────────────────────────────
+# Slang berat, singkatan non-standar, bahasa gaul yang tidak ada di training.
+
+- intent: ask_recommendation
+  examples: |
+    - bro spill dong mbl yg [irit](preference) bgt bgt tp tetep [kenceng](preference) bdgt [300](budget) jt
+    - guys ada rec mbl [suv](body_type) yg bs buat [offroad](preference) ga bdgt [500](budget)
+    - woi ada mbl [listrik](powertrain) yg murce ga di bwh [600](budget) jt
+    - btw nyari ni mbl [7](min_seat) str yg [enak](preference) bgt dpk [400](budget) jtaan
+    - otw beli mbl [sedan](body_type) [mewah](preference) bgtt bdgt [2](budget) M ada ga sih
+    - ngab cariin mbl [matic](transmission) buat emak gw bdgt [200](budget) jtaan
+    - cuk mbl apa yg wrth it di [300](budget)jt [irit](preference) tp ga jelek
+
+# ── KATEGORI 3: Entitas Baru / OOD Entity ────────────────────────────────────
+# Merk, fitur, atau istilah yang TIDAK ada di lookup table training data.
+
+- intent: ask_recommendation
+  examples: |
+    - ada rekomendasi mobil [BYD](brand) budget [500jt](budget)?
+    - saya cari [Geely](brand) yang [irit](preference) di [400jt](budget)
+    - mobil [MG](brand) [hatchback](body_type) budget [300jt](budget) ada ga?
+    - cari [Neta](brand) yang punya [ADAS](feature) budget [400jt](budget)
+    - rekomendasi mobil dengan [head-up display](feature) budget [800jt](budget)
+    - ada mobil yang punya [ventilated seat](feature) di [700jt](budget)?
+    - saya mau mobil [PHEV](powertrain) budget [900jt](budget)
+    - ada yang [range extender](powertrain) ga di bawah [800jt](budget)?
+
+# ── KATEGORI 4: Struktur Kalimat Tidak Biasa ─────────────────────────────────
+# Urutan kata terbalik, fragmentasi, atau struktur non-standar.
+
+- intent: ask_recommendation
+  examples: |
+    - [500jt](budget) [SUV](body_type) [irit](preference) ada?
+    - [irit](preference) [nyaman](preference) [7](min_seat) seat, [400jt](budget), carikan
+    - [Toyota](brand)? [Honda](brand)? yang mana [irit](preference) di [300jt](budget)?
+    - budget sih [600jt](budget), tipenya [sedan](body_type), bahan bakar [bensin](powertrain), yang penting [nyaman](preference)
+    - carikan: [hybrid](powertrain), [7](min_seat) penumpang, max [800jt](budget), fitur: [sunroof](feature) + [kamera 360](feature)
+
+# ── KATEGORI 5: Input Minimalis ──────────────────────────────────────────────
+# Sangat pendek, hampir tidak ada konteks.
+
+- intent: ask_recommendation
+  examples: |
+    - mobil [200jt](budget)
+    - [suv](body_type) [500](budget)
+    - [irit](preference) [300jt](budget)
+    - rekomendasi [toyota](brand)
+    - [7](min_seat) seat [murah](preference)
+
+- intent: start_search
+  examples: |
+    - ulang
+    - lagi
+    - baru
+    - reset dong
+    - ganti
+
+- intent: out_of_scope
+  examples: |
+    - hah
+    - apaan
+    - lol
+    - wkwkwk
+    - hmm
+
+# ── KATEGORI 6: Input Verbose / Sangat Panjang ──────────────────────────────
+# Kalimat panjang dengan banyak informasi sekaligus.
+
+- intent: ask_recommendation
+  examples: |
+    - jadi gini ya saya tuh lagi bingung banget mau beli mobil pertama nih budget saya sekitar [400 juta](budget) kurang lebih lah ya terus saya maunya yang [irit](preference) banget soalnya saya tiap hari bolak balik kantor jaraknya lumayan jauh terus kalau bisa sih yang ada fitur [apple carplay](feature) nya biar bisa dengerin musik dari hp langsung sama yang [nyaman](preference) juga buat macet-macetan di jakarta oh iya kalau bisa yang [7](min_seat) seat soalnya kadang bawa keluarga juga
+    - saya sudah survey ke beberapa dealer dan tertarik sama [Honda](brand) sama [Toyota](brand) tapi masih bingung pilih yang mana soalnya budget cuma [500jt](budget) terus istri maunya yang [matic](transmission) dan ada [kamera 360](feature) buat parkir soalnya doi kurang jago parkir hehe terus kalau bisa yang [irit](preference) juga sih soalnya bensin mahal banget sekarang
+
+# ── KATEGORI 7: Negasi Kompleks ──────────────────────────────────────────────
+# Beberapa negasi sekaligus dalam satu kalimat.
+
+- intent: ask_recommendation
+  examples: |
+    - jangan yang [Toyota]{\"entity\":\"brand\", \"role\":\"negated\"} jangan [Honda]{\"entity\":\"brand\", \"role\":\"negated\"} juga, selain itu boleh, budget [400jt](budget)
+    - bukan [SUV]{\"entity\":\"body_type\", \"role\":\"negated\"} bukan [sedan]{\"entity\":\"body_type\", \"role\":\"negated\"} bukan [MPV]{\"entity\":\"body_type\", \"role\":\"negated\"}, yang lain apa aja di [500jt](budget)
+    - ga mau [diesel]{\"entity\":\"powertrain\", \"role\":\"negated\"} ga mau [listrik]{\"entity\":\"powertrain\", \"role\":\"negated\"} maunya yang [bensin](powertrain) atau [hybrid](powertrain) budget [600jt](budget)
+    - hindari [manual]{\"entity\":\"transmission\", \"role\":\"negated\"} dan [amt]{\"entity\":\"transmission\", \"role\":\"negated\"} sisanya oke budget [300jt](budget)
+
+# ── KATEGORI 8: Intent Ambigu / Implisit ─────────────────────────────────────
+# Kalimat yang intent-nya tidak jelas, bisa multi-interpretasi.
+
+- intent: ask_recommendation
+  examples: |
+    - saya bingung nih mau beli mobil apa ya
+    - lagi galau pilih mobil
+    - butuh saran nih soal mobil
+    - menurut kamu enaknya beli apa ya
+    - bisa bantu saya ga soal mobil
+
+- intent: out_of_scope
+  examples: |
+    - mobil apa yang paling keren menurut kamu secara pribadi?
+    - kenapa sih orang indonesia suka banget sama toyota?
+    - kapan ya mobil listrik bakal murah di indonesia?
+    - menurut kamu mending beli rumah dulu atau mobil dulu?
+    - apakah mobil china itu bagus atau jelek sih sebenernya?

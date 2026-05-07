@@ -2,70 +2,25 @@ recipe: default.v1
 language: id
 
 pipeline:
-  # ===================== TOKENIZER & FITUR DASAR ========================
   - name: WhitespaceTokenizer
   - name: RegexFeaturizer
   - name: LexicalSyntacticFeaturizer
-
-  # =================== SPARSE FEATURES (kata kunci) ====================
-  # Tetap penting untuk mendeteksi kata-kata unik seperti "sunroof", "matic", dll.
   - name: CountVectorsFeaturizer
-    analyzer: word
-    min_ngram: 1
-    max_ngram: 2
-    OOV_token: "_oov_"
   - name: CountVectorsFeaturizer
     analyzer: char_wb
     min_ngram: 1
     max_ngram: 4
-
-  # =================== DENSE FEATURES (konteks) ====================
-  - name: LanguageModelFeaturizer
-    model_name: "bert"
-    model_weights: "indobenchmark/indobert-large-p1"   # 🚀 Upgrade ke large
-    use_masked_language_model: false
-    # cache_dir: "models/cache"   # opsional, kalau sudah pernah download
-
-  # =================== DIET INTENSIVE ====================
   - name: DIETClassifier
-    epochs: 300                          # makin lama, makin matang
-    constrain_similarities: true
-    model_confidence: softmax
-    number_of_transformer_layers: 3      # tambah 1 layer dari v4
+    epochs: 75
+    dropout_rate: 0.3
     transformer_size: 256
-    dropout: 0.5                         # lebih agresif lawan overfit
-    weight_sparsity: 0.7                # makin dipaksa efisien
-    batch_strategy: sequence
-    batch_size: [8, 16]                  # ringankan memori
-    class_weight: balanced              # angkat kelas-kelas kecil (hard_filter, feature)
-
+    number_of_attention_heads: 4
+    constrain_similarities: true
   - name: EntitySynonymMapper
-
-  # =================== RESPONSE SELECTOR ====================
   - name: ResponseSelector
     epochs: 100
     constrain_similarities: true
 
-  # =================== FALLBACK ====================
-  - name: FallbackClassifier
-    threshold: 0.7                       # makin ketat → OOS makin aman
-    ambiguity_threshold: 0.1
-
 policies:
-  # =================== POLICIES (untuk Core) ====================
-  # Catatan: tidak mempengaruhi hasil evaluasi NLU, hanya disertakan
-  # agar bot bisa langsung dipakai setelah training.
   - name: MemoizationPolicy
   - name: RulePolicy
-    core_fallback_threshold: 0.4
-    core_fallback_action_name: "action_default_fallback"
-    enable_fallback_prediction: true
-
-  - name: UnexpecTEDIntentPolicy
-    max_history: 5
-    epochs: 100
-
-  - name: TEDPolicy
-    max_history: 5
-    epochs: 100
-    constrain_similarities: true

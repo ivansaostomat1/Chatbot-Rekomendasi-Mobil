@@ -1,5 +1,14 @@
 # chatbot-rekomendasi-mobil/backend/app/main.py
 
+import os
+import sys
+
+# Path injection for app package
+current_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = os.path.abspath(os.path.join(current_dir, ".."))
+if backend_dir not in sys.path:
+    sys.path.append(backend_dir)
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Dict, Any
@@ -12,13 +21,13 @@ from .schemas import (
 )
 
 from vikor.ranking_engine import recommend_cars, FEATURE_SUMMARY
-from .schemas import ChatRequest, HistoryItemResponse
+from .schemas import ChatRequest
 from .preference_builder import (
     build_recommendation_params, 
     UI_TO_INDEX_MAP
 )
 from .feature_engineering.preference_weight_map import build_ui_state
-from .database import init_db, save_chat_history, get_recent_history, delete_chat_history, delete_all_chat_history
+from .database import init_db, save_chat_history
 from .explainer import generate_car_insights, compare_two_cars
 from contextlib import asynccontextmanager
 from fastapi.exceptions import RequestValidationError
@@ -36,7 +45,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Car Recommendation API",
-    description="API sistem rekomendasi mobil menggunakan AHP + VIKOR",
+    description="API sistem rekomendasi mobil menggunakan VIKOR dan K-Means",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -115,29 +124,17 @@ def recommend(request: RecommendationRequest):
 
 
 # ======================================================
+# K-MEANS & DISAMBIGUATE LOGIC NOW IN /chat
+# ======================================================
+
+
+# ======================================================
 # CHAT ENDPOINT (NLP BRIDGE)
 # ======================================================
 
-@app.post("/initial-ui-state")
-def get_initial_ui_state(request: ChatRequest):
-    """
-    DIPANGGIL OLEH RASA: Mendapatkan profil bobot awal untuk slider UI
-    berdasarkan entitas/preferensi yang terdeteksi NLU.
-    """
-    # Gabungkan preference_terms dan need_terms untuk mapping yang lebih akurat
-    all_prefs = request.preference_terms + request.need_terms
-    
-    result = build_ui_state(
-        preference_terms=all_prefs,
-        entity_terms=request.entities
-    )
-    
-    print(f"[UI-STATE] Combined prefs: {all_prefs}")
-    print(f"[UI-STATE] Response: {result}")
-    
-    return result
+# (Logic moved to /chat)
 
-@app.post("/chat", response_model=RecommendationResponse, response_model_by_alias=False)
+@app.post("/chat")
 def chat(request: ChatRequest):
 
     print("==================================================")
@@ -145,28 +142,73 @@ def chat(request: ChatRequest):
     print(f"[FASTAPI] Data Request: {request.dict()}")
 
     try:
-        from app.feature_ontology import NEED_PROFILE_MAP, NEED_HARD_FILTER_MAP
-        from app.query_guard import parse_budget_strings
+        # 1. K-MEANS ROUTE (Tanpa VIKOR)
+        if request.target_car:
+            from app.feature_engineering.clustering import clustering_engine
+            # Cek apakah exact match atau perlu disambiguasi
+            matches = clustering_engine.search_car_models(request.target_car)
+            if not matches:
+                return {"error": f"Mobil {request.target_car} tidak ditemukan."}
+            if len(matches) > 1:
+                return {"action": "disambiguate_car", "matches": matches, "query": request.target_car}
+                
+            # Exact Match -> Lookalike
+            exact = matches[0]
+            results = clustering_engine.find_similar_cars(
+                brand=exact["brand"],
+                model=exact["model"],
+                varian=exact["varian"],
+                top_n=5
+            )
+            if "error" in results:
+                return {"error": results["error"]}
+                
+            recommendations = []
+            for car in results["recommendations"]:
+                try:
+                    recommendations.append(CarRecommendation(**car).dict())
+                except Exception as ve:
+                    print(f"[FASTAPI] [ERROR] Validation failed for car {car.get('BRAND')} {car.get('MODEL')}: {ve}")
+                    # Lanjutkan agar tidak crash total
+            
+            return {
+                "recommendations": recommendations,
+                "constraint_report": {"relax_notes": ["K-Means clustering mode active"]}
+            }
 
+        # 2. VIKOR ROUTE (Perankingan Kriteria)
+        from app.feature_ontology import NEED_HARD_FILTER_MAP
+        from app.query_guard import parse_budget_strings
+        from .feature_engineering.preference_weight_map import build_ui_state
+
+        # A. Cek apakah ini panggilan pertama dari NLU (belum ada manual_weights)
+        if not request.manual_weights:
+            all_prefs = request.preference_terms + request.need_terms
+            ui_state = build_ui_state(
+                preference_terms=all_prefs,
+                entity_terms=request.entities
+            )
+            # Kembalikan instruksi ke frontend untuk memunculkan slider bobot
+            payload = request.dict()
+            payload.update(ui_state)
+            return {"action": "ask_weights", "payload": payload}
+
+        # B. Panggilan kedua dari Frontend (sudah ada manual_weights)
         print("[FASTAPI] Membangun parameter rekomendasi...")
         params = build_recommendation_params(
             preference_terms=request.preference_terms,
             weight_input=request.weight_input,
             entities=request.entities,
         )
-        ahp_profile_inferred = params.get("ahp_profile")
-        print(f"[FASTAPI] [AHP] Profil dari preference_terms {request.preference_terms}: '{ahp_profile_inferred or 'Global (Tidak Terdeteksi)'}' ")
+
         # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
         # SINGLE SOURCE OF TRUTH: user manual_weights --- VIKOR
-        # NLP weight_input hanya dipakai kalau user tidak atur manual
         # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
         # BRIDGE: Map Internal Keys -> UI Keys (INDEX_...)
         # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
         from .preference_builder import UI_TO_INDEX_MAP
-        from .feature_ontology import PROFILE_UI_NAMES
         if request.manual_weights:
             # Map frontend short keys to internal INDEX_ keys 
-            from .feature_ontology import UI_TO_INDEX_MAP
             mapped_weights = {
                 UI_TO_INDEX_MAP.get(k, k): v 
                 for k, v in request.manual_weights.items()
@@ -191,10 +233,7 @@ def chat(request: ChatRequest):
         })
 
         # ======================================================
-        # PROSES NEED_TERMS --- PROFILE + HARD FILTERS
-        # need_terms yang punya profil jelas (keluarga, offroad, dll.)
-        # di-map ke ahp_profile dan hard filter yang tepat.
-        # Ini mengoverride profil yang mungkin sudah ditemukan dari preference_terms.
+        # PROSES NEED_TERMS --- HARD FILTERS
         # ======================================================
 
         need_terms = request.need_terms or []
@@ -202,11 +241,6 @@ def chat(request: ChatRequest):
 
         for need in need_terms:
             need_lower = need.lower().strip()
-
-            # Map need --- profile (override preference-based profile)
-            if need_lower in NEED_PROFILE_MAP:
-                params["ahp_profile"] = NEED_PROFILE_MAP[need_lower]
-                print(f"[FASTAPI] Profil AHP dari need '{need_lower}': {params['ahp_profile']}")
 
             # Map need --- hard filters (kemudian merge, prioritaskan yang lebih besar)
             if need_lower in NEED_HARD_FILTER_MAP:
@@ -263,7 +297,6 @@ def chat(request: ChatRequest):
         # GENERATE INDIVIDUAL CAR INSIGHTS
         # ======================================================
         for car in recommendations_data:
-            from .explainer import generate_car_insights # Import inside
             car["insight"] = generate_car_insights(car, params.get("weight_dict", {}))
 
         recommendations = [
@@ -275,17 +308,12 @@ def chat(request: ChatRequest):
         
         # Simpan History secara Sinkron
         try:
-            # Pastikan ahp_profile adalah string (bukan list) agar SQLite tidak error
-            db_ahp_profile = params.get("ahp_profile", "Global")
-            if isinstance(db_ahp_profile, list):
-                db_ahp_profile = ", ".join(db_ahp_profile)
-
             save_chat_history(
                 user_message=request.user_message or "",
                 nlp_preferences=request.preference_terms,
                 nlp_needs=request.need_terms,
                 nlp_entities=request.entities,
-                cluster_name=db_ahp_profile,
+                cluster_name="Personalized",
                 hard_filters_applied=params, 
                 cars_total=FEATURE_SUMMARY.get("total_cars", 0) if FEATURE_SUMMARY else 612,
                 cars_after_constraint=constraint_report.get("budget", {}).get("remaining_cars", 0),
@@ -294,6 +322,7 @@ def chat(request: ChatRequest):
                 session_id=request.session_id
             )
             print("[FASTAPI] [SUCCESS] Berhasil menyimpan History Evaluasi ke DB.")
+
         except Exception as e:
             print(f"[FASTAPI] [ERROR] Gagal menyimpan History Evaluasi: {e}")
 
@@ -308,7 +337,8 @@ def chat(request: ChatRequest):
         )
 
     except Exception as e:
-
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=500,
             detail=f"Chat recommendation error: {str(e)}"
@@ -318,579 +348,5 @@ def chat(request: ChatRequest):
 def feature_summary():
     from vikor.ranking_engine import get_feature_summary
     return get_feature_summary()
-
-@app.get("/history", response_model=List[HistoryItemResponse])
-def get_chat_history():
-    """Mengembalikan history evaluasi chatbot"""
-    try:
-        data = get_recent_history(limit=20)
-        return data
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Mendapatkan history error: {str(e)}"
-        )
-
-
-@app.delete("/history/{history_id}")
-def delete_history(history_id: int):
-    """Menghapus record history tertentu."""
-    try:
-        delete_chat_history(history_id)
-        return {"status": "success", "message": f"History ID {history_id} dihapus."}
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Gagal menghapus history: {str(e)}"
-        )
-
-@app.delete("/history")
-def delete_all_history():
-    """Menghapus seluruh record history."""
-    try:
-        delete_all_chat_history()
-        return {"status": "success", "message": "Seluruh history dihapus."}
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Gagal menghapus seluruh history: {str(e)}"
-        )
-
-
-# ======================================================
-# EVALUATION ENDPOINTS
-# ======================================================
-
-@app.get("/evaluasi/ahp")
-def eval_ahp():
-    """Return AHP evaluation metrics for all predefined profiles."""
-    try:
-        from app.feature_ontology import AHP_PROFILES, PROFILE_UI_NAMES
-        from ahp.ahp_engine import evaluate_all_profiles
-
-        results = evaluate_all_profiles(AHP_PROFILES)
-
-        # Format response
-        profile_results = {}
-        all_consistent = True
-
-        for profile_name, result in results.items():
-            is_consistent = result["is_consistent"]
-            if not is_consistent:
-                all_consistent = False
-
-            # Sort weights descending for readability
-            sorted_weights = sorted(
-                result["ahp_weights"].items(),
-                key=lambda x: x[1],
-                reverse=True
-            )
-
-            profile_results[profile_name] = {
-                "display_name": PROFILE_UI_NAMES.get(profile_name, profile_name),
-                "consistency_ratio": result["consistency_ratio"],
-                "is_consistent": is_consistent,
-                "cr_interpretation": "Konsisten (CR < 0.10)" if is_consistent else "Tidak Konsisten (CR >= 0.10)",
-                "weights": dict(sorted_weights),
-                "top_3_criteria": [
-                    {"name": k.replace("INDEX_", ""), "weight": round(v, 4)}
-                    for k, v in sorted_weights[:3]
-                ],
-                "pairwise_matrix_size": f"{len(result['pairwise_matrix'])}x{len(result['pairwise_matrix'])}",
-            }
-
-        return {
-            "method": "Analytic Hierarchy Process (AHP) - Saaty 1980",
-            "total_profiles": len(profile_results),
-            "all_consistent": all_consistent,
-            "consistency_threshold": 0.1,
-            "profiles": profile_results,
-            "formula": {
-                "weight_calculation": "Geometric Mean Method (GMM)",
-                "CR": "CR = CI / RI, where CI = (λmax - n) / (n - 1)",
-                "interpretation": "CR < 0.1 → Matriks perbandingan berpasangan konsisten secara logis."
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/evaluasi/rekomendasi")
-def eval_rekomendasi():
-    """Return a sample VIKOR ranking for evaluation visualization."""
-    try:
-        default_weights = {
-            "efficiency": 0.30,
-            "performance": 0.20,
-            "safety": 0.25,
-            "tech": 0.15,
-            "comfort": 0.10,
-        }
-        results = recommend_cars(weight_dict=default_weights, top_n=5)
-        from vikor.ranking_engine import DF_CARS
-        vikor_vals = DF_CARS["VIKOR_Q"].dropna() if "VIKOR_Q" in DF_CARS.columns else None
-        return {
-            "sample_recommendations": results,
-            "weight_dict": default_weights,
-            "top_n": 5,
-            "vikor_score_range": {
-                "min": float(vikor_vals.min()) if vikor_vals is not None else 0.0,
-                "max": float(vikor_vals.max()) if vikor_vals is not None else 1.0,
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ======================================================
-# NLP MAPPING ACCURACY EVALUATION
-# ======================================================
-
-@app.get("/evaluasi/nlp/mapping")
-def eval_nlp_mapping():
-    """
-    Evaluate NLP --- Decision Mapping Accuracy.
-    Tests: preference---INDEX, preference---Cluster, need---Cluster
-    """
-    try:
-        from .feature_ontology import (
-            PREFERENCE_INDEX_MAP,
-            PREFERENCE_PROFILE_MAP,
-            NEED_PROFILE_MAP
-        )
-
-        # --- Test dataset for mapping accuracy ---
-        test_cases = [
-            # preference --- INDEX mapping
-            {"input": "irit", "type": "preference_index", "expected": "INDEX_EFFICIENCY"},
-            {"input": "hemat", "type": "preference_index", "expected": "INDEX_EFFICIENCY"},
-            {"input": "kencang", "type": "preference_index", "expected": "INDEX_POWER"},
-            {"input": "nyaman", "type": "preference_index", "expected": "INDEX_PASSENGER_COMFORT"},
-            {"input": "aman", "type": "preference_index", "expected": "INDEX_SAFETY"},
-            {"input": "teknologi", "type": "preference_index", "expected": "INDEX_TECH"},
-            {"input": "mewah", "type": "preference_index", "expected": "INDEX_LUXURY"},
-            {"input": "banjir", "type": "preference_index", "expected": "INDEX_OFFROAD"},
-            {"input": "sporty", "type": "preference_index", "expected": "INDEX_HANDLING"},
-            {"input": "luas", "type": "preference_index", "expected": "INDEX_SPACE"},
-            {"input": "canggih", "type": "preference_index", "expected": "INDEX_TECH"},
-            {"input": "ngebut", "type": "preference_index", "expected": "INDEX_POWER"},
-            
-            # preference --- Cluster mapping
-            {"input": "irit", "type": "preference_cluster", "expected": "Urban Agility"},
-            {"input": "keluarga", "type": "preference_cluster", "expected": "Family Comfort"},
-            {"input": "kencang", "type": "preference_cluster", "expected": "High-End Performance"},
-            {"input": "banjir", "type": "preference_cluster", "expected": "Rugged Explorer"},
-            {"input": "mewah", "type": "preference_cluster", "expected": "High-End Performance"},
-            {"input": "sporty", "type": "preference_cluster", "expected": "High-End Performance"},
-            {"input": "hemat", "type": "preference_cluster", "expected": "Urban Agility"},
-            {"input": "luas", "type": "preference_cluster", "expected": "Family Comfort"},
-            
-            # need --- Cluster mapping
-            {"input": "keluarga", "type": "need_cluster", "expected": "Family Comfort"},
-            {"input": "keluarga besar", "type": "need_cluster", "expected": "Family Comfort"},
-            {"input": "offroad", "type": "need_cluster", "expected": "Rugged Explorer"},
-            {"input": "banjir", "type": "need_cluster", "expected": "Rugged Explorer"},
-            {"input": "mewah", "type": "need_cluster", "expected": "High-End Performance"},
-            {"input": "mudik", "type": "need_cluster", "expected": "Family Comfort"},
-        ]
-
-        results = []
-        correct = 0
-        total = len(test_cases)
-
-        # Per-type tracking
-        type_stats = {}
-
-        for tc in test_cases:
-            t = tc["type"]
-            inp = tc["input"]
-            expected = tc["expected"]
-
-            if t == "preference_index":
-                actual = PREFERENCE_INDEX_MAP.get(inp, None)
-            elif t == "preference_cluster":
-                actual = PREFERENCE_PROFILE_MAP.get(inp, None)
-            elif t == "need_cluster":
-                actual = NEED_PROFILE_MAP.get(inp, None)
-            else:
-                actual = None
-
-            is_correct = actual == expected
-            if is_correct:
-                correct += 1
-
-            if t not in type_stats:
-                type_stats[t] = {"correct": 0, "total": 0}
-            type_stats[t]["total"] += 1
-            if is_correct:
-                type_stats[t]["correct"] += 1
-
-            results.append({
-                "input": inp,
-                "type": t,
-                "expected": expected,
-                "actual": actual or "NOT_FOUND",
-                "correct": is_correct
-            })
-
-        # Per-type accuracy
-        per_type_accuracy = {}
-        for t, stats in type_stats.items():
-            acc = stats["correct"] / stats["total"] if stats["total"] > 0 else 0
-            per_type_accuracy[t] = {
-                "accuracy": round(acc, 4),
-                "correct": stats["correct"],
-                "total": stats["total"]
-            }
-
-        return {
-            "overall_accuracy": round(correct / total, 4) if total > 0 else 0,
-            "correct": correct,
-            "total": total,
-            "per_type_accuracy": per_type_accuracy,
-            "test_results": results,
-            "pipeline_config": {
-                "language": "id",
-                "pipeline": [
-                    "WhitespaceTokenizer",
-                    "RegexFeaturizer",
-                    "LexicalSyntacticFeaturizer",
-                    "CountVectorsFeaturizer (word)",
-                    "CountVectorsFeaturizer (char_wb, 3-5 ngram)",
-                    "DIETClassifier (200 epochs)",
-                    "EntitySynonymMapper"
-                ],
-                "entity_types": ["preference", "budget", "brand", "body_type", "powertrain", "feature", "hard_filter", "need"]
-            },
-            "mapping_tables": {
-                "preference_index_count": len(PREFERENCE_INDEX_MAP),
-                "preference_profile_count": len(PREFERENCE_PROFILE_MAP),
-                "need_profile_count": len(NEED_PROFILE_MAP),
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ======================================================
-# NLP BASELINE EVALUATION + GAP ANALYSIS
-# ======================================================
-
-@app.get("/evaluasi/nlp/baseline")
-def eval_nlp_baseline():
-    """
-    Read Rasa baseline test results (intent + entity) and compute gap analysis.
-    These results are from train/test split (80/20) evaluation.
-    """
-    import json
-    import os
-
-    base_path = os.path.join(os.path.dirname(__file__), "..", "rasa", "results")
-
-    try:
-        # Read intent report
-        intent_path = os.path.join(base_path, "intent_report.json")
-        with open(intent_path, "r") as f:
-            intent_report = json.load(f)
-
-        # Read entity (DIET) report
-        entity_path = os.path.join(base_path, "DIETClassifier_report.json")
-        with open(entity_path, "r") as f:
-            entity_report = json.load(f)
-
-        # Read error files
-        intent_errors_path = os.path.join(base_path, "intent_errors.json")
-        with open(intent_errors_path, "r") as f:
-            intent_errors = json.load(f)
-
-        entity_errors_path = os.path.join(base_path, "DIETClassifier_errors.json")
-        with open(entity_errors_path, "r") as f:
-            entity_errors = json.load(f)
-
-        SKIP_KEYS = {"accuracy", "macro avg", "micro avg", "weighted avg"}
-
-        # --- Build per-intent metrics ---
-        intent_classes = {}
-        for key, val in intent_report.items():
-            if key in SKIP_KEYS:
-                continue
-            if isinstance(val, dict) and "f1-score" in val:
-                intent_classes[key] = {
-                    "precision": round(val.get("precision", 0), 4),
-                    "recall": round(val.get("recall", 0), 4),
-                    "f1": round(val.get("f1-score", 0), 4),
-                    "support": val.get("support", 0),
-                    "confused_with": val.get("confused_with", {}),
-                }
-
-        # --- Build per-entity metrics ---
-        entity_classes = {}
-        for key, val in entity_report.items():
-            if key in SKIP_KEYS:
-                continue
-            if isinstance(val, dict) and "f1-score" in val:
-                entity_classes[key] = {
-                    "precision": round(val.get("precision", 0), 4),
-                    "recall": round(val.get("recall", 0), 4),
-                    "f1": round(val.get("f1-score", 0), 4),
-                    "support": val.get("support", 0),
-                    "confused_with": val.get("confused_with", {}),
-                }
-
-        # --- Gap Analysis ---
-        gaps = []
-
-        # Intent gaps
-        for name, metrics in intent_classes.items():
-            if metrics["f1"] < 0.8:
-                severity = "critical" if metrics["f1"] < 0.5 else "warning"
-                confused = metrics.get("confused_with", {})
-                confused_str = ", ".join([f"salah dikenali sebagai '{k}' ({v}x)" for k, v in confused.items()])
-                gaps.append({
-                    "component": "Intent Classification",
-                    "issue": f"Intent '{name}' memiliki F1-score rendah: {metrics['f1']:.1%}",
-                    "detail": f"Precision={metrics['precision']:.1%}, Recall={metrics['recall']:.1%}, Support={metrics['support']} sampel. {confused_str}",
-                    "severity": severity,
-                    "research_opportunity": f"Hyperparameter tuning pada DIETClassifier (epochs, embedding dimension, transformer layer) untuk meningkatkan klasifikasi intent '{name}'.",
-                })
-
-        # Entity gaps
-        for name, metrics in entity_classes.items():
-            if metrics["f1"] < 0.8:
-                severity = "critical" if metrics["f1"] < 0.5 else "warning"
-                confused = metrics.get("confused_with", {})
-                confused_str = ", ".join([f"tertukar dengan '{k}' ({v}x)" for k, v in confused.items()])
-                gaps.append({
-                    "component": "Entity Extraction",
-                    "issue": f"Entity '{name}' memiliki F1-score rendah: {metrics['f1']:.1%}",
-                    "detail": f"Precision={metrics['precision']:.1%}, Recall={metrics['recall']:.1%}, Support={metrics['support']} sampel. {confused_str}",
-                    "severity": severity,
-                    "research_opportunity": f"Optimalisasi entity recognition untuk '{name}': augmentasi training data, fine-tuning DIET loss weights, atau eksplorasi CRF layer tambahan.",
-                })
-
-        # High-confidence misclassifications
-        high_conf_errors = []
-        for err in intent_errors:
-            conf = err.get("intent_prediction", {}).get("confidence", 0)
-            if conf > 0.8:
-                high_conf_errors.append({
-                    "text": err["text"],
-                    "true_intent": err["intent"],
-                    "predicted": err["intent_prediction"]["name"],
-                    "confidence": round(conf, 4),
-                })
-
-        if high_conf_errors:
-            gaps.append({
-                "component": "Confidence Calibration",
-                "issue": f"{len(high_conf_errors)} kesalahan prediksi dengan confidence >80%",
-                "detail": "Model memberikan skor confidence tinggi pada prediksi yang salah --- indikasi overfitting atau kurangnya variasi data training.",
-                "severity": "critical",
-                "research_opportunity": "Implementasi confidence calibration (temperature scaling, Platt scaling) atau regularization pada DIET untuk mengurangi overconfident predictions.",
-            })
-
-        # Macro avg gap
-        intent_macro = intent_report.get("macro avg", {})
-        entity_macro = entity_report.get("macro avg", {})
-        macro_gap = abs(
-            intent_report.get("weighted avg", {}).get("f1-score", 0)
-            - intent_macro.get("f1-score", 0)
-        )
-        if macro_gap > 0.2:
-            gaps.append({
-                "component": "Class Imbalance",
-                "issue": f"Gap antara Weighted F1 ({intent_report.get('weighted avg', {}).get('f1-score', 0):.1%}) dan Macro F1 ({intent_macro.get('f1-score', 0):.1%}) = {macro_gap:.1%}",
-                "detail": "Perbedaan besar antara weighted dan macro average menunjukkan performa timpang antar kelas --- kelas minoritas performanya jauh lebih rendah.",
-                "severity": "warning",
-                "research_opportunity": "Data augmentation untuk kelas minoritas, class weight balancing pada DIET loss function, atau stratified sampling saat training.",
-            })
-
-        # Overall model config context
-        model_config = {
-            "epochs": 200,
-            "train_split": "80%",
-            "test_split": "20%",
-            "architecture": "DIET (Dual Intent and Entity Transformer)",
-            "featurizers": [
-                "WhitespaceTokenizer",
-                "RegexFeaturizer",
-                "LexicalSyntacticFeaturizer",
-                "CountVectorsFeaturizer (word)",
-                "CountVectorsFeaturizer (char_wb, 3-5 ngram)",
-            ],
-            "total_intents": len(intent_classes),
-            "total_entity_types": len(entity_classes),
-        }
-
-        return {
-            "intent": {
-                "per_class": intent_classes,
-                "accuracy": intent_report.get("accuracy", 0),
-                "weighted_f1": intent_report.get("weighted avg", {}).get("f1-score", 0),
-                "macro_f1": intent_macro.get("f1-score", 0),
-            },
-            "entity": {
-                "per_class": entity_classes,
-                "accuracy": entity_report.get("accuracy", 0),
-                "weighted_f1": entity_report.get("weighted avg", {}).get("f1-score", 0),
-                "macro_f1": entity_macro.get("f1-score", 0),
-            },
-            "errors": {
-                "intent_errors": intent_errors,
-                "entity_errors_count": len(entity_errors),
-                "high_confidence_errors": high_conf_errors,
-            },
-            "gaps": gaps,
-            "model_config": model_config,
-        }
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Baseline results not found. Run 'rasa test nlu' first.")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ======================================================
-# VIKOR SENSITIVITY ANALYSIS
-# ======================================================
-
-@app.get("/evaluasi/vikor/sensitivity")
-def eval_vikor_sensitivity():
-    """
-    Run VIKOR with 3 different weight scenarios to prove sensitivity.
-    Scenario A: Efficiency heavy
-    Scenario B: Performance heavy
-    Scenario C: Equal weights
-    """
-    try:
-        scenarios = {
-            "A_efficiency_heavy": {
-                "INDEX_EFFICIENCY": 0.6,
-                "INDEX_PERFORMANCE": 0.05,
-                "INDEX_SAFETY": 0.1,
-                "INDEX_TECH": 0.05,
-                "INDEX_PASSENGER_COMFORT": 0.05,
-                "INDEX_SPACE": 0.05,
-                "INDEX_PRICE": 0.1,
-            },
-            "B_performance_heavy": {
-                "INDEX_PERFORMANCE": 0.5,
-                "INDEX_FUN_TO_DRIVE": 0.15,
-                "INDEX_EFFICIENCY": 0.05,
-                "INDEX_SAFETY": 0.1,
-                "INDEX_TECH": 0.05,
-                "INDEX_PASSENGER_COMFORT": 0.05,
-                "INDEX_SPACE": 0.05,
-                "INDEX_PRICE": 0.05,
-            },
-            "C_equal_weights": {}  # empty = equal weights
-        }
-
-        scenario_results = {}
-        for name, weights in scenarios.items():
-            result = recommend_cars(weight_dict=weights, top_n=5)
-            recs = result.get("recommendations", [])
-            scenario_results[name] = {
-                "weights_used": weights if weights else "equal (auto)",
-                "top_5": [
-                    {
-                        "rank": i + 1,
-                        "brand": r.get("BRAND", ""),
-                        "model": r.get("MODEL", ""),
-                        "varian": r.get("VARIAN", ""),
-                        "VIKOR_Q": round(r.get("VIKOR_Q", 0), 4),
-                        "VIKOR_S": round(r.get("VIKOR_S", 0), 4),
-                        "VIKOR_R": round(r.get("VIKOR_R", 0), 4),
-                        "ahp_profile": r.get("AHP_PROFILE", ""),
-                        "INDEX_EFFICIENCY": round(r.get("INDEX_EFFICIENCY", 0), 3),
-                        "INDEX_PERFORMANCE": round(r.get("INDEX_PERFORMANCE", 0), 3),
-                    }
-                    for i, r in enumerate(recs[:5])
-                ]
-            }
-
-        # Check if rankings differ between scenarios
-        rankings = {}
-        for name, data in scenario_results.items():
-            rankings[name] = [f"{r['brand']} {r['model']}" for r in data["top_5"]]
-
-        is_sensitive = not (rankings.get("A_efficiency_heavy") == rankings.get("B_performance_heavy"))
-
-        return {
-            "is_sensitive": is_sensitive,
-            "sensitivity_proof": "Ranking berubah sesuai bobot preferensi --- sistem terbukti sensitif." if is_sensitive else "Ranking sama untuk semua skenario --- perlu cek data.",
-            "scenarios": scenario_results,
-            "formula": {
-                "Q": "Q = v(S - S*) / (S--- - S*) + (1-v)(R - R*) / (R--- - R*)",
-                "v": 0.5,
-                "interpretation": "Semakin kecil Q --- semakin optimal. Perubahan weight --- ---Q/---w menghasilkan ranking berbeda."
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ======================================================
-# AHP DETAILED EVALUATION (PAIRWISE + WEIGHT ANALYSIS)
-# ======================================================
-
-@app.get("/evaluasi/ahp/detail")
-def eval_ahp_detail():
-    """
-    Detailed AHP evaluation:
-    1. Pairwise comparison matrices per profile
-    2. Weight distribution analysis
-    3. Consistency validation for all profiles
-    """
-    try:
-        from app.feature_ontology import AHP_PROFILES, PROFILE_UI_NAMES
-        from ahp.ahp_engine import evaluate_all_profiles, AHP_CRITERIA
-
-        results = evaluate_all_profiles(AHP_PROFILES)
-
-        profile_details = {}
-        for profile_name, result in results.items():
-            weights = result["ahp_weights"]
-            sorted_w = sorted(weights.items(), key=lambda x: x[1], reverse=True)
-
-            # Weight distribution analysis
-            top_weight = sorted_w[0][1] if sorted_w else 0
-            bottom_weight = sorted_w[-1][1] if sorted_w else 0
-            spread = top_weight - bottom_weight
-
-            profile_details[profile_name] = {
-                "display_name": PROFILE_UI_NAMES.get(profile_name, profile_name),
-                "consistency_ratio": float(result["consistency_ratio"]),
-                "is_consistent": bool(result["is_consistent"]),
-                "weights": dict(sorted_w),
-                "top_criteria": [
-                    {"name": k.replace("INDEX_", ""), "weight": round(v, 4)}
-                    for k, v in sorted_w[:3]
-                ],
-                "bottom_criteria": [
-                    {"name": k.replace("INDEX_", ""), "weight": round(v, 4)}
-                    for k, v in sorted_w[-3:]
-                ],
-                "weight_spread": round(spread, 4),
-                "pairwise_matrix": result["pairwise_matrix"],
-                "criteria_labels": [c.replace("INDEX_", "") for c in AHP_CRITERIA],
-            }
-
-        # Summary statistics
-        cr_values = [r["consistency_ratio"] for r in results.values()]
-        avg_cr = sum(cr_values) / len(cr_values) if cr_values else 0
-
-        return {
-            "method": "Analytic Hierarchy Process (AHP)",
-            "reference": "Saaty, T.L. (1980). The Analytic Hierarchy Process. McGraw-Hill.",
-            "summary": {
-                "total_profiles": len(profile_details),
-                "avg_consistency_ratio": round(avg_cr, 4),
-                "all_consistent": all(r["is_consistent"] for r in results.values()),
-                "criteria_count": len(AHP_CRITERIA),
-            },
-            "profiles": profile_details,
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 

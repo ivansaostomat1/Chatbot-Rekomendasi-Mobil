@@ -1,22 +1,4 @@
 import pandas as pd
-from app.feature_ontology import PREFERENCE_PROFILE_MAP
-
-
-# ======================================================
-# INFER PROFILE FROM PREFERENCES
-# ======================================================
-
-def infer_profile_from_preferences(preferences):
-
-    if not preferences:
-        return None
-
-    for pref in preferences:
-
-        if pref in PREFERENCE_PROFILE_MAP:
-            return PREFERENCE_PROFILE_MAP[pref]
-
-    return None
 
 
 # ======================================================

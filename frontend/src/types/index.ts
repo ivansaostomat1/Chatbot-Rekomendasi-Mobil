@@ -5,7 +5,6 @@ export interface CarRecommendation {
   MODEL: string;
   VARIAN: string;
   HARGAOTR?: number;
-  AHP_PROFILE?: string;
   // VIKOR Core
   VIKOR_S?: number;
   VIKOR_R?: number;
@@ -116,6 +115,10 @@ export interface ChatMessage {
   recommendations?: CarRecommendation[];
   constraint_report?: ConstraintReport;
   ask_weights_payload?: Record<string, unknown>;
+  disambiguation_payload?: {
+    matches: any[];
+    query: string;
+  };
   timestamp: Date;
   isLoading?: boolean;
 }
@@ -203,7 +206,6 @@ export interface SensitivityScenarioItem {
   VIKOR_Q: number;
   VIKOR_S: number;
   VIKOR_R: number;
-  ahp_profile: string | null;
   INDEX_EFFICIENCY: number;
   INDEX_PERFORMANCE: number;
 }

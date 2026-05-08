@@ -7,7 +7,6 @@ from rasa_sdk.events import SlotSet
 from actions.context_manager import DialogueContextManager
 
 API_URL = "http://localhost:8000/chat"
-API_UI_URL = "http://localhost:8000/initial-ui-state"
 
 # ======================================================
 # EXTRACT ENTITIES MURNI (TANPA HARDCODED ONTOLOGY)
@@ -123,7 +122,7 @@ def extract_entities(entities, text=None):
                 except:
                     pass
 
-        # 4. FALLBACK CATCHER UNTUK TARGET PROFIL AHP (PREFERENCE)
+        # 4. FALLBACK CATCHER UNTUK TARGET PREFERENSI
         # Jika NLP meleset dari term krusial, kita tangkap teks aslinya
         critical_keywords = [
             "keluarga",
@@ -250,31 +249,29 @@ class ActionRecommendCar(Action):
             "must_have_sunroof": merged_context.get("must_have_sunroof", False),
         }
 
-        print(f"[RASA ACTION] Meminta profil bobot dan profil AHP dari backend...")
+        print(f"[RASA ACTION] Meminta routing/state dari backend...")
         try:
             ui_resp = requests.post(
-                API_UI_URL,
-                json={
-                    "preference_terms": merged_context["preference_terms"],
-                    "need_terms": [],
-                    "entities": entities_combined,
-                },
+                API_URL,
+                json=payload,
             )
             ui_resp.raise_for_status()
             ui_data = ui_resp.json()
 
-            payload["ahp_profile"] = ui_data.get("profile_name", "Global")
-            payload["ahp_profile_display_name"] = ui_data.get(
-                "profile_display_name", payload["ahp_profile"]
-            )
-            payload["base_weight_profile"] = ui_data.get("base_weight_profile", {})
+            if ui_data.get("action") == "ask_weights":
+                returned_payload = ui_data.get("payload", {})
+                payload["profile_display_name"] = returned_payload.get(
+                    "profile_display_name", "Personalized"
+                )
+                payload["base_weight_profile"] = returned_payload.get("base_weight_profile", {})
+            else:
+                payload["base_weight_profile"] = {}
 
             print(
-                f"[RASA ACTION] Terdeteksi profil AHP: {payload['ahp_profile']} ({payload['ahp_profile_display_name']})"
+                f"[RASA ACTION] State response received: {payload.get('profile_display_name')}"
             )
         except Exception as e:
-            print(f"[RASA ACTION] [ERROR] Gagal mengambil profil awal: {e}")
-            payload["ahp_profile"] = "Global"
+            print(f"[RASA ACTION] [ERROR] Gagal memanggil /chat API: {e}")
             payload["base_weight_profile"] = {}
 
         # ─────────────────────────────────────────────────────────────────────────────
@@ -522,3 +519,81 @@ class ActionCompareBudget(Action):
             )
 
         return []
+
+class ActionFindLookalike(Action):
+
+    def name(self):
+        return "action_find_lookalike"
+
+    def run(self, dispatcher, tracker, domain):
+        text = tracker.latest_message.get("text", "")
+        entities = tracker.latest_message.get("entities", [])
+        
+        # Prioritize entity from latest message over slot
+        target_car = None
+        for e in entities:
+            if e.get("entity") == "target_car":
+                target_car = e.get("value")
+                break
+        
+        if not target_car:
+            target_car = tracker.get_slot("target_car")
+                    
+        # Extract from text as fallback if still none
+        if not target_car:
+            target_car = text.replace("sekelas", "").replace("mirip", "").replace("alternatif", "").replace("selain", "").strip()
+            
+        if not target_car:
+            dispatcher.utter_message(text="Mobil apa yang ingin dicari alternatifnya?")
+            return []
+
+        if isinstance(target_car, list):
+            target_car = target_car[0]
+            
+        print(f"[RASA ACTION] Mencari lookalike untuk: {target_car}")
+
+        try:
+            # Panggil endpoint /chat (Sentral Router)
+            chat_resp = requests.post(
+                "http://localhost:8000/chat", 
+                json={"target_car": target_car}
+            )
+            chat_resp.raise_for_status()
+            data = chat_resp.json()
+            
+            if "error" in data:
+                dispatcher.utter_message(text=data["error"])
+                return []
+                
+            if data.get("action") == "disambiguate_car":
+                print(f"[RASA ACTION] Ambiguous target '{target_car}'. Triggering popup.")
+                dispatcher.utter_message(
+                    text=f"Ada beberapa varian untuk '{target_car}'. Silakan pilih yang mana:",
+                    custom={
+                        "action": "disambiguate_car", 
+                        "matches": data["matches"],
+                        "query": data["query"]
+                    }
+                )
+                return [SlotSet("target_car", target_car)]
+                
+            if "recommendations" in data:
+                cars = data["recommendations"]
+                if not cars:
+                    dispatcher.utter_message(text="Maaf, saya tidak menemukan mobil yang sekelas.")
+                    return []
+                    
+                dispatcher.utter_message(
+                    text=f"Sip! Berdasarkan K-Means Clustering, ini 5 mobil yang setara dengan pencarian Anda:",
+                    custom={
+                        "recommendations": cars, 
+                        "constraint_report": data.get("constraint_report")
+                    }
+                )
+                
+        except Exception as e:
+            print(f"[RASA ACTION] Error calling chat backend: {e}")
+            dispatcher.utter_message(text="Maaf, terjadi kesalahan teknis pada sistem rekomendasi.")
+            
+        return [SlotSet("target_car", target_car)]
+

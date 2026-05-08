@@ -36,7 +36,7 @@ import numpy as np
 from numpy.linalg import norm
 from typing import Dict, List
 from .semantic_mapper import get_mapper
-from ..feature_ontology import GLOBAL_DEFAULT_PROFILE, AHP_PROFILES, PREFERENCE_PROFILE_MAP
+from ..feature_ontology import GLOBAL_DEFAULT_WEIGHTS, UI_TO_INDEX_MAP
 
 # ======================================================
 # KAMUS UTAMA: PREFERENSI --- BOBOT MULTI-KRITERIA
@@ -615,62 +615,16 @@ def resolve_preference_weights(
     print(f"[PREF MAP] Matched terms: {matched_terms}")
 
     final_weights: Dict[str, float] = {}
+    from ..feature_ontology import GLOBAL_DEFAULT_WEIGHTS
     for criteria in ALL_CRITERIA:
         if hit_count[criteria] > 0:
             avg = weight_sum[criteria] / hit_count[criteria]
             final_weights[criteria] = round(min(10.0, max(0.0, avg)), 1)
         else:
-            final_weights[criteria] = float(GLOBAL_DEFAULT_PROFILE.get(criteria, default))
+            final_weights[criteria] = float(GLOBAL_DEFAULT_WEIGHTS.get(criteria, default))
 
     print(f"[PREF MAP] Final weights (Decoupled): {final_weights}")
     return final_weights
-
-# ======================================================
-# PROFILE DETECTION - COSINE SIMILARITY + HARD OVERRIDE
-# ======================================================
-def detect_profile_from_weights(weights: Dict[str, float], preference_terms: List[str] = None) -> List[str]:
-    """
-    Mendeteksi profil AHP berdasarkan Hybrid Scoring:
-    Skor = (Cosine Similarity * 10) + (Keyword Match * 50)
-    
-    Ini memastikan kata kunci eksplisit (e.g. 'sport') memiliki bobot penentu yang lebih tinggi
-    daripada kemiripan matematis yang mungkin bias ke profil 'Global/Practical'.
-    """
-    user_vector = np.array([weights.get(c, 5.0) for c in ALL_CRITERIA])
-    profile_scores = {}
-    
-    # 1. Hitung base similarity (0.0 - 10.0)
-    for profile_name, profile in AHP_PROFILES.items():
-        centroid = np.array([profile.get(c, 5.0) for c in ALL_CRITERIA])
-        dot = np.dot(user_vector, centroid)
-        norm_user = norm(user_vector)
-        norm_centroid = norm(centroid)
-        
-        similarity = dot / (norm_user * norm_centroid) if (norm_user != 0 and norm_centroid != 0) else 0.0
-        profile_scores[profile_name] = similarity * 10.0
-        
-    # 2. Tambahkan Keyword Bonus (50.0 per match)
-    if preference_terms:
-        for term in preference_terms:
-            t_clean = term.strip().lower()
-            if t_clean in PREFERENCE_PROFILE_MAP:
-                matched_profile = PREFERENCE_PROFILE_MAP[t_clean]
-                profile_scores[matched_profile] = profile_scores.get(matched_profile, 0) + 50.0
-                print(f"[AHP PROFILE] [KEYWORD BONUS] '{t_clean}' memberi bonus +50 ke '{matched_profile}'")
-
-    # 3. Cari pemenang dengan skor tertinggi
-    sorted_profiles = sorted(profile_scores.items(), key=lambda x: x[1], reverse=True)
-    best_profile, best_score = sorted_profiles[0]
-    
-    print(f"[AHP PROFILE] Hasil Scoring: {sorted_profiles}")
-    
-    # Jika skor sangat rendah (tidak ada match dan similarity hancur), kembali ke Global
-    if best_score < 4.0: 
-        print(f"[AHP PROFILE] Skor terlalu rendah ({best_score:.2f}). Kembali ke 'Global'.")
-        return ["Global"]
-    
-    print(f"[AHP PROFILE] Profil terpilih: '{best_profile}' (Skor total: {best_score:.2f})")
-    return [best_profile]
 
 # ======================================================
 # ENTRY POINT: build_ui_state
@@ -680,35 +634,22 @@ def build_ui_state(
     entity_terms: List[str] = None,
 ) -> Dict:
     """
-    Entry point utama. Dipanggil dari endpoint /initial-ui-state.
+    Entry point utama. Membangun state awal untuk UI sliders.
     """
     entity_terms = entity_terms or []
-
-    # Gabungkan semua konteks (Preferensi + Entitas Teknis) untuk deteksi profil
-    all_context_terms = list(set(preference_terms + entity_terms))
-    profiles = detect_profile_from_weights(weights, preference_terms=all_context_terms)
-    primary_profile = profiles[0]
-
-    profile_weights = dict(AHP_PROFILES.get(primary_profile, GLOBAL_DEFAULT_PROFILE))
-
-    final_profile = {}
-    for c in ALL_CRITERIA:
-        nlp_val = weights.get(c, 5.0)
-        profile_val = profile_weights.get(c, 5.0)
-        final_profile[c] = max(nlp_val, profile_val)
-
-    from ..feature_ontology import UI_TO_INDEX_MAP, PROFILE_UI_NAMES
+    
+    # Calculate weights based on detected preferences
+    # This function already handles fallbacks to GLOBAL_DEFAULT_WEIGHTS
+    final_weights = resolve_preference_weights(preference_terms, entity_terms)
 
     ui_profile = {}
-    for short_key, val in final_profile.items():
+    for short_key, val in final_weights.items():
         ui_key = UI_TO_INDEX_MAP.get(short_key, short_key)
         ui_profile[ui_key] = val
 
-    display_name = PROFILE_UI_NAMES.get(primary_profile, primary_profile)
-
     return {
-        "profile_name": primary_profile,
-        "profile_display_name": display_name,
-        "all_profiles": profiles,
+        "profile_name": "Umum",
+        "profile_display_name": "Rekomendasi Terpersonalisasi",
+        "all_profiles": ["Umum"],
         "base_weight_profile": ui_profile,
     }

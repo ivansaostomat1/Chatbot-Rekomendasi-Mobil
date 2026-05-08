@@ -15,7 +15,6 @@ class CarRecommendation(BaseModel):
     VARIAN: str
 
     HARGAOTR: Optional[int]
-    AHP_PROFILE: Optional[str]
 
     VIKOR_Q: Optional[float] = None
     VIKOR_S: Optional[float] = None
@@ -30,21 +29,21 @@ class CarRecommendation(BaseModel):
     POWERTRAIN: Optional[str] = None
     
     # --- Detail Spesifikasi Tambahan ---
-    BODY_TYPE: Optional[str] = Field(None, alias="BODY TYPE")
+    BODY_TYPE: Optional[str] = None
     FUEL: Optional[str] = None
     CC: Optional[float] = None
     IS_TURBO: Optional[bool] = None
-    HORSE_POWER: Optional[float] = Field(None, alias="HORSE POWER (HP)")
-    TORQUE: Optional[float] = Field(None, alias="TORQUE (Nm)")
+    HORSE_POWER: Optional[float] = None
+    TORQUE: Optional[float] = None
     TRANSMISSION: Optional[str] = None
     SEAT: Optional[int] = None
-    GROUND_CLEARANCE: Optional[float] = Field(None, alias="GROUND CLEARANCE")
+    GROUND_CLEARANCE: Optional[float] = None
     LONG: Optional[float] = None
     WIDTH: Optional[float] = None
     HEIGHT: Optional[float] = None
     WHEELBASE: Optional[float] = None
     EV_RANGE_KM: Optional[float] = None
-    BATTERY: Optional[float] = Field(None, alias="BATTERY (KWH)")
+    BATTERY: Optional[float] = None
     
     # --- Fitur Brochure / Sales ---
     # Keselamatan & ADAS
@@ -126,6 +125,7 @@ class ChatRequest(BaseModel):
     must_have_wireless_tech: Optional[bool] = False
 
     manual_weights: Optional[Dict[str, float]] = None
+    target_car: Optional[str] = None
 
 
 # ======================================================
@@ -136,7 +136,6 @@ class RecommendationRequest(BaseModel):
 
     weight_dict: Optional[Dict[str, float]] = Field(default_factory=dict)
     brand: Optional[str] = None
-    ahp_profile: Optional[str] = None
 
     max_budget: Optional[int] = None
     min_budget: Optional[int] = None
@@ -157,30 +156,5 @@ class RecommendationRequest(BaseModel):
 
 
 # ======================================================
-# HISTORY SCHEMA
+# HISTORY SCHEMA (OBSOLETE)
 # ======================================================
-
-class HistoryItemResponse(BaseModel):
-    id: int
-    user_message: str
-    timestamp: str
-    
-    # NLP
-    nlp_preferences: List[str]
-    nlp_needs: List[str]
-    nlp_entities: List[str]
-    
-    # AHP Profile
-    ahp_profile: Optional[str]
-    hard_filters_applied: Dict[str, Any]  # misal {"min_seat": 6}
-    
-    # Weights
-    weight_dict_used: Dict[str, float] = {}
-    
-    # VIKOR & Constraints
-    cars_total: int
-    cars_after_constraint: int
-    top_recommendations: List[CarRecommendation]
-
-    class Config:
-        orm_mode = True

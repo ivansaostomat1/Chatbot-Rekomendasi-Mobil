@@ -7,10 +7,12 @@ intents:
   - ask_comparison
   - start_search
   - out_of_scope
+  - ask_similar_car
 
 actions:
   - action_recommend_car
   - action_compare_budget
+  - action_find_lookalike
 
 responses:
 
@@ -61,6 +63,7 @@ entities:
   - brand:
       roles:
         - negated
+  - target_car
 
 slots:
   min_budget:
@@ -160,3 +163,10 @@ slots:
     influence_conversation: false
     mappings:
       - type: custom
+
+  target_car:
+    type: list
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: target_car

@@ -7,7 +7,7 @@ import CarCard from '@/components/CarCard';
 import TextType from '@/components/TextType';
 import RippleGrid from '@/components/RippleGrid';
 import ManualWeightInput from '@/components/ManualWeightInput';
-import { useScientificMode } from '@/lib/ScientificModeContext';
+import DisambiguationPopup from '@/components/DisambiguationPopup';
 import api from '@/lib/api';
 import styles from './page.module.css';
 import { HiPaperAirplane, HiArrowPath } from 'react-icons/hi2';
@@ -51,76 +51,26 @@ function MsgBubble({ msg }: { msg: ChatMessage }) {
 }
 
 function RankedCars({ cars, constraintReport }: { cars: CarRecommendation[], constraintReport?: ConstraintReport }) {
-  const { isScientific } = useScientificMode();
   const [expanded, setExpanded] = useState(false);
-  const weights = constraintReport?.normalized_weights;
-  const relaxNotes = constraintReport?.relax_notes;
 
   return (
     <div className={styles.carsSection}>
       <div className={styles.carsSectionHeader}>
         <span className={styles.carsSectionTitle}>🏆 Top {cars.length} Rekomendasi</span>
-        {isScientific && <span className={styles.carsSectionBadge}>VIKOR Ranked</span>}
       </div>
 
-      {/* Weight Vector Panel (Scientific Only) */}
-      {isScientific && weights && Object.keys(weights).length > 0 && (
-        <div style={{ marginBottom: '12px', padding: '12px 14px', borderRadius: '12px', background: 'rgba(30,111,217,0.07)', border: '1px solid rgba(30,111,217,0.2)', fontSize: '0.75rem' }}>
-          <div style={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4090F7', marginBottom: '8px' }}>📊 Bobot Preferensi (Normalized)</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {Object.entries(weights)
-              .filter(([, v]) => v > 0.001)
-              .sort(([, a], [, b]) => b - a)
-              .map(([k, v]) => {
-                const isHigh = v > 0.1;
-                return (
-                  <div key={k} style={{ 
-                    display: 'inline-flex', alignItems: 'center', gap: '6px', 
-                    padding: '6px 12px', borderRadius: '20px', 
-                    background: isHigh ? 'rgba(64,144,247,0.15)' : 'var(--bg-card)', 
-                    border: `1px solid ${isHigh ? 'rgba(64,144,247,0.3)' : 'var(--border-color)'}`,
-                    color: isHigh ? '#4090F7' : 'var(--text-secondary)'
-                  }}>
-                    <span style={{ fontWeight: isHigh ? 800 : 600, fontSize: '0.65rem' }}>{k.replace('INDEX_', '').replace(/_/g, ' ')}</span>
-                    <span style={{ fontWeight: 800, fontSize: '0.75rem', color: isHigh ? '#4090F7' : 'var(--text-primary)' }}>{(v * 100).toFixed(1)}%</span>
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-      )}
-
-      {/* Relaxation Log (Scientific Only) */}
-      {isScientific && relaxNotes && relaxNotes.length > 0 && (
-        <div style={{ marginBottom: '12px', padding: '10px 14px', borderRadius: '10px', background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)', fontSize: '0.75rem' }}>
-          <div style={{ fontWeight: 800, color: '#F59E0B', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>⚠️ Constraint Relaxation</div>
-          {relaxNotes.map((note, i) => (
-            <div key={i} style={{ color: 'var(--text-muted)', lineHeight: 1.8 }}>→ {note}</div>
-          ))}
-        </div>
-      )}
-
       <div className={styles.carGrid}>
-        {cars[0] && <CarCard car={cars[0]} rank={1} expanded={expanded} onToggleExpand={() => setExpanded(!expanded)} />}
-        {cars.slice(1, 3).length > 0 && (
-          <div className={styles.carRow}>
-            {cars.slice(1, 3).map((car, i) => <CarCard key={i} car={car} rank={i + 2} expanded={expanded} onToggleExpand={() => setExpanded(!expanded)} />)}
+        {cars.map((car, i) => (
+          <div key={i} className={styles.carRow}>
+            <CarCard car={car} rank={i + 1} expanded={expanded} onToggleExpand={() => setExpanded(!expanded)} />
           </div>
-        )}
-        {cars.slice(3, 5).length > 0 && (
-          <div className={styles.carRow}>
-            {cars.slice(3, 5).map((car, i) => <CarCard key={i} car={car} rank={i + 4} expanded={expanded} onToggleExpand={() => setExpanded(!expanded)} />)}
-          </div>
-        )}
+        ))}
       </div>
     </div>
   );
 }
 
-
-
 export default function ChatbotPage() {
-  const { isScientific } = useScientificMode();
   const [messages, setMessages] = useState<ChatMessage[]>(() => [createWelcomeMessage()]);
   const [savedWeights, setSavedWeights] = useState<Record<string, number> | null>(null);
   const [sessionId, setSessionId] = useState<string>(() => Date.now().toString());
@@ -164,7 +114,7 @@ export default function ChatbotPage() {
         timestamp: new Date(),
       }]);
 
-      try { await fetch('http://localhost:8000/history'); } catch { }
+
     } catch (e) {
       setMessages(prev => [...prev, {
         id: `e-${Date.now()}`,
@@ -216,7 +166,7 @@ export default function ChatbotPage() {
           .join('\n\n');
 
         // Cari balasan custom action jika disediakan oleh actions.py
-        const actionResponse = rasaResponses.find((r: RasaMessage) => r.custom && (r.custom.action === "ask_weights" || r.custom.action === "search_cars"));
+        const actionResponse = rasaResponses.find((r: RasaMessage) => r.custom && (r.custom.action === "ask_weights" || r.custom.action === "search_cars" || r.custom.action === "disambiguate_car"));
 
         // Cari balasan custom recommendations jika disediakan oleh actions.py
         const recResponse = rasaResponses.find((r: RasaMessage) => r.custom && r.custom.recommendations);
@@ -261,7 +211,7 @@ export default function ChatbotPage() {
                 constraint_report: data.constraint_report || null,
                 timestamp: new Date(),
               }]);
-              try { await fetch('http://localhost:8000/history'); } catch { }
+
             } catch (e) {
               setMessages(prev => [...prev, {
                 id: `e-${Date.now()}`,
@@ -270,6 +220,17 @@ export default function ChatbotPage() {
                 timestamp: new Date(),
               }]);
             }
+          } else if (actionType === "disambiguate_car") {
+            setMessages(prev => [...prev, {
+              id: `b-${Date.now()}`,
+              role: 'assistant',
+              content: textParts || 'Ada beberapa varian mobil yang cocok. Silakan pilih salah satu untuk mencari alternatifnya:',
+              disambiguation_payload: {
+                matches: actionResponse.custom.matches || [],
+                query: actionResponse.custom.query || 'Mobil target'
+              },
+              timestamp: new Date(),
+            }]);
           }
         } else {
           setMessages(prev => [...prev, {
@@ -291,7 +252,7 @@ export default function ChatbotPage() {
       }
 
       // Refresh history
-      try { await fetch('http://localhost:8000/history'); } catch { }
+
 
     } catch {
       setMessages(prev => [...prev, {
@@ -318,6 +279,14 @@ export default function ChatbotPage() {
     } catch (e) {
       console.error('Failed to clear Rasa backend conversation state:', e);
     }
+  };
+
+  const submitDisambiguation = async (match: any, msgId: string) => {
+    // Hilangkan payload agar popup tidak muncul lagi
+    setMessages(prev => prev.map(m => m.id === msgId ? { ...m, disambiguation_payload: undefined } : m));
+    
+    const payload = `/ask_similar_car{"target_car": "${match.brand} ${match.model}"}`;
+    await sendMessage(payload);
   };
 
   return (
@@ -378,8 +347,8 @@ export default function ChatbotPage() {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                        <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Target Profil:</span>
-                        <span style={{ fontWeight: 800, color: '#8B5CF6' }}>{payload.ahp_profile_display_name || payload.ahp_profile || "Global"}</span>
+                        <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Gaya Rekomendasi:</span>
+                        <span style={{ fontWeight: 800, color: '#8B5CF6' }}>{payload.profile_display_name || "Personalized"}</span>
                       </div>
                       {payload.entities?.length > 0 && (
                         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -409,6 +378,14 @@ export default function ChatbotPage() {
                     initialWeights={payload.base_weight_profile || {}}
                     onSubmit={(w) => submitWeights(w, payload, msg.id)}
                     disabled={loading}
+                  />
+                )}
+
+                {msg.disambiguation_payload && (
+                  <DisambiguationPopup 
+                    matches={msg.disambiguation_payload.matches}
+                    query={msg.disambiguation_payload.query}
+                    onSelect={(match) => submitDisambiguation(match, msg.id)}
                   />
                 )}
 

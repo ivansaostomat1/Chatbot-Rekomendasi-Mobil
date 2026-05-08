@@ -1,22 +1,32 @@
 recipe: default.v1
 language: id
 
+# TAv2 — IndoBERT (HuggingFace Transformers) Only
+# Fokus: ganti seluruh featurizer ke pre-trained IndoBERT
+# Model: indobenchmark/indobert-base-p1
+# Perubahan dari versi lama:
+#   - Hapus CountVectorsFeaturizer (digantikan LanguageModelFeaturizer)
+#   - Hapus LexicalSyntacticFeaturizer
+#   - Tambah HFTransformersNLP + LanguageModelTokenizer + LanguageModelFeaturizer
+#   - epochs diturunkan ke 50 (embeddings sudah kuat, tidak perlu banyak epoch)
+#   - Tetap pakai RegexFeaturizer untuk pattern budget/angka
+
 pipeline:
   - name: WhitespaceTokenizer
+    intent_tokenization_flag: false
+    intent_split_symbol: "_"
+  - name: LanguageModelFeaturizer
+    model_name: "bert"
+    model_weights: "indobenchmark/indobert-base-p1"
   - name: RegexFeaturizer
-  - name: LexicalSyntacticFeaturizer
-  - name: CountVectorsFeaturizer
-  - name: CountVectorsFeaturizer
-    analyzer: char_wb
-    min_ngram: 1
-    max_ngram: 4
   - name: DIETClassifier
-    epochs: 100
-    dropout_rate: 0.3
+    epochs: 50
+    learning_rate: 0.001
     constrain_similarities: true
+    entity_recognition: true
   - name: EntitySynonymMapper
   - name: ResponseSelector
-    epochs: 100
+    epochs: 50
     constrain_similarities: true
 
 policies:

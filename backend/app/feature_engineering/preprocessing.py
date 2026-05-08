@@ -1,5 +1,14 @@
 # backend/app/feature engineering/preprocessing.py
 
+import os
+import sys
+
+# Path injection for app package
+current_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = os.path.abspath(os.path.join(current_dir, "..", ".."))
+if backend_dir not in sys.path:
+    sys.path.append(backend_dir)
+
 import pandas as pd
 import numpy as np
 
@@ -97,6 +106,8 @@ def encode_granular_features(df):
 
         "AMBIENT_LIGHT": {"no": 0, "yes": 1},
         "HEAD_UP_DISPLAY": {"no": 0, "yes": 1},
+        "CAMERA_360": {"no": 0, "yes": 1, "0": 0, "1": 1},
+        "AUTO_HOLD": {"no": 0, "yes": 1},
 
 # Untuk tipe jok (Leather/Fabric) buat skalanya
 "LEATHER_SEAT": {
@@ -125,6 +136,15 @@ def encode_granular_features(df):
     "yes (front & rear)": 4,
     "yes (all)": 5
 },
+"REAR_SEAT_ENTERTAINMENT": {"no": 0, "yes": 1},
+"PARKING_BRAKE": {"manual": 0, "electric": 1},
+"AEB": {"no": 0, "yes": 1, "0": 0, "1": 1},
+"ACC": {"no": 0, "yes": 1, "0": 0, "1": 1},
+"LKA": {"no": 0, "yes": 1, "0": 0, "1": 1},
+"ABS": {"no": 0, "yes": 1, "0": 0, "1": 1},
+"ESC": {"no": 0, "yes": 1, "0": 0, "1": 1},
+"TCS": {"no": 0, "yes": 1, "0": 0, "1": 1},
+"RCTA": {"no": 0, "yes": 1, "0": 0, "1": 1},
 "MASSAGE_SEAT": {
     "no": 0, 
     "yes (driver)": 1, 

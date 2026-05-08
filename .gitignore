@@ -38,6 +38,11 @@ docs/RESEARCH_NOTES.md
 docs/proyek_proposal_ta_nlu.txt
 docs/buat ntar.md
 docs/proposal TA rasa.md
+docs/literatur_review_ta.md
+
+backend/rasa/jurnal
+backend/rasa/Tugas akhir
+
 
 # Note: backend/data/ is NOT excluded. All CSV and Databases will be pushed.
 # Note: frontend/public/ is NOT excluded. All brosurs/images will be pushed.

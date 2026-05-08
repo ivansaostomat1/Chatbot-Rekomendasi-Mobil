@@ -21,7 +21,6 @@ if backend_dir not in sys.path:
 
 from app.data_loader import load_all_datasets
 from app.feature_engineering.pipeline import generate_feature_dataset
-from ahp.ahp_engine import get_ahp_weights
 
 from app.query_guard import apply_query_guard
 from app.feature_inspector import generate_feature_summary
@@ -135,7 +134,6 @@ def apply_hard_filters(df, req_kwargs: dict):
 
 def recommend_cars(
     weight_dict=None,
-    ahp_profile=None,
     max_budget=None,
     min_budget=None,
     top_n=5,
@@ -145,7 +143,6 @@ def recommend_cars(
     feature_constraints=None,
     brand=None,
     negated_terms=None,
-    ahp_weights=None,
     **kwargs
 ):
 
@@ -269,17 +266,9 @@ def recommend_cars(
         print("[VIKOR RANKING ENGINE] Dataset tetap kosong setelah semua relax strategy dikerahkan.")
         return {"recommendations": [], "constraint_report": constraint_report}
 
-    # ==================================================
-    # AHP WEIGHT INTEGRATION
-    # ==================================================
-
-    if ahp_weights and not weight_dict:
-        # Jika AHP weights tersedia dan user belum set manual weights,
-        # gunakan bobot AHP yang sudah tervalidasi konsistensinya (CR < 0.1)
-        weight_dict = ahp_weights
-        print(f"[VIKOR RANKING ENGINE] Menggunakan bobot AHP (Profil: {ahp_profile or 'Dynamic'})")
-    elif not weight_dict:
+    if not weight_dict:
         weight_dict = {}
+
 
     # ==================================================
     # VIKOR RANKING
@@ -322,7 +311,6 @@ def recommend_cars(
         "MODEL",
         "VARIAN",
         "HARGAOTR",
-        "AHP_PROFILE",
         "VIKOR_S",
         "VIKOR_R",
         "VIKOR_Q",
@@ -396,58 +384,9 @@ def recommend_cars(
 
     records = result[cols].to_dict(orient="records")
 
-    # --- Decoding / Processing Layer ---
-    def decode_feature(val, mapping, default="Tidak Ada"):
-        if val is None or pd.isna(val): return default
-        try:
-            v = float(val)
-            return mapping.get(v, default)
-        except:
-            return str(val)
-
-    MAP_SUNROOF = {0: "Tidak Ada", 1: "Moonroof", 2: "Panoramic"}
-    MAP_CARPLAY = {0: "Tidak Ada", 1: "Kabel (Wired)", 2: "Nirkabel (Wireless)"}
-    MAP_AA      = {0: "Tidak Ada", 1: "Kabel (Wired)", 2: "Nirkabel (Wireless)", 3: "Built-in"}
-    MAP_JOK     = {0: "Kain (Fabric)", 1: "Bahan Daur Ulang", 2: "Kulit Sintetis (Synthetic)", 3: "Kulit Asli (Leather)", 4: "Kulit Nappa"}
-    MAP_BINARY  = {1: "Ada", 0: "Tidak Ada"}
-    
-    for r in records:
-        # 1. Standard Decoding
-        r["SUNROOF"] = decode_feature(r.get("SUNROOF"), MAP_SUNROOF)
-        r["APPLE_CARPLAY"] = decode_feature(r.get("APPLE_CARPLAY"), MAP_CARPLAY)
-        r["ANDROID_AUTO"] = decode_feature(r.get("ANDROID_AUTO"), MAP_AA)
-        r["LEATHER_SEAT"] = decode_feature(r.get("LEATHER_SEAT"), MAP_JOK, "Fabric")
-        
-        # Binary ones
-        for feat in ["WIRELESS_CHARGER", "POWER_TAILGATE", "CAMERA_360", "HEAD_UP_DISPLAY", "AMBIENT_LIGHT", "AUTO_HOLD"]:
-            if feat in r: r[feat] = decode_feature(r[feat], MAP_BINARY)
-            
-        # Parking Brake
-        r["PARKING_BRAKE"] = decode_feature(r.get("PARKING_BRAKE"), {1: "Elektrik (EPB)", 0: "Manual"}, "Manual")
-
-        # 2. Level ADAS Summary
-        adas_score = sum([1 for f in ["AEB", "ACC", "LKA"] if r.get(f, 0) >= 1])
-        if adas_score == 3: r["LEVEL_ADAS"] = "Lengkap (Pro)"
-        elif adas_score >= 1: r["LEVEL_ADAS"] = "Standar"
-        else: r["LEVEL_ADAS"] = "Dasar"
-
-        # 3. Existing Drivetrain & Transmission Decoding
-        if r.get("DRIVE_SYS") is not None:
-            val = r["DRIVE_SYS"]
-            try:
-                r["DRIVE_SYS"] = DRIVETRAIN_DECODING.get(float(val), f"CODE_{val}")
-            except:
-                r["DRIVE_SYS"] = str(val)
-
-        if r.get("TRANSMISSION") is not None:
-            val = r["TRANSMISSION"]
-            try:
-                r["TRANSMISSION"] = TRANSMISSION_DECODING.get(float(val), f"CODE_{val}")
-            except:
-                r["TRANSMISSION"] = str(val)
-        
-        if r.get("POWERTRAIN") is not None:
-             r["POWERTRAIN"] = str(r["POWERTRAIN"])
+    # --- Formatting & Decoding Layer ---
+    from app.data_formatter import format_car_records
+    records = format_car_records(records, TRANSMISSION_DECODING, DRIVETRAIN_DECODING)
 
     # --- 4. NUMPY SANITIZATION (CRITICAL FOR JSON SERIALIZATION) ---
     # FastAPI's default JSON encoder cannot handle numpy.float64 objects.
@@ -471,17 +410,6 @@ def recommend_cars(
             else:
                 new_d[k] = v
         return new_d
-
-    for r in records:
-        for key, val in r.items():
-            if isinstance(val, (np.floating, np.float64, np.float32)):
-                r[key] = float(val)
-            elif isinstance(val, (np.integer, np.int64, np.int32)):
-                r[key] = int(val)
-            elif isinstance(val, np.bool_):
-                r[key] = bool(val)
-            elif pd.isna(val):
-                r[key] = None
 
     if constraint_report:
         constraint_report = sanitize_dict(constraint_report)

@@ -9,13 +9,11 @@ from app.feature_ontology import (
     FEATURE_CONSTRAINT_MAP,
     HARD_FILTER_MAP,
     BRAND_MAP,
-    PREFERENCE_PROFILE_MAP,
-    AHP_PROFILES,
-    GLOBAL_DEFAULT_PROFILE
+    GLOBAL_DEFAULT_WEIGHTS,
+    UI_TO_INDEX_MAP
 )
 from .feature_engineering.preference_weight_map import (
-    resolve_preference_weights,
-    detect_profile_from_weights
+    resolve_preference_weights
 )
 
 
@@ -25,12 +23,7 @@ from .feature_engineering.preference_weight_map import (
 
 # Bobot default yang diberikan ke sebuah index jika NLU mendeteksi preference term
 # namun user belum menyetel bobot manual (via slider di frontend).
-# Ini menggantikan logika boost yang sebelumnya ada di actions.py (Rasa).
 NLP_DEFAULT_BOOST = 8.0
-
-# Mapping between Frontend Short Keys (UI) and Backend Criteria (VIKOR)
-# UI_TO_INDEX_MAP moved to feature_ontology.py
-from .feature_ontology import UI_TO_INDEX_MAP
 
 def build_weight_dict(preference_terms, weight_input):
 
@@ -43,12 +36,11 @@ def build_weight_dict(preference_terms, weight_input):
 
         indices = PREFERENCE_INDEX_MAP[term]
         
-        # Pastikan indices adalah list (mendukung legacy string mapping juga)
+        # Pastikan indices adalah list
         if isinstance(indices, str):
             indices = [indices]
 
         # Gunakan NLP_DEFAULT_BOOST jika user belum menyetel bobot manual untuk term ini.
-        # NLP_DEFAULT_BOOST = suara "default" dari sistem NLU bahwa term ini penting.
         weight = float(weight_input.get(term, NLP_DEFAULT_BOOST))
         source = "manual" if term in weight_input else "NLP_DEFAULT_BOOST"
 
@@ -61,7 +53,6 @@ def build_weight_dict(preference_terms, weight_input):
             print(f"  [BUILD_WEIGHT] '{term}' --- {index_name} = {weight} ({source})")
 
     # Sesuai permintaan user: Value For Money (INDEX_PRICE) selalu maksimal (10)
-    # Ini memastikan VIKOR selalu memprioritaskan balance kualitas vs harga yang kompetitif.
     weight_dict["INDEX_PRICE"] = 10.0
 
     return weight_dict
@@ -108,59 +99,6 @@ def extract_drive_sys(entities):
         if text in DRIVETRAIN_MAP:
             return DRIVETRAIN_MAP[text]
     return None
-
-
-# ======================================================
-# BUILD CLUSTER
-# ======================================================
-
-def extract_profile(all_terms: List[str]) -> List[str]:
-    """
-    Scientific profile detection based on aggregated weights from ALL terms 
-    (preferences AND hard constraints like 'keluarga besar').
-    """
-    if not all_terms:
-        return ["Global"]
-        
-    # Agregasi bobot dari semua terms (termasuk hard constraints)
-    weights = resolve_preference_weights(all_terms)
-    
-    # Deteksi profile list dari profile bobot hasil agregasi
-    profiles = detect_profile_from_weights(weights, preference_terms=all_terms)
-    
-    return profiles
-
-def get_initial_ui_profile(preference_terms, need_terms=[], entities=[]):
-    """
-    Membangun profil bobot awal untuk UI sliders (ask_weights) 
-    berdasarkan seluruh entitas yang terdeteksi (preferences, needs, features).
-    """
-    # Merge all terms for maximum context coverage
-    all_terms = list(set(preference_terms + need_terms + entities))
-    
-    profiles = extract_profile(all_terms)
-    primary_profile = profiles[0]
-    
-    # Load base profile dari primary profile (Internal keys)
-    base_raw = dict(AHP_PROFILES.get(primary_profile, GLOBAL_DEFAULT_PROFILE))
-    
-    # Boost based on all detected terms related to preference indices (NLP_DEFAULT_BOOST = 8.0)
-    for term in all_terms:
-        if term in PREFERENCE_INDEX_MAP:
-            indices = PREFERENCE_INDEX_MAP[term]
-            if isinstance(indices, str):
-                indices = [indices]
-            for idx in indices:
-                # Masukkan boost jika lebih tinggi dari base profile
-                base_raw[idx] = max(base_raw.get(idx, 0), 8.0)
-    
-    # BRIDGE: Map Internal Keys -> UI Keys (INDEX_...)
-    base_profile = {}
-    for short_key, val in base_raw.items():
-        ui_key = UI_TO_INDEX_MAP.get(short_key, short_key)
-        base_profile[ui_key] = val
-                
-    return primary_profile, base_profile
 
 # ======================================================
 # BUILD FEATURE CONSTRAINTS
@@ -242,10 +180,6 @@ def build_recommendation_params(
         weight_input
     )
 
-    # Broaden profile detection using ALL context
-    all_context = list(set(preference_terms + entities))
-    params["ahp_profile"] = extract_profile(all_context)
-
     params["body_type"] = extract_body_type(entities)
 
     params["powertrain"] = extract_powertrain(entities)
@@ -263,4 +197,3 @@ def build_recommendation_params(
     )
 
     return params
-

@@ -167,7 +167,7 @@ def get_recent_history(limit: int = 15) -> List[Dict[str, Any]]:
             if "POWERTRAIN" in car and car["POWERTRAIN"] is not None:
                 car["POWERTRAIN"] = str(car["POWERTRAIN"])
 
-        item["ahp_profile"] = item.pop("cluster_name", None)
+        item["profile_name"] = item.pop("cluster_name", None)
 
         result.append(item)
     

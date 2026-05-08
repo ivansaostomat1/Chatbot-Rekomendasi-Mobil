@@ -14,11 +14,12 @@ import sys
 # ================================================================
 # KONFIGURASI – ubah di sini sesuai kebutuhan
 # ================================================================
-CONFIG_PATH = "configCP.yml"  # path file config yang ingin diuji
+# CONFIG_PATH = "configTAv6.yml"
+CONFIG_PATH = "configCP.yml"
 CONFIG_LABEL = None  # biarkan None, akan diambil dari nama file
 NLU_DATA = "data/nlu.yml"
 MODELS_DIR = "models"
-N_CV_RUNS = 3  # berapa kali cross‑validation diulang
+N_CV_RUNS = 1  # berapa kali cross‑validation diulang
 FOLDS = 5
 # ================================================================
 

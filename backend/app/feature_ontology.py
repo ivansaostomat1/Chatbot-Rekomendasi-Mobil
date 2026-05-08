@@ -226,46 +226,30 @@ BRAND_MAP = {
 
 
 # ======================================================
-# SCIENTIFIC PREFERENCE --- PROFILE (For Context Guard)
+# GLOBAL DEFAULT WEIGHTS (Initial UI State)
 # ======================================================
 
-PREFERENCE_PROFILE_MAP = {
-    "irit": "Urban Agility",
-    "efisien": "Urban Agility",
-    "bandel": "Urban Agility",
-    "keluarga": "Family Comfort",
-    "nyaman": "Family Comfort",
-    "luas": "Family Comfort",
-    "tangguh": "Rugged Explorer",
-    "banjir": "Rugged Explorer",
-    "offroad": "Rugged Explorer",
-    "kencang": "High-End Performance",
-    "performa": "High-End Performance",
-    "sporty": "High-End Performance",
-    "sport": "High-End Performance",
-    "fun": "High-End Performance",
-    "fun to drive": "High-End Performance",
-    "mewah": "High-End Performance",
-    "premium": "High-End Performance",
-    "seimbang": "Practical All-Rounder",
-    "lengkap": "Practical All-Rounder"
+GLOBAL_DEFAULT_WEIGHTS = {
+    "power": 5, "handling": 5, "efficiency": 5,
+    "driver_comfort": 5, "passenger_comfort": 5, "safety": 5,
+    "tech": 5, "space": 5, "offroad": 5,
+    "luxury": 5, "lifecycle": 5, "brand_strength": 5,
+    "price": 10,
 }
 
-
 # ======================================================
-# PROFILE --- WEIGHT PROFILES (Initial UI State)
+# NEED --- HARD FILTERS
 # ======================================================
 
-PROFILE_UI_NAMES = {
-    "Urban Agility": "Si Gesit Perkotaan",
-    "Family Comfort": "Kenyamanan Keluarga",
-    "Rugged Explorer": "Penjelajah Tangguh",
-    "High-End Performance": "Performa Eksklusif",
-    "Practical All-Rounder": "Pilihan Serbaguna",
-    "Global": "Kategori Umum"
+NEED_HARD_FILTER_MAP = {
+    "keluarga": {"min_seat": 7},
+    "tangguh": {"min_ground_clearance": 190}
 }
 
-# Mapping between Frontend Short Keys (UI) and Backend Criteria (VIKOR)
+# ======================================================
+# UI TO INDEX BRIDGE (Critical for VIKOR Mapping)
+# ======================================================
+
 UI_TO_INDEX_MAP = {
     "power": "INDEX_POWER",
     "handling": "INDEX_HANDLING",
@@ -282,66 +266,3 @@ UI_TO_INDEX_MAP = {
     "price": "INDEX_PRICE",
 }
 
-AHP_PROFILES = {
-    "Urban Agility": {
-    "power": 5, "handling": 6, "efficiency": 10,   # handling diturunkan dari 8 → 6
-    "driver_comfort": 8, "passenger_comfort": 5, "safety": 7,
-    "tech": 6, "space": 5, "offroad": 1,            # tech diturunkan dari 8 → 6
-    "luxury": 2, "lifecycle": 7, "brand_strength": 7, # lifecycle & brand_strength diturunkan
-    "price": 10,
-    },
-    "Practical All-Rounder": {
-    "power": 6, "handling": 7, "efficiency": 7,
-    "driver_comfort": 7, "passenger_comfort": 7, "safety": 7,  # driver_comfort diturunkan 8→7
-    "tech": 7, "space": 7, "offroad": 4,
-    "luxury": 5, "lifecycle": 8, "brand_strength": 7,
-    "price": 10,
-    },
-    "Family Comfort": {
-        "power": 4, "handling": 5, "efficiency": 8,
-        "driver_comfort": 6, "passenger_comfort": 10, "safety": 9,
-        "tech": 7, "space": 10, "offroad": 2,
-        "luxury": 4, "lifecycle": 9, "brand_strength": 8,
-        "price": 10,
-    },
-    "Rugged Explorer": {
-        "power": 8, "handling": 6, "efficiency": 4,
-        "driver_comfort": 6, "passenger_comfort": 5, "safety": 8,
-        "tech": 5, "space": 7, "offroad": 10,
-        "luxury": 3, "lifecycle": 7, "brand_strength": 6,
-        "price": 10,
-    },
-    "High-End Performance": {
-        "power": 10, "handling": 9, "efficiency": 3,
-        "driver_comfort": 8, "passenger_comfort": 7, "safety": 9,
-        "tech": 9, "space": 4, "offroad": 2,
-        "luxury": 10, "lifecycle": 6, "brand_strength": 8,
-        "price": 10,
-    }
-}
-
-GLOBAL_DEFAULT_PROFILE = {
-    "power": 5, "handling": 5, "efficiency": 5,
-    "driver_comfort": 5, "passenger_comfort": 5, "safety": 5,
-    "tech": 5, "space": 5, "offroad": 5,
-    "luxury": 5, "lifecycle": 5, "brand_strength": 5,
-    "price": 10,
-}
-
-# ======================================================
-# NEED --- PROFILE & HARD FILTERS
-# ======================================================
-
-NEED_PROFILE_MAP = {
-    "keluarga": "Family Comfort",
-    "harian": "Urban Agility",
-    "mewah": "High-End Performance",
-    "tangguh": "Rugged Explorer",
-    "sporty": "High-End Performance",
-    "sport": "High-End Performance"
-}
-
-NEED_HARD_FILTER_MAP = {
-    "keluarga": {"min_seat": 7},
-    "tangguh": {"min_ground_clearance": 190}
-}

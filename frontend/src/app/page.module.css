@@ -470,14 +470,28 @@
 
 .carGrid {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  padding-top: 4px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(64,144,247,0.4) transparent;
+}
+
+.carGrid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.carGrid::-webkit-scrollbar-thumb {
+  background: rgba(64,144,247,0.4);
+  border-radius: 10px;
 }
 
 .carRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  flex: 0 0 85%;
+  max-width: 400px;
+  scroll-snap-align: start;
 }
 
 /* ── Input Area ── */

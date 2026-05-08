@@ -11,18 +11,18 @@ import time   # ← Timer
 # ================================================================
 NLU_DATA_PATH = "data/nlu.yml"
 MODELS_DIR    = "models"
-N_RUNS        = 3      # berapa kali CV diulang per config (stabilitas)
+N_RUNS        = 1      # berapa kali CV diulang per config (stabilitas)
 FOLDS         = 5      # jumlah fold
 
 # Daftar config yang mau dibandingkan
 # Format: ("nama_label", "path/ke/config.yml")
 CONFIGS = [
-    ("CP_baseline",         "configCP.yml"),
-    ("TAv1_epoch75",        "configTAv1.yml"),
-    ("TAv2_dropout03",      "configTAv2.yml"),
-    ("TAv3_large_capacity", "configTAv3.yml"),
-    ("TAv4_small_capacity", "configTAv4.yml"),
-    ("TAv5_optimal_combo",  "configTAv5.yml"),
+    ("CP_baseline",          "configCP.yml"),
+    ("TAv1_hyperparam",      "configTAv1.yml"),
+    ("TAv2_indobert",        "configTAv2.yml"),
+    ("TAv3_regex_combined",  "configTAv3.yml"),
+    ("TAv4_indobert_regex",  "configTAv4.yml"),
+    ("TAv5_full_optimal",    "configTAv5.yml"),
 ]
 # ================================================================
 

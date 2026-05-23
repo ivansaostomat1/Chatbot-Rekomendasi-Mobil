@@ -1,0 +1,4706 @@
+[
+  {
+    "text": "harga sewa apartemen 5 juta",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 6,
+        "end": 10,
+        "confidence_entity": 0.644910454750061,
+        "value": "sewa",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "min_seat",
+        "start": 21,
+        "end": 22,
+        "confidence_entity": 0.9241721630096436,
+        "value": "5",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "umroh 30 juta",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 6,
+        "end": 8,
+        "confidence_entity": 0.5821046829223633,
+        "value": "30",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "bengkel cat mobil yang bagus dimana ya?",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 23,
+        "end": 28,
+        "confidence_entity": 0.9638054370880127,
+        "value": "bagus",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "oli mobil yang bagus merk apa?",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 15,
+        "end": 20,
+        "confidence_entity": 0.846703827381134,
+        "value": "bagus",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "budget 200 juta",
+    "entities": [
+      {
+        "start": 7,
+        "end": 10,
+        "value": "200",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 7,
+        "end": 15,
+        "confidence_entity": 0.530987560749054,
+        "value": "200 juta",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "cari mobil 7 kursi budget 500 juta",
+    "entities": [
+      {
+        "start": 11,
+        "end": 12,
+        "value": "7",
+        "entity": "min_seat"
+      },
+      {
+        "start": 26,
+        "end": 34,
+        "value": "500 juta",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 11,
+        "end": 12,
+        "confidence_entity": 0.8968686461448669,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 26,
+        "end": 29,
+        "confidence_entity": 0.9114118218421936,
+        "value": "500",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "dht buat hybrid budget 700jt",
+    "entities": [
+      {
+        "start": 0,
+        "end": 3,
+        "value": "dht",
+        "entity": "transmission"
+      },
+      {
+        "start": 23,
+        "end": 28,
+        "value": "700jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 9,
+        "end": 15,
+        "confidence_entity": 0.9994854927062988,
+        "value": "hybrid",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 23,
+        "end": 28,
+        "confidence_entity": 0.9999333620071411,
+        "value": "700jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "nyari mobil yang worth it apa ya",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 23,
+        "end": 25,
+        "confidence_entity": 0.5687481164932251,
+        "value": "it",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "mobil hybrid toyota yang paling irit apa bos?",
+    "entities": [
+      {
+        "start": 6,
+        "end": 12,
+        "value": "hybrid",
+        "entity": "powertrain"
+      },
+      {
+        "start": 13,
+        "end": 19,
+        "value": "toyota",
+        "entity": "brand"
+      },
+      {
+        "start": 32,
+        "end": 36,
+        "value": "irit",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 6,
+        "end": 12,
+        "confidence_entity": 0.9998936653137207,
+        "value": "hybrid",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "brand",
+        "start": 13,
+        "end": 19,
+        "confidence_entity": 0.9998465776443481,
+        "value": "Toyota",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "bantu cari mobil pertama buat pemula budget 150jt",
+    "entities": [
+      {
+        "start": 17,
+        "end": 24,
+        "value": "pertama",
+        "entity": "preference"
+      },
+      {
+        "start": 44,
+        "end": 49,
+        "value": "150jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 30,
+        "end": 36,
+        "confidence_entity": 0.9983999133110046,
+        "value": "pemula",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 44,
+        "end": 49,
+        "confidence_entity": 0.9998987913131714,
+        "value": "150jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "spill suv mitsubishi yang paling tangguh",
+    "entities": [
+      {
+        "start": 6,
+        "end": 9,
+        "value": "suv",
+        "entity": "body_type"
+      },
+      {
+        "start": 10,
+        "end": 20,
+        "value": "mitsubishi",
+        "entity": "brand"
+      },
+      {
+        "start": 33,
+        "end": 40,
+        "value": "tangguh",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 6,
+        "end": 9,
+        "confidence_entity": 0.9997678399085999,
+        "value": "SUV",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "brand",
+        "start": 10,
+        "end": 20,
+        "confidence_entity": 0.9996904134750366,
+        "value": "mitsubishi",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "suv paling pas buat keluarga",
+    "entities": [
+      {
+        "start": 0,
+        "end": 3,
+        "value": "suv",
+        "entity": "body_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 0,
+        "end": 3,
+        "confidence_entity": 0.9999023675918579,
+        "value": "SUV",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 20,
+        "end": 28,
+        "confidence_entity": 0.940213680267334,
+        "value": "keluarga",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya kurang suka single speed",
+    "entities": [
+      {
+        "start": 17,
+        "end": 29,
+        "value": "single speed",
+        "entity": "transmission",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "transmission",
+        "start": 17,
+        "end": 29,
+        "confidence_entity": 0.9789674878120422,
+        "value": "single speed",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "gweh cari mobil tenaga gede buat nyalip truk di tol tapi tetep nyaman",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 16,
+        "end": 22,
+        "confidence_entity": 0.9976008534431458,
+        "value": "tenaga",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 23,
+        "end": 27,
+        "confidence_entity": 0.7133285999298096,
+        "value": "gede",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 63,
+        "end": 69,
+        "confidence_entity": 0.9997522234916687,
+        "value": "nyaman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "anak muda yg suka mobil sporty cocoknya apa di 2m",
+    "entities": [
+      {
+        "start": 24,
+        "end": 30,
+        "value": "sporty",
+        "entity": "preference"
+      },
+      {
+        "start": 47,
+        "end": 49,
+        "value": "2m",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 0,
+        "end": 9,
+        "confidence_entity": 0.9757046699523926,
+        "value": "anak muda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 24,
+        "end": 30,
+        "confidence_entity": 0.9999306201934814,
+        "value": "sporty",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 47,
+        "end": 49,
+        "confidence_entity": 0.9976102113723755,
+        "value": "2M",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "berikan saya rekomendasi mobil yang sporty",
+    "entities": [
+      {
+        "start": 36,
+        "end": 42,
+        "value": "sporty",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 0,
+        "end": 7,
+        "confidence_entity": 0.9926889538764954,
+        "value": "berikan",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 36,
+        "end": 42,
+        "confidence_entity": 0.999828577041626,
+        "value": "sporty",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil 7 kursi budget 400 juta apa aja?",
+    "entities": [
+      {
+        "start": 6,
+        "end": 7,
+        "value": "7",
+        "entity": "min_seat"
+      },
+      {
+        "start": 21,
+        "end": 29,
+        "value": "400 juta",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 6,
+        "end": 7,
+        "confidence_entity": 0.7895798683166504,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 21,
+        "end": 24,
+        "confidence_entity": 0.792559802532196,
+        "value": "400",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya prefer diesel buat perjalanan jauh",
+    "entities": [
+      {
+        "start": 12,
+        "end": 18,
+        "value": "diesel",
+        "entity": "powertrain"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9999362230300903,
+        "role": "negated",
+        "confidence_role": 0.683924674987793,
+        "value": "diesel",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "suka yang irit-irit aja sih",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 10,
+        "end": 19,
+        "confidence_entity": 0.9999139308929443,
+        "value": "irit-irit",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "lebih milih yang handlingnya asik",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 17,
+        "end": 28,
+        "confidence_entity": 0.9985681772232056,
+        "value": "handlingnya",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "pusing nih, mending yang lincah apa yang kencang ya?",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 25,
+        "end": 31,
+        "confidence_entity": 0.9998788833618164,
+        "value": "lincah",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 41,
+        "end": 48,
+        "confidence_entity": 0.999954104423523,
+        "value": "kencang",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya alergi sama yang listrik",
+    "entities": [
+      {
+        "start": 22,
+        "end": 29,
+        "value": "listrik",
+        "entity": "powertrain",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 22,
+        "end": 29,
+        "confidence_entity": 0.9997238516807556,
+        "value": "listrik",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya anti Chery",
+    "entities": [
+      {
+        "start": 10,
+        "end": 15,
+        "value": "Chery",
+        "entity": "brand",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 10,
+        "end": 15,
+        "confidence_entity": 0.38302600383758545,
+        "role": "negated",
+        "confidence_role": 0.9638469815254211,
+        "value": "Chery",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "maunya yang modern tampilannya",
+    "entities": [
+      {
+        "start": 12,
+        "end": 18,
+        "value": "modern",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9868142604827881,
+        "value": "modern",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 19,
+        "end": 30,
+        "confidence_entity": 0.9976407289505005,
+        "value": "tampilannya",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "saya pilih yang perawatan mudah",
+    "entities": [
+      {
+        "start": 16,
+        "end": 31,
+        "value": "perawatan mudah",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 26,
+        "end": 31,
+        "confidence_entity": 0.8797121644020081,
+        "value": "mudah",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "ga mau mitsubishi desainnya kurang sreg",
+    "entities": [
+      {
+        "start": 7,
+        "end": 17,
+        "value": "mitsubishi",
+        "entity": "brand",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 7,
+        "end": 17,
+        "confidence_entity": 0.9993354678153992,
+        "value": "mitsubishi",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "bukan yang 5 seat kurang buat keluarga",
+    "entities": [
+      {
+        "start": 11,
+        "end": 12,
+        "value": "5",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 11,
+        "end": 12,
+        "confidence_entity": 0.9919083714485168,
+        "role": "negated",
+        "confidence_role": 0.44711029529571533,
+        "value": "5",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "ga suka yang boros bensin",
+    "entities": [
+      {
+        "start": 13,
+        "end": 18,
+        "value": "boros",
+        "entity": "preference",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 13,
+        "end": 18,
+        "confidence_entity": 0.9993953704833984,
+        "role": "negated",
+        "confidence_role": 0.9944885969161987,
+        "value": "boros",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "powertrain",
+        "start": 19,
+        "end": 25,
+        "confidence_entity": 0.9999078512191772,
+        "role": "negated",
+        "confidence_role": 0.8891149163246155,
+        "value": "bensin",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "bukan yang sempit buat keluarga",
+    "entities": [
+      {
+        "start": 11,
+        "end": 17,
+        "value": "sempit",
+        "entity": "preference",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 11,
+        "end": 17,
+        "confidence_entity": 0.9991876482963562,
+        "role": "negated",
+        "confidence_role": 0.9994732737541199,
+        "value": "sempit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 23,
+        "end": 31,
+        "confidence_entity": 0.7977157235145569,
+        "value": "keluarga",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya ga suka ada layar belakang",
+    "entities": [
+      {
+        "start": 17,
+        "end": 31,
+        "value": "layar belakang",
+        "entity": "feature",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "ga usah ada jok elektrik",
+    "entities": [
+      {
+        "start": 12,
+        "end": 24,
+        "value": "jok elektrik",
+        "entity": "feature",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 16,
+        "end": 24,
+        "confidence_entity": 0.7841576933860779,
+        "role": "negated",
+        "confidence_role": 0.9188239574432373,
+        "value": "elektrik",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "mending nambah dikit 50jt buat fitur keamanan?",
+    "entities": [
+      {
+        "start": 21,
+        "end": 25,
+        "value": "50jt",
+        "entity": "budget"
+      },
+      {
+        "start": 37,
+        "end": 45,
+        "value": "keamanan",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 21,
+        "end": 25,
+        "confidence_entity": 0.9999254941940308,
+        "value": "50jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "kalau naik budget ke 550jt dapet yang 7 seater lebih oke ga?",
+    "entities": [
+      {
+        "start": 21,
+        "end": 26,
+        "value": "550jt",
+        "entity": "budget"
+      },
+      {
+        "start": 38,
+        "end": 39,
+        "value": "7",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 21,
+        "end": 26,
+        "confidence_entity": 0.9999121427536011,
+        "value": "550jt",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 38,
+        "end": 39,
+        "confidence_entity": 0.8288068175315857,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "carikan yang setara dengan Fortuner",
+    "entities": [
+      {
+        "start": 27,
+        "end": 35,
+        "value": "Fortuner",
+        "entity": "target_car"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 27,
+        "end": 35,
+        "confidence_entity": 0.4715111255645752,
+        "value": "Fortuner",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "cara daftar NPWP online",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 12,
+        "end": 16,
+        "confidence_entity": 0.5272650718688965,
+        "role": "negated",
+        "confidence_role": 0.6802358031272888,
+        "value": "NPWP",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "biaya kuliah 2026",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 13,
+        "end": 17,
+        "confidence_entity": 0.7726442813873291,
+        "value": "2026",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "rekomendasi ac 1 pk",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 15,
+        "end": 16,
+        "confidence_entity": 0.9677913188934326,
+        "value": "1",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "sepatu ukuran 42",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 14,
+        "end": 16,
+        "confidence_entity": 0.9386405348777771,
+        "value": "42",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "bensin, 7 seat, kamera 360",
+    "entities": [
+      {
+        "start": 0,
+        "end": 6,
+        "value": "bensin",
+        "entity": "powertrain"
+      },
+      {
+        "start": 8,
+        "end": 9,
+        "value": "7",
+        "entity": "min_seat"
+      },
+      {
+        "start": 16,
+        "end": 26,
+        "value": "kamera 360",
+        "entity": "feature"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 0,
+        "end": 6,
+        "confidence_entity": 0.9976736903190613,
+        "value": "bensin",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "feature",
+        "start": 8,
+        "end": 9,
+        "confidence_entity": 0.43264010548591614,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "feature",
+        "start": 16,
+        "end": 26,
+        "confidence_entity": 0.9945961833000183,
+        "value": "kamera 360",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil single speed untuk listrik harga 600jt",
+    "entities": [
+      {
+        "start": 6,
+        "end": 18,
+        "value": "single speed",
+        "entity": "transmission"
+      },
+      {
+        "start": 39,
+        "end": 44,
+        "value": "600jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "transmission",
+        "start": 6,
+        "end": 18,
+        "confidence_entity": 0.9867528676986694,
+        "value": "single speed",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "powertrain",
+        "start": 25,
+        "end": 32,
+        "confidence_entity": 0.9997829794883728,
+        "value": "listrik",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 39,
+        "end": 44,
+        "confidence_entity": 0.9997677206993103,
+        "value": "600jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "carikan mobil eropa budget 1.5M yang mewah",
+    "entities": [
+      {
+        "start": 14,
+        "end": 19,
+        "value": "eropa",
+        "entity": "brand"
+      },
+      {
+        "start": 27,
+        "end": 31,
+        "value": "1.5M",
+        "entity": "budget"
+      },
+      {
+        "start": 37,
+        "end": 42,
+        "value": "mewah",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 14,
+        "end": 19,
+        "confidence_entity": 0.6436256766319275,
+        "value": "eropa",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "min_seat",
+        "start": 27,
+        "end": 31,
+        "confidence_entity": 0.4831886887550354,
+        "value": "1.5M",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 37,
+        "end": 42,
+        "confidence_entity": 0.9970061182975769,
+        "value": "mewah",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "nyari yang tangguh buat jalan rusak dana 500jt",
+    "entities": [
+      {
+        "start": 11,
+        "end": 18,
+        "value": "tangguh",
+        "entity": "preference"
+      },
+      {
+        "start": 24,
+        "end": 35,
+        "value": "jalan rusak",
+        "entity": "preference"
+      },
+      {
+        "start": 41,
+        "end": 46,
+        "value": "500jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 11,
+        "end": 18,
+        "confidence_entity": 0.9998156428337097,
+        "value": "tangguh",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 41,
+        "end": 46,
+        "confidence_entity": 0.999861478805542,
+        "value": "500jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "cari BMW sedan",
+    "entities": [
+      {
+        "start": 5,
+        "end": 8,
+        "value": "BMW",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 5,
+        "end": 8,
+        "confidence_entity": 0.9997267127037048,
+        "value": "BMW",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "body_type",
+        "start": 9,
+        "end": 14,
+        "confidence_entity": 0.9999188184738159,
+        "value": "sedan",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "hindari sedan karena terlalu rendah",
+    "entities": [
+      {
+        "start": 8,
+        "end": 13,
+        "value": "sedan",
+        "entity": "body_type",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 8,
+        "end": 13,
+        "confidence_entity": 0.9968932867050171,
+        "role": "negated",
+        "confidence_role": 0.9994800686836243,
+        "value": "sedan",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 29,
+        "end": 35,
+        "confidence_entity": 0.9599644541740417,
+        "role": "negated",
+        "confidence_role": 0.9605442881584167,
+        "value": "rendah",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "nyari kendaraan yg tetep nyaman walau dipake stop and go pas macet2an",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 25,
+        "end": 31,
+        "confidence_entity": 0.9997847676277161,
+        "value": "nyaman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil tangguh yg kuat jalan rusak + becek + kadang banjir",
+    "entities": [
+      {
+        "start": 6,
+        "end": 13,
+        "value": "tangguh",
+        "entity": "preference"
+      },
+      {
+        "start": 22,
+        "end": 33,
+        "value": "jalan rusak",
+        "entity": "preference"
+      },
+      {
+        "start": 51,
+        "end": 57,
+        "value": "banjir",
+        "entity": "hard_filter"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 6,
+        "end": 13,
+        "confidence_entity": 0.9996914863586426,
+        "value": "tangguh",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 17,
+        "end": 21,
+        "confidence_entity": 0.9784978032112122,
+        "value": "kuat",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 36,
+        "end": 41,
+        "confidence_entity": 0.9997350573539734,
+        "value": "becek",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "hard_filter",
+        "start": 51,
+        "end": 57,
+        "confidence_entity": 0.9720659255981445,
+        "value": "banjir",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pengen mobil kecil tapi handlingnya enak buat zig zag macet",
+    "entities": [
+      {
+        "start": 24,
+        "end": 40,
+        "value": "handlingnya enak",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 24,
+        "end": 35,
+        "confidence_entity": 0.9958332180976868,
+        "value": "handlingnya",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 46,
+        "end": 49,
+        "confidence_entity": 0.6154381632804871,
+        "value": "zig",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 50,
+        "end": 53,
+        "confidence_entity": 0.5728132724761963,
+        "value": "zag",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "mobil apa ya yang cocok buat anak muda harga 300jtan",
+    "entities": [
+      {
+        "start": 29,
+        "end": 38,
+        "value": "anak muda",
+        "entity": "preference"
+      },
+      {
+        "start": 45,
+        "end": 52,
+        "value": "300jtan",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 29,
+        "end": 38,
+        "confidence_entity": 0.9514862298965454,
+        "value": "anak muda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 39,
+        "end": 44,
+        "confidence_entity": 0.9842073917388916,
+        "value": "harga",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 45,
+        "end": 52,
+        "confidence_entity": 0.9992061257362366,
+        "value": "300jtan",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "fitur lengkap di 600jt itu biasanya dapet apa aja sih",
+    "entities": [
+      {
+        "start": 0,
+        "end": 13,
+        "value": "fitur lengkap",
+        "entity": "preference"
+      },
+      {
+        "start": 17,
+        "end": 22,
+        "value": "600jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 17,
+        "end": 22,
+        "confidence_entity": 0.9997825026512146,
+        "value": "600jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "budget 3M dapet Wagon apa?",
+    "entities": [
+      {
+        "start": 7,
+        "end": 9,
+        "value": "3M",
+        "entity": "budget"
+      },
+      {
+        "start": 16,
+        "end": 21,
+        "value": "Wagon",
+        "entity": "body_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 7,
+        "end": 9,
+        "confidence_entity": 0.9892802834510803,
+        "value": "3M",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "budget 800 juta butuh SUV yang nyaman",
+    "entities": [
+      {
+        "start": 7,
+        "end": 15,
+        "value": "800 juta",
+        "entity": "budget"
+      },
+      {
+        "start": 22,
+        "end": 25,
+        "value": "SUV",
+        "entity": "body_type"
+      },
+      {
+        "start": 31,
+        "end": 37,
+        "value": "nyaman",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 7,
+        "end": 10,
+        "confidence_entity": 0.9954298734664917,
+        "value": "800",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "body_type",
+        "start": 22,
+        "end": 25,
+        "confidence_entity": 0.9996919631958008,
+        "value": "SUV",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 31,
+        "end": 37,
+        "confidence_entity": 0.9999353885650635,
+        "value": "nyaman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "budget 450 juta muat 6 orang",
+    "entities": [
+      {
+        "start": 7,
+        "end": 10,
+        "value": "450",
+        "entity": "budget"
+      },
+      {
+        "start": 21,
+        "end": 22,
+        "value": "6",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 7,
+        "end": 10,
+        "confidence_entity": 0.9984745383262634,
+        "value": "450",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "min_seat",
+        "start": 21,
+        "end": 22,
+        "confidence_entity": 0.998151957988739,
+        "value": "6",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "harga 750 juta isi 7 kursi",
+    "entities": [
+      {
+        "start": 6,
+        "end": 9,
+        "value": "750",
+        "entity": "budget"
+      },
+      {
+        "start": 19,
+        "end": 20,
+        "value": "7",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 6,
+        "end": 9,
+        "confidence_entity": 0.9926913380622864,
+        "value": "750",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "min_seat",
+        "start": 19,
+        "end": 20,
+        "confidence_entity": 0.9860519170761108,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "carikan mobil dengan apple carplay wireless budget 350jt",
+    "entities": [
+      {
+        "start": 21,
+        "end": 34,
+        "value": "apple carplay",
+        "entity": "feature"
+      },
+      {
+        "start": 51,
+        "end": 56,
+        "value": "350jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 21,
+        "end": 34,
+        "confidence_entity": 0.9987784028053284,
+        "value": "apple carplay",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "feature",
+        "start": 35,
+        "end": 43,
+        "confidence_entity": 0.974969208240509,
+        "value": "wireless",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 51,
+        "end": 56,
+        "confidence_entity": 0.9996542930603027,
+        "value": "350jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "bantu cari mobil keluarga besar yang nyaman bangku 7",
+    "entities": [
+      {
+        "start": 17,
+        "end": 31,
+        "value": "keluarga besar",
+        "entity": "hard_filter"
+      },
+      {
+        "start": 37,
+        "end": 43,
+        "value": "nyaman",
+        "entity": "preference"
+      },
+      {
+        "start": 51,
+        "end": 52,
+        "value": "7",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "hard_filter",
+        "start": 17,
+        "end": 31,
+        "confidence_entity": 0.9956759810447693,
+        "value": "keluarga besar",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 37,
+        "end": 43,
+        "confidence_entity": 0.9997095465660095,
+        "value": "nyaman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 51,
+        "end": 52,
+        "confidence_entity": 0.9490286111831665,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya tetap mau yang bensin biasa aja",
+    "entities": [
+      {
+        "start": 20,
+        "end": 26,
+        "value": "bensin",
+        "entity": "powertrain"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 20,
+        "end": 26,
+        "confidence_entity": 0.9997759461402893,
+        "role": "negated",
+        "confidence_role": 0.9885821342468262,
+        "value": "bensin",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "kayaknya mending yang sporty deh",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 22,
+        "end": 28,
+        "confidence_entity": 0.9997609257698059,
+        "value": "sporty",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "lebih prefer yang mewah look-nya",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 18,
+        "end": 23,
+        "confidence_entity": 0.9981011748313904,
+        "value": "mewah",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pengennya yang irit bbm tapi tetep bertenaga",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 15,
+        "end": 19,
+        "confidence_entity": 0.9999488592147827,
+        "value": "irit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 35,
+        "end": 44,
+        "confidence_entity": 0.9998677968978882,
+        "value": "bertenaga",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "maunya Suzuki yang irit",
+    "entities": [
+      {
+        "start": 7,
+        "end": 13,
+        "value": "Suzuki",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 7,
+        "end": 13,
+        "confidence_entity": 0.9991119503974915,
+        "value": "suzuki",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 19,
+        "end": 23,
+        "confidence_entity": 0.8918678760528564,
+        "value": "irit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya suka yang suspensi empuk",
+    "entities": [
+      {
+        "start": 15,
+        "end": 29,
+        "value": "suspensi empuk",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 24,
+        "end": 29,
+        "confidence_entity": 0.7182151079177856,
+        "value": "empuk",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "suka yang senyap di dalam",
+    "entities": [
+      {
+        "start": 10,
+        "end": 16,
+        "value": "senyap",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "hindari yang kuno interiornya",
+    "entities": [
+      {
+        "start": 13,
+        "end": 17,
+        "value": "kuno",
+        "entity": "preference",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "tanpa wireless charger juga oke",
+    "entities": [
+      {
+        "start": 6,
+        "end": 22,
+        "value": "wireless charger",
+        "entity": "feature",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 6,
+        "end": 22,
+        "confidence_entity": 0.9987837672233582,
+        "value": "wireless charger",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "tanpa kamera 360 ya",
+    "entities": [
+      {
+        "start": 6,
+        "end": 16,
+        "value": "kamera 360",
+        "entity": "feature",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 6,
+        "end": 16,
+        "confidence_entity": 0.9981473684310913,
+        "value": "kamera 360",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "kalau gw up budget ke 1.5M dapet panoramic sunroof ga?",
+    "entities": [
+      {
+        "start": 22,
+        "end": 26,
+        "value": "1.5M",
+        "entity": "budget"
+      },
+      {
+        "start": 33,
+        "end": 50,
+        "value": "panoramic sunroof",
+        "entity": "feature"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 22,
+        "end": 26,
+        "confidence_entity": 0.9869911074638367,
+        "value": "1.5M",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 33,
+        "end": 50,
+        "confidence_entity": 0.9970560073852539,
+        "value": "panoramic sunroof",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "selain Innova apa ya",
+    "entities": [
+      {
+        "start": 7,
+        "end": 13,
+        "value": "Innova",
+        "entity": "target_car"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "target_car",
+        "start": 7,
+        "end": 13,
+        "confidence_entity": 0.6090278029441833,
+        "role": "negated",
+        "confidence_role": 0.6552029848098755,
+        "value": "Innova",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "gaji 15 juta per bulan",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 5,
+        "end": 7,
+        "confidence_entity": 0.9404031038284302,
+        "value": "15",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "hp 2 jutaan terbaik",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 5,
+        "end": 11,
+        "confidence_entity": 0.9654489159584045,
+        "value": "jutaan",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "kursi 5 buah",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 6,
+        "end": 7,
+        "confidence_entity": 0.9889163970947266,
+        "value": "5",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "tips nyetir mobil manual buat pemula",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "transmission",
+        "start": 18,
+        "end": 24,
+        "confidence_entity": 0.9998236298561096,
+        "value": "manual",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "1. bensin 2. 7 seat 3. sunroof",
+    "entities": [
+      {
+        "start": 3,
+        "end": 9,
+        "value": "bensin",
+        "entity": "powertrain"
+      },
+      {
+        "start": 13,
+        "end": 14,
+        "value": "7",
+        "entity": "min_seat"
+      },
+      {
+        "start": 23,
+        "end": 30,
+        "value": "sunroof",
+        "entity": "feature"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 0,
+        "end": 1,
+        "confidence_entity": 0.8303415775299072,
+        "value": "1",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "powertrain",
+        "start": 3,
+        "end": 9,
+        "confidence_entity": 0.9991366267204285,
+        "value": "bensin",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "min_seat",
+        "start": 10,
+        "end": 11,
+        "confidence_entity": 0.9994460940361023,
+        "value": "2",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "min_seat",
+        "start": 13,
+        "end": 14,
+        "confidence_entity": 0.999738872051239,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "min_seat",
+        "start": 20,
+        "end": 21,
+        "confidence_entity": 0.9990895986557007,
+        "value": "3",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 23,
+        "end": 30,
+        "confidence_entity": 0.994437575340271,
+        "value": "sunroof",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil keluarga 7 seat",
+    "entities": [
+      {
+        "start": 6,
+        "end": 14,
+        "value": "keluarga",
+        "entity": "preference"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "value": "7",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 15,
+        "end": 16,
+        "confidence_entity": 0.9995856881141663,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil yang handlingnya mantap buat di tikungan budget 1m",
+    "entities": [
+      {
+        "start": 11,
+        "end": 29,
+        "value": "handlingnya mantap",
+        "entity": "preference"
+      },
+      {
+        "start": 54,
+        "end": 56,
+        "value": "1m",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 11,
+        "end": 22,
+        "confidence_entity": 0.9741787910461426,
+        "value": "handlingnya",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 54,
+        "end": 56,
+        "confidence_entity": 0.9988190531730652,
+        "value": "1M",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya cari mobil yang bertenaga dan tarikannya kuat buat nanjak budget 400jt",
+    "entities": [
+      {
+        "start": 21,
+        "end": 30,
+        "value": "bertenaga",
+        "entity": "preference"
+      },
+      {
+        "start": 35,
+        "end": 50,
+        "value": "tarikannya kuat",
+        "entity": "preference"
+      },
+      {
+        "start": 70,
+        "end": 75,
+        "value": "400jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 21,
+        "end": 30,
+        "confidence_entity": 0.999879002571106,
+        "value": "bertenaga",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 70,
+        "end": 75,
+        "confidence_entity": 0.999660849571228,
+        "value": "400jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil sporty buat anak muda dengan budget 4M",
+    "entities": [
+      {
+        "start": 6,
+        "end": 12,
+        "value": "sporty",
+        "entity": "preference"
+      },
+      {
+        "start": 18,
+        "end": 27,
+        "value": "anak muda",
+        "entity": "preference"
+      },
+      {
+        "start": 42,
+        "end": 44,
+        "value": "4M",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 6,
+        "end": 12,
+        "confidence_entity": 0.9997460246086121,
+        "value": "sporty",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 42,
+        "end": 44,
+        "confidence_entity": 0.9955356121063232,
+        "value": "4M",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "saya mau mobil manual budget 1.3m yang sporty",
+    "entities": [
+      {
+        "start": 15,
+        "end": 21,
+        "value": "manual",
+        "entity": "transmission"
+      },
+      {
+        "start": 29,
+        "end": 33,
+        "value": "1.3m",
+        "entity": "budget"
+      },
+      {
+        "start": 39,
+        "end": 45,
+        "value": "sporty",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "transmission",
+        "start": 15,
+        "end": 21,
+        "confidence_entity": 0.9996036887168884,
+        "value": "manual",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 29,
+        "end": 33,
+        "confidence_entity": 0.9998351335525513,
+        "value": "1.3M",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pengen mobil yang handlingnya mantap tapi dana mepet 300jt",
+    "entities": [
+      {
+        "start": 18,
+        "end": 36,
+        "value": "handlingnya mantap",
+        "entity": "preference"
+      },
+      {
+        "start": 53,
+        "end": 58,
+        "value": "300jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 18,
+        "end": 29,
+        "confidence_entity": 0.9854298830032349,
+        "value": "handlingnya",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "budget",
+        "start": 53,
+        "end": 58,
+        "confidence_entity": 0.9997395873069763,
+        "value": "300jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "7 kursi budget 300 juta dapet apa?",
+    "entities": [
+      {
+        "start": 0,
+        "end": 1,
+        "value": "7",
+        "entity": "min_seat"
+      },
+      {
+        "start": 15,
+        "end": 18,
+        "value": "300",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 0,
+        "end": 1,
+        "confidence_entity": 0.9302040338516235,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 15,
+        "end": 23,
+        "confidence_entity": 0.9284856915473938,
+        "value": "300 juta",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "5 seater yang nyaman budget 600 juta",
+    "entities": [
+      {
+        "start": 0,
+        "end": 1,
+        "value": "5",
+        "entity": "min_seat"
+      },
+      {
+        "start": 14,
+        "end": 20,
+        "value": "nyaman",
+        "entity": "preference"
+      },
+      {
+        "start": 28,
+        "end": 31,
+        "value": "600",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 0,
+        "end": 1,
+        "confidence_entity": 0.8723206520080566,
+        "value": "5",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 14,
+        "end": 20,
+        "confidence_entity": 0.9998984336853027,
+        "value": "nyaman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 28,
+        "end": 36,
+        "confidence_entity": 0.8847172260284424,
+        "value": "600 juta",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "400 juta dapet 7 penumpang apa aja?",
+    "entities": [
+      {
+        "start": 0,
+        "end": 3,
+        "value": "400",
+        "entity": "budget"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "value": "7",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 0,
+        "end": 8,
+        "confidence_entity": 0.9254953265190125,
+        "value": "400 juta",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "min_seat",
+        "start": 15,
+        "end": 16,
+        "confidence_entity": 0.9973905682563782,
+        "value": "7",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "nyari mobil yang sparepart gampang dan irit di 250jt",
+    "entities": [
+      {
+        "start": 17,
+        "end": 26,
+        "value": "sparepart",
+        "entity": "preference"
+      },
+      {
+        "start": 39,
+        "end": 43,
+        "value": "irit",
+        "entity": "preference"
+      },
+      {
+        "start": 47,
+        "end": 52,
+        "value": "250jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 39,
+        "end": 43,
+        "confidence_entity": 0.9996850490570068,
+        "value": "irit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 47,
+        "end": 52,
+        "confidence_entity": 0.9993170499801636,
+        "value": "250jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Mitsubishi yang tangguh",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "value": "Mitsubishi",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 0,
+        "end": 10,
+        "confidence_entity": 0.9993332028388977,
+        "value": "mitsubishi",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 16,
+        "end": 23,
+        "confidence_entity": 0.9998607635498047,
+        "value": "tangguh",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil yg akselerasinya responsif biar nyaman pas stop and go macet",
+    "entities": [
+      {
+        "start": 23,
+        "end": 32,
+        "value": "responsif",
+        "entity": "preference"
+      },
+      {
+        "start": 38,
+        "end": 44,
+        "value": "nyaman",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "kalau sering keluar kota, yg paling irit di 500jtan apa ya",
+    "entities": [
+      {
+        "start": 36,
+        "end": 40,
+        "value": "irit",
+        "entity": "preference"
+      },
+      {
+        "start": 44,
+        "end": 51,
+        "value": "500jtan",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 6,
+        "end": 12,
+        "confidence_entity": 0.6262470483779907,
+        "value": "sering",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 13,
+        "end": 19,
+        "confidence_entity": 0.6540465354919434,
+        "value": "keluar",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 36,
+        "end": 40,
+        "confidence_entity": 0.9996688365936279,
+        "value": "irit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 44,
+        "end": 51,
+        "confidence_entity": 0.9998260140419006,
+        "value": "500jtan",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "suka yang fiturnya lengkap banget",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 10,
+        "end": 26,
+        "confidence_entity": 0.6990357637405396,
+        "value": "fiturnya lengkap",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 27,
+        "end": 33,
+        "confidence_entity": 0.2886759340763092,
+        "value": "banget",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "jujur lebih condong ke yang aman sih",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 28,
+        "end": 32,
+        "confidence_entity": 0.9988131523132324,
+        "value": "aman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "preferensi saya honda",
+    "entities": [
+      {
+        "start": 16,
+        "end": 21,
+        "value": "honda",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 16,
+        "end": 21,
+        "confidence_entity": 0.9999048709869385,
+        "role": "negated",
+        "confidence_role": 0.9761853814125061,
+        "value": "honda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya prefer Wuling",
+    "entities": [
+      {
+        "start": 12,
+        "end": 18,
+        "value": "Wuling",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9914079308509827,
+        "role": "negated",
+        "confidence_role": 0.9874351024627686,
+        "value": "wuling",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "maunya dari Nissan",
+    "entities": [
+      {
+        "start": 12,
+        "end": 18,
+        "value": "Nissan",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9992351531982422,
+        "role": "negated",
+        "confidence_role": 0.9993441700935364,
+        "value": "nissan",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pengen yang 8 seat buat keluarga besar",
+    "entities": [
+      {
+        "start": 12,
+        "end": 13,
+        "value": "8",
+        "entity": "min_seat"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 12,
+        "end": 13,
+        "confidence_entity": 0.9993257522583008,
+        "value": "8",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "hard_filter",
+        "start": 24,
+        "end": 38,
+        "confidence_entity": 0.9994608759880066,
+        "value": "keluarga besar",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pengen yang ada panoramic sunroof",
+    "entities": [
+      {
+        "start": 16,
+        "end": 33,
+        "value": "panoramic sunroof",
+        "entity": "feature"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 16,
+        "end": 25,
+        "confidence_entity": 0.999616265296936,
+        "value": "panoramic",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 26,
+        "end": 33,
+        "confidence_entity": 0.9978764057159424,
+        "role": "negated",
+        "confidence_role": 0.5205336213111877,
+        "value": "sunroof",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil mirip Calya",
+    "entities": [
+      {
+        "start": 12,
+        "end": 17,
+        "value": "Calya",
+        "entity": "target_car"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "alternatif Kijang Innova Zenix dong",
+    "entities": [
+      {
+        "start": 11,
+        "end": 30,
+        "value": "Kijang Innova Zenix",
+        "entity": "target_car"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "target_car",
+        "start": 18,
+        "end": 24,
+        "confidence_entity": 0.9976375102996826,
+        "value": "Innova",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "ulang pencariannya dari pertama",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 24,
+        "end": 31,
+        "confidence_entity": 0.8904535174369812,
+        "role": "negated",
+        "confidence_role": 0.8200517892837524,
+        "value": "pertama",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "ulang dari pertama",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 11,
+        "end": 18,
+        "confidence_entity": 0.9968649744987488,
+        "role": "negated",
+        "confidence_role": 0.9816997647285461,
+        "value": "pertama",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "rekomendasi kamera mirrorless murah",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9987236857414246,
+        "value": "kamera",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 19,
+        "end": 29,
+        "confidence_entity": 0.9557293057441711,
+        "value": "mirrorless",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "jam tangan 3 jutaan",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 11,
+        "end": 12,
+        "confidence_entity": 0.7171558737754822,
+        "value": "3",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "hatchback yang bagus budget 550 jutaan",
+    "entities": [
+      {
+        "start": 0,
+        "end": 9,
+        "value": "hatchback",
+        "entity": "body_type"
+      },
+      {
+        "start": 15,
+        "end": 20,
+        "value": "bagus",
+        "entity": "preference"
+      },
+      {
+        "start": 28,
+        "end": 38,
+        "value": "550 jutaan",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 0,
+        "end": 9,
+        "confidence_entity": 0.9995934367179871,
+        "value": "hatchback",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "min_seat",
+        "start": 28,
+        "end": 31,
+        "confidence_entity": 0.5349636077880859,
+        "value": "550",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "MPV budget 400 jutaan fitur nya canggih",
+    "entities": [
+      {
+        "start": 0,
+        "end": 3,
+        "value": "MPV",
+        "entity": "body_type"
+      },
+      {
+        "start": 11,
+        "end": 21,
+        "value": "400 jutaan",
+        "entity": "budget"
+      },
+      {
+        "start": 32,
+        "end": 39,
+        "value": "canggih",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 0,
+        "end": 3,
+        "confidence_entity": 0.9980003237724304,
+        "value": "mpv",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "min_seat",
+        "start": 11,
+        "end": 21,
+        "confidence_entity": 0.8915576338768005,
+        "value": "400 jutaan",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 22,
+        "end": 27,
+        "confidence_entity": 0.931486189365387,
+        "value": "fitur",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 32,
+        "end": 39,
+        "confidence_entity": 0.9995900988578796,
+        "value": "canggih",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil apa yang paling populer di harga 300jt?",
+    "entities": [
+      {
+        "start": 22,
+        "end": 29,
+        "value": "populer",
+        "entity": "preference"
+      },
+      {
+        "start": 39,
+        "end": 44,
+        "value": "300jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 39,
+        "end": 44,
+        "confidence_entity": 0.9999387264251709,
+        "value": "300jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "Honda selalu jadi pilihan",
+    "entities": [
+      {
+        "start": 0,
+        "end": 5,
+        "value": "Honda",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 0,
+        "end": 5,
+        "confidence_entity": 0.9999421834945679,
+        "role": "negated",
+        "confidence_role": 0.9916216135025024,
+        "value": "honda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "cari yg kecil tapi gesit buat parkir di tempat sempit",
+    "entities": [
+      {
+        "start": 19,
+        "end": 24,
+        "value": "gesit",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 19,
+        "end": 24,
+        "confidence_entity": 0.9990330934524536,
+        "value": "gesit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 47,
+        "end": 53,
+        "confidence_entity": 0.9142780303955078,
+        "role": "negated",
+        "confidence_role": 0.8327248692512512,
+        "value": "sempit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "macet + perjalanan jauh pengen tetep nyaman, ambil apa di 500jt",
+    "entities": [
+      {
+        "start": 37,
+        "end": 43,
+        "value": "nyaman",
+        "entity": "preference"
+      },
+      {
+        "start": 58,
+        "end": 63,
+        "value": "500jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 58,
+        "end": 63,
+        "confidence_entity": 0.9999164342880249,
+        "value": "500jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "buat usaha tapi tetep nyaman dipake, enaknya apa di 300jt",
+    "entities": [
+      {
+        "start": 22,
+        "end": 28,
+        "value": "nyaman",
+        "entity": "preference"
+      },
+      {
+        "start": 52,
+        "end": 57,
+        "value": "300jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 52,
+        "end": 57,
+        "confidence_entity": 0.9999295473098755,
+        "value": "300jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil Hybrid budget 900 jutaan yang enak buat pemula apa?",
+    "entities": [
+      {
+        "start": 6,
+        "end": 12,
+        "value": "Hybrid",
+        "entity": "powertrain"
+      },
+      {
+        "start": 20,
+        "end": 30,
+        "value": "900 jutaan",
+        "entity": "budget"
+      },
+      {
+        "start": 46,
+        "end": 52,
+        "value": "pemula",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 6,
+        "end": 12,
+        "confidence_entity": 0.997961163520813,
+        "value": "hybrid",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 20,
+        "end": 30,
+        "confidence_entity": 0.6913052797317505,
+        "value": "900 jutaan",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "mobil Ford yang enak buat ngebut apa ya?",
+    "entities": [
+      {
+        "start": 6,
+        "end": 10,
+        "value": "Ford",
+        "entity": "brand"
+      },
+      {
+        "start": 26,
+        "end": 32,
+        "value": "ngebut",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "target_car",
+        "start": 6,
+        "end": 10,
+        "confidence_entity": 0.723989725112915,
+        "value": "Ford",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 26,
+        "end": 32,
+        "confidence_entity": 0.9992809891700745,
+        "value": "ngebut",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "SUV Honda yang hemat apa aja?",
+    "entities": [
+      {
+        "start": 0,
+        "end": 3,
+        "value": "SUV",
+        "entity": "body_type"
+      },
+      {
+        "start": 4,
+        "end": 9,
+        "value": "Honda",
+        "entity": "brand"
+      },
+      {
+        "start": 15,
+        "end": 20,
+        "value": "hemat",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 0,
+        "end": 3,
+        "confidence_entity": 0.9994933605194092,
+        "value": "SUV",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "brand",
+        "start": 4,
+        "end": 9,
+        "confidence_entity": 0.9999083280563354,
+        "value": "honda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "carikan mobil sport modern yang cocok untuk anak muda",
+    "entities": [
+      {
+        "start": 14,
+        "end": 19,
+        "value": "sport",
+        "entity": "body_type"
+      },
+      {
+        "start": 20,
+        "end": 26,
+        "value": "modern",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "body_type",
+        "start": 14,
+        "end": 19,
+        "confidence_entity": 0.999594509601593,
+        "value": "sport",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 20,
+        "end": 26,
+        "confidence_entity": 0.9775357842445374,
+        "value": "modern",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 44,
+        "end": 53,
+        "confidence_entity": 0.9728349447250366,
+        "value": "anak muda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "carikan mobil yang ada fitur kamera 360 budget 400jt",
+    "entities": [
+      {
+        "start": 29,
+        "end": 39,
+        "value": "kamera 360",
+        "entity": "feature"
+      },
+      {
+        "start": 47,
+        "end": 52,
+        "value": "400jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 23,
+        "end": 28,
+        "confidence_entity": 0.929092288017273,
+        "value": "fitur",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 29,
+        "end": 39,
+        "confidence_entity": 0.9802218079566956,
+        "value": "kamera 360",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 47,
+        "end": 52,
+        "confidence_entity": 0.9998621940612793,
+        "value": "400jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya mau yang pakai bensin aja",
+    "entities": [
+      {
+        "start": 20,
+        "end": 26,
+        "value": "bensin",
+        "entity": "powertrain"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 20,
+        "end": 26,
+        "confidence_entity": 0.9991666078567505,
+        "role": "negated",
+        "confidence_role": 0.9299494624137878,
+        "value": "bensin",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "maunya yang modern dan canggih interiornya",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9995630383491516,
+        "value": "modern",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 23,
+        "end": 30,
+        "confidence_entity": 0.9997407793998718,
+        "value": "canggih",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "maunya yang handling bagus",
+    "entities": [
+      {
+        "start": 12,
+        "end": 20,
+        "value": "handling",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "ga mau yang ev infrastrukturnya belum ada",
+    "entities": [
+      {
+        "start": 12,
+        "end": 14,
+        "value": "ev",
+        "entity": "powertrain",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 12,
+        "end": 14,
+        "confidence_entity": 0.9996894598007202,
+        "value": "EV",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya prefer yang aman buat anak",
+    "entities": [
+      {
+        "start": 17,
+        "end": 21,
+        "value": "aman",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 17,
+        "end": 21,
+        "confidence_entity": 0.6090056300163269,
+        "value": "aman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 27,
+        "end": 31,
+        "confidence_entity": 0.9984501600265503,
+        "value": "anak",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "pilihanku yang stabil di kecepatan tinggi",
+    "entities": [
+      {
+        "start": 15,
+        "end": 21,
+        "value": "stabil",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 15,
+        "end": 21,
+        "confidence_entity": 0.9996917247772217,
+        "value": "stabil",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 25,
+        "end": 34,
+        "confidence_entity": 0.452179878950119,
+        "value": "kecepatan",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 35,
+        "end": 41,
+        "confidence_entity": 0.9787471890449524,
+        "value": "tinggi",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "jangan yang becek suspensinya",
+    "entities": [
+      {
+        "start": 12,
+        "end": 17,
+        "value": "becek",
+        "entity": "preference",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 18,
+        "end": 29,
+        "confidence_entity": 0.9059301614761353,
+        "value": "suspensinya",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "jangan yang rendah ground clearance-nya",
+    "entities": [
+      {
+        "start": 12,
+        "end": 18,
+        "value": "rendah",
+        "entity": "preference",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.9990350008010864,
+        "role": "negated",
+        "confidence_role": 0.9998759031295776,
+        "value": "rendah",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 19,
+        "end": 25,
+        "confidence_entity": 0.8674763441085815,
+        "role": "negated",
+        "confidence_role": 0.9998130202293396,
+        "value": "ground",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "jangan yang sempit baris ketiganya",
+    "entities": [
+      {
+        "start": 12,
+        "end": 18,
+        "value": "sempit",
+        "entity": "preference",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 19,
+        "end": 24,
+        "confidence_entity": 0.3367532789707184,
+        "role": "negated",
+        "confidence_role": 0.9984311461448669,
+        "value": "baris",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "nambah 100jt dapet fitur apa aja yang lebih mantap?",
+    "entities": [
+      {
+        "start": 7,
+        "end": 12,
+        "value": "100jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 7,
+        "end": 12,
+        "confidence_entity": 0.999840497970581,
+        "value": "100jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 19,
+        "end": 24,
+        "confidence_entity": 0.9819144606590271,
+        "value": "fitur",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 44,
+        "end": 50,
+        "confidence_entity": 0.995550274848938,
+        "value": "mantap",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "selain Sigra mending ambil apa",
+    "entities": [
+      {
+        "start": 7,
+        "end": 12,
+        "value": "Sigra",
+        "entity": "target_car"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "berapa harga bensin sekarang?",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "powertrain",
+        "start": 13,
+        "end": 19,
+        "confidence_entity": 0.9995068311691284,
+        "value": "bensin",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "tidak nyambung",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 6,
+        "end": 14,
+        "confidence_entity": 0.9978275895118713,
+        "role": "negated",
+        "confidence_role": 0.9085215330123901,
+        "value": "nyambung",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "tabungan 100 juta",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 9,
+        "end": 12,
+        "confidence_entity": 0.9518846273422241,
+        "value": "100",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "tiket konser 500 ribu",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 13,
+        "end": 16,
+        "confidence_entity": 0.7607848048210144,
+        "value": "500",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "cari 5 kursi harga 250 juta",
+    "entities": [
+      {
+        "start": 5,
+        "end": 6,
+        "value": "5",
+        "entity": "min_seat"
+      },
+      {
+        "start": 19,
+        "end": 22,
+        "value": "250",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 5,
+        "end": 6,
+        "confidence_entity": 0.5900458097457886,
+        "value": "5",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 19,
+        "end": 27,
+        "confidence_entity": 0.5754894018173218,
+        "value": "250 juta",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "mobil yang aman dari banjir di budget 500jt",
+    "entities": [
+      {
+        "start": 21,
+        "end": 27,
+        "value": "banjir",
+        "entity": "hard_filter"
+      },
+      {
+        "start": 38,
+        "end": 43,
+        "value": "500jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 11,
+        "end": 15,
+        "confidence_entity": 0.9996762275695801,
+        "value": "aman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "hard_filter",
+        "start": 21,
+        "end": 27,
+        "confidence_entity": 0.9967982172966003,
+        "value": "banjir",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 38,
+        "end": 43,
+        "confidence_entity": 0.9998573064804077,
+        "value": "500jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "budget 2M pengen dapet mobil yang cocok untuk offroad",
+    "entities": [
+      {
+        "start": 7,
+        "end": 9,
+        "value": "2M",
+        "entity": "budget"
+      },
+      {
+        "start": 46,
+        "end": 53,
+        "value": "offroad",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 7,
+        "end": 9,
+        "confidence_entity": 0.9989144802093506,
+        "value": "2m",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil Daihatsu yang ada wireless charger nya budget 400 juta",
+    "entities": [
+      {
+        "start": 6,
+        "end": 14,
+        "value": "Daihatsu",
+        "entity": "brand"
+      },
+      {
+        "start": 24,
+        "end": 40,
+        "value": "wireless charger",
+        "entity": "feature"
+      },
+      {
+        "start": 52,
+        "end": 60,
+        "value": "400 juta",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 24,
+        "end": 40,
+        "confidence_entity": 0.9991722106933594,
+        "value": "wireless charger",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 52,
+        "end": 60,
+        "confidence_entity": 0.9867584109306335,
+        "value": "400 juta",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "spill mobil sporty buat anak muda budget 600jt",
+    "entities": [
+      {
+        "start": 12,
+        "end": 18,
+        "value": "sporty",
+        "entity": "preference"
+      },
+      {
+        "start": 41,
+        "end": 46,
+        "value": "600jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 18,
+        "confidence_entity": 0.999903678894043,
+        "value": "sporty",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 24,
+        "end": 33,
+        "confidence_entity": 0.998822033405304,
+        "value": "anak muda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 41,
+        "end": 46,
+        "confidence_entity": 0.9998389482498169,
+        "value": "600jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "ada suzuki yang irit buat narik taksol?",
+    "entities": [
+      {
+        "start": 4,
+        "end": 10,
+        "value": "suzuki",
+        "entity": "brand"
+      },
+      {
+        "start": 16,
+        "end": 20,
+        "value": "irit",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 4,
+        "end": 10,
+        "confidence_entity": 0.999822199344635,
+        "value": "Suzuki",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "mobil second atau baru yang irit di 200jt",
+    "entities": [
+      {
+        "start": 6,
+        "end": 12,
+        "value": "second",
+        "entity": "preference"
+      },
+      {
+        "start": 28,
+        "end": 32,
+        "value": "irit",
+        "entity": "preference"
+      },
+      {
+        "start": 36,
+        "end": 41,
+        "value": "200jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 28,
+        "end": 32,
+        "confidence_entity": 0.9999146461486816,
+        "value": "irit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 36,
+        "end": 41,
+        "confidence_entity": 0.9998281002044678,
+        "value": "200jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "budget 500jt butuh yang bebas banjir buat di jakarta",
+    "entities": [
+      {
+        "start": 7,
+        "end": 12,
+        "value": "500jt",
+        "entity": "budget"
+      },
+      {
+        "start": 24,
+        "end": 36,
+        "value": "bebas banjir",
+        "entity": "hard_filter"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "budget",
+        "start": 7,
+        "end": 12,
+        "confidence_entity": 0.9998279809951782,
+        "value": "500jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "hard_filter",
+        "start": 24,
+        "end": 36,
+        "confidence_entity": 0.9975489974021912,
+        "value": "bebas banjir",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 45,
+        "end": 52,
+        "confidence_entity": 0.42720285058021545,
+        "value": "jakarta",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "saya mau Toyota yang irit",
+    "entities": [
+      {
+        "start": 9,
+        "end": 15,
+        "value": "Toyota",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 9,
+        "end": 15,
+        "confidence_entity": 0.9996596574783325,
+        "value": "Toyota",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 21,
+        "end": 25,
+        "confidence_entity": 0.9999001026153564,
+        "value": "irit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya ga mau honda",
+    "entities": [
+      {
+        "start": 12,
+        "end": 17,
+        "value": "honda",
+        "entity": "brand",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 12,
+        "end": 17,
+        "confidence_entity": 0.9998683929443359,
+        "value": "honda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya cari mobil yang aman dari banjir budget 600jt",
+    "entities": [
+      {
+        "start": 31,
+        "end": 37,
+        "value": "banjir",
+        "entity": "hard_filter"
+      },
+      {
+        "start": 45,
+        "end": 50,
+        "value": "600jt",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 21,
+        "end": 25,
+        "confidence_entity": 0.9988253712654114,
+        "value": "aman",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "hard_filter",
+        "start": 31,
+        "end": 37,
+        "confidence_entity": 0.9955060482025146,
+        "value": "banjir",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "budget",
+        "start": 45,
+        "end": 50,
+        "confidence_entity": 0.999798595905304,
+        "value": "600jt",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "maunya yang tangguh buat segala medan",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 19,
+        "confidence_entity": 0.9997298121452332,
+        "value": "tangguh",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pengen yang kabinnya lega buat keluarga",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 20,
+        "confidence_entity": 0.9987291693687439,
+        "value": "kabinnya",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 21,
+        "end": 25,
+        "confidence_entity": 0.5206916928291321,
+        "value": "lega",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 31,
+        "end": 39,
+        "confidence_entity": 0.45783287286758423,
+        "value": "keluarga",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya tertarik sama Mazda",
+    "entities": [
+      {
+        "start": 19,
+        "end": 24,
+        "value": "Mazda",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 19,
+        "end": 24,
+        "confidence_entity": 0.999461829662323,
+        "role": "negated",
+        "confidence_role": 0.9092521071434021,
+        "value": "mazda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "maunya hyundai yang canggih",
+    "entities": [
+      {
+        "start": 7,
+        "end": 14,
+        "value": "hyundai",
+        "entity": "brand"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 7,
+        "end": 14,
+        "confidence_entity": 0.999744713306427,
+        "value": "hyundai",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 20,
+        "end": 27,
+        "confidence_entity": 0.9975651502609253,
+        "value": "canggih",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pilihanku yang harga bekas stabil",
+    "entities": [
+      {
+        "start": 15,
+        "end": 26,
+        "value": "harga bekas",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "hard_filter",
+        "start": 21,
+        "end": 26,
+        "confidence_entity": 0.47059178352355957,
+        "value": "bekas",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "preference",
+        "start": 27,
+        "end": 33,
+        "confidence_entity": 0.9994463324546814,
+        "value": "stabil",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "suka yang desain modern",
+    "entities": [
+      {
+        "start": 10,
+        "end": 23,
+        "value": "desain modern",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 17,
+        "end": 23,
+        "confidence_entity": 0.999901533126831,
+        "value": "modern",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "suka yang tampilannya mewah",
+    "entities": [
+      {
+        "start": 10,
+        "end": 27,
+        "value": "tampilannya mewah",
+        "entity": "preference"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 22,
+        "end": 27,
+        "confidence_entity": 0.9999302625656128,
+        "value": "mewah",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "saya tidak suka mazda sempit belakangnya",
+    "entities": [
+      {
+        "start": 16,
+        "end": 21,
+        "value": "mazda",
+        "entity": "brand",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "brand",
+        "start": 16,
+        "end": 21,
+        "confidence_entity": 0.999377429485321,
+        "role": "negated",
+        "confidence_role": 0.9987905621528625,
+        "value": "mazda",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 22,
+        "end": 28,
+        "confidence_entity": 0.9977834820747375,
+        "role": "negated",
+        "confidence_role": 0.9995902180671692,
+        "value": "sempit",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "ga mau yang berisik kalau lagi kencang",
+    "entities": [
+      {
+        "start": 12,
+        "end": 19,
+        "value": "berisik",
+        "entity": "preference",
+        "role": "negated"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "preference",
+        "start": 12,
+        "end": 19,
+        "confidence_entity": 0.9994480013847351,
+        "role": "negated",
+        "confidence_role": 0.9994693398475647,
+        "value": "berisik",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "preference",
+        "start": 31,
+        "end": 38,
+        "confidence_entity": 0.9999253749847412,
+        "value": "kencang",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "kalau nambah dana 100 juta kira-kira dapet upgrade apa ya?",
+    "entities": [
+      {
+        "start": 18,
+        "end": 26,
+        "value": "100 juta",
+        "entity": "budget"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "min_seat",
+        "start": 18,
+        "end": 21,
+        "confidence_entity": 0.8095447421073914,
+        "value": "100",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "nambah 20 juta dapet kamera 360 ga ya?",
+    "entities": [
+      {
+        "start": 7,
+        "end": 14,
+        "value": "20 juta",
+        "entity": "budget"
+      },
+      {
+        "start": 21,
+        "end": 31,
+        "value": "kamera 360",
+        "entity": "feature"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "feature",
+        "start": 7,
+        "end": 9,
+        "confidence_entity": 0.3748417794704437,
+        "value": "20",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "feature",
+        "start": 21,
+        "end": 31,
+        "confidence_entity": 0.9955995082855225,
+        "value": "kamera 360",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "alternatif lain buat Yaris",
+    "entities": [
+      {
+        "start": 21,
+        "end": 26,
+        "value": "Yaris",
+        "entity": "target_car"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "cari mobil yang kayak Agya",
+    "entities": [
+      {
+        "start": 22,
+        "end": 26,
+        "value": "Agya",
+        "entity": "target_car"
+      }
+    ],
+    "predicted_entities": []
+  }
+]

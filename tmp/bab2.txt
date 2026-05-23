@@ -1,0 +1,260 @@
+BAB 2
+TINJAUAN PUSTAKA
+
+ 2.1 Penelitian Terdahulu
+Penelitian tentang pengembangan chatbot berbasis Natural Language Processing (NLP) dan framework Rasa telah banyak dilakukan di berbagai domain. Tabel 2.1 menyajikan ringkasan penelitian-penelitian terdahulu yang relevan dengan topik optimasi pipeline NLU, klasifikasi intent, dan ekstraksi entity, khususnya dalam konteks bahasa Indonesia.
+Tabel 2.1 Penelitian Terdahulu
+No
+Topik
+Metode
+Hasil
+Referensi
+Persamaan
+Perbedaan
+1
+Pengembangan Chatbot Berbasis Framework Rasa
+RASA NLU, DIETClassifier, RegexFeaturizer, LexicalSyntacticFeaturizer
+Kombinasi pipeline tambahan menghasilkan akurasi klasifikasi 93% dan F1-score 91%
+Vista, C. B., dkk. (2026)
+Sama-sama mengeksplorasi modifikasi pengaturan pada komponen NLU pipeline RASA
+Domain diterapkan pada layanan spesifik (Bank Sampah), bukan eksperimen evaluasi matematis murni
+2
+Peningkatan Chatbot Pelanggan dengan LLM-Chaining & Multi-stage Fallback
+Framework RASA, DIETClassifier, integrasi LLM (Phi3-mini, ChatGPT)
+Sistem fallback bertahap secara signifikan mereduksi ketidakpahaman intent
+Satrio, C. (2025)
+Menjadikan model RASA dan pemahaman intent NLU sebagai pondasi utama sistem
+Berfokus menggabungkan RASA dengan LLM ketimbang optimasi mandiri hyperparameter DIET
+3
+Implementasi Sistem FAQ Bot menggunakan Framework RASA
+RASA NLU, Evaluasi Akurasi, Presisi, Recall, F1-Score
+Rata-rata metrik bernilai 1,0 (sangat stabil) dalam menjawab dan mengekstrak pertanyaan
+Talenggoran, R. H. H., dkk. (2025)
+Menerapkan formula evaluasi metrik algoritma NLP yang sama (F1-score, presisi, recall)
+Merupakan tahap implementasi sistem QA birokrasi kampus secara umum
+4
+Klasifikasi Intent Teks Sejarah Menggunakan NLP dan RASA
+NLP, Framework RASA, DIETClassifier, evaluasi Confusion Matrix
+Chatbot memberikan respons akurat yang sejalan dengan masukan unik berbasis bahasa/sejarah lokal
+Anggareni, D. P., dkk. (2025)
+Memanfaatkan arsitektur DIETClassifier RASA dan instrumen Confusion Matrix untuk akurasi
+Dataset fokus pada pelestarian frasa kultur/cerita lokal, tanpa membahas isu imbalanced data
+5
+Peningkatan Layanan Helpdesk Pemerintah dengan Chatbot AI RASA
+RASA NLU, CountVectorsFeaturizer, penyetelan batas FallbackClassifier
+Optimal dalam memetakan respons pengguna dan menekan waktu layanan secara efisien
+Sasmita, W. M. H., dkk. (2025)
+Menyertakan kustomisasi fungsi Tokenizer dan Featurizer secara spesifik
+Tujuannya mengukur perbandingan kecepatan rilis respons bot berbanding agen manusia
+6
+Klasifikasi Pertanyaan di Chatbot Edukasi Menggunakan RASA NLU
+NLU, Pemisahan rasio data (split), Presisi
+Mengenali berbagai ragam pola kalimat matematis dengan presisi makro 94,4%
+Christanto, Z. D., & Hadiono, K. (2026)
+Melakukan standardisasi pelatihan model dan komputasi ekstraksi entitas
+Rancangan stories hanya untuk materi informatika jenjang sekolah
+7
+Aplikasi Layanan dan Informasi Akademik Berbasis Chatbot Telegram
+Prapemrosesan teks (NLP), pengolahan domain.yml dan nlu.yml RASA
+Chatbot tanggap mengenali bahasa natural tanpa format komunikasi yang kaku
+Qalimaturrahmah, M., & Santoso, D. B. (2024)
+Memanfaatkan fase preprocessing bahasa agar NLU bersih dari noise
+Sangat menitikberatkan pengembangan UI via bot Telegram
+8
+Analisis Sentimen Kebijakan Pemblokiran PPATK Menggunakan SVM
+Ekstraksi TF-IDF, SMOTE, SVM, Decision Tree, Hyperparameter Tuning (GridSearchCV)
+SVM setelah tuning dan SMOTE memiliki sensitivitas kelas yang lebih baik
+Aji, D. W. S., & Sulistyono, M. Y. T. (2026)
+Tahapan identik: tuning parameter, evaluasi metrik, dan SMOTE
+Menganalisis isu kebijakan publik dengan model regresi klasik, bukan mesin intent asisten
+9
+Penanganan Overfitting pada Neural Networks dengan Dropout
+Jaringan Saraf Tiruan (CNN, LSTM), Regularisasi L2, Dropout
+Integrasi regulasi ganda dan dropout andal menekan overfitting parah
+Ilyas, R., dkk. (2024)
+Topik erat: mengatasi overfitting pada pelatihan komputasi bahasa
+Membidik identifikasi hoaks menggunakan Deep Learning, tanpa pipeline bot
+10
+Model Klasifikasi Emosi Berbasis Teks dengan DT dan SVM
+TF-IDF, Stratified K-Fold Cross Validation, GridSearchCV
+Stratified K-Fold mencegah bias data; SVM dengan tuning mencapai akurasi 89%
+Raihan, H. A., dkk. (2025)
+Validasi menggunakan Cross-Validation serta modifikasi hyperparameter
+Penilaian emosi ulasan teks saja, tidak terintegrasi pada arsitektur agen percakapan
+11
+Evaluasi Hyperparameter Tuning SVM pada Ulasan Tripadvisor
+SVM, Optimasi iterasi algoritma
+Penyetelan parameter memaksimalkan sensitivitas untuk ulasan negatif minor
+Umam, K., dkk. (2025)
+Fokus membongkar hyperparameter guna menambal ketimpangan kelas
+Menggunakan SVM tradisional, bukan arsitektur NLU/Transformer
+12
+Analisis Sentimen Ulasan Menggunakan TF-IDF, MNB, dan SMOTE
+Multinomial Naive Bayes (MNB), TF-IDF, SMOTE
+Dataset kecil dan informal tidak dapat tertolong performanya meski pakai SMOTE
+Salim, S., dkk. (2025)
+Mempelajari implikasi SMOTE di pengklasifikasian NLP
+Menyoroti limitasi SMOTE pada himpunan semantik tertentu
+13
+Analisis Sentimen Berbasis Aspek dengan Teknik Oversampling
+Word Embedding (CBOW Word2Vec), CNN, Hibrid Oversampling
+Oversampling setelah embedding ampuh mereduksi bias klasifikasi sentimen
+Irfani, M. (2024)
+Mengeksplorasi imbalanced data dengan injeksi algoritma penyeimbangan
+Pemrosesan vektor kata ke CNN, bukan arsitektur DIET
+14
+Penanganan Data Tidak Seimbang pada Sentimen Ulasan Multikelas
+Random Oversampling, SMOTE, ADASYN, Regresi Logistik
+Random Oversampling paling menjaga macro F1-score stabil
+Alfarizi, N., dkk. (2026)
+Komparasi penanganan imbalance class via skor F1 Makro
+Objek utama komparasi regresi linier pada keluhan e-commerce
+15
+Analisis Sentimen Pelanggan Menggunakan Arsitektur IndoBERT
+IndoBERT, Fine-tuning
+Sentence-Pair classification mencapai F1-score 0,9194, unggul 23,6% dibanding Word2Vec-CNN-XGBoost
+Yulianti, E., & Nissa, N. K. (2024)
+Memanfaatkan struktur Transformer yang sama dengan DIETClassifier
+Dikhususkan pada ABSA, tanpa modul manajemen dialog bot
+16
+Penerapan Oversampling Pada Klasifikasi Ujaran Kebencian (BERT)
+BERT, Oversampling Minority Class
+SMOTE meningkatkan akurasi dari 85% menjadi 88% pada kelas minoritas
+Syahwaluddin, R., & Alita, D. (2024)
+Mengatasi imbalance data pada basis model Transformer
+Studi terfokus pada filter deteksi ujaran kotor/kasar
+17
+Performa Naive Bayes, SVM, dan IndoBERT dengan Class Weighting
+SMOTE, Class Weighting, 10-Fold Cross Validation
+Class Weighting membantu model konvensional mengejar ketertinggalan dari BERT
+Qolbu, A. A., dkk. (2025)
+Cross-validation dikawinkan dengan regulasi porsi kelas (SMOTE)
+Fokus ke teknik hibrid klasifikasi murni, tidak ke response action server
+18
+Analisis Performa IndoBERT untuk Ulasan Teks Hotel
+Pengaturan parameter Transformer, metrik ROC/Precision-Recall Curve
+Akurasi 92,5%, kelas Neutral sering meleset akibat proporsi minim
+Singgalen, Y. A. (2025)
+Evaluasi eksperimen laju performa epoch training di NLP modern
+Pengujian grafis ditekankan ke kurva ROC
+19
+Implementasi Chatbot Cerdas NLP untuk Layanan Pelanggan
+NLP Leksikal, Tokenisasi, Lematisasi, NER
+Transformasi leksikal memampukan model memprediksi tanggapan obrolan yang luwes
+Jurnal Komputer dan Teknik Informatika (2025)
+Menyempurnakan tahap tokenisasi demi ekstraksi entitas
+Parameter penyesuaian tidak dieksplorasi secara matematis
+20
+Kinerja SVM (+SMOTE) vs BiLSTM (+Undersampling) Sentimen
+SVM+SMOTE vs BiLSTM+Undersampling
+BiLSTM dengan undersampling mengungguli SVM+SMOTE pada metrik kelincahan prediksi
+Daryl, dkk. (2025/2026)
+Strategi manipulasi rasio kelas (imbalance handling)
+Mengadopsi BiLSTM sebagai penanding, bukan DIET RASA
+21
+Literatur Review Penggunaan Chatbot Untuk Layanan Informasi
+Systematic Literature Review (SLR), Tinjauan Komparasi Algoritma
+RASA mendominasi inovasi bot di berbagai industri 2020-2024
+Fauzan, M., dkk. (2024)
+RASA disepakati sebagai framework terkuat dalam ekosistem NLU
+Bersifat tinjauan kepustakaan murni, tanpa percobaan kodifikasi
+22
+Tinjauan Arsitektur Chatbot Multibahasa dan Tantangan Linguistik
+Tinjauan sistematis RAG, BERT
+BERT krusial untuk menambal kelemahan korpus bahasa dengan teks minim
+Robet, R., dkk. (2025)
+Membahas kemampuan model representasi seperti RAG dan Transformer
+Penilaian untuk linguistik berdaya rendah antar budaya, bukan skor F1 spesifik
+23
+Optimasi Klasifikasi Teks dengan Regresi, TF-IDF, dan SMOTE
+Prapemrosesan Linguistik, TF-IDF, Regresi Logistik, SMOTE
+SMOTE pada dimensi vektor tinggi justru memasukkan noise, menurunkan akurasi
+JIKOMTI (2025)
+SMOTE tidak selamanya berdampak ideal bagi parameter NLP
+Model dieksekusi dengan Logistic Regression konvensional
+24
+Analisis Sentimen Teks Menggunakan Transformer & Augmentasi
+DistilBERT, Synonym Replacement
+Data augmentasi mengakali minimnya data tanpa mengubah esensi informasi
+Peneliti JATI (2026)
+Menyeimbangkan parameter pelatihan untuk stabilkan generalisasi
+Penyeimbangan kelas dengan substitusi sinonim, bukan SMOTE
+25
+Chatbot Dukungan Emosional Menggunakan Framework Rasa
+RASA NLP, Intent Classification, Dropout
+Dropout memperkuat imunitas model mencegah overfitting pada curhatan emosional
+Peneliti JATI (2026)
+Mengimplementasikan Dropout dalam pipeline RASA untuk mitigasi overfitting
+Output model untuk interaksi pendampingan sentimen klinis (psikologis)
+26
+Systematic Literature Review of Chatbots in E-Government
+SLR terhadap literatur 2019-2025
+Pergeseran tren riset ke integrasi NLP mendalam untuk otomatisasi birokrasi digital
+Firmandany, N. R., dkk. (2026)
+Relevansi optimasi algoritma AI untuk masukan publik tak terstruktur
+Berisi rekapitulasi demografis riset E-Government, tanpa kalkulasi algoritma numerik
+
+Berdasarkan Tabel 2.1, beberapa temuan penting menjadi landasan penelitian ini. Vista et al. (2026) membuktikan bahwa penambahan fitur leksikal melalui RegexFeaturizer dan LexicalSyntacticFeaturizer pada pipeline DIETClassifier Rasa mampu meningkatkan akurasi klasifikasi intent hingga 93%. Yulianti & Nissa (2024) menunjukkan bahwa fine-tuning IndoBERT dengan pendekatan sentence-pair classification menghasilkan F1-score tertinggi (0,9194) untuk aspect-based sentiment analysis berbahasa Indonesia. Talenggoran et al. (2025) mengonfirmasi pentingnya evaluasi dengan data uji terpisah. Sasmita et al. (2025) menerapkan cross-validation tetapi tidak mengukur gap overfitting. Penelitian Vista et al. (2026) dan Talenggoran et al. (2025) tidak menggunakan repeated cross-validation, sehingga tidak melaporkan stabilitas performa antar putaran. Penelitian Yulianti & Nissa (2024) tidak secara spesifik mengevaluasi entitas negasi dan intent out-of-scope. Penelitian ini dirancang untuk mengatasi keterbatasan tersebut dengan repeated 5-fold cross-validation (3 kali pengulangan), evaluasi stabilitas (standar deviasi), deteksi overfitting, serta perbandingan tujuh konfigurasi pipeline yang mencakup fitur sparse, dense (IndoBERT), hibrida, RegexEntityExtractor, dan FallbackClassifier.
+
+2.2 Teori Utama
+2.2.1 NLP dan NLU
+Natural Language Processing (NLP) merupakan cabang ilmu komputer dan kecerdasan buatan yang mempelajari interaksi antara komputer dan bahasa manusia. Tujuan utama NLP adalah memungkinkan komputer membaca, memahami, menafsirkan, dan menghasilkan teks atau ucapan dalam bahasa alami yang bernilai bagi pengguna. Bidang ini mencakup berbagai tugas seperti tokenisasi, part-of-speech tagging, named entity recognition, parsing sintaksis, hingga machine translation dan summarization teks (Bocklisch et al., 2017). Namun, tidak semua tugas NLP berfokus pada pemahaman mendalam terhadap makna. Sebagian tugas hanya bersifat struktural atau statistik, seperti menghitung frekuensi kata atau mengekstraksi pola n-gram.
+Natural Language Understanding (NLU) merupakan subbidang dari NLP yang secara spesifik berfokus pada pemahaman makna (semantik) dan maksud di balik teks, bukan sekadar pemrosesan struktural. NLU bertugas mengubah teks masukan yang tidak terstruktur (misalnya kalimat dalam bahasa alami) menjadi representasi terstruktur yang dapat diproses oleh mesin, seperti intent (maksud pengguna) dan entity (informasi spesifik yang melengkapi intent). Sebagai contoh, dalam kalimat "Tunjukkan saya mobil SUV di bawah 300 juta", NLU harus mampu mengidentifikasi bahwa intent pengguna adalah mencari rekomendasi mobil (misalnya ask_recommendation), dan entitas yang terkait adalah body_type: SUV serta budget: 300 juta. Pemahaman ini sangat krusial karena kesalahan kecil dalam interpretasi dapat menyebabkan sistem memberikan respons yang sama sekali tidak relevan (Bunk et al., 2020).
+Dalam sistem percakapan (conversational AI) seperti chatbot asisten, NLU menjadi komponen yang paling kritis karena menentukan seberapa baik sistem memahami permintaan pengguna sebelum memutuskan tindakan apa yang harus diambil. Tanpa NLU yang handal, sistem tidak akan mampu membedakan antara "rekomendasikan mobil sport" dan "saya tidak suka mobil sport", padahal kedua kalimat memiliki makna yang berlawanan. Oleh karena itu, penelitian ini menempatkan NLU sebagai fondasi utama, dengan mengoptimasi berbagai komponen di dalam pipeline Rasa untuk meningkatkan akurasi klasifikasi intent dan ekstraksi entity, terutama dalam menangani negasi yang sering membalikkan makna.
+
+2.2.2 Framework Rasa
+Rasa adalah framework open-source yang digunakan secara luas untuk membangun asisten percakapan (chatbot) berbasis machine learning. Rasa terdiri dari dua modul utama: Rasa NLU dan Rasa Core. Rasa NLU bertanggung jawab untuk memahami pesan pengguna melalui klasifikasi intent dan ekstraksi entity, sementara Rasa Core mengelola alur dialog (dialogue management) dan memprediksi tindakan (action) selanjutnya berdasarkan state percakapan saat ini (Bocklisch et al., 2017). Kedua modul ini dapat bekerja secara independen maupun terintegrasi, memberikan fleksibilitas bagi pengembang untuk membangun chatbot dengan kompleksitas yang beragam.
+Salah satu keunggulan utama Rasa dibandingkan platform chatbot komersial seperti Dialogflow atau Lex adalah sifat open-source yang memberikan kendali penuh atas data, model, dan infrastruktur. Pengembang dapat menyimpan data sensitif secara lokal, menyesuaikan algoritma sesuai kebutuhan, dan bahkan mengganti komponen default dengan implementasi kustom. Hal ini sangat penting untuk aplikasi di pemerintahan atau perusahaan yang memerlukan kepatuhan terhadap regulasi perlindungan data (Sasmita et al., 2025).
+Selain itu, Rasa memiliki arsitektur modular yang memungkinkan pengembang untuk mengombinasikan berbagai komponen pemrosesan teks – seperti tokenizer (WhitespaceTokenizer, SpacyTokenizer), featurizer (CountVectorsFeaturizer, LanguageModelFeaturizer, RegexFeaturizer), dan classifier (DIETClassifier, ResponseSelector) – dalam sebuah pipeline yang dapat dikustomisasi secara bebas (Vista et al., 2026). Setiap komponen dapat diaktifkan, dinonaktifkan, atau diatur parameternya secara independen. Inilah yang menjadi inti dari penelitian ini: mengeksplorasi berbagai konfigurasi pipeline (sparse, dense, hibrida) untuk menemukan kombinasi optimal bagi bahasa Indonesia pada domain rekomendasi mobil.
+Rasa juga mendukung berbagai bahasa melalui konfigurasi tokenizer dan featurizer yang sesuai. Untuk bahasa Indonesia, Rasa dapat menggunakan WhitespaceTokenizer (default) atau tokenizer dari pustaka Spacy yang telah memiliki model bahasa Indonesia. Namun, penelitian Talenggoran et al. (2025) menunjukkan bahwa WhitespaceTokenizer sudah cukup efektif jika digabungkan dengan featurizer berbasis karakter (char-ngram) yang mampu menangkap imbuhan dalam bahasa Indonesia. Penelitian ini menggunakan WhitespaceTokenizer pada semua konfigurasi untuk menjaga konsistensi.
+
+2.2.3 DIET Classifier (Dual Intent and Entity Transformer)
+DIET (Dual Intent and Entity Transformer) adalah arsitektur multi-task transformer yang dikembangkan oleh tim Rasa (Bunk et al., 2020) untuk menangani klasifikasi intent dan ekstraksi entity secara simultan dalam satu model terpadu. Pendekatan tradisional biasanya memisahkan kedua tugas: misalnya menggunakan classifier tersendiri untuk intent (seperti SVM atau CNN) dan sequence labeler terpisah untuk entity (seperti CRF atau BiLSTM). Pemisahan ini menyebabkan error propagation, yaitu kesalahan dari satu tugas dapat merambat ke tugas lainnya. DIET mengatasi masalah ini dengan memproses kedua tugas dalam satu kerangka deep learning yang saling menguatkan (joint modeling).
+Secara teknis, DIET menerima urutan token dari hasil tokenisasi. Setiap token dikodekan menjadi dua jenis representasi: representasi dense (padat) yang berasal dari pre-trained embeddings seperti BERT atau GloVe, dan representasi sparse (jarang) yang berasal dari fitur manual seperti bag-of-words, char-ngram, atau fitur leksikal dari RegexFeaturizer. Kedua representasi ini digabungkan dan diproses oleh lapisan transformer (arsitektur yang sama dengan BERT namun dengan ukuran lebih kecil) untuk menghasilkan konteks yang kaya. Kemudian, token [CLS] (token khusus pada awal urutan) digunakan untuk klasifikasi intent melalui dot-product loss, yaitu dengan membandingkan vektor [CLS] dengan vektor representasi setiap intent. Untuk ekstraksi entity, seluruh urutan output dari transformer diproses oleh Conditional Random Field (CRF) yang mempertimbangkan ketergantungan antar label berurutan (misalnya jika token sebelumnya adalah B-body_type, token saat ini kemungkinan besar adalah I-body_type).
+DIET juga menambahkan masked language modeling (MLM) sebagai bentuk regularisasi. Pada MLM, sebagian token secara acak diganti dengan token [MASK], dan model harus memprediksi token asli. Hal ini memaksa model untuk belajar representasi yang lebih umum dan tidak terlalu overfit terhadap data latih. Keunggulan utama DIET dibandingkan fine-tuning BERT secara penuh adalah kecepatan pelatihan – DIET dapat mencapai performa yang sebanding dengan BERT namun dengan kecepatan hingga enam kali lebih cepat, karena ukuran transformer DIET lebih kecil dan penggunaan representasi sparse yang efisien (Bunk et al., 2020).
+Dalam penelitian ini, DIETClassifier menjadi komponen inti di semua konfigurasi pipeline. Parameter-parameter seperti epochs, learning_rate, batch_size, dan dropout_rate divariasikan untuk mengamati pengaruhnya terhadap stabilitas dan generalisasi model, khususnya pada data bahasa Indonesia yang memiliki struktur morfologis kaya.
+
+2.2.4 IndoBERT
+IndoBERT adalah model bahasa pra-latih (pre-trained language model) berbasis arsitektur BERT (Bidirectional Encoder Representations from Transformers) yang dikembangkan secara khusus untuk bahasa Indonesia. IndoBERT dilatih oleh Koto et al. (2020) menggunakan korpus besar berukuran 220 juta kata yang bersumber dari Wikipedia bahasa Indonesia, artikel berita dari berbagai portal berita nasional (Kompas, Tempo, detik), dan korpus web dari Common Crawl (Wilie et al., 2020). Dengan data pelatihan yang sangat luas dan beragam, IndoBERT mampu menangkap nuansa linguistik bahasa Indonesia secara mendalam.
+Secara arsitektur, IndoBERT memiliki 12 lapisan transformer (layers), 12 attention head per lapisan, dimensi hidden state sebesar 768, dan ukuran kosakata (vocabulary) sebanyak 31.923 subword yang dihasilkan menggunakan tokenizer WordPiece. Jumlah total parameter IndoBERT mencapai sekitar 110 juta, sehingga cukup besar namun masih dapat dijalankan pada perangkat keras yang umum (GPU dengan VRAM 8-12 GB). Keunggulan utama IndoBERT dibandingkan model multibahasa seperti multilingual BERT atau XLM-Roberta adalah kemampuannya yang lebih baik dalam memahami struktur informal, variasi dialek, ekspresi emosional, dan istilah-istilah lokal khas Indonesia (Yulianti & Nissa, 2024). Model multibahasa cenderung bias terhadap bahasa-bahasa mayoritas seperti Inggris, Spanyol, atau Mandarin, sehingga untuk bahasa Indonesia yang memiliki tata bahasa dan kosakata khas, performa IndoBERT secara konsisten lebih unggul.
+Dalam konteks sistem percakapan, IndoBERT dapat diintegrasikan ke dalam pipeline Rasa melalui komponen LanguageModelFeaturizer. Komponen ini akan mengambil teks masukan, memprosesnya dengan model IndoBERT, dan menghasilkan vektor dense berdimensi 768 untuk setiap token (atau untuk seluruh kalimat). Vektor-vektor ini kemudian menjadi masukan bagi DIETClassifier. Penggunaan IndoBERT sebagai featurizer dense diharapkan dapat meningkatkan kemampuan model dalam memahami konteks semantik yang kompleks, seperti perbedaan antara "saya suka mobil Honda" dan "saya tidak suka mobil Honda". Namun, karena IndoBERT memiliki ukuran besar, epoch pelatihan yang terlalu banyak dapat menyebabkan overfitting (karena dataset penelitian ini relatif kecil) dan juga memperlambat proses training. Penelitian ini juga membandingkan performa pipeline dengan IndoBERT (dense) versus pipeline dengan fitur sparse (CountVectorsFeaturizer) untuk melihat apakah keunggulan IndoBERT tetap signifikan pada dataset terbatas.
+
+2.2.5 Klasifikasi Intent dan Ekstraksi Entitas
+Klasifikasi intent dan ekstraksi entity adalah dua tugas inti dalam NLU yang harus diselesaikan oleh sistem percakapan agar dapat merespon pengguna secara tepat (Bocklisch et al., 2017). Intent merepresentasikan tujuan atau maksud di balik ucapan pengguna. Dalam konteks rekomendasi mobil, intent dapat berupa ask_recommendation (minta rekomendasi mobil), ask_comparison (minta perbandingan antar mobil), choose_preference (menyatakan preferensi), start_search (memulai pencarian), ask_similar_car (cari mobil yang mirip), atau out_of_scope (pertanyaan di luar domain). Setiap intent biasanya diwakili oleh kumpulan contoh kalimat (utterances) yang beragam. Sebagai contoh, intent ask_recommendation dapat diekspresikan dengan "Rekomendasikan mobil bagus", "Cari mobil yang irit", atau "Saran mobil untuk saya".
+Entity adalah potongan informasi spesifik yang melengkapi intent, seperti jenis mobil (body_type), merek (brand), anggaran (budget), fitur (feature), transmisi, jumlah kursi, dan sebagainya. Entity sering disebut sebagai "parameter" atau "slot" yang perlu diisi. Misalnya, dalam kalimat "Tunjukkan mobil SUV merek Honda di bawah 400 juta", entitas yang dapat diekstrak adalah body_type: SUV, brand: Honda, dan budget: 400 juta. Tanpa ekstraksi entity yang akurat, sistem tidak akan tahu SUV, merek Honda, atau batas harga yang dimaksud.
+Klasifikasi intent dan ekstraksi entity sebenarnya memiliki keterkaitan semantik yang erat. Misalnya, kemunculan kata "SUV" sering berkorelasi dengan intent ask_recommendation, sementara kata "bandingkan" lebih berkorelasi dengan intent ask_comparison. Sebaliknya, intent out_of_scope biasanya tidak mengandung entitas domain. Karena keterkaitan ini, pendekatan joint modeling (pemodelan bersama) seperti yang diimplementasikan DIETClassifier lebih unggul dibandingkan pendekatan pipeline terpisah. Pada joint modeling, model dapat memanfaatkan informasi dari satu tugas untuk meningkatkan performa tugas lainnya. Sebagai contoh, jika model ragu dalam menentukan intent suatu kalimat, tetapi berhasil mengekstrak entity budget dan body_type, maka hal tersebut dapat menjadi petunjuk kuat bahwa intent tersebut adalah ask_recommendation (Bunk et al., 2020). Sebaliknya, pengetahuan tentang intent juga dapat mempersempit kemungkinan entity yang relevan.
+Dalam penelitian ini, penanganan entity menjadi perhatian khusus karena adanya entitas negasi seperti body_type.negated, brand.negated, feature.negated, preference.negated, powertrain.negated, dan transmission.negated. Entitas negasi muncul ketika pengguna menyatakan ketidaksukaan atau penolakan, misalnya "Saya tidak ingin mobil SUV" – di sini entitas body_type: SUV sebenarnya dinegasikan. Model yang baik harus mampu membedakan antara body_type: SUV (positif) dan body_type.negated: SUV (negatif) karena akan menghasilkan respons yang berbeda. Tantangan ini dieksplorasi secara sistematis dalam penelitian ini melalui kombinasi DIETClassifier (untuk pola kompleks) dan RegexEntityExtractor (untuk pola eksplisit), serta dievaluasi menggunakan metrik F1-score per kelas entitas.
+
+2.3 Teori Pendukung
+2.3.1 Pipeline NLU Rasa dan Komponennya
+Pipeline NLU (Natural Language Understanding) pada framework Rasa merupakan sebuah rangkaian atau alur pemrosesan teks yang terdiri dari berbagai komponen yang dieksekusi secara berurutan untuk mengubah pesan mentah pengguna menjadi representasi terstruktur yang dapat dipahami oleh mesin (Rachman et al., 2023). Setiap komponen dalam pipeline memiliki tanggung jawab spesifik, mulai dari memecah kalimat menjadi token-token kecil (tokenisasi), mengubah token tersebut menjadi vektor numerik (featurisasi), hingga melakukan klasifikasi intent dan ekstraksi entity. Secara umum, pipeline NLU Rasa terdiri dari tiga tahap utama: tokenization, featurization, dan classification/entity extraction. Tahap tokenisasi memisahkan kalimat menjadi unit-unit dasar seperti kata atau karakter. Tahap featurisasi mengubah setiap token menjadi representasi angka yang dapat diproses oleh model machine learning. Tahap terakhir menggunakan classifier seperti DIETClassifier untuk menentukan intent pengguna dan mengekstrak entity yang relevan. Vista et al. (2026) dalam penelitiannya mendemonstrasikan bahwa konfigurasi pipeline yang berbeda menghasilkan performa yang sangat bervariasi. Pada konfigurasi dasar, DIETClassifier saja mencapai akurasi klasifikasi intent sebesar 91%. Namun, setelah ditambahkan komponen RegexFeaturizer dan LexicalSyntacticFeaturizer ke dalam pipeline, akurasi tersebut meningkat signifikan menjadi 93%. Hal ini membuktikan bahwa pemilihan dan penataan komponen dalam pipeline NLU sangat menentukan kualitas pemahaman bahasa alami oleh sistem chatbot.
+2.3.2 Cross-Validation dan Deteksi Overfitting
+Cross-validation (CV) adalah salah satu teknik evaluasi model yang paling umum digunakan dalam machine learning untuk menilai seberapa baik suatu model akan menggeneralisasi ke data yang tidak terlihat. Prinsip kerjanya adalah membagi dataset menjadi sejumlah *k* bagian yang disebut fold. Secara bergantian, masing-masing fold akan berperan sebagai data uji sementara *k-1* fold lainnya digunakan sebagai data latih. Proses ini diulang sebanyak *k* kali sehingga setiap sampel data memiliki kesempatan menjadi data uji tepat satu kali. Raihan et al. (2025) menjelaskan bahwa cross-validation membantu mencegah overfitting terhadap data latih tertentu dan memberikan estimasi performa yang lebih realistis. Namun, CV standar hanya melakukan satu kali pembagian data secara acak, sehingga hasil evaluasi bisa berbeda jika pengacakan awal berubah. Untuk mengatasi kelemahan ini, digunakanlah repeated cross-validation, yaitu mengulang seluruh proses CV sebanyak *n* kali dengan pengacakan ulang setiap putaran. Dengan demikian, kita dapat menghitung rata-rata performa sekaligus standar deviasi antar pengulangan sebagai indikator stabilitas model. Sasmita et al. (2025) dalam penelitiannya menerapkan 5-fold CV, tetapi tidak melakukan pengulangan, sehingga tidak melaporkan stabilitas performa. Deteksi overfitting secara formal dilakukan dengan membandingkan performa model pada data latih (training set) dengan performa pada cross-validation. Jika terdapat kesenjangan (gap) yang besar, misalnya F1-score pada data latih sangat tinggi tetapi F1-score pada CV rendah, maka hal tersebut menandakan model mengalami overfitting (Raihan et al., 2025). Ilyas et al. (2024) juga membahas berbagai teknik regularisasi seperti L2 regularization dan dropout yang efektif untuk mengatasi overfitting pada jaringan saraf tiruan, termasuk DIETClassifier yang digunakan dalam penelitian ini.
+2.3.3 Metrik Evaluasi: Precision, Recall, F1-Score, dan Macro Average
+Untuk mengukur kualitas model klasifikasi, termasuk klasifikasi intent dan ekstraksi entity, digunakan metrik-metrik yang diturunkan dari confusion matrix. Confusion matrix menyajikan informasi tentang jumlah prediksi benar (true positive dan true negative) serta prediksi salah (false positive dan false negative) untuk setiap kelas. Precision (presisi) mengukur proporsi dari seluruh prediksi positif yang benar-benar positif. Dengan kata lain, precision menjawab pertanyaan: "Dari semua yang diprediksi sebagai kelas X, berapa banyak yang benar?" Recall (sensitivitas) mengukur proporsi dari seluruh data positif aktual yang berhasil diidentifikasi dengan benar. Recall menjawab: "Dari semua data yang seharusnya kelas X, berapa banyak yang terdeteksi?" F1-score adalah rata-rata harmonik dari precision dan recall, yang memberikan keseimbangan antara keduanya. F1-score sangat berguna ketika data tidak seimbang (imbalanced) karena tidak terpengaruh oleh kelas mayoritas semata. Rumus F1-score adalah:
+
+Dalam konteks klasifikasi multikelas seperti pada penelitian ini (terdapat lebih dari dua intent), diperlukan agregasi metrik antar kelas. Macro average menghitung rata-rata aritmetika dari metrik (misalnya F1-score) setiap kelas tanpa memperhitungkan jumlah sampel per kelas. Macro average sangat disarankan ketika ketidakseimbangan kelas menjadi perhatian utama, karena memberikan bobot yang sama pada kelas minoritas dan mayoritas. Sebaliknya, weighted average memberikan bobot sesuai proporsi sampel, yang bisa menyembunyikan performa buruk pada kelas minoritas. Raihan et al. (2025) dan Vista et al. (2026) sama-sama menggunakan macro average F1-score sebagai metrik utama evaluasi dalam penelitian mereka.
+2.3.4 RegexFeaturizer
+RegexFeaturizer adalah salah satu komponen featurisasi dalam pipeline NLU Rasa yang berfungsi untuk mengekstraksi fitur berbasis ekspresi reguler (regular expression) dari teks masukan. Ekspresi reguler adalah pola string yang digunakan untuk mencocokkan, mencari, atau memanipulasi teks berdasarkan aturan tertentu. Dalam konteks pemrosesan bahasa alami, RegexFeaturizer bekerja dengan mendefinisikan pola-pola regex yang relevan dengan domain permasalahan, misalnya pola untuk mengenali nomor telepon (misalnya \d{4}-\d{4}-\d{4}), alamat email, tanggal, atau kata-kata negasi seperti tidak|bukan|jangan. Setiap kali suatu token atau rangkaian token dalam pesan pengguna cocok dengan salah satu pola regex yang telah didefinisikan, RegexFeaturizer akan menghasilkan fitur biner (0 atau 1) yang menandakan adanya kecocokan tersebut. Fitur-fitur ini kemudian digabungkan dengan fitur numerik lain dari komponen featurizer lainnya sebelum dimasukkan ke dalam DIETClassifier. Keunggulan utama RegexFeaturizer adalah kemampuannya untuk menangkap pola teks yang sangat spesifik, deterministik, dan tidak memerlukan data latih. Pola negasi, misalnya, sering kali tidak muncul cukup sering dalam dataset sehingga model machine learning sulit mempelajarinya secara optimal. Dengan RegexFeaturizer, kita dapat memastikan bahwa setiap kemunculan kata "tidak" sebelum suatu fitur akan menghasilkan sinyal kuat bagi model. Vista et al. (2026) membuktikan bahwa penambahan RegexFeaturizer ke dalam pipeline meningkatkan akurasi klasifikasi intent secara signifikan. Dalam penelitian ini, RegexFeaturizer dikonfigurasi untuk mengenali pola negasi eksplisit seperti "tidak ingin", "bukan", "jangan", serta pola angka pada entitas budget (misalnya Rp[0-9]+). Hal ini diharapkan dapat membantu model dalam membedakan intent yang mengandung negasi dari intent positif, serta menangkap entitas negasi seperti feature.negated dan brand.negated.
+2.3.5 LexicalSyntacticFeaturizer
+LexicalSyntacticFeaturizer adalah komponen yang bertugas mengekstraksi fitur-fitur kebahasaan dari setiap token berdasarkan aspek leksikal (bentuk kata) dan sintaksis (struktur kalimat). Fitur leksikal mencakup properti-properti seperti: apakah token ditulis dengan huruf kapital di awal (is_capitalized), apakah seluruh token huruf kapital (is_upper), apakah token mengandung digit (has_digit), apakah token merupakan akronim (contoh: "SUV", "MPV"), serta prefiks dan sufiks tertentu (misalnya dua atau tiga karakter pertama/terakhir dari token). Fitur sintaksis meliputi part-of-speech (POS) tag seperti kata benda, kata kerja, kata sifat, dan sebagainya, jika tersedia dari tokenizer yang mendukung POS (misalnya Spacy). Namun, dalam konfigurasi default Rasa dengan WhitespaceTokenizer, LexicalSyntacticFeaturizer tetap dapat mengekstraksi fitur leksikal yang sangat berguna. Sebagai contoh, kata "SUV" yang seluruhnya huruf kapital akan mendapat fitur is_upper = 1 dan is_capitalized = 0. Kata "5-seater" memiliki digit sehingga has_digit = 1. Kata "murah" mungkin dikenali sebagai kata sifat jika ada informasi POS, tetapi tanpa POS pun, sufiks "-ah" dapat memberi petunjuk. Fitur-fitur seperti ini membantu model DIETClassifier untuk mengenali pola bahwa huruf kapital sering menandakan merek atau jenis mobil, digit sering menandakan jumlah kursi atau budget, dan sufiks tertentu dapat mengindikasikan sentimen. Penelitian Vista et al. (2026) menunjukkan bahwa penambahan LexicalSyntacticFeaturizer bersama dengan RegexFeaturizer memberikan peningkatan akurasi yang lebih besar dibandingkan hanya salah satunya. Dalam penelitian ini, LexicalSyntacticFeaturizer diaktifkan pada konfigurasi TAv1, TAv3, dan TAv6. Tujuannya adalah meningkatkan sensitivitas model terhadap perubahan bentuk kata yang menandakan negasi (misalnya "tidak ingin" vs "ingin") serta membantu identifikasi entitas seperti hard_filter yang sering muncul dalam bentuk kata sifat atau kata kerja.
+2.3.6 CountVectorsFeaturizer
+CountVectorsFeaturizer adalah komponen yang mengimplementasikan pendekatan bag-of-words (kantong kata) dan n-gram untuk mengubah teks menjadi representasi vektor numerik. Prinsip kerjanya cukup sederhana namun sangat efektif: pertama, featurizer ini membangun sebuah kamus (vocabulary) yang berisi semua token unik yang muncul dalam data latih. Kemudian, setiap pesan masukan diubah menjadi sebuah vektor dengan panjang sama dengan ukuran kamus, di mana setiap elemen vektor berisi jumlah kemunculan (frekuensi) dari token yang bersangkutan dalam pesan tersebut. Untuk menangkap konteks lokal dan urutan kata secara terbatas, CountVectorsFeaturizer juga mendukung pembentukan n-gram, yaitu rangkaian *n* kata berturut-turut. Misalnya, dengan n=2 (bigram), kalimat "saya suka mobil" akan menghasilkan fitur "saya suka" dan "suka mobil". Selain word n-gram, Rasa juga menyediakan char-ngram (ngram karakter) dengan parameter analyzer: char_wb. Char-ngram bekerja dengan memecah teks menjadi potongan-potongan karakter berurutan, dibatasi oleh batas kata. Ini sangat berguna untuk bahasa Indonesia yang kaya akan imbuhan (prefiks, sufiks, konfiks) karena char-ngram dapat menangkap kemiripan antara kata dasar dan kata berimbuhan. Sebagai contoh, kata "mengendarai" dan "kendarai" akan berbagi beberapa char-ngram seperti "endar", "ndar", sehingga model dapat menangkap hubungan semantik meskipun bentuknya berbeda. Namun, penggunaan n-gram yang terlalu panjang atau char-ngram dengan rentang lebar (misalnya max_ngram=4) dapat menyebabkan ledakan dimensi fitur dan meningkatkan risiko overfitting. Vista et al. (2026) menggunakan CountVectorsFeaturizer dengan analyzer: char_wb dan max_ngram=4 untuk menyeimbangkan antara informasi dan generalisasi. Dalam penelitian ini, pada konfigurasi CP (baseline) dan TAv1, TAv3, TAv6, nilai max_ngram pada char-ngram diturunkan dari 4 menjadi 3. Keputusan ini diambil berdasarkan observasi awal bahwa ngram panjang (4 karakter) terlalu banyak menangkap noise yang tidak relevan dengan pola negasi, sehingga dengan membatasi ke 3 karakter diharapkan model lebih fokus pada pola yang bermakna.
+2.3.7 RegexEntityExtractor
+RegexEntityExtractor adalah komponen ekstraksi entitas yang berbeda fundamental dari DIETClassifier. Jika DIETClassifier menggunakan pendekatan berbasis machine learning (deep learning) yang mempelajari pola entitas dari data latih, maka RegexEntityExtractor bekerja secara deterministik berbasis aturan (rule-based). Komponen ini mendeteksi entitas dengan mencocokkan teks terhadap dua sumber aturan: lookup tables (tabel pencarian) dan ekspresi reguler. Lookup tables adalah daftar kata atau frasa yang telah didefinisikan secara manual sebagai entitas tertentu. Misalnya, tabel brand dapat berisi daftar merek mobil seperti "Toyota", "Honda", "Suzuki". Ekspresi reguler digunakan untuk pola yang lebih kompleks, misalnya pola harga Rp\d+ untuk entitas budget, atau pola negasi seperti tidak\s+(.*) untuk menangkap frasa yang dinegasikan. Keuntungan utama RegexEntityExtractor adalah kepastian (tidak ada prediksi yang salah selama pola tepat), kecepatan eksekusi (tidak memerlukan komputasi neural network), dan kemudahan debugging. Kelemahannya adalah tidak dapat menangani variasi bahasa yang tidak tercakup oleh aturan, sehingga kurang fleksibel dibandingkan machine learning. Dalam konteks penanganan negasi, RegexEntityExtractor sangat andal untuk menangkap pola negasi eksplisit yang strukturnya relatif tetap, seperti "tidak ingin body type SUV" atau "bukan merek Honda". Dengan mendefinisikan pola regex yang sesuai, ekstraktor ini dapat langsung menandai entitas dengan label .negated (misalnya body_type.negated atau brand.negated). Penelitian Talenggoran et al. (2025) menunjukkan bahwa kombinasi DIETClassifier untuk entitas umum dan RegexEntityExtractor untuk entitas negasi dapat meningkatkan recall secara signifikan, terutama ketika data latih untuk entitas negasi terbatas. Dalam penelitian ini, RegexEntityExtractor diaktifkan pada konfigurasi TAv3, TAv4, dan TAv5 dengan pengaturan use_lookup_tables: true, use_regexes: true, dan use_word_boundaries: true untuk memastikan ekstraksi yang presisi.
+2.3.8 FallbackClassifier dan Mekanisme Threshold
+FallbackClassifier adalah komponen dalam pipeline Rasa yang dirancang khusus untuk menangani situasi ketika model NLU memiliki tingkat kepercayaan (confidence) yang rendah terhadap prediksi intent yang dihasilkan. Dalam operasionalnya, DIETClassifier menghasilkan skor probabilitas untuk setiap intent yang mungkin. Jika skor tertinggi (dikenal sebagai confidence score) berada di bawah threshold (ambang batas) yang telah ditentukan, maka FallbackClassifier akan mengambil alih dan memetakan pesan pengguna tersebut ke intent khusus bernama nlu_fallback. Intent ini kemudian dapat dihubungkan dengan tindakan (action) tertentu, misalnya meminta pengguna mengulang pertanyaan, memberikan pesan maaf, atau mengalihkan ke operator manusia. Penentuan nilai threshold sangat krusial karena berdampak langsung pada keseimbangan antara precision dan recall pada deteksi out-of-scope. Jika threshold terlalu tinggi (misalnya 0.9), maka sistem akan sangat selektif; banyak masukan yang sebenarnya masih dalam domain (in-scope) tetapi memiliki confidence sedang (0.7-0.8) akan dianggap sebagai fallback, sehingga mengurangi user experience karena sering diminta mengulang. Sebaliknya, jika threshold terlalu rendah (misalnya 0.2), hampir semua masukan akan diproses sebagai intent normal, termasuk masukan yang benar-benar di luar domain (out-of-scope), sehingga chatbot akan memberikan respons yang tidak relevan atau salah. Talenggoran et al. (2025) menekankan pentingnya optimasi threshold berdasarkan hasil validasi. Sasmita et al. (2025) juga menggunakan FallbackClassifier dengan threshold 0.3 untuk layanan helpdesk pemerintah. Dalam penelitian ini, nilai threshold divariasikan pada beberapa konfigurasi. Konfigurasi baseline (CP) menggunakan threshold 0.3, sedangkan TAv4 menggunakan threshold 0.6, dan TAv5 serta TAv6 menggunakan threshold 0.4. Variasi ini dimaksudkan untuk melihat pengaruh threshold terhadap kemampuan deteksi intent out-of-scope, yang dalam penelitian ini sangat penting karena domain rekomendasi mobil memiliki banyak kemungkinan pertanyaan di luar topik.
+2.3.9 Fine-Tuning Model Pre-Trained
+Fine-tuning adalah suatu teknik dalam transfer learning di mana sebuah model bahasa yang telah dilatih sebelumnya (pre-trained language model) pada korpus besar dan umum, selanjutnya dilatih kembali (disesuaikan) menggunakan dataset yang lebih kecil dan spesifik untuk suatu domain tertentu. Model pre-trained seperti BERT atau IndoBERT sudah memiliki pengetahuan umum tentang struktur bahasa, tata bahasa, dan semantik dasar karena telah dilatih pada jutaan atau bahkan miliaran kata. Namun, pengetahuan tersebut bersifat generik. Agar model dapat unggul dalam tugas tertentu seperti klasifikasi intent dan ekstraksi entity pada domain rekomendasi mobil, parameter-parameter model perlu disesuaikan melalui fine-tuning. Proses fine-tuning melibatkan pengaturan beberapa hyperparameter penting seperti jumlah epoch (berapa kali model melihat seluruh data latih), learning rate (kecepatan penyesuaian bobot), dan batch size (jumlah sampel yang diproses dalam satu iterasi). Fine-tuning yang terlalu agresif (epoch terlalu banyak, learning rate terlalu tinggi) dapat menyebabkan model overfitting terhadap data latih yang kecil, sehingga performa pada data uji menurun drastis. Sebaliknya, fine-tuning yang terlalu dangkal mungkin tidak cukup untuk mengadaptasi model ke domain spesifik. Oleh karena itu, regularisasi seperti dropout dan early stopping sering diterapkan untuk mencegah overfitting. Yulianti & Nissa (2024) melakukan fine-tuning IndoBERT untuk task aspect-based sentiment analysis dan berhasil mencapai F1-score 0,9194, mengungguli model Word2Vec-CNN. Bunk et al. (2020) juga mencatat bahwa DIETClassifier sebenarnya adalah bentuk fine-tuning yang efisien karena menggunakan arsitektur transformer dengan masked language modeling sebagai regularisasi tambahan. Dalam penelitian ini, fine-tuning diterapkan pada konfigurasi yang menggunakan LanguageModelFeaturizer dengan model indobenchmark/indobert-base-p1. Jumlah epoch divariasikan antara 50 (TAv2), 75 (TAv4, TAv5), hingga 150 (TAv6) untuk melihat pengaruh durasi fine-tuning terhadap generalisasi dan stabilitas.
+2.3.10 Negasi dalam Natural Language Processing
+Negasi merupakan fenomena linguistik universal yang berfungsi membalikkan nilai kebenaran (truth value) dari suatu proposisi. Dalam bahasa Indonesia, negasi sering ditandai dengan kata-kata seperti "tidak", "bukan", "jangan", "belum", atau kontraksi informal seperti "nggak", "gak". Kehadiran negasi dalam suatu kalimat dapat mengubah makna secara fundamental. Sebagai contoh, pernyataan "saya ingin mobil SUV" memiliki intent positif terhadap entitas body_type: SUV. Namun, jika pengguna mengatakan "saya tidak ingin mobil SUV", maka maknanya justru sebaliknya: pengguna menolak SUV. Penanganan negasi menjadi tantangan besar dalam NLU karena model machine learning cenderung belajar asosiasi kata-kata positif ("ingin", "suka", "SUV") tanpa memperhatikan kata negasi yang membalikkan makna. Akibatnya, sistem dapat salah menginterpretasikan maksud pengguna. Talenggoran et al. (2025) mengidentifikasi tiga pendekatan utama untuk menangani negasi: pendekatan berbasis aturan (rule-based) yang menggunakan ekspresi reguler untuk mendeteksi pola negasi dan membalikkan label entitas; pendekatan berbasis machine learning yang mengandalkan model untuk mempelajari pola negasi dari data latih yang cukup; serta pendekatan hibrida yang menggabungkan keduanya. Pendekatan hibrida dianggap paling efektif karena aturan memastikan penangkapan pola negasi eksplisit, sementara machine learning dapat menangani variasi yang tidak tercakup aturan. Dalam pipeline Rasa, kombinasi RegexEntityExtractor (untuk aturan negasi) dan DIETClassifier (untuk pembelajaran pola kompleks) merupakan contoh nyata pendekatan hibrida. Vista et al. (2026) juga menunjukkan bahwa penambahan RegexFeaturizer yang mendeteksi kata negasi dapat meningkatkan performa klasifikasi intent. Penelitian ini secara khusus mengevaluasi kemampuan model dalam mengekstrak entitas negasi seperti body_type.negated, brand.negated, feature.negated, dan preference.negated. Data latih untuk entitas negasi sengaja dibuat terbatas untuk menguji sejauh mana pendekatan hibrida dapat mengatasi kelangkaan data tersebut.
+2.3.11 Out-of-Scope Detection
+Out-of-scope (OOS) detection adalah kemampuan suatu sistem NLU untuk mengenali bahwa masukan pengguna berada di luar domain atau topik yang telah dilatihkan. Dalam sistem percakapan yang terbatas pada domain spesifik, misalnya rekomendasi mobil, sangat mungkin pengguna menanyakan hal-hal yang tidak relevan seperti "bagaimana cuaca hari ini?" atau "ceritakan tentang politik". Tanpa mekanisme OOS yang baik, sistem akan mencoba memaksakan prediksi intent ke salah satu kelas yang ada, menghasilkan respons yang tidak masuk akal atau membingungkan. Menurut Bunk et al. (2020), deteksi OOS sangat penting untuk menjaga kepercayaan pengguna terhadap chatbot. Dalam framework Rasa, terdapat dua pendekatan umum untuk menangani OOS. Pertama, menggunakan FallbackClassifier dengan mekanisme threshold seperti dijelaskan pada sub bab 2.3.8. Ketika confidence score dari DIETClassifier di bawah threshold, pesan dianggap OOS dan dipetakan ke intent nlu_fallback. Kedua, menambahkan intent khusus bernama out_of_scope ke dalam data latih dengan menyediakan contoh-contoh kalimat yang benar-benar di luar domain. Pendekatan kedua ini memungkinkan model untuk belajar langsung mengenali pola OOS, tetapi membutuhkan pengumpulan data OOS yang representatif, yang seringkali sulit karena OOS memiliki variasi hampir tak terbatas. Oleh karena itu, banyak pengembang Rasa menggunakan kombinasi kedua pendekatan: menyediakan beberapa contoh OOS dalam data latih untuk memberi sinyal awal, serta FallbackClassifier sebagai jaring pengaman terakhir. Sasmita et al. (2025) dalam penelitian helpdesk pemerintah menggunakan FallbackClassifier dengan threshold 0.3 untuk menangani pertanyaan di luar prosedur. Dalam penelitian ini, intent out_of_scope dimasukkan dalam data latih dengan sekitar 97 contoh kalimat yang tidak terkait dengan rekomendasi mobil, seperti "halo", "terima kasih", "apa kabar", serta pertanyaan umum di luar domain. Selain itu, FallbackClassifier dengan nilai threshold yang bervariasi (0.3, 0.4, 0.6) diuji pada konfigurasi yang berbeda. Kemampuan deteksi OOS diukur dengan F1-score untuk kelas out_of_scope pada setiap konfigurasi, untuk mengetahui mana yang paling baik dalam membedakan pertanyaan relevan dan tidak relevan.
+2.4 Gap Penelitian
+Berdasarkan tinjauan terhadap penelitian-penelitian terdahulu, beberapa keterbatasan yang belum teratasi secara memadai menjadi motivasi utama penelitian ini.
+Penelitian tentang optimasi pipeline NLU Rasa untuk bahasa Indonesia (Vista et al., 2026; Talenggoran et al., 2025) tidak menggunakan repeated cross-validation, sehingga tidak melaporkan stabilitas performa antar pengulangan (standar deviasi) dan tidak mengukur gap overfitting secara formal. Padahal, metrik stabilitas dan generalisasi penting untuk menilai keandalan konfigurasi.
+Penelitian tentang DIETClassifier (Bunk et al., 2020) difokuskan pada dataset berbahasa Inggris (NLU-Benchmark, ATIS, SNIPS). Penerapannya untuk bahasa Indonesia pada domain rekomendasi dengan kebutuhan deteksi negasi akurat belum dieksplorasi secara sistematis. Penelitian Vista et al. (2026) menggunakan DIETClassifier tetapi pada domain layanan informasi bank sampah dengan karakteristik intent berbeda.
+Penelitian tentang IndoBERT (Koto et al., 2020; Yulianti & Nissa, 2024) berfokus pada analisis sentimen, bukan klasifikasi intent dan ekstraksi entity dalam sistem percakapan. Integrasi IndoBERT ke dalam pipeline NLU Rasa untuk tugas joint intent-entity recognition belum dievaluasi secara komparatif dengan pendekatan fitur sparse maupun hibrida.
+Penelitian tentang penanganan negasi dalam NLU (Talenggoran et al., 2025; Vista et al., 2026) masih terbatas. Pendekatan hibrida yang menggabungkan deep learning (DIETClassifier) dengan aturan regex (RegexEntityExtractor) untuk menangkap pola negasi eksplisit dalam bahasa Indonesia belum dievaluasi secara kuantitatif pada domain rekomendasi.
+Penelitian Sasmita et al. (2025) menerapkan cross-validation tetapi tidak melakukan pengulangan dan tidak mengintegrasikan model bahasa pra-latih seperti IndoBERT. Studi tersebut juga tidak secara spesifik mengevaluasi deteksi out-of-scope dan entitas negasi.
+Penelitian ini dirancang untuk mengatasi keterbatasan tersebut dengan menerapkan repeated 5-fold cross-validation (3 kali pengulangan), mengukur stabilitas (standar deviasi) dan gap overfitting, membandingkan tujuh konfigurasi pipeline (sparse, dense (IndoBERT), hibrida, RegexEntityExtractor, FallbackClassifier), serta mengevaluasi secara spesifik deteksi entitas negasi (seperti feature.negated, body_type.negated) dan intent out_of_scope pada domain rekomendasi mobil berbahasa Indonesia.

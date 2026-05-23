@@ -1,0 +1,1324 @@
+ 
+  
+ 
+ 
+ 
+ 
+OPTIMASI PIPELINE NATURAL 
+LANGUAGE UNDERSTANDING PADA 
+CHATBOT REKOMENDASI MOBIL 
+BERBAHASA INDONESIA 
+MENGGUNAKAN RASA DAN INDOBERT  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+PROPOSAL  PENELITIAN  
+ 
+ 
+ 
+ 
+MOCHAMMAD 
+IRFAN KURNIAWAN 
+41822010028  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+PROGRAM  STUDI  SISTEM  INFORMASI 
+FAKULTAS ILMU KOMPUTER 
+UNIVERSITAS MERCU BUANA 
+JAKARTA                                                    
+2026
+i   
+ 
+ 
+ 
+ 
+OPTIMASI PIPELINE NATURAL 
+LANGUAGE UNDERSTANDING PADA 
+CHATBOT REKOMENDASI MOBIL 
+BERBAHASA INDONESIA 
+MENGGUNAKAN RASA DAN INDOBERT  
+ 
+ 
+ 
+ 
+ 
+PROPOSAL  PENELITIAN  
+ 
+ 
+ 
+MOCHAMMAD 
+IRFAN KURNIAWAN 
+41822010028  
+ 
+ 
+ 
+ 
+ 
+ 
+Diajukan  sebagai  salah  satu syarat  untuk  diseminarkan  pada  sidang  proposal  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+PROGRAM  STUDI  SISTEM  INFORMASI 
+FAKULTAS ILMU KOMPUTER 
+UNIVERSITAS MERCU BUANA 
+JAKARTA  
+2026 
+ii  HALAMAN  PERNYATAAN  KARYA  SENDIRI  
+ 
+ 
+ 
+Saya  yang  bertanda  tangan  di bawah  ini: 
+Nama  :  ...............................  
+NIM  : ...............................  
+Program  Studi  :  …………………...  
+ 
+Menyatakan   dengan   sebenar -benarnya   bahwa   Tugas   Akhir   berjudul:  
+“ ................................ ................................ ................................ ...............................  ” 
+adalah hasil karya  saya sendiri, tidak mengandung unsur plagiarisme, pelanggaran 
+hak cipta,  atau konten  ilegal  dalam  bentuk  apapun  dan tidak  melanggar  hukum  atau 
+hak pihak manapun.  
+Apabila di kemudian hari ditemukan pelanggaran terhadap pernyataan ini, saya 
+bersedia menanggung seluruh konsekuensi hukum dan membebaskan Universitas 
+Mercu  Buana  dari segala  bentuk  tuntutan  hukum  dan saya siap mendapatkan  sanksi 
+akademis yang berlaku di Universitas Mercu Buana.  
+Demikian pernyataan ini saya buat dengan sebenar -benarnya untuk digunakan 
+sebagaimana mestinya.  
+ 
+ 
+Jakarta,  ................  (tanggal)  
+ 
+Materai  dan ttd 
+ 
+Nama  Mahasiswa.  iii  
+HALAMAN  PERSETUJUAN  
+ iv  KATA  PENGANTAR  
+ 
+Puji syukur  saya panjatkan  kepada  Tuhan  Yang  Maha  Esa, karena  atas berkat 
+dan rahmat -Nya,  saya dapat  menyelesaikan  Laporan  Skripsi  ini. Penulisan  Laporan 
+Skripsi  ini dilakukan dalam rangka memenuhi salah satu syarat untuk mencapai 
+gelar Sarjana Komputer pada Fakultas Ilmu Komputer Universitas Mercu Buana. 
+Saya menyadari bahwa, tanpa bantuan dan bimbingan dari berbagai pihak, dari 
+masa perkuliahan sampai pada penyusunan skripsi ini, sangatlah sulit bagi saya 
+untuk menyelesaikan Laporan Skripsi ini. Oleh karena itu, saya mengucapkan 
+terima kasih kepada:  
+1. ….(Nama  Rektor)  selaku  Rektor  Universitas  Mercu  Buana  
+2. ….(Nama  Dekan/Direktur)  selaku  Dekan  Fakultas……..  
+3. ….(Nama  Kaprodi)  selaku  Ketua  Program  Studi…….  
+4. ….(Nama Dosen Pembimbing) selaku Dosen Pembimbing yang telah 
+menyediakan waktu, tenaga, dan pikiran untuk mengarahkan saya dalam 
+penyusunan skripsi ini;  
+5. … dan seterusnya menurut penulis yang dianggap pantas dengan penulisan 
+singkat.  
+ 
+Akhir  kata,  saya berharap  Tuhan  Yang  Maha  Esa berkenan  membalas  segala 
+kebaikan semua pihak yang telah membantu. Semoga Laporan Skripsi ini 
+membawa manfaat bagi pengembangan ilmu.  
+ 
+ 
+ 
+Jakarta,  .................  (tanggal)  
+ 
+ 
+ 
+ 
+ 
+ 
+Penulis  i  JUDUL  PROPSAL 
+NAMA PENULIS  
+ 
+ 
+ABSTRAK  
+ 
+Penelitian ini bertujuan untuk mengoptimasi pipeline Natural Language 
+Understanding (NLU) pada chatbot rekomendasi mobil berbahasa Indonesia 
+menggunakan framework Rasa dan model bahasa pra -latih IndoBERT. 
+Permasalahan utama yang dihadapi adalah rendahnya performa model baseline 
+dalam mendeteksi entitas yang dinegasikan, seperti  feature.negated  dengan F1 -
+score hanya 0,70, serta entitas  target_car  yang mencapai F1 -score 0,67. Selain itu, 
+klasifikasi intent  out_of_scope  masih menunjukkan kebocoran ke intent 
+rekomendasi. Kelemahan ini dapat menyebabkan rekomendasi yang tidak akurat 
+dan berpotensi mengecewakan pengguna. Metode eksperimen komparatif 
+diterapkan untuk mengevaluasi tujuh konfigurasi pipeline NLU, yaitu satu 
+konfigurasi baseline (CP) dan enam konfigurasi eksperimental bertahap (TAv1 –
+TAv6). Keenam konfigurasi tersebut dirancang secara bertahap mencakup 
+optimasi hyperparameter, integrasi penuh IndoBERT, penambahan 
+RegexEntityExtractor, LexicalSyntacticFeaturizer, dan FallbackClassifier, hingga 
+arsitektur hybrid yang menggabungkan fitur sparse dan dense. Dataset yang 
+digunakan terdiri dari 851 kalimat percakapan rekomendasi mobil berbahasa 
+Indonesia dengan lima intent dan 15 entitas, termasuk anotasi peran negasi. 
+Evaluasi dilakukan menggunakan metrik akurasi, precision, recall, dan F1 -score 
+melalui validasi silang 5 -fold yang diulang sebanyak 3 kali untuk setiap 
+konfigurasi. Hasil yang diharapkan adalah meningkatnya F1 -score pada entitas 
+negasi dan target_car hingga di atas 0,80, serta menurunnya tingkat kebocoran 
+intent out_of_scope. Selain itu, penelitian ini diharapkan dapat mengidentifikasi 
+konfigurasi pipeline paling efektif serta memberikan kontribusi berupa bukti 
+empiris efektivitas kombinasi fitur sparse dan dense dalam satu pipeline Rasa 
+untuk bahasa Indonesia. Temuan ini diharapkan menjadi rujukan bagi 
+pengembang chatbot berbahasa Indonesia pada domain rekomendasi dan sistem 
+percakapan berbasis NLU.  
+ 
+Kata  Kunci : NLU, Chatbot, Rasa, IndoBERT, Negasi  i  PROPOSE  TITLE 
+AUTHOR NAME  
+ 
+ 
+ABSTRACT  
+ 
+This research aims to optimize the Natural Language Understanding (NLU) 
+pipeline of an Indonesian car recommendation chatbot using the Rasa framework 
+and the IndoBERT pre -trained language model. The main challenges are the poor 
+performance of the baseline model in detecting negated entities, such 
+as feature.negated  with an F1 -score of only 0.70, and the  target_car  entity which 
+achieves an F1 -score of 0.67. Additionally, the  out_of_scope  intent still leaks into 
+the recommendation intent. These weaknesses can lead to inaccurate 
+recommendations that may disappoint users. A comparative experimental method 
+is employed to evaluate seven NLU pipeline configurations: one baseline (CP) 
+and six experimental staged configurations (TAv1 –TAv6). The six experimental 
+configurations are progressively designed to include hyperparameter 
+optimization, full IndoBERT integration, the addition of RegexEntityExtractor, 
+LexicalSyntacticFeaturizer, and FallbackClassifier, as well as a hybrid 
+architecture that combines sparse and dense features. The dataset consists of 851 
+Indonesian car recommendation conversation sentences with five intents and 15 
+entities, including negation role annotations. Evaluation is conducted using 
+accuracy, precision, recall, and F1 -score metrics through 5 -fold cross -validation 
+repeated three times for each configuration. The expected results are an 
+improvement in the F1 -score for negated entities and  target_car  to above 0.80, as 
+well as a reduction in out -of-scope intent leakage. Furthermore, this research is 
+expected to identify the most effective pipeline configuration and provide 
+empirical evidence regarding the effectiveness of combining sparse and dense 
+features in a single Rasa pipeline for the Indonesian language. These findings are 
+expected to serve as a reference for Indonesian chatbot developers in 
+recommendation domains and NLU -based conversational systems.  
+ 
+Keywords : NLU, Chatbot, Rasa, IndoBERT, Negation  ii  DAFTAR  ISI 
+HALAMAN  JUDUL  ................................ ................................ ...............................  i 
+HALAMAN  PERNYATAAN  KARYA  SENDIRI  ................................ ...............  ii 
+HALAMAN  PERSETUJUAN  ................................ ................................ .............. iii 
+KATA  PENGANTAR  ................................ ................................ ...........................  iv 
+DAFTAR  ISI ................................ ................................ ................................ ........... ii 
+DAFTAR  TABEL  ................................ ................................ ................................ ..iii 
+DAFTAR  GAMBAR  ................................ ................................ .............................  iv 
+DAFTAR  LAMPIRAN  ................................ ................................ ..........................  v 
+BAB I  PENDAHULUAN  ................................ ................................ ......................  1 
+1.1 Latar  Belakang  ................................ ................................ .............................  1 
+1.2 Perumusan  Masalah ................................ ................................ ......................  2 
+1.3 Tujuan  Penellitian  ................................ ................................ .........................  2 
+1.4 Batasan  Masalah  ................................ ................................ ...........................  2 
+1.5 Sistematika Penulisan  ................................ ................................ ...................  3 
+BAB  II TINJAUAN  PUSTAKA  ................................ ................................ ...........  4 
+2.1 Teori  Utama  ................................ ................................ ................................ . 4 
+2.2 Teori  Pendukung  ................................ ................................ ..........................  6 
+2.3 Penelitian  Terdahulu  ................................ ................................ .....................  8 
+2.4 Gap Penelitian  ................................ ................................ ..............................  9 
+BAB  III METODE PENELITIAN  ................................ ................................ .... 11 
+3.1 Pendekatan  Penelitian  ................................ ................................ .................  11 
+3.2 Desain  Penelitian  ................................ ................................ ........................  11 
+3.3 Subjek Penelitian  ................................ ................................ ........................  12 
+3.4 Instrumen  Penelitian  ................................ ................................ ...................  12 
+3.5 Tahapan  Penelitian  ................................ ................................ .....................  13 
+3.6 Teknik  Pengumpulan  Data ................................ ................................ .........  14 
+3.7 Timeline  Penelitian ................................ ................................ .....................  14 
+BAB  IV HASIl  YANG  DIHARAPKAN  ................................ ............................  16 
+4.1. Pencapaian  Tujuan  Penelitian  ................................ ................................ .... 16 
+4.2. Kontribusi  Terhadap  Bidang  Teknologi  Informasi  ................................ .... 16 
+DAFTAR  PUSTAKA  ................................ ................................ ...........................  17 
+LAMPIRAN  ................................ ................................ ................................ ..........  19 
+Lampiran  1 Kartu  Asistensi  ................................ ................................ ....................  19 iii  DAFTAR  TABEL  
+ 
+Table  1.1 Data  Kecelakaan  Kerja  ................................ ................................ ............  2 
+Table  2.1 Model  Yolov10  ................................ ...... Error!  Bookmark  not defined.  
+Table  2.2 Perbedaan Yolov1  – Yolov10  ................  Error!  Bookmark  not defined.  
+Table  2.3 Penelitian  Terdahulu  ................................ ................................ ...............  8 
+Table  3.1 Spesifikasi  Hardware  ................................ ................................ ............  12 
+Table  3.2 Versi Software  ................................ ................................ .......................  13 iv  DAFTAR  GAMBAR  
+Gambar  2.1. Klasifikasi  YOLO  Object Detection  ................................ ...................  4 
+Gambar  2.2 Arsitektur  YOLO  ................................  Error!  Bookmark  not defined.  
+Gambar  2.3 Arsitektur  YOLOv10  ..........................  Error!  Bookmark  not defined.  
+Gambar  2.4 Alat  Pelindung Diri (APD)  ................................ ................................ ... 6 
+Gambar  3.1 Desain  Penelitian  ................................ ................................ ................  11 
+Gambar  3.2 Sample  Dataset  ................................ ................................ ...................  12 
+Gambar  3.3 Tahapan  Penelitian  ................................ ................................ .............  14 
+Gambar  3.4 Timeline  Penelitian  ................................ ................................ .............  15 v  DAFTAR  LAMPIRAN  
+Lampiran  1 Kartu  Asistensi ................................ ................................ ....................  19 6  BAB I 
+PENDAHULUAN  
+ 
+1.1 Latar Belakang  
+ 
+ 
+Perkembangan kecerdasan buatan telah mendorong pemanfaatan chatbot di 
+berbagai sektor, termasuk layanan pelanggan (Agusnur, 2025) , informasi publik 
+(Fauzan et al, 2024) , dan pendidikan (Qalimaturrahmah & Santoso, 2024) . Dalam 
+industri otomotif, chatbot rekomendasi mobil membantu calon pembeli 
+menemukan kendaraan yang sesuai dengan preferensi, anggaran, dan kebutuhan 
+spesifik melalui interaksi percakapan alami. Sistem semacam ini sangat 
+bergantung pada modul Natural Language Understanding (NLU) yang bertugas 
+mengklasifikasikan maksud pengguna ( intent classification ) dan mengekstraksi 
+informasi penting ( entity extraction ) dari kalimat , seperti merek mobil, tipe bodi, 
+anggaran, serta preferensi yang dinyatakan secara positif maupun negatif melalui 
+ungkapan negasi "tidak suka matic", "hindari diesel" (Bunk et al., 2020) . 
+Kemampuan sistem untuk secara akurat menangani negasi dan 
+membedakan  intent  di luar domain ( out-of-scope ) menjadi krusial agar 
+rekomendasi yang diberikan tidak mengecewakan pengguna . 
+Framework  Rasa Open Source  menyediakan arsitektur pipeline NLU yang 
+modular, memungkinkan pengembang untuk mengkombinasikan berbagai 
+komponen seperti tokenizer, featurizer, dan classifier untuk membangun asisten 
+percakapan yang sesuai dengan kebutuhan domain (Bocklisch et al., 2017) . 
+Penelitian ini secara sistematis mengevaluasi dan membandingkan beberapa 
+konfigurasi pipeline NLU pada Rasa, mulai dari model  baseline  berbasis fitur 
+sparse (Bunk et al., 2020; Vista et al., 2026) , pemanfaatan model bahasa pra -latih 
+(pre-trained language model ) seperti IndoBERT untuk representasi teks yang 
+lebih kaya (Koto et al., 2020; Yulianti & Nissa, 2024) , hingga 
+pendekatan  hybrid  yang menggabungkan model statistik dengan aturan ( rule-
+based ) untuk menangani pola -pola spesifik seperti negasi (Figueira & Samagaio, 
+2020; Talenggoran et al., 2025) . 
+Penelitian -penelitian sebelumnya telah menunjukkan efektivitas framework 
+Rasa dalam berbagai konteks. (Vista et al, 2026)  mengembangkan chatbot layanan 7  informasi Bank Sampah Sriwilis menggunakan Rasa dan menemukan bahwa 
+penambahan fitur leksikal seperti RegexFeaturizer dan LexicalSyntacticFeaturizer 
+pada pipeline mampu meningkatkan akurasi klasifikasi intent hingga 93%. 
+(Talenggoran et al, 2025)  membangun FAQ Bot untuk layanan informasi BIRO 3 
+Universitas Kristen Duta Wacana menggunakan Logistic Regression classifier 
+pada Rasa dan mencapai akurasi fungsional 95%. (Sesana et al, 2026)  
+mengembangkan chatbot wisata budaya Bali menggunakan Rasa dengan metode 
+CRISP -DM dan memperoleh akurasi 93,7% pada pengujian 10 -fold cross 
+validation. (Puspita et al, 2025)  juga membandingkan performa DIETClassifier 
+dengan LogisticRegression pada dataset FAQ dan menemukan bahwa kombinasi 
+DIET dengan RegexFeaturizer dan LexicalSyntacticFeaturizer memberikan hasil 
+terbaik.  
+Di sisi lain, model bahasa pra -latih ( pre-trained language model ) untuk 
+bahasa Indonesia seperti IndoBERT telah terbukti memberikan representasi teks 
+yang lebih kaya dibandingkan model berbasis frekuensi kata tradisional (Koto et 
+al, 2020) . IndoBERT dilatih menggunakan korpus besar berbahasa Indonesia 
+dengan arsitektur BERT -base sehingga mampu menangkap konteks semantik 
+yang lebih dalam. (Yulianti & Nissa, 2024)  membuktikan bahwa fine -tuning 
+IndoBERT untuk task  aspect -based sentiment analysis  memberikan F1 -score 
+tertinggi (0,9194) dibandingkan pendekatan lain. Meskipun demikian, 
+pemanfaatan IndoBERT sebagai featurizer dalam pipeline Rasa untuk domain 
+rekomendasi otomotif berbahasa Indon  esia masih belum banyak dieksplorasi.  
+Meskipun berbagai penelitian telah menunjukkan keunggulan Rasa dan 
+model bahasa pra -latih, masih terdapat beberapa celah yang perlu diatasi. Pertama, 
+sebagian besar penelitian sebelumnya berfokus pada domain layanan informasi 
+umum dan belum menyentuh domain rekomendasi otomotif yang memiliki 
+karakteristik entitas lebih kompleks termasuk preferensi yang dinegasikan (Sesana 
+et al, 2026; Talenggoran et al, 2025; Vista et al, 2026)  Kedua, penanganan negasi 
+secara eksplisit dalam pipeline NLU Rasa masih jarang diteliti, padahal deteksi 
+negasi sangat krusial untuk rekomendasi yang akurat. Ketiga, integrasi antara fitur 
+sparse CountVectorsFeaturizer, LexicalSyntacticFeaturizer, fitur dense 
+IndoBERT, dan komponen berbasis aturan RegexEntityExtractor dalam satu 
+pipeline hybrid untuk bahasa Indonesia belum pernah dieksplorasi secara 8  sistematis (Figueira & Samagaio, 2020) . Keempat, pemanfaatan 
+FallbackClassifier sebagai mekanisme penanganan intent ambigu dalam konteks 
+rekomendasi berbahasa Indonesia masih terbatas ( Sasmita et al, 2025; 
+Talenggoran et al, 2025) . 
+Evaluasi awal terhadap model dengan konfigurasi  baseline  menunjukkan 
+adanya defisit kinerja yang signifikan pada aspek -aspek kritis. Masalah paling 
+menonjol adalah lemahnya kemampuan model dalam mengenali entitas yang 
+dinegasikan, yang sangat esensial dalam memberikan rekomendasi yang aman. 
+Sebagai bukti empiris, Tabel 1.1 menyajikan ringkasan 
+performa  baseline  menggunakan validasi silang 5 -fold. 
+Table  1.1 Hasil Evaluasi Baseline  
+Tipe  Nama Kelas  F1-Score 
+(CV)  Precision 
+(CV)  Recall 
+(CV)  
+intent  start_search  0,96 0,96 0,96 
+intent  ask_recommendation  0,86 0,86 0,86 
+intent  ask_comparison  0,88 0,88 0,88 
+intent  choose_preference  0,86 0,86 0,86 
+intent  out_of_scope  0,87 0,87 0,87 
+entity  feature  0,95 0,95 0,95 
+entity  preference  0,79 0,79 0,79 
+entity  feature.negated  0,70 0,70 0,70 
+entity target_car  0,67 0,67 0,67 
+ 
+Terlihat bahwa entitas feature.negated hanya memperoleh F1‑score 0,70, 
+sementara entitas preference (0,79) dan target_car (0,67) juga masih di bawah 
+0,80. Selain itu, anomali pada intent ask_recommendation menunjukkan 
+kesenjangan antara performa cross‑validation (F1 0,86) dan performa pada data 
+latih (F1 1,00) yang mengindikasikan potensi overfitting.  Kebocoran 
+intent  out_of_scope  ke dalam  ask_recommendation  juga masih terjadi. 
+Temuan -temuan ini menegaskan perlunya perbaikan arsitektur pipeline, bukan 
+sekadar penambahan data.  
+Oleh karena itu, penelitian ini mengusulkan optimasi pipeline NLU Rasa 
+melalui enam konfigurasi bertahap, yang mencakup  optimasi 9  hyperparameter (Hwang et al., 2021) , integrasi penuh IndoBERT untuk 
+representasi semantik yang lebih kaya, penguatan deteksi negasi berbasis aturan 
+menggunakan  RegexEntityExtractor , penggabungan fitur  sparse  dan dense  dalam 
+arsitektur  hybrid , serta penambahan  FallbackClassifier  untuk mengelola kalimat 
+ambigu. Dengan membandingkan keenam konfigurasi tersebut, penelitian ini akan 
+mengidentifikasi kombinasi komponen yang paling efektif dalam meningkatkan 
+akurasi intent dan ekstraksi entitas, khususnya pada entitas negasi dan intent di 
+luar domain.  
+1.2 Perumusan  Masalah  
+Berdasarkan identifikasi masalah pada latar belakang, maka rumusan 
+masalah dalam penelitian ini adalah sebagai berikut:  
+1 Bagaimana performa pipeline default Rasa dalam menangani klasifikasi intent 
+dan ekstraksi entitas, termasuk yang dinegasikan, pada data percakapan 
+rekomendasi mobil?  
+2 Sejauh mana penggantian featurizer berbasis CountVectors dengan IndoBERT 
+meningkatkan akurasi intent dan entity recognition?  
+3 Apakah penambahan komponen berbasis aturan (RegexEntityExtractor) pada 
+pipeline IndoBERT memberikan peningkatan signifikan dibandingkan 
+IndoBERT saja?  
+4 Bagaimana pengaruh penggabungan fitur sparse (CountVectors, 
+LexicalSyntactic) dengan IndoBERT  terhadap kemampuan model dalam 
+mendeteksi negasi entitas dan membedakan intent out -of-scope?  
+5 Konfigurasi manakah yang memberikan efektivitas terbaik (F1 -score)?  
+ 
+1.3 Tujuan  Penellitian  
+Tujuan  dari penelitian ini adalah:  
+1. Menyajikan evaluasi komparatif terhadap satu konfigurasi  baseline  dan enam 
+konfigurasi eksperimental pipeline NLU Rasa menggunakan metrik F1 -score, 
+presisi, dan recall per kelas.   
+2. Menganalisis kontribusi masing -masing komponen (IndoBERT, 
+RegexEntityExtractor, LexicalSyntacticFeaturizer, FallbackClassifier) dalam 10  meningkatkan performa deteksi negasi dan klasifikasi out-of-scope . 
+3. Menentukan konfigurasi pipeline optimal yang dapat diterapkan pada chatbot 
+rekomendasi mobil untuk memberikan rekomendasi yang lebih akurat dan aman.  
+ 
+1.4 Batasan  Masalah  
+Batasan  masalah  pada  penelitian  yaitu  : 
+1. Dataset yang digunakan adalah 851 kalimat  berbahasa Indonesia  yang dibuat 
+menggunakan generatif AI  mencakup lima intent dan 15 jenis entitas, 
+termasuk anotasi negasi, yang telah melalui proses augmentasi data . 
+2. Penelitian hanya menggunakan framework Rasa Open Source versi 3.4.11 
+dengan model bahasa IndoBERT indobenchmark/indobert -base-p1. Tidak 
+dilakukan ekplorasi model bahasa lain . 
+3. Evaluasi dibatasi pada metrik klasifikasi intent dan ekstraksi entity yang 
+dihasilkan oleh modul NLU. Aspek dialogue management tidak dikaji .11   
+1.5 Sistematika  Penulisan  
+ 
+Sistematika  Penulisan  dalam  penelitian  ini disusun  sebagai  berikut  : 
+1. Pendahuluan  
+Menguraikan latar belakang, perumusan masalah, tujuan penelitian, batasan 
+masalah serta sistematika penulisan.  
+2. Tinjauan  Pustaka  
+Menyajikan konsep Rasa NLU, DIET Classifier, featurizer, model bahasa 
+IndoBERT, RegexEntityExtractor, FallbackClassifier, penanganan negasi, 
+serta penelitian -penelitian terdahulu yang relevan.  
+3. Metode  Penelitian  
+Menjelaskan dataset, alur penelitian, ketujuh konfigurasi pipeline yang diuji, 
+proses pelatihan dan evaluasi model, serta teknik analisis perbandingan . 
+4. Hasil  Yang  diharapkan  
+Berisi proyeksi hasil yang akan dicapai, termasuk perbandingan performa 
+antar konfigurasi, analisis kesalahan berdasarkan data empiris baseline, serta 
+kontribusi penelitian terhadap bidang teknologi informasi . 
+5. Daftar  Pustaka  
+Berisikan  referensi – referensi  untuk  menunjang  pembuatan  penelitian  ini. 
+6. Lampiran  
+Terdapat  lampiran  – lampiran  yang  diperlukan  untuk  mendukung  penelitian  ini 12  BAB II 
+TINJAUAN  PUSTAKA  
+ 
+2.1 Teori Utama  
+  Pada bagian ini membahas konsep -konsep inti yang menjadi fondasi 
+penelitian. Teori utama mencakup kerangka kerja NLU yang digunakan, arsitektur 
+model, serta komponen -komponen kunci yang akan dioptimalkan dalam pipeline 
+Rasa.  
+2.1.1 NLU ( Natural Language Understanding ) 
+Rasa NLU adalah cabang dari  NLP yang bertugas mengubah masukan 
+bahasa alami pengguna menjadi representasi terstruktur yang dapat dipahami oleh 
+mesin. Dalam sistem percakapan, NLU berperan menerjemahkan kalimat  
+pengguna menjadi  intent  (maksud/tujuan) dan  entity  (entitas informasi penting) 
+(Bunk et al., 2020) . Proses ini memungkinkan chatbot untuk tidak hanya 
+“mendengar” apa yang dikatakan pengguna, tetapi juga “memahami” konteks dan 
+tujuan di baliknya.  
+2.1.2 Rasa Framework  
+Rasa Open Source adalah framework  pengembangan asisten percakapan 
+berbasis  machine learning  yang modular dan  open -source . Arsitekturnya terdiri 
+dari dua komponen utama:  Rasa NLU  untuk pemahaman bahasa dan  Rasa 
+Core  untuk manajemen dialog. Salah satu keunggulan Rasa adalah 
+kemampuannya untuk mendefinisikan  processing pipeline  yang fleksibel, yaitu 
+serangkaian komponen yang saling terhubung untuk memproses teks masukan 
+secara bertahap (Bocklisch et al , 2017) . Pengembang dapat menyusun dan 
+menyesuaikan komponen dalam  pipeline  ini sesuai dengan kebutuhan domain, 
+sehingga memungkinkan optimasi performa pada tugas -tugas spesifik.13  2.1.3 Komponen -Komponen Kunci dalam Pipeline Rasa  
+Beberapa komponen  featurizer  dan classifier  dalam Rasa yang relevan 
+dengan penelitian ini adalah:  
+• CountVectorsFeaturizer : Mengubah token teks menjadi 
+representasi  Bag-of-Words  (BoW) berbasis frekuensi kemunculan kata. 
+Fitur ini bersifat  sparse  dan efisien untuk menangkap karakteristik kata 
+secara statistik.  
+• LexicalSyntacticFeaturizer : Mengekstrak fitur linguistik tambahan 
+seperti awalan/akhiran kata, penggunaan huruf kapital, dan  Part-of-
+Speech  tag. Fitur ini membantu model membedakan kalimat dengan 
+struktur leksikal yang mirip namun berbeda makna (Vista et al., 2026) . 
+• RegexEntityExtractor : Komponen berbasis aturan yang menggunakan 
+pola ekspresi reguler ( regex ) untuk menangkap entitas secara 
+deterministik. Sangat berguna untuk mendeteksi frasa -frasa eksplisit yang 
+sulit dipelajari oleh model statistik, seperti pola negasi.  
+• FallbackClassifier : Mekanisme yang mengalihkan prediksi intent 
+ke intent  khusus ketika skor keyakinan ( confidence score ) model utama 
+berada di bawah ambang batas tertentu. Komponen ini krusial untuk 
+mencegah chatbot memberikan jawaban yang tidak tepat ketika 
+berhadapan dengan pertanyaan di luar domain yang dilatih   
+ 
+2.1.4 DIET Classifier (Dual Intent and Entity Transformer)  
+DIET Classifier adalah arsitektur  transformer  ringan yang dirancang untuk 
+melakukan klasifikasi intent dan ekstraksi entitas secara simultan dalam satu 
+model. Keunggulan DIET adalah kemampuannya menggabungkan 
+fitur sparse  seperti dari CountVectorsFeaturize) dan fitur  dense  seperti word 
+embedding dari language model, lalu memprosesnya melalui 
+lapisan  transformer  dua arah (Bunk et al, 2020) . Dengan pendekatan multi -tugas 
+ini, model dapat saling memperkuat representasi untuk kedua tugas, sehingga 
+meningkatkan akurasi secara keseluruhan. Penelitian ini menggunakan DIET 
+Classifier sebagai inti model NLU yang akan dioptimasi . 
+ 14  2.1.5 IndoBERT  
+IndoBERT adalah model bahasa pra -latih ( pre-trained language model ) 
+berbasis arsitektur BERT yang dilatih khusus untuk bahasa Indonesia 
+menggunakan korpus besar lebih dari 220 juta kata ( (Koto et al., 2020) . Seperti 
+BERT, IndoBERT dilatih dengan dua tugas:  Masked Language Modeling  (MLM) 
+dan Next Sentence Prediction  (NSP), sehingga mampu menghasilkan representasi 
+kata yang sangat kontekstual. Dalam  pipeline  Rasa, IndoBERT dapat digunakan 
+sebagai  featurizer  untuk menghasilkan fitur  dense  yang merepresentasikan 
+pemahaman semantik kalimat secara mendalam. Integrasi IndoBERT diharapkan 
+dapat meningkatkan kemampuan model dalam menangani variasi bahasa 
+informal, singkatan, dan konstruksi negasi dalam percakapan rekomendasi mobil 
+berbahasa Indonesia.  
+2.1.6  Mekanisme Fallback dan Two -Stage Fallback  
+Mekanisme fallback adalah strategi penanganan kegagalan ketika model 
+tidak dapat mengklasifikasikan intent dengan keyakinan yang cukup. Pada 
+konfigurasi yang lebih canggih, dapat diterapkan Two -Stage Fallback, yaitu:  
+1. Tahap Pertama: Model utama (DIET Classifier) mencoba 
+mengklasifikasikan intent. Jika confidence score di bawah ambang batas 
+pertama, sistem akan meminta klarifikasi sederhana kepada pengguna.  
+2. Tahap Kedua: Jika klarifikasi gagal atau confidence masih rendah, sistem 
+akan menjalankan FallbackClassifier untuk mengalihkan ke intent 
+out_of_scope dan memberikan respons default yang aman (Talenggoran et 
+al, 2025) . 
+Pendekatan ini membantu menjaga kualitas interaksi dan menghindari respons 
+yang salah arah, terutama pada percakapan yang berada di luar cakupan domain 
+pelatihan.  
+ 
+2.2 Teori Pendukung  
+Menjelaskan konsep -konsep yang memperkuat teori penelitian, memberikan 
+latar belakang domain permasalahan, serta mendefinisikan metrik evaluasi yang 
+akan digunakan.  
+2.2.1 Chatbot Rekomendasi dan Conversational Recommender System  
+Chatbot  rekomendasi mobil harus mampu memahami ekspresi preferensi 
+pengguna, termasuk spesifikasi teknis, anggaran, dan penolakan terhadap fitur 
+tertentu (negasi). Kualitas  intent classification  dan entity extraction  menjadi 
+penentu utama keberhasilan rekomendasi . 
+2.2.2 Negasi  
+Pemahaman Negasi adalah konstruksi linguistik yang membalikkan 
+polaritas makna suatu pernyataan. Dalam bahasa Indonesia, negasi sering 
+diekspresikan dengan kata “tidak”, “bukan”, “jangan”, “hindari”, atau “kecuali”. 
+Bagi sistem NLU berbasis data, deteksi negasi merupakan tantangan karena dapat 15  mengubah intent atau membalikkan polaritas entitas. Akurasi deteksi negasi 
+sangat krusial agar chatbot tidak salah merekomendasikan sesuatu yang justru 
+ditolak pengguna. Oleh karena itu, penanganan negasi menjadi salah satu fokus 
+optimasi dalam penelitian ini.  
+ 
+2.2.3 Evaluasi Kinerja Model  
+Kinerja model NLU umumnya dievaluasi menggunakan metrik -metrik 
+berikut yang akan digunakan dalam penelitian ini:  
+• Presisi (Precision): Proporsi prediksi benar positif terhadap seluruh 
+prediksi positif yang dibuat model.  
+• Recall: Proporsi prediksi benar positif terhadap seluruh data aktual 
+positif.  
+• F1-Score: Rataan harmonis dari presisi dan recall, memberikan 
+gambaran keseimbangan antara keduanya. F1 -score sangat berguna 
+ketika terdapat ketidakseimbangan kelas.  
+• Akurasi (Accuracy): Proporsi total prediksi benar terhadap keseluruhan 
+data uji.  Evaluasi akan dilakukan secara terpisah untuk tugas klasifikasi 
+intent dan ekstraksi entitas, dengan penekanan khusus pada entitas yang 
+melibatkan negasi..  
+ 
+ 16  2.3 Penelitian  Terdahulu  
+Penelitian Berbagai penelitian telah mengeksplorasi pemanfaatan Rasa dan 
+model bahasa untuk membangun  chatbot  berbahasa Indonesia.   
+Table  2.1 Penelitian  Terdahulu  
+No Informasi 
+Artikel  Topik 
+Permasalahan  Jenis 
+Penelitian  Metode/Alg
+oritma  Hasil Penelitian  Kesimpulan  
+1 Bocklisch 
+et al., 2017  Menyediakan 
+platform 
+NLU/Dialogue 
+mudah 
+digunakan.  Pengemba
+ngan 
+Framewor
+k Modular 
+pipeline 
+NLU, 
+policy -
+based Core.  Pipeline DIET 
+mencapai akurasi 
+intent 93%, F1 
+91%.  Rasa 
+memudahkan 
+non-spesialis 
+membangun 
+sistem 
+percakapan 
+dengan 
+performa tinggi.  
+2 Bunk et 
+al., 2020  Arsitektur 
+NLU ringan 
+untuk intent 
+dan entity.  Eksperime
+n DIET 
+Classifier.  DIET 
+mengungguli 
+fine-tuned BERT 
+(F1 intent 
+90.18%).  DIET efektif, 
+cepat, dan dapat 
+bekerja tanpa 
+pre-trained 
+embeddings.  
+3 Vista et 
+al., 2026  Pengaruh 
+konfigurasi 
+pipeline pada 
+chatbot.  Eksperime
+n DIET, 
+LexicalSynt
+actic, 
+Logistic 
+Regression.  Akurasi 93% 
+(DIET + Regex + 
+Lexical).  Feature 
+engineering 
+dengan Regex 
+dan 
+LexicalSyntactic 
+meningkatkan 
+akurasi intent.  
+4 Talenggor
+an et al., 
+2025  FAQ Bot 
+untuk layanan 
+informasi 
+kampus.  Pengemba
+ngan  LogisticReg
+ression, 
+CountVecto
+rs, Fallback.  Akurasi 
+fungsional 95%.  FallbackClassifi
+er penting untuk 
+menangani input 
+di luar domain.  
+5 Sesana et 
+al., 2025  Chatbot wisata 
+budaya Bali.  Pengemba
+ngan  DIETClassi
+fier, 10 -
+Fold CV.  Akurasi 93.70%.  Evaluasi k -fold 
+menunjukkan 
+stabilitas model 
+Rasa.  
+6 Heriawan 
+et al., 2025  Chatbot 
+dukungan 
+emosional 
+mahasiswa.  Pengemba
+ngan  DIET, 
+Regex, 
+LexicalSynt
+actic, 
+Fallback.  Akurasi 80% (5 -
+Fold CV).  Framework 
+Rasa mampu 
+memberikan 
+respons 
+empatik; 
+fallback 
+esensial.  
+7 Yulianti & 
+Nissa, 
+2024  ABSA ulasan 
+Indonesia 
+dengan 
+IndoBERT.  Eksperime
+n IndoBERT 
+fine-tuning.  F1-score 0.9194 
+(sentence -pair).  IndoBERT 
+unggul dalam 
+memahami 
+konteks untuk 
+analisis 
+sentimen 17  berbasis aspek.  
+8 Figueira & 
+Samagaio, 
+2020  Chatbot 
+rekomendasi 
+resep dengan 
+Rasa.  Eksperime
+n DIET, CRF, 
+SVM.  F1 entity 0.91, 
+intent 0.88.  Pendekatan joint 
+intent -entity 
+(DIET) lebih 
+efektif.  
+9 Hwang et 
+al., 2021  Optimasi 
+pipeline Rasa 
+untuk bahasa 
+Korea.  Eksperime
+n Tokenizer 
+Mecab, 
+DIET.  Akurasi intent 
+98.2%.  Optimasi 
+seluruh tahap 
+pipeline 
+meningkatkan 
+akurasi.  
+10 Alrully, 
+2022  ArRASA: 
+Chatbot Arab 
+dengan Rasa.  Eksperime
+n DIET -Opt, 
+Taqseem 
+tokenizer.  F1-score intent 
+96%.  Pipeline Rasa 
+dapat diadaptasi 
+dan dioptimasi 
+untuk berbagai 
+bahasa.  
+11 Sasmita et 
+al., 2025  Chatbot AI 
+untuk helpdesk 
+pemerintah.  Pengemba
+ngan  DIETClassi
+fier, 
+Fallback.  Akurasi 82.5%, 
+recall 82.9%.  Chatbot 
+mengurangi 
+waktu respons, 
+misklasifikasi 
+terjadi pada 
+intent mirip.  
+12 Puspita et 
+al., 2025  Chatbot FAQ 
+dengan 
+DIETClassifier
+. Eksperime
+n DIET, 
+CountVecto
+rs, 
+LexicalSynt
+actic.  Akurasi 93% 
+(DIET + Regex + 
+LexicalSyntactic).  Feature 
+engineering 
+masih sangat 
+relevan di Rasa.  
+13 Koto et al., 
+2020  Pengembangan 
+model bahasa 
+IndoBERT.  Pengemba
+ngan 
+Model  BERT -base, 
+monolingua
+l training.  State -of-the-art di 
+benchmark 
+IndoLEM.  IndoBERT 
+memberikan 
+representasi 
+kontekstual 
+superior untuk 
+teks Indonesia.  
+14 Singgalen, 
+2025  Analisis 
+sentimen hotel 
+dengan 
+IndoBERT.  Eksperime
+n IndoBERT 
+fine-tuning.  Akurasi 92.52%, 
+namun kelas 
+minoritas rendah.  Model 
+transformer 
+rentan terhadap 
+ketidakseimban
+gan data.  
+15 Isa et al., 
+2021  Deteksi berita 
+palsu COVID -
+19 dengan 
+IndoBERT.  Eksperime
+n IndoBERT, 
+SVM, 
+Naive 
+Bayes.  Akurasi 94.66% 
+(IndoBERT).  Transformer 
+model sangat 
+efektif untuk 
+klasifikasi teks 
+Indonesia.  
+16 Ilyas et al., 
+2024  Penanganan 
+overfitting 
+pada 
+klasifikasi 
+berita hoax.  Eksperime
+n 1D-CNN, 
+Bi-LSTM, 
+LSTM, 
+Dropout, 
+Regularizati
+on. Regularization 
+pada 1D -CNN 
+memberikan 
+akurasi tertinggi.  Dropout dan 
+regularisasi 
+sangat penting 
+untuk 
+mengurangi 
+overfitting pada 
+dataset kecil.  
+17 Qalimaturr Aplikasi Pengemba NLP, Chatbot berfungsi Rasa dapat 18  ahmah & 
+Santoso, 
+2024  chatbot 
+Telegram 
+untuk 
+informasi 
+akademik.  ngan  Framework 
+Rasa.  baik dan respons 
+tepat.  diintegrasikan 
+dengan 
+Telegram untuk 
+layanan 
+informasi 
+akademik.  
+18 Agusnur, 
+2025  Implementasi 
+chatbot cerdas 
+untuk layanan 
+pelanggan.  Implement
+asi NLP, 
+Chatbot.  Meningkatkan 
+efisiensi, respons 
+cepat.  NLP 
+memungkinkan 
+chatbot 
+menangani kueri 
+kompleks dan 
+meningkatkan 
+kepuasan.  
+19 Fauzan et 
+al., 2024  Penggunaan 
+chatbot untuk 
+layanan 
+informasi 
+publik.  Studi 
+Literatur  Studi 
+Pustaka.  Chatbot efektif 
+untuk layanan 
+informasi.  Penggunaan 
+chatbot 
+meningkatkan 
+efisiensi dan 
+kepuasan 
+pengguna 
+layanan publik.  
+20 Lazuardi 
+et al., 2026  Klasifikasi 
+emosi teks 
+Indonesia 
+dengan 
+IndoRoBERTa
+. Eksperime
+n IndoRoBER
+Ta, Optuna.  Macro F1 -score 
+0.70.  Model 
+transformer 
+adaptif perlu 
+optimasi 
+hyperparameter.  
+21 Zaki et al., 
+2026  Analisis 
+sentimen 
+layanan KAI 
+dengan 
+IndoBERTwee
+t. Eksperime
+n Fine-tuned 
+IndoBERT
+weet.  Macro F1 -score 
+0.77 (baseline).  Preprocessing 
+minimal lebih 
+cocok untuk 
+model 
+transformer 
+pada data 
+Twitter.  
+22 Firdaus et 
+al., 2026  Analisis 
+sentimen 
+multi -platform 
+dengan BERT.  Eksperime
+n BERT, 
+Augmentasi 
+Data.  Akurasi 99.83% 
+(Coursera).  Kombinasi 
+teknik 
+augmentasi 
+secara 
+signifikan 
+meningkatkan 
+performa BERT.  
+23 Qolbu et 
+al., 2025  Analisis 
+sentimen 
+IndiHome 
+dengan 
+IndoBERT.  Eksperime
+n IndoBERT, 
+SVM, 
+Naive 
+Bayes.  Akurasi 0.96, F1 
+0.95 (IndoBERT).  IndoBERT 
+sangat efektif 
+untuk analisis 
+sentimen bahasa 
+Indonesia.  
+24 Suryawans
+hi & 
+Gohil, 
+2026  Review 
+framework 
+Rasa untuk 
+chatbot.  Studi 
+Literatur  Rasa NLU, 
+Rasa Core.  Rasa framework 
+yang powerful 
+dan fleksibel.  Rasa adalah 
+platform 
+komprehensif 
+untuk 
+membangun 19  conversational 
+AI. 
+25 Yousaf et 
+al., 2025  Pengembangan 
+chatbot AI 
+pada Rasa 
+NLU system.  Pengemba
+ngan  Rasa NLU, 
+Deep 
+Learning.  Aplikasi mampu 
+memberikan 
+respons akurat.  Integrasi deep 
+learning pada 
+Rasa 
+meningkatkan 
+performa 
+chatbot.  
+26 Dewi et 
+al., 2025  Hyperparamete
+r tuning SVM 
+pada ulasan 
+hotel.  Eksperime
+n SVM, 
+GridSearch
+CV. Akurasi 91%, 
+recall kelas 
+negatif 0.77.  Tuning 
+meningkatkan 
+kemampuan 
+model dalam 
+mendeteksi 
+kelas minoritas.  
+27 Imaduddin 
+et al., 2023  Analisis 
+sentimen 
+aplikasi 
+kesehatan 
+dengan 
+IndoBERT.  Eksperime
+n IndoBERT.  Akurasi 96%.  IndoBERT 
+sangat baik 
+untuk evaluasi 
+kepuasan 
+pengguna 
+aplikasi 
+kesehatan.  
+28 Satrio, 
+2025  Peningkatan 
+chatbot dengan 
+LLM -Chaining 
+dan Multi -
+Stage Fallback.  Eksperime
+n (RCT)  Rasa, RAG, 
+GPT, Multi -
+Stage 
+Fallback.  JCR meningkat 
+90%, 
+SERVQUAL 
+meningkat 
+signifikan.  Arsitektur 
+Multi -Stage 
+Fallback secara 
+signifikan 
+meningkatkan 
+task completion 
+dan kepuasan 
+pengguna.  
+29 Sihombing 
+et al., 2024  Implementasi 
+Chatbot 
+Cerdas 
+Berbasis NLP 
+untuk Layanan 
+Pelanggan  Implement
+asi NLP, 
+Chatbot  Meningkatkan 
+efisiensi, respons 
+cepat  NLP 
+memungkinkan 
+chatbot 
+menangani kueri 
+kompleks  
+ 
+ 
+2.4 Gap Penelitian  
+Berdasarkan kajian terhadap penelitian -penelitian terdahulu, teridentifikasi 
+beberapa celah yang menjadi dasar penelitian ini:  
+1. Belum adanya optimasi pipeline NLU Rasa secara sistematis untuk domain 
+rekomendasi mobil berbahasa Indonesia yang secara spesifik 
+mengintegrasikan transformer (IndoBERT) dengan komponen berbasis 
+aturan (RegexEntityExtractor) untuk menangani fenomena negasi.  20  2. Penanganan out -of-scope intent pada chatbot berbahasa Indonesia masih 
+terbatas, di mana evaluasi awal menunjukkan kebocoran dan lemahnya 
+deteksi kelas minoritas (Singgalen, 2025) . 
+3. Minimnya eksplorasi kombinasi fitur sparse dan dense dalam satu pipeline 
+Rasa untuk bahasa Indonesia, sebuah pendekatan yang terbukti efektif di 
+bahasa lain (Hwang et al., 2021)  namun belum diuji pada domain ini.  
+4. Belum adanya studi yang mengukur dampak arsitektur multi -stage fallback 
+terhadap keberhasilan tugas dan kepuasan pengguna pada chatbot 
+rekomendasi mobil, yang telah terbukti efektif di domain lain (Satrio, 2025)  
+Dengan demikian, penelitian ini secara unik mengoptimalkan pipeline NLU 
+Rasa melalui kombinasi IndoBERT, komponen berbasis aturan, dan 
+mekanisme  fallback  yang diuji secara komprehensif untuk meningkatkan deteksi 
+negasi, membedakan intent  out-of-scope , dan pada akhirnya memberikan 
+rekomendasi mobil yang lebih aman serta memuaskan bagi pengguna berbahasa 
+Indonesia.  21  BAB III 
+METODE  PENELITIAN  
+ 
+3.1 Pendekatan  Penelitian  
+Penelitian ini menggunakan pendekatan kuantitatif eksperimental dengan 
+metode eksperimen komparatif (comparative experiment). Pendekatan kuantitatif 
+dipilih karena penelitian berfokus pada pengukuran objektif terhadap variabel 
+performa model Natural Language Understanding (NLU), yang dinyatakan dalam 
+metrik numerik seperti akurasi, presisi,  recall , dan F1 -score . Eksperimen 
+komparatif dilakukan untuk mengevaluasi secara sistematis tujuh 
+konfigurasi  pipeline  Rasa yang berbeda pada dataset yang sama, sehingga 
+perbedaan performa antarkonfigurasi dapat diukur, dibandingkan, dan dianalisis 
+secara statistik. Pendekatan ini memungkinkan identifikasi pengaruh setiap 
+komponen  pipeline  (misalnya, featurizer IndoBERT, RegexEntityExtractor) 
+terhadap kualitas klasifikasi intent dan ekstraksi entitas, sehingga perbedaan 
+performa antarkonfigurasi dapat diukur, dibandingkan, dan dianalisis secara 
+statistik.  
+ 
+3.2 Desain  Penelitian  
+Langkah -langkah penelitian disusun untuk menjamin keterulangan 
+(reproducibility ) dan validitas internal. Secara garis besar, alur penelitian 
+mengikuti tahapan baku dalam eksperimen  machine learning , yang dimodifikasi 
+agar sesuai dengan kebutuhan evaluasi perangkat lunak berbasis Rasa. Gambar 
+3.1 menyajikan diagram alir penelitian  22   
+Gambar  3.1 Desain  Penelitian  
+ 
+23  Tahapan penelitian diuraikan sebagai berikut:  
+1. Identifikasi Masalah dan Studi Literatur : Mengkaji celah performa 
+model  baseline  (CP), seperti rendahnya F1 -
+score  entitas  feature.negated  (0,70) dan indikasi  overfitting  pada  intent 
+ask_recommendation . Studi literatur mendalami komponen Rasa, DIET, 
+IndoBERT, dan mekanisme  fallback . 
+2. Pengumpulan Data:  Data yang digunakan adalah 8 51 kalimat percakapan 
+rekomendasi mobil berbahasa Indonesia yang telah dianotasi dengan 
+5 intent  dan 15 entitas, termasuk varian negasi. Data ini merupakan hasil 
+anotasi dari proyek sebelumnya dan telah melalui proses augmentasi.  
+3. Perancangan Konfigurasi Pipeline:  Berdasarkan studi literatur, dirancang 
+tujuh konfigurasi  pipeline  NLU yang berbeda, sebagaimana dirangkum pada 
+Tabel 3. 4. 
+4. Pelatihan Model:  Setiap konfigurasi dilatih menggunakan  training set  yang 
+identik (80% dari total data) melalui perintah pelatihan standar Rasa. Proses 
+pelatihan akan memanfaatkan GPU untuk mempercepat komputasi, 
+terutama pada konfigurasi yang menggunakan IndoBERT.  
+5. Evaluasi Model:  Setiap model dievaluasi menggunakan  cross -validation  5-
+fold untuk mengukur kemampuan generalisasi dan diuji pada data uji (20% 
+dari total data) untuk mendapatkan metrik performa akhir. 
+Deteksi  overfitting  dilakukan dengan membandingkan performa pada data 
+latih dan data validasi.  
+6. Analisis Komparatif:  Hasil evaluasi dari ketujuh konfigurasi akan 
+dikumpulkan dan dibandingkan menggunakan F1 -score  rata-rata, standar 
+deviasi, dan selisih  overfitting  untuk menentukan konfigurasi yang paling 
+optimal.  
+7. Penarikan Kesimpulan:  Menetapkan konfigurasi  pipeline  terbaik serta 
+memberikan rekomendasi untuk pengembangan  chatbot  rekomendasi mobil 
+berbahasa Indonesia.  
+Table  3.1 Sample  Dataset  
+ 
+Intent  Jumlah Data  
+start_search  121 
+out_of_scope  97 
+choose_preference  282 
+ask_recommendation  297 
+ask_comparison  34 
+ask_similar_car  20 
+Total  851 24   
+ 
+3.3 Subjek  Penelitian  
+Subjek penelitian adalah dataset percakapan rekomendasi mobil berbahasa 
+Indonesia yang disusun dalam format YAML standar Rasa. Dataset ini terdiri 
+dari 851 kalimat  dan dibagi menjadi tiga subset secara proporsional: data latih 
+(80%,  681 kalimat), data validasi (10%,  85 kalimat), dan data uji 
+(10%,  85 kalimat).  Pembagian dilakukan dengan mempertahankan distribusi label 
+intent dan entitas menggunakan teknik stratified splitting . 
+Lima kelas intent  yang tercakup adalah: start_search, ask_recommendation, 
+ask_comparison, ask_similar_car, dan out_of_scope. Adapun 15 jenis entitas yang 
+dianotasi meliputi budget, brand, preference, feature, body_type, powertrain, 
+transmission, min_seat, target_car, hard_filter, serta varian negasi untuk brand, 
+preference, powertrain, transmission, dan feature.negated.en.  
+3.4 Instrumen  Penelitian  
+Instrumen penelitian mencakup perangkat keras, perangkat lunak, dan 
+artefak digital berupa konfigurasi pipeline.  
+ 
+Table  3.2 Spesifikasi Hardware  
+ 
+Komponen  Spesifikasi  
+OS Windows  11 Pro 64 Bit 
+Processor  Ryzen 5 3600  
+Graphics  Nvidia RTX 3070  
+Display  Non-touch  screen,  27.0-inch,  FHD  (1920  x 1080)  
+Memory  32GB  DDR4  
+Storage  1 TB NVMe  25  Table  3.3 Versi  Software  
+ 
+Software  Versi  
+Sistem Operasi  Windows 11 64‑bit  
+Bahasa Pemrograman  Python 3.10.11  
+Rasa Open Source  3.4.11  
+Hugging Face Transformers  4.30.2  
+Rasa Open Source (NLU & 
+Core)  3.4.11  
+Rasa SDK (Action Server)  3.4.1  
+PyTorch (GPU, CUDA 11.7)  2.0.1  
+Sacremoses  0.0.53  
+Scikit‑learn  1.1.3  
+Joblib  1.2.0  
+ 
+3.5 Tahapan  Penelitian  
+Tahapan penelitian ini terdiri dari tujuh langkah utama yang dilaksanakan 
+secara berurutan, sebagaimana divisualisasikan pada Gambar 3.1. Secara ringkas, 
+alur dimulai dari identifikasi celah performa model baseline , dilanjutkan dengan 
+pengumpulan dan augmentasi data, perancangan tujuh konfigurasi pipeline , 
+pelatihan model secara identik untuk setiap konfigurasi, evaluasi menggunakan 
+cross -validation  dan deteksi overfitting , analisis komparatif antar konfigurasi, 
+hingga penarikan kesimpulan mengenai konfigurasi optimal.  
+Setiap konfigurasi pipeline  yang diuji dirancang dengan filosofi yang 
+berbeda untuk mengukur kontribusi masing -masing komponen secara terisolasi 
+maupun terkombinasi. Tabel 3.4 berikut merangkum perbedaan komponen utama 
+antar konfigurasi.  
+Table  3.4 Rancangan Config  
+Konfigurasi  Komponen Utama  Parameter Kunci  
+Baseline  defau lt 
+rasa 
+(configCP.yml)  WhitespaceTokenizer, RegexFeaturizer, 
+LexicalSyntacticFeaturizer, CountVectorsFeaturizer (word 
+& char_wb), DIETClassifier, EntitySynonymMapper, 
+ResponseSelector  Pipeline default dengan 
+fitur sparse dan 
+DIETClassifier.  
+TAv1  WhitespaceTokenizer, RegexFeaturizer, 
+LexicalSyntacticFeaturizer, CountVectorsFeaturizer 
+(char_wb max_ngram=3), DIETClassifier (epochs=150, Optimasi 
+hyperparameter pada 
+DIET tanpa mengubah 26  learning_rate=0.001, curriculum batching)  komponen.  
+TAv2  WhitespaceTokenizer, LanguageModelFeaturizer 
+(IndoBERT), RegexFeaturizer, DIETClassifier 
+(epochs=50), EntitySynonymMapper, ResponseSelector  Penggantian featurizer 
+dengan IndoBERT; 
+featurizer sparse 
+dihapus.  
+TAv3  WhitespaceTokenizer, RegexFeaturizer, 
+LexicalSyntacticFeaturizer, CountVectorsFeaturizer 
+(char_wb max_ngram=3), DIETClassifier (epochs=100, 
+dropout=0.2), RegexEntityExtractor  Penambahan rule ‑based 
+entity extractor pada 
+pipeline sparse.  
+TAv4  WhitespaceTokenizer, LanguageModelFeaturizer 
+(IndoBERT), RegexFeaturizer, DIETClassifier 
+(epochs=75, dropout=0.2, curriculum batching), 
+RegexEntityExtractor, FallbackClassifier  IndoBERT + rule ‑based 
+fallback untuk intent 
+dan entity.  
+TAv5  Sama dengan TAv4, tetapi FallbackClassifier threshold 0.4, 
+DIET dropout 0.2  Penyempurnaan TAv4 
+dengan ambang 
+fallback lebih rendah.  
+TAv6  WhitespaceTokenizer, LanguageModelFeaturizer 
+(IndoBERT), RegexFeaturizer, LexicalSyntacticFeaturizer, 
+CountVectorsFeaturizer (word & char_wb), DIETClassifier 
+(epochs=75, dropout=0.2), RegexEntityExtractor, 
+FallbackClassifier  Hybrid penuh: fitur 
+sparse + dense 
+IndoBERT + rule + 
+fallback.  27  Tabel 3. 5 Parameter Penting pada Setiap Konfigurasi  
+Konfigurasi  epoch  learning_rate  batch_size  dropout_rate  max_ngram_char_wb  Fallback 
+threshold  
+Baseline  100 default  default  - 4 - 
+TAv1  150 0.001  [64,256]  - 3 - 
+TAv2  50 0.001  default  - - - 
+TAv3  100 0.001  default  0.2 3 - 
+TAv4  75 0.001  [64,256]  0.2 - 0.6 
+TAv5  75 0.001  [64,256]  0.2 - 0.4 
+TAv6  75 0.001  [64,256]  0.2 4 0.4 28   
+Gambar  3.3 Tahapan  Penelitian  
+29   
+3.6 Teknik  Pengumpulan  Data  
+Data dalam penelitian ini bersifat primer yang telah diperoleh dan 
+dianotasi menggunakan generative AI  untuk menghasilkan variasi kalimat . 
+Seluruh kalimat  dianotasi secara otomatis menggunakan generative AI  dengan 
+label intent  dan entitas menggunakan format YAML standar Rasa, mencakup 
+anotasi peran negasi untuk entitas -entitas yang dapat dinyatakan secara positif 
+maupun negatif oleh pengguna. Validasi anotasi dilakukan secara manual untuk 
+memastikan konsistensi label antar anotator.  
+ 
+3.7 Timeline Penelitian  
+Penelitian ini direncanakan berlangsung selama 5 bulan, mulai dari 
+Januari 2026 hingga Mei 2026. Studi literatur dilakukan sejak awal periode 
+penelitian untuk mendukung seluruh tahapan berikutnya.  
+Tabel  3.3 Timeline  Penelitian  
+TIMELINE PENELITIAN  
+No Nama kegiatan  2026  
+Januari  Februari  Maret  April  Mei 
+1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 
+1 Studi Literatur 
+dan Referensi                      
+2 Pengajuan 
+Judul                      
+3 Pembuatan 
+Latar Belakang                      
+                      
+                      
+                      30                        
+                      31  BAB IV 
+HASIL  YANG  DIHARAPKAN  
+ 
+ 
+4.1. Pencapaian  Tujuan  Penelitian  
+ 
+ 
+Hasil yang diharapkan dari penelitian ini adalah tercapainya tujuan -tujuan 
+penelitian yang telah ditetapkan, yaitu sebagai berikut:  
+1. Tersedianya hasil evaluasi komparatif yang komprehensif terhadap tujuh 
+konfigurasi pipeline  NLU Rasa. tabel perbandingan F1 -score yang 
+komprehensif untuk setiap  intent  dan entitas pada seluruh 
+konfigurasi  pipeline . Evaluasi ini, yang dihitung dari 3 kali 
+pengulangan  cross -validation  5-fold, akan memberikan gambaran yang 
+stabil dan tepercaya mengenai performa dan kemampuan generalisasi 
+setiap model. Sebagai contoh, konfigurasi baseline telah menunjukkan 
+kelemahan pada entitas target_car (F1= 0,67) dan feature.negated 
+(F1= 0,70). Diharapkan, konfigurasi eksperimental mampu meningkatkan 
+kedua metrik tersebut secara signifikan . 
+2. Analisis perbandingan berpasangan akan mengungkap kontribusi 
+kuantitatif dari masing -masing komponen. Misalnya, selisih performa 
+antara TAv2 (IndoBERT) dan TAv1 ( sparse  tuned) akan mengukur 
+dampak penggunaan model bahasa kontekstual. Perbandingan antara TAv4 
+(IndoBERT dengan  rule dan fallback ) dan TAv2 (IndoBERT saja) akan 
+mengukur efektivitas  RegexEntityExtractor  dan FallbackClassifier  dalam 
+menangani negasi dan  out-of-scope intent . Hasil yang diharapkan adalah 
+peningkatan F1 -score yang signifikan pada entitas negasi 
+ketika  RegexEntityExtractor  ditambahkan. . 
+3. Teridentif ikasinya satu konfigurasi  pipeline  akan teridentifikasi sebagai 
+yang paling optimal. Konfigurasi ini diharapkan tidak hanya mencapai F1 -
+score tertinggi secara keseluruhan, tetapi juga menunjukkan performa yang 
+unggul secara spesifik pada tiga tantangan utama: (a) akurasi tinggi pada 
+entitas bernuansa negasi, (b) klasifikasi  intent out -of-scope  yang andal 
+tanpa kebocoran ke  intent  rekomendasi, dan (c) konsistensi performa yang 
+tinggi antara data  cross -validation  dan data latih (selisih yang rendah), 32  yang menandakan model tidak mengalami  overfitting .  
+4.2. Kontribusi  Terhadap  Bidang  Teknologi  Informasi  
+Penelitian ini diharapkan memberikan beberapa kontribusi nyata bagi 
+pengembangan ilmu dan teknologi informasi, khususnya dalam bidang Natural 
+Language Processing  (NLP) dan pengembangan sistem percakapan berbahasa 
+Indonesia.  
+Kontribusi teoretis  yang pertama adalah tersedianya bukti empiris mengenai 
+efektivitas kombinasi fitur sparse  (CountVectorsFeaturizer, 
+LexicalSyntacticFeaturizer) dan fitur dense  berbasis transformer  (IndoBERT) 
+dalam satu pipeline  Rasa untuk domain bahasa Indonesia. Berdasarkan gap 
+penelitian yang diidentifikasi pada Bab II, belum ada studi sebelumnya yang 
+mengeksplorasi kombinasi ini secara sistematis pada domain rekomendasi 
+otomotif berbahasa Indonesia. Temuan penelitian ini diharapkan dapat mengisi 
+kekosongan tersebut dan menjadi referensi bagi penelitian serupa di domain lain.  
+Kontribusi teoretis kedua adalah bukti mengenai efektivitas RegexEntityExtractor  
+sebagai lapisan fallback  berbasis aturan untuk menangani pola negasi eksplisit 
+yang sulit dipelajari oleh model statistik murni. Penelitian terdahulu (Samagaio, 
+2020)  telah menyoroti pentingnya penanganan negasi, namun belum 
+mengintegrasikannya dengan FallbackClassifier  dan IndoBERT dalam satu 
+arsitektur Rasa yang kohesif.  
+Kontribusi praktis  yang diharapkan adalah tersedianya rekomendasi konfigurasi 
+pipeline  Rasa yang siap digunakan oleh pengembang chatbot berbahasa Indonesia, 
+khususnya untuk sistem rekomendasi yang bergantung pada ketepatan ekstraksi 
+preferensi pengguna. Konfigurasi optimal yang diidentifikasi dapat langsung 
+diadopsi atau dijadikan titik awal pengembangan pada domain lain yang memiliki 
+karakteristik linguistik serupa, seperti e -commerce  atau layanan properti.  
+Selain itu, penelitian ini juga berkontribusi pada pengembangan metodologi 
+evaluasi NLU yang lebih robust, yaitu dengan memadukan cross -validation , 
+deteksi overfitting , dan analisis F1 -score  per kelas secara bersamaan dalam satu 
+kerangka evaluasi otomatis. Metodologi ini dapat diadopsi oleh peneliti lain 
+sebagai standar evaluasi yang lebih komprehensif dibandingkan sekadar 
+mengukur akurasi keseluruhan pada data uji statis.  33  DAFTAR  PUSTAKA  
+Agusnur, A. (2025). Implementasi Chatbot Cerdas Berbasis NLP untuk Layanan Pelanggan. Jurnal 
+Komputer Dan Teknik Informatika , 1(1), 16 –22. 
+Bocklisch, T., Faulkner, J., Pawlowski, N., & Nichol, A. (2017). Rasa: Open Source Language 
+Understanding and Dialogue Management . http://arxiv.org/abs/1712.05181  
+Bunk, T., Varshneya, D., Vlasov, V., & Nichol, A. (2020). DIET: Lightweight Language Understanding 
+for Dialogue Systems . http://arxiv.org/abs/2004.09936  
+Fauzan, M., Wicaksana, M. P., & Rahardandi, P. G. (2024). Literatur Review Penggunaan Chatbot 
+Untuk Layanan Informasi. INNOVATIVE: Journal Of Social Science Research , 4(4), 8316 –8323.  
+Figueira, Á. M., & Samagaio, M. (2020). Chatbot for food preferences modelling and recipe 
+recommendation . 
+Hwang, M. H., Shin, J., Seo, H., Im, J. S., & Cho, H. (2021). KoRASA: Pipeline Optimization for 
+Open -Source Korean Natural Language Understanding Framework Based on Deep Learning. 
+Mobile Information Systems , 2021 . https://doi.org/10.1155/2021/9987462  
+Koto, F., Rahimi, A., Lau, J. H., & Baldwin, T. (2020). INDOLEM and INDOBERT: A Benchmark 
+Dataset and Pre -trained Language Model for Indonesian NLP. Proceedings of the 28th 
+International Conference on Computational Linguistics (COLING 2020) , 1–12. 
+Puspita, D., Wahyuni, E. D., & Suryanto, T. L. M. (2025). Application of NLP and Rasa for Intent 
+Classification in Durga Historical Texts. Bit-Tech , 8(2), 1336 –1346. 
+https://doi.org/10.32877/bt.v8i2.2887  
+Qalimaturrahmah, M., & Santoso, D. B. (2024). Aplikasi Layanan dan Informasi Akademik Berbasis 
+Chatbot Telegram Menggunakan Natural Language Processing. Jurnal JTIK (Jurnal Teknologi 
+Informasi Dan Komunikasi) , 8(2), 434 –443. https://doi.org/10.35870/jtik.v8i2.1887  
+Samagaio, Á. M. F. M. (2020). Chatbot for food preferences modelling and recipe recommendation . 
+Faculdade de Engenharia da Universidade do Porto.  
+Sasmita, W. M. H., Sumpeno, S., & Rachmadi, R. F. (2025). Improving Government Helpdesk Service 
+with AI -Powered Chatbot Built on Rasa Framework. Jurnal RESTI (Rekayasa Sistem Dan 
+Teknologi Informasi) , 9(2), 393 –403. https://doi.org/10.29207/resti.v9i2.6293  
+Satrio, C. (2025). Peningkatan Chatbot Layanan Pelanggan Dengan Implementasi LLM -Chaining Dan 
+Multi -Stage Fallback . Universitas Bina Nusantara.  
+Sesana, I. M. D. P., Putra, M. A. P., & Utami, N. W. (2026). Pengembangan Chatbot Wisata Budaya 
+Bali Berbasis Telegram Menggunakan Framework Rasa. Jurnal Ilmiah Penelitian Dan 
+Pembelajaran Informatika , 1(1), 1 –8. 
+Singgalen, Y. A. (2025). Performance Analysis of IndoBERT for Sentiment Classification in Indonesian 
+Hotel Review Data. Journal of Information System Research (JOSH) , 6(2), 978 –988. 
+Talenggoran, R., Krisnawati, L. D., & Virginia, G. (2025). Implementation of Rasa Framework To 
+Build FAQ Bot System As Bureau Information Service 3. Jurnal Terapan Teknologi Informasi , 
+9(2), 81 –92. https://doi.org/10.21460/jutei.2025.92.431  
+Vista, C. B., Tundjung, M., Fatmawati, T., & Sintiya, E. S. (2026). Pengembangan Chatbot Berbasis 
+Framework Rasa pada Website Bank Sampah Sriwilis serta Analisis Pengaruh Konfigurasi Pipeline 
+NLU terhadap Performa Klasifikasi Intent. Jurnal Teknologi Informasi Dan Ilmu Komputer , 12(2), 
+276–282. 
+Yulianti, E., & Nissa, N. K. (2024). ABSA of Indonesian customer reviews using IndoBERT: single -
+sentence and sentence -pair classification approaches. Bulletin of Electrical Engineering and 
+Informatics , 13(5), 3579 –3589.  
+ 34  LAMPIRAN  
+ 
+ 
+2.5 Lampiran  1 Kartu  Asistensi  
+ 

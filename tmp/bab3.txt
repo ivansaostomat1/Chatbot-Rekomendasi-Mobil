@@ -1,0 +1,319 @@
+BAB 3
+METODOLOGI PENELITIAN
+
+3.1 Pendekatan Penelitian
+Penelitian ini menggunakan pendekatan kuantitatif eksperimental dengan fokus pada evaluasi dan perbandingan kinerja berbagai konfigurasi pipeline Natural Language Understanding (NLU) pada framework Rasa. Pendekatan ini dipilih karena penelitian bertujuan untuk mengukur secara objektif performa klasifikasi intent dan ekstraksi entity dari tujuh konfigurasi pipeline yang berbeda (satu baseline dan enam konfigurasi eksperimental) menggunakan metrik-metrik terukur seperti akurasi, presisi, recall, F1-score, serta standar deviasi sebagai indikator stabilitas.
+Penelitian ini bersifat komparatif dengan desain ablation study, yaitu mengevaluasi kontribusi setiap komponen pipeline secara terpisah dengan membandingkan konfigurasi yang secara bertahap menambahkan atau memodifikasi komponen tertentu. Pendekatan ini memungkinkan identifikasi pengaruh masing-masing komponen seperti IndoBERT, RegexEntityExtractor, LexicalSyntacticFeaturizer, dan FallbackClassifier terhadap peningkatan kemampuan model dalam menangani entitas negasi dan intent out-of-scope pada domain rekomendasi mobil berbahasa Indonesia (Bunk et al., 2020; Vista et al., 2026).
+Selain itu, penelitian ini menerapkan pendekatan kuantitatif deskriptif untuk menyajikan hasil evaluasi dalam bentuk statistik deskriptif seperti nilai rata-rata (mean), standar deviasi (std), serta selisih performa antara data latih dan validasi (overfitting gap). Metode evaluasi yang digunakan adalah repeated 5-fold cross-validation yang diulang sebanyak 3 kali, sehingga diperoleh estimasi performa yang lebih stabil dan reliable dibandingkan dengan sekali pembagian data train-test.
+3.2 Desain Penelitian
+Desain penelitian dalam studi ini menggunakan pendekatan komparatif eksperimental dengan desain ablasi (ablation study). Desain ablasi dipilih untuk mengevaluasi kontribusi setiap komponen pipeline secara terpisah dengan membandingkan konfigurasi baseline (CP) terhadap enam konfigurasi eksperimental (TAv1 hingga TAv6). Setiap konfigurasi mewakili penambahan atau modifikasi komponen tertentu, sehingga dampak dari setiap perubahan dapat diukur secara kuantitatif.
+Penelitian ini bersifat komparatif karena membandingkan performa antar konfigurasi pipeline, bukan hanya terhadap satu baseline. Perbandingan dilakukan secara sistematis dengan desain berjenjang sebagai berikut:
+CP (Baseline): Konfigurasi default Rasa dengan CountVectorsFeaturizer (word dan char_wb, max_ngram=4), DIETClassifier (epochs=100), tanpa fitur tambahan. Berfungsi sebagai titik acuan performa awal.
+TAv1 (Hyperparameter Tuning Only): Optimasi hyperparameter DIETClassifier RegexFeaturizer, LexicalSyntacticFeaturizer, CountVectors (char_wb=3), DIETClassifier (epochs=150, lr=0.001, batch=[64,256]), pengurangan max_ngram char_wb dari 4 menjadi 3. Bertujuan mengisolasi dampak tuning parameter terhadap performa.
+TAv2 (IndoBERT Only): Mengganti seluruh featurizer dengan LanguageModelFeaturizer (indobenchmark/indobert-base-p1), epochs dikurangi menjadi 50. Bertujuan mengukur efektivitas representasi dense murni.
+TAv3 (Rule-Based Enhancement): Menambahkan RegexEntityExtractor dan LexicalSyntacticFeaturizer pada pipeline berbasis sparse, dengan epochs=100, dropout_rate=0.2, dan learning_rate=0.001. Bertujuan menguji efektivitas pendekatan aturan untuk deteksi negasi.
+TAv4 (IndoBERT + RegexEntityExtractor): Menggabungkan IndoBERT dengan RegexEntityExtractor, epochs=75, threshold fallback=0.6. Bertujuan menguji sinergi representasi dense dengan aturan eksplisit.
+TAv5 (IndoBERT + RegexEntityExtractor + Regularisasi): Sama seperti TAv4 tetapi dengan penambahan dropout_rate=0.2 pada DIETClassifier dan threshold fallback lebih rendah (0.4). Bertujuan menguji pengaruh regularisasi dan threshold terhadap generalisasi model dan deteksi out-of-scope.
+TAv6 (Hybrid Sparse+Dense): Menggabungkan CountVectorsFeaturizer, LexicalSyntacticFeaturizer, dan IndoBERT dalam satu pipeline, epochs=150. Bertujuan menguji apakah penggabungan fitur sparse dan dense memberikan performa terbaik.
+Tabel 3.1 Ringkasan Konfigurasi 
+Konfigurasi
+Komponen Utama
+Perbedaan dengan CP
+TAv1
+DIETClassifier (epochs=150, lr=0.001, batch_size=[64,256]), char_wb max_ngram=3
+Hanya tuning hyperparameter
+TAv2
+LanguageModelFeaturizer (IndoBERT)
+Featurizer diganti total dengan dense
+TAv3
+RegexEntityExtractor + LexicalSyntacticFeaturizer
+Penambahan rule-based, tanpa IndoBERT
+TAv4
+IndoBERT + RegexEntityExtractor, threshold=0.6
+Hybrid dense + rule, fallback 0.6
+TAv5
+IndoBERT + RegexEntityExtractor, dropout=0.2, threshold=0.4
+Regularisasi dropout + threshold fallback lebih rendah
+TAv6
+IndoBERT + CountVectors + LexicalSyntactic, epochs=150
+IndoBERT + CountVectors + LexicalSyntactic, epochs=150, FallbackClassifier threshold=0.4
+
+Desain penelitian ini juga menerapkan prinsip replicability, di mana setiap konfigurasi diuji sebanyak 3 kali pengulangan (3 runs) untuk setiap fold pada cross-validation. Pengulangan ini memungkinkan perhitungan standar deviasi sebagai indikator stabilitas performa.
+3.3 Subjek Penelitian
+Subjek penelitian dalam studi ini adalah tujuh konfigurasi pipeline NLU Rasa yang diimplementasikan pada dataset percakapan rekomendasi mobil berbahasa Indonesia. Penelitian berfokus pada bagaimana masing-masing konfigurasi memproses data teks masukan untuk menghasilkan klasifikasi intent dan ekstraksi entity yang akurat.
+Dataset yang digunakan terdiri dari 850 kalimat percakapan berbahasa Indonesia yang telah dianotasi dengan:
+6 intent: ask_recommendation, ask_similar_car, ask_comparison, choose_preference, start_search, out_of_scope
+16 jenis entity: body_type, brand, budget, feature, powertrain, transmission, min_seat, preference, target_car, hard_filter, serta varian negasinya (body_type.negated, brand.negated, feature.negated, preference.negated, transmission.negated, powertrain.negated)
+Distribusi dataset dirancang dengan proporsi yang tidak seimbang (imbalanced) pada entitas negasi untuk menguji ketahanan model terhadap kelangkaan data. Entitas feature.negated hanya memiliki sekitar 7 anotasi, sementara entitas non-negasi memiliki jumlah lebih banyak. Kondisi ini merepresentasikan tantangan dunia nyata di mana ekspresi negasi lebih jarang muncul dibandingkan pernyataan positif.
+3.4 Instrumen Penelitian
+3.4.1 Perangkat Keras (Hardware)
+Penelitian ini menggunakan infrastruktur komputasi dengan spesifikasi sebagai berikut:
+Prosesor: AMD Ryzen 5 3600 
+RAM: 32 GB DDR4 untuk menampung model IndoBERT yang memiliki 110 juta parameter
+GPU: NVIDIA RTX 3070  GPU dengan VRAM 8 GB 
+Penyimpanan: SSD 512 GB untuk akses cepat ke dataset dan model
+3.4.2 Perangkat Lunak (Software)
+Instrumen perangkat lunak yang digunakan meliputi:
+Framework Rasa Open Source versi 3.4.11: Sebagai platform utama pengembangan pipeline NLU. Rasa menyediakan komponen-komponen seperti:
+WhitespaceTokenizer untuk tokenisasi
+CountVectorsFeaturizer untuk ekstraksi fitur sparse (bag-of-words dan char-ngram)
+LanguageModelFeaturizer untuk integrasi IndoBERT
+RegexFeaturizer untuk ekstraksi fitur berbasis ekspresi reguler
+LexicalSyntacticFeaturizer untuk fitur kebahasaan
+DIETClassifier untuk joint intent classification dan entity recognition
+RegexEntityExtractor untuk ekstraksi entitas berbasis aturan
+FallbackClassifier untuk penanganan out-of-scope
+IndoBERT (indobenchmark/indobert-base-p1): Model bahasa pra-latih untuk bahasa Indonesia dengan 12 lapisan transformer, 12 attention head, dan 768 dimensi hidden state. Model ini diintegrasikan melalui komponen LanguageModelFeaturizer.
+Python 3.10: Bahasa pemrograman utama dengan pustaka-pustaka pendukung:
+scikit-learn: Untuk metrik evaluasi (precision, recall, F1-score)
+pandas dan numpy: Untuk manipulasi data
+matplotlib dan seaborn: Untuk visualisasi hasil
+3.4.3 Dataset
+Dataset yang digunakan merupakan data sekunder berupa hasil anotasi dari proyek sebelumnya, terdiri dari 850 kalimat percakapan dalam bahasa Indonesia pada domain rekomendasi mobil baru. Dataset ini telah melalui proses:
+Anotasi manual: Setiap kalimat diberi label intent dan entity oleh annotator yang memahami domain otomotif
+Validasi anotasi: Dilakukan cross-check oleh annotator kedua untuk memastikan konsistensi
+Augmentasi data: Sebagian data diperkaya dengan variasi kalimat untuk meningkatkan keragaman
+Tabel 3.2 Distribusi Intent pada Dataset
+Intent
+Jumlah Sampel
+Deskripsi
+ask_recommendation
+297
+Meminta rekomendasi mobil
+choose_preference
+282
+Menyatakan preferensi (suka/tidak suka)
+start_search
+121
+Memulai pencarian mobil
+out_of_scope
+97
+Pertanyaan di luar domain rekomendasi mobil
+ask_comparison
+34
+Meminta perbandingan antar mobil
+ask_similar_car
+19
+Meminta rekomendasi mobil serupa
+Total
+850
+
+
+
+Tabel 3.3 Distribusi Entity pada Dataset
+Entity
+Jumlah Sampel
+Deskripsi
+preference
+198
+Preferensi umum (irit, nyaman, sporty, dsb.)
+budget
+197
+Anggaran (di bawah 300 juta, 400-500 juta)
+min_seat
+70
+Jumlah kursi minimal
+brand
+67
+Merek mobil (Toyota, Honda, Suzuki, dll)
+feature
+61
+Fitur (sunroof, kamera 360, apple carplay)
+powertrain
+54
+Jenis penggerak (bensin, diesel, hybrid, listrik, ev)
+hard_filter
+47
+Filter keras / wajib ada (keluarga besar, bebas banjir)
+body_type
+40
+Tipe bodi (SUV, MPV, sedan, hatchback)
+preference.negated
+38
+Preferensi yang dinegasikan
+brand.negated
+35
+Merek yang dinegasikan
+transmission
+31
+Transmisi (matic, manual, cvt, dct)
+powertrain.negated
+30
+Jenis penggerak yang dinegasikan
+transmission.negated
+26
+Transmisi yang dinegasikan
+target_car
+19
+Mobil target spesifik (Avanza, Xpander, dll)
+body_type.negated
+11
+Tipe bodi yang dinegasikan
+feature.negated
+7
+Fitur yang dinegasikan
+Total
+931 
+(beberapa kalimat memiliki multiple entity)
+
+
+3.5 Teknik Pengumpulan Data
+Teknik pengumpulan data dalam penelitian ini dilakukan melalui eksperimen terkomputerisasi dengan alur yang sistematis. Data yang dikumpulkan berupa metrik performa dari setiap konfigurasi pipeline pada setiap fold dan setiap pengulangan.
+3.5.1 Prosedur Eksperimen
+Eksperimen dilakukan dengan langkah-langkah sebagai berikut:
+Persiapan environment: Menginstal Rasa 3.4.11, Python 3.10, dan seluruh dependensi dalam virtual environment. Mengunduh model IndoBERT dari Hugging Face.
+Persiapan dataset: Memastikan dataset dalam format yang sesuai dengan Rasa (nlu.yml), dengan anotasi intent dan entity yang telah terstruktur.
+Konfigurasi pipeline: Membuat file config.yml untuk masing-masing dari 6 konfigurasi ( TAv1, TAv2, TAv3, TAv4, TAv5, TAv6) sesuai dengan spesifikasi pada Tabel 3.3.
+Pelaksanaan repeated cross-validation: Untuk setiap konfigurasi, dilakukan 3 kali pengulangan repeated 5-fold cross-validation. Pada setiap fold, model dilatih menggunakan 4 fold dan diuji pada 1 fold sisanya. Proses ini menghasilkan 15 nilai evaluasi per konfigurasi (5 fold × 3 runs).
+Pencatatan metrik: Setiap pengujian menghasilkan intent_report.json dan DIETClassifier_report.json yang berisi nilai precision, recall, F1-score per kelas intent dan per kelas entity.
+3.5.2 Otomatisasi Eksperimen dengan Skrip Python
+Untuk memastikan konsistensi dan reprodusibilitas, seluruh eksperimen diotomatisasi menggunakan skrip Python (eval_a.py dan eval_s.py). Skrip ini bertugas untuk:
+Menjalankan proses training dan testing secara bergantian untuk setiap konfigurasi
+Mengekstrak metrik dari file JSON hasil Rasa
+Menyimpan hasil ke dalam struktur direktori terorganisir (results/comparison_*)
+3.5.3 Data yang Dikumpulkan
+Data yang dikumpulkan dari eksperimen meliputi:
+Intent metrics: Precision, recall, F1-score untuk setiap intent (6 kelas) pada setiap fold
+Entity metrics: Precision, recall, F1-score untuk setiap entity (16 kelas) pada setiap fold
+Training metrics: Performa model pada data latih untuk deteksi overfitting
+Confusion matrix: Untuk melihat pola kesalahan klasifikasi antar intent
+3.6 Teknik Analisis Data
+Teknik analisis data dalam penelitian ini menggunakan pendekatan kuantitatif dengan statistik deskriptif dan inferensial. Analisis difokuskan pada tiga aspek utama: 
+performa rata-rata setiap konfigurasi
+stabilitas performa antar fold dan antar pengulangan
+indikasi overfitting.
+3.6.1 Perhitungan Metrik Performa
+Metrik utama yang digunakan adalah precision, recall, dan F1-score yang diturunkan dari confusion matrix. Untuk klasifikasi multikelas dengan data tidak seimbang, digunakan macro average F1-score yang memberikan bobot sama pada setiap kelas, sehingga performa pada kelas minoritas (seperti entitas negasi) tidak tertutupi oleh kelas mayoritas.
+Rumus-rumus yang digunakan adalah sebagai berikut:
+Precision mengukur proporsi prediksi positif yang benar-benar positif:
+Recall mengukur proporsi data positif aktual yang berhasil diidentifikasi:
+F1-Score adalah rata-rata harmonik precision dan recall:
+Macro Average F1-Score adalah rata-rata aritmetika F1-score seluruh kelas:
+3.6.2 Analisis Stabilitas
+Untuk mengukur stabilitas performa setiap konfigurasi, dihitung standar deviasi dari nilai F1-score pada setiap kelas, yang diperoleh dari 15 nilai (5 fold × 3 runs). Standar deviasi yang kecil (< 0,05) mengindikasikan bahwa konfigurasi tersebut stabil dan tidak sensitif terhadap variasi data.
+3.6.3 Deteksi Overfitting
+Overfitting dideteksi dengan menghitung gap antara performa pada data latih (training) dan performa pada cross-validation (CV). Gap dihitung dengan rumus:
+
+Nilai gap yang besar (> 0,10) mengindikasikan overfitting, di mana model terlalu menghafal data latih dan tidak mampu menggeneralisasi ke data baru. Nilai gap yang kecil (≤ 0,05) mengindikasikan generalisasi yang baik.
+3.6.4 Analisis Perbandingan Konfigurasi
+Perbandingan antar konfigurasi dilakukan dengan dua pendekatan:
+Perbandingan deskriptif: Membandingkan nilai rata-rata F1-score macro, standar deviasi, dan gap overfitting dari setiap konfigurasi untuk mengidentifikasi konfigurasi terbaik.
+Uji statistik (jika diperlukan): Menggunakan uji Wilcoxon signed-rank test untuk membandingkan dua konfigurasi yang berpasangan (paired) pada fold yang sama, dengan tingkat signifikansi α = 0,05.
+3.6.5 Visualisasi Hasil
+Hasil analisis disajikan dalam bentuk:
+Tabel perbandingan: Menampilkan mean dan std F1-score untuk setiap intent dan entity
+Bar chart: Membandingkan performa antar konfigurasi secara visual
+Line plot: Menunjukkan tren stabilitas antar fold
+Heatmap confusion matrix: Mengidentifikasi pasangan intent yang sering tertukar
+Radar chart: Membandingkan konfigurasi terbaik secara multidimensi
+Scatter plot: Memetakan hubungan trade-off antara tingkat generalisasi (overfitting gap) dengan performa (F1-score) untuk mencari titik optimal.
+3.7 Prosedur Penelitian
+Prosedur penelitian mengikuti alur sistematis yang terdiri dari 5 tahap utama, sebagaimana diilustrasikan pada Gambar 3.1.
+Gambar 3.1 Flowchart Prosedur Penelitian
+
+Tahap 1: Persiapan Data
+Pada tahap ini, dataset percakapan rekomendasi mobil berbahasa Indonesia yang telah dianotasi disiapkan dalam format nlu.yml yang sesuai dengan standar Rasa. Dataset juga dibagi menjadi data latih dan data uji menggunakan metode stratified split untuk menjaga proporsi kelas.
+Tahap 2: Konfigurasi Pipeline
+Dibuat 6 file konfigurasi (config.yml) yang masing-masing mendefinisikan komponen pipeline untuk  TAv1, TAv2, TAv3, TAv4, TAv5, dan TAv6. Setiap konfigurasi disimpan dalam direktori terpisah untuk menghindari pencampuran model.
+Tahap 3: Eksekusi Eksperimen
+Eksperimen dijalankan menggunakan skrip eval_a.py yang secara otomatis:
+Melakukan 5-fold cross-validation sebanyak 3 kali pengulangan untuk setiap konfigurasi
+Menjalankan perintah rasa test nlu --cross-validation --folds 5
+Menyimpan hasil evaluasi ke direktori results/comparison_*
+Tahap 4: Ekstraksi Metrik
+Skrip ekstrak.py digunakan untuk membaca seluruh file JSON hasil eksperimen dan mengkompilasi metrik ke dalam dua file CSV:
+perbandingan.csv: Berisi ringkasan performa per konfigurasi (intent_f1_mean, entity_f1_mean, std, gap overfitting)
+detail perbandingan.csv: Berisi performa per kelas intent dan per kelas entity untuk setiap konfigurasi
+Tahap 5: Analisis dan Visualisasi
+Skrip generate_plots.py digunakan untuk menghasilkan visualisasi:
+Bar chart perbandingan F1-score antar konfigurasi dengan error bars (std)
+Line plot overfitting gap
+Heatmap confusion matrix
+Scatter plot perbandingan trade-off generalisasi vs performa.
+Radar chart perbandingan konfigurasi terbaik
+3.8 Evaluasi Hasil Penelitian
+Evaluasi hasil penelitian dilakukan berdasarkan kriteria yang telah ditetapkan pada tujuan penelitian. Suatu konfigurasi pipeline dinyatakan berhasil jika memenuhi kriteria berikut:
+F1-score entitas negasi ≥ 0,80: Kemampuan model dalam mengekstraksi entitas yang dinegasikan (seperti feature.negated, body_type.negated) harus mencapai minimal 0,80 untuk memastikan bahwa chatbot dapat memahami penolakan pengguna terhadap fitur atau jenis mobil tertentu.
+F1-score intent out-of-scope ≥ 0,90: Model harus mampu membedakan pertanyaan di luar domain rekomendasi mobil dengan akurasi tinggi, sehingga chatbot tidak memberikan respons yang tidak relevan.
+Gap overfitting < 0,05: Selisih antara performa pada data latih dan data validasi harus kurang dari 0,05, menandakan bahwa model tidak overfit dan mampu menggeneralisasi dengan baik.
+Standar deviasi < 0,05: Stabilitas performa antar fold dan antar pengulangan harus tinggi (std kecil), menandakan bahwa konfigurasi tidak sensitif terhadap variasi data.
+
+3.9 Timeline Penelitian
+Timeline penelitian pengembangan dan evaluasi pipeline NLU Rasa untuk chatbot rekomendasi mobil ini dirancang secara sistematis agar seluruh proses penelitian berjalan efektif, terarah, dan sesuai dengan standar akademik. Penelitian ini mencakup tahap persiapan, pengembangan konfigurasi, pelatihan dan evaluasi model, analisis hasil, hingga penyusunan laporan akhir.
+Tabel 3.4 Timeline Penelitian
+No
+Tahapan Penelitian
+JAN
+FEB
+MAR
+APR
+MAY
+JUN
+1
+Studi literatur dan analisis kebutuhan
+██
+██
+
+
+
+
+2
+Persiapan dan anotasi dataset
+██
+██
+
+
+
+
+3
+Perancangan 6 konfigurasi pipeline
+
+██
+██
+
+
+
+4
+Implementasi skrip otomatisasi (eval_a.py, dll.)
+
+
+██
+██
+
+
+5
+Pelatihan model & repeated cross-validation (3x5 fold)
+
+
+
+██
+██
+
+6
+Ekstraksi metrik dan kompilasi hasil
+
+
+
+
+██
+
+7
+Analisis data dan visualisasi
+
+
+
+
+██
+██
+8
+Penyusunan laporan 
+
+
+
+
+
+██
+
+Dalam penyusunan timeline, peneliti mempertimbangkan tingkat kompleksitas setiap kegiatan. Pelatihan model untuk 7 konfigurasi dengan repeated 5-fold cross-validation (3 kali) membutuhkan waktu komputasi yang signifikan, diperkirakan 20-45 menit per konfigurasi (total sekitar 6-8 jam) pada GPU RTX 3070. Oleh karena itu, proses ini dialokasikan selama 2 minggu kebutuhan pengulangan karena kesalahan konfigurasi.
+Peneliti juga menyediakan waktu cadangan untuk mengantisipasi kendala teknis, seperti ketidaksesuaian versi library, kebutuhan penyesuaian parameter setelah melihat hasil awal, atau revisi pada skrip ekstraksi data. Jadwal konsultasi rutin dengan dosen pembimbing dimasukkan ke dalam timeline untuk memastikan setiap tahapan penelitian mendapatkan arahan dan validasi yang tepat.
+Pada tahap penulisan laporan, peneliti mengalokasikan waktu khusus untuk penyusunan draf awal, perbaikan bertahap berdasarkan masukan pembimbing, serta finalisasi laporan agar sesuai dengan kaidah penulisan ilmiah yang berlaku. Dengan merancang timeline yang realistis, disiplin, dan fleksibel, peneliti dapat mengelola seluruh rangkaian kegiatan penelitian secara optimal, meminimalkan risiko keterlambatan, serta memastikan bahwa penelitian optimasi pipeline NLU Rasa untuk chatbot rekomendasi mobil berbahasa Indonesia dapat diselesaikan tepat waktu serta memenuhi standar keilmuan Program Studi Teknik Informat

@@ -1,0 +1,70 @@
+{
+  "ask_comparison": {
+    "precision": 0.9411764705882353,
+    "recall": 0.9411764705882353,
+    "f1-score": 0.9411764705882353,
+    "support": 34,
+    "confused_with": {
+      "ask_recommendation": 2
+    }
+  },
+  "ask_similar_car": {
+    "precision": 1.0,
+    "recall": 0.75,
+    "f1-score": 0.8571428571428571,
+    "support": 20,
+    "confused_with": {
+      "start_search": 2,
+      "out_of_scope": 1
+    }
+  },
+  "start_search": {
+    "precision": 0.9669421487603306,
+    "recall": 0.975,
+    "f1-score": 0.970954356846473,
+    "support": 120,
+    "confused_with": {
+      "ask_recommendation": 2,
+      "out_of_scope": 1
+    }
+  },
+  "out_of_scope": {
+    "precision": 0.9493670886075949,
+    "recall": 0.7731958762886598,
+    "f1-score": 0.8522727272727272,
+    "support": 97,
+    "confused_with": {
+      "ask_recommendation": 21,
+      "start_search": 1
+    }
+  },
+  "ask_recommendation": {
+    "precision": 0.9574468085106383,
+    "recall": 0.9932088285229203,
+    "f1-score": 0.9750000000000001,
+    "support": 589,
+    "confused_with": {
+      "out_of_scope": 2,
+      "start_search": 1
+    }
+  },
+  "accuracy": 0.958139534883721,
+  "macro avg": {
+    "precision": 0.9629865032933598,
+    "recall": 0.8865162350799631,
+    "f1-score": 0.9193092823700585,
+    "support": 860
+  },
+  "weighted avg": {
+    "precision": 0.958206785649933,
+    "recall": 0.958139534883721,
+    "f1-score": 0.9565149238487076,
+    "support": 860
+  },
+  "micro avg": {
+    "precision": 0.958139534883721,
+    "recall": 0.958139534883721,
+    "f1-score": 0.958139534883721,
+    "support": 860
+  }
+}

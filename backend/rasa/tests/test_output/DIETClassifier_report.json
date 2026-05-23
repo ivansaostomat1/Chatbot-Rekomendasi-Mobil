@@ -1,0 +1,158 @@
+{
+  "body_type.negated": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 11,
+    "confused_with": {}
+  },
+  "preference.negated": {
+    "precision": 0.7954545454545454,
+    "recall": 0.9210526315789473,
+    "f1-score": 0.8536585365853658,
+    "support": 38,
+    "confused_with": {}
+  },
+  "transmission": {
+    "precision": 0.9117647058823529,
+    "recall": 0.96875,
+    "f1-score": 0.9393939393939394,
+    "support": 32,
+    "confused_with": {}
+  },
+  "target_car": {
+    "precision": 0.9411764705882353,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.7804878048780487,
+    "support": 24,
+    "confused_with": {
+      "target_car.negated": 1
+    }
+  },
+  "budget": {
+    "precision": 0.9272727272727272,
+    "recall": 0.9272727272727272,
+    "f1-score": 0.9272727272727272,
+    "support": 220,
+    "confused_with": {
+      "min_seat": 8
+    }
+  },
+  "preference": {
+    "precision": 0.7573221757322176,
+    "recall": 0.8227272727272728,
+    "f1-score": 0.7886710239651417,
+    "support": 220,
+    "confused_with": {
+      "hard_filter": 1
+    }
+  },
+  "feature.negated": {
+    "precision": 0.9629629629629629,
+    "recall": 0.7647058823529411,
+    "f1-score": 0.8524590163934426,
+    "support": 34,
+    "confused_with": {
+      "feature": 4
+    }
+  },
+  "min_seat": {
+    "precision": 0.7777777777777778,
+    "recall": 0.9130434782608695,
+    "f1-score": 0.84,
+    "support": 69,
+    "confused_with": {
+      "budget": 4,
+      "min_seat.negated": 1
+    }
+  },
+  "brand": {
+    "precision": 0.9672131147540983,
+    "recall": 0.8805970149253731,
+    "f1-score": 0.9218749999999999,
+    "support": 67,
+    "confused_with": {
+      "brand.negated": 5,
+      "target_car": 1
+    }
+  },
+  "powertrain.negated": {
+    "precision": 0.8484848484848485,
+    "recall": 0.9333333333333333,
+    "f1-score": 0.888888888888889,
+    "support": 30,
+    "confused_with": {
+      "powertrain": 2
+    }
+  },
+  "body_type": {
+    "precision": 0.975,
+    "recall": 0.975,
+    "f1-score": 0.975,
+    "support": 40,
+    "confused_with": {}
+  },
+  "hard_filter": {
+    "precision": 0.9680851063829787,
+    "recall": 1.0,
+    "f1-score": 0.9837837837837838,
+    "support": 91,
+    "confused_with": {}
+  },
+  "powertrain": {
+    "precision": 0.9107142857142857,
+    "recall": 0.9444444444444444,
+    "f1-score": 0.9272727272727271,
+    "support": 54,
+    "confused_with": {
+      "powertrain.negated": 3
+    }
+  },
+  "brand.negated": {
+    "precision": 0.8421052631578947,
+    "recall": 0.9142857142857143,
+    "f1-score": 0.8767123287671234,
+    "support": 35,
+    "confused_with": {
+      "brand": 2,
+      "preference.negated": 1
+    }
+  },
+  "transmission.negated": {
+    "precision": 1.0,
+    "recall": 0.9259259259259259,
+    "f1-score": 0.9615384615384615,
+    "support": 27,
+    "confused_with": {
+      "transmission": 2
+    }
+  },
+  "feature": {
+    "precision": 0.9008264462809917,
+    "recall": 0.990909090909091,
+    "f1-score": 0.9437229437229437,
+    "support": 110,
+    "confused_with": {
+      "feature.negated": 1
+    }
+  },
+  "micro avg": {
+    "precision": 0.8773006134969326,
+    "recall": 0.9083484573502723,
+    "f1-score": 0.8925546143557735,
+    "support": 1102
+  },
+  "macro avg": {
+    "precision": 0.9053850269028698,
+    "recall": 0.9092946364177067,
+    "f1-score": 0.9037960739039121,
+    "support": 1102
+  },
+  "weighted avg": {
+    "precision": 0.8821297624610244,
+    "recall": 0.9083484573502723,
+    "f1-score": 0.8930743254439757,
+    "support": 1102
+  },
+  "accuracy": 0.9582814445828145
+}

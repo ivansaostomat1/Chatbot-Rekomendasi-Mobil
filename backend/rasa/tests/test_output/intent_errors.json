@@ -1,0 +1,290 @@
+[
+  {
+    "text": "bisa kita restart?",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.9963036775588989
+    }
+  },
+  {
+    "text": "apa resep nasi goreng yang enak",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9958586096763611
+    }
+  },
+  {
+    "text": "harga sewa apartemen 5 juta",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "oli mobil yang bagus merk apa?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9995645880699158
+    }
+  },
+  {
+    "text": "ban mobil yang paling awet merk apa?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "saya anti Chery",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.5451408624649048
+    }
+  },
+  {
+    "text": "carikan yang setara dengan Fortuner",
+    "intent": "ask_similar_car",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "tolong buatkan essay",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9810290932655334
+    }
+  },
+  {
+    "text": "saya mau pesan makanan",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9800951480865479
+    }
+  },
+  {
+    "text": "biaya kuliah 2026",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999998807907104
+    }
+  },
+  {
+    "text": "rekomendasi ac 1 pk",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "spill tempat cuci mobil 24 jam",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9987425208091736
+    }
+  },
+  {
+    "text": "kompetitor CRV apa aja",
+    "intent": "ask_similar_car",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.9870500564575195
+    }
+  },
+  {
+    "text": "carikan saya rumah",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999997615814209
+    }
+  },
+  {
+    "text": "test",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.87877357006073
+    }
+  },
+  {
+    "text": "gaji 15 juta per bulan",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9995670914649963
+    }
+  },
+  {
+    "text": "kursi 5 buah",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "tips nyetir mobil manual buat pemula",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "buang Nissan dari daftar",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.5674456357955933
+    }
+  },
+  {
+    "text": "ada yang lebih gokil ga di harga 1.2M?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999910593032837
+    }
+  },
+  {
+    "text": "mending ini atau toyota yang 800jt?",
+    "intent": "ask_comparison",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "ada mobil lain selain Xpander ga?",
+    "intent": "ask_similar_car",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.943293571472168
+    }
+  },
+  {
+    "text": "jam tangan 3 jutaan",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9903563857078552
+    }
+  },
+  {
+    "text": "cara bersihin interior mobil yang kotor",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.8883762359619141
+    }
+  },
+  {
+    "text": "apa fungsi dari tombol rsd di dashboard?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9999991655349731
+    }
+  },
+  {
+    "text": "selain Sigra mending ambil apa",
+    "intent": "ask_similar_car",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.999183714389801
+    }
+  },
+  {
+    "text": "hapus history",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9998034834861755
+    }
+  },
+  {
+    "text": "hapus preferensi saya",
+    "intent": "start_search",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9833000898361206
+    }
+  },
+  {
+    "text": "berapa harga bensin sekarang?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.957460880279541
+    }
+  },
+  {
+    "text": "tidak nyambung",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 1.0
+    }
+  },
+  {
+    "text": "tabungan 100 juta",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9998952150344849
+    }
+  },
+  {
+    "text": "kenapa knalpot mobil keluar asap putih?",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9976420998573303
+    }
+  },
+  {
+    "text": "pusing nih cicilan mobil belum lunas",
+    "intent": "out_of_scope",
+    "intent_prediction": {
+      "name": "ask_recommendation",
+      "confidence": 0.9956135749816895
+    }
+  },
+  {
+    "text": "rekomen mobil dong",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "out_of_scope",
+      "confidence": 0.7716495394706726
+    }
+  },
+  {
+    "text": "ga mau yang berisik kalau lagi kencang",
+    "intent": "ask_recommendation",
+    "intent_prediction": {
+      "name": "ask_comparison",
+      "confidence": 0.997123658657074
+    }
+  },
+  {
+    "text": "cari mobil yang kayak Agya",
+    "intent": "ask_similar_car",
+    "intent_prediction": {
+      "name": "start_search",
+      "confidence": 0.7537599205970764
+    }
+  }
+]

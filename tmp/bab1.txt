@@ -1,0 +1,63 @@
+BAB I
+PENDAHULUAN
+
+Latar Belakang
+Perkembangan kecerdasan buatan telah mendorong pemanfaatan chatbot di berbagai sektor, termasuk layanan pelanggan (E., 2025), informasi publik (Fauzan et al., 2024), pendidikan (Qalimaturrahmah & Santoso, 2024), dan sistem rekomendasi. Dalam industri otomotif, chatbot rekomendasi mobil membantu calon pembeli menemukan kendaraan yang sesuai dengan preferensi, anggaran, dan kebutuhan spesifik melalui interaksi percakapan alami. Keberhasilan sistem semacam ini sangat bergantung pada modul Natural Language Understanding (NLU) yang bertugas mengklasifikasikan maksud pengguna (intent classification) dan mengekstraksi informasi penting (entity extraction), seperti merek mobil, tipe bodi, anggaran, serta preferensi yang dinyatakan secara positif maupun negatif melalui ungkapan negasi, misalnya "tidak suka matic" atau "hindari diesel" (Bunk et al., 2020). Kemampuan sistem untuk secara akurat menangani negasi dan membedakan intent di luar domain (out-of-scope) menjadi krusial agar rekomendasi yang diberikan tidak mengecewakan pengguna.
+Open-source framework Rasa menyediakan arsitektur pipeline NLU yang modular, memungkinkan pengembang untuk mengombinasikan berbagai komponen seperti tokenizer, featurizer, dan classifier guna membangun asisten percakapan yang sesuai dengan kebutuhan domain (Bocklisch et al., 2017). Penelitian ini secara sistematis mengevaluasi dan membandingkan beberapa konfigurasi pipeline NLU pada Rasa, mulai dari model baseline berbasis fitur sparse (Bunk et al., 2020; Vista et al., 2026), pemanfaatan model bahasa pra-latih (pre-trained language model) seperti IndoBERT untuk representasi teks yang lebih kaya (Koto et al., 2020; Yulianti & Nissa, 2024), hingga pendekatan hybrid yang menggabungkan model statistik dengan aturan (rule-based) untuk menangani pola-pola spesifik seperti negasi (Figueira & Samagaio, 2020; Talenggoran et al., 2025).
+Hasil evaluasi awal terhadap model dengan konfigurasi baseline (CP) pada dataset percakapan rekomendasi mobil berbahasa Indonesia menunjukkan adanya defisit kinerja yang signifikan pada aspek-aspek kritis. Berdasarkan hasil validasi silang 5-fold yang diulang sebanyak 3 kali, masalah paling menonjol adalah lemahnya kemampuan model dalam mengenali entitas yang dinegasikan, yang sangat esensial untuk memberikan rekomendasi yang aman. Tabel 1.1 menyajikan ringkasan performa baseline pada beberapa kelas kritis.
+Tabel 1.1 Hasil Evaluasi
+Tipe
+Kelas
+F1-Score (CV)
+Std
+Intent
+ask_recommendation
+0,8602
+0,0069
+Intent
+out_of_scope
+0,8733
+0,0073
+Entity
+preference
+0,7932
+0,0119
+Entity
+feature.negated
+0,7018
+0,1215
+Entity
+target_car
+0,6661
+0,0457
+Terlihat bahwa entitas feature.negated (fitur yang dinegasikan) hanya memperoleh F1-score 0,70 dengan standar deviasi tinggi (0,12), menunjukkan performa yang tidak stabil. Entitas preference (0,79) dan target_car (0,67) juga masih jauh di bawah ambang ideal 0,80. Selain itu, terdapat indikasi kebocoran intent out_of_scope ke dalam ask_recommendation, serta potensi overfitting yang terdeteksi dari kesenjangan performa antara data latih dan validasi. Temuan-temuan ini menegaskan perlunya perbaikan arsitektur pipeline NLU, bukan sekadar penambahan data.
+Penelitian-penelitian sebelumnya telah menunjukkan efektivitas Rasa dan IndoBERT secara terpisah. Vista et al. (2026) berhasil meningkatkan akurasi klasifikasi intent hingga 93% dengan menambahkan fitur leksikal. Talenggoran et al. (2025) membuktikan pentingnya FallbackClassifier untuk menangani input di luar domain. Yulianti & Nissa (2024) menunjukkan bahwa fine-tuning IndoBERT mencapai F1-score tertinggi (0,9194) untuk aspect-based sentiment analysis berbahasa Indonesia. Namun, integrasi antara fitur sparse (CountVectorsFeaturizer, LexicalSyntacticFeaturizer), fitur dense (IndoBERT), komponen berbasis aturan (RegexEntityExtractor), dan mekanisme fallback dalam satu pipeline hybrid untuk bahasa Indonesia belum pernah dieksplorasi secara sistematis, terutama pada domain rekomendasi otomotif yang menuntut penanganan negasi dan out-of-scope yang akurat.
+Oleh karena itu, penelitian ini mengusulkan optimasi pipeline NLU Rasa melalui enam konfigurasi bertahap (TAv1–TAv6) yang mencakup optimasi hyperparameter, integrasi penuh IndoBERT, penguatan deteksi negasi berbasis aturan menggunakan RegexEntityExtractor, penggabungan fitur sparse dan dense, serta penambahan FallbackClassifier. Dengan membandingkan ketujuh konfigurasi tersebut (satu baseline + enam eksperimental), penelitian ini akan mengidentifikasi kombinasi komponen yang paling efektif dalam meningkatkan akurasi intent dan ekstraksi entitas, khususnya pada entitas negasi dan intent di luar domain.
+Perumusan Masalah
+Berdasarkan identifikasi masalah pada latar belakang, rumusan masalah dalam penelitian ini adalah sebagai berikut.
+Bagaimana performa pipeline default Rasa (konfigurasi baseline) dalam menangani klasifikasi intent dan ekstraksi entitas, termasuk yang dinegasikan, pada data percakapan rekomendasi mobil berbahasa Indonesia?
+Sejauh mana penggantian featurizer berbasis CountVectors dengan IndoBERT (TAv2) meningkatkan akurasi intent dan entity recognition dibandingkan dengan baseline yang telah dioptimasi hyperparameter-nya (TAv1)?
+Apakah penambahan komponen berbasis aturan (RegexEntityExtractor) pada pipeline IndoBERT (TAv4) memberikan peningkatan signifikan dalam deteksi entitas negasi dibandingkan dengan IndoBERT saja (TAv2)?
+Bagaimana pengaruh penggabungan fitur sparse (CountVectors, LexicalSyntactic) dengan IndoBERT dalam arsitektur hybrid (TAv6) terhadap kemampuan model dalam mendeteksi negasi entitas dan membedakan intent out-of-scope?
+Di antara ketujuh konfigurasi pipeline yang diuji (CP, TAv1, TAv2, TAv3, TAv4, TAv5, TAv6), manakah yang memberikan efektivitas terbaik berdasarkan metrik F1-score rata-rata, stabilitas antar fold, dan tingkat generalisasi (indikasi overfitting)?
+Tujuan Penelitian
+Tujuan dari penelitian ini adalah sebagai berikut.
+Menyajikan evaluasi komparatif yang komprehensif terhadap satu konfigurasi baseline (CP) dan enam konfigurasi eksperimental pipeline NLU Rasa (TAv1–TAv6) menggunakan metrik F1-score, presisi, recall, serta standar deviasi per kelas, yang dihitung dari 3 kali pengulangan validasi silang 5-fold.
+Menganalisis kontribusi kuantitatif masing-masing komponen pipeline (IndoBERT, RegexEntityExtractor, LexicalSyntacticFeaturizer, FallbackClassifier) terhadap peningkatan akurasi deteksi entitas negasi (seperti feature.negated) dan pengurangan kebocoran intent out-of-scope.
+Menentukan konfigurasi pipeline optimal yang dapat direkomendasikan untuk pengembangan chatbot rekomendasi mobil berbahasa Indonesia, dengan kriteria: (a) F1-score entitas negasi ≥ 0,80, (b) F1-score intent out-of-scope ≥ 0,90, (c) selisih performa antara data latih dan validasi (gap overfitting) kurang dari 0,05.
+Manfaat Penelitian
+Penelitian ini diharapkan memberikan manfaat sebagai berikut.
+Manfaat Teoretis
+Bukti empiris efektivitas kombinasi fitur sparse dan dense: Penelitian ini menyediakan bukti kuantitatif mengenai efektivitas penggabungan CountVectorsFeaturizer, LexicalSyntacticFeaturizer, dan IndoBERT dalam satu pipeline Rasa untuk bahasa Indonesia, yang belum banyak dieksplorasi sebelumnya.
+Penanganan negasi berbasis aturan dalam pipeline modern: Penelitian ini mengungkap sejauh mana RegexEntityExtractor sebagai lapisan fallback berbasis aturan dapat melengkapi kelemahan model statistik dan transformer dalam mendeteksi pola negasi eksplisit.
+Metodologi evaluasi NLU yang lebih robust: Dengan memadukan validasi silang berulang, deteksi overfitting, dan analisis F1-score per kelas, penelitian ini menawarkan kerangka evaluasi yang lebih komprehensif daripada sekadar mengukur akurasi keseluruhan pada data uji statis.
+Manfaat Praktis
+Rekomendasi konfigurasi pipeline siap pakai: Penelitian ini menghasilkan konfigurasi pipeline Rasa yang optimal untuk domain rekomendasi otomotif berbahasa Indonesia, yang dapat langsung diadopsi atau dijadikan titik awal oleh pengembang chatbot di domain serupa (misalnya e-commerce, properti, atau rekomendasi produk lainnya).
+Peningkatan kualitas chatbot rekomendasi: Dengan kemampuan deteksi negasi yang lebih baik dan penanganan out-of-scope yang lebih andal, chatbot yang dibangun berdasarkan konfigurasi optimal akan memberikan rekomendasi yang lebih akurat dan tidak mengecewakan pengguna.
+Batasan Masalah
+Agar ruang lingkup penelitian tetap terfokus, batasan masalah ditetapkan sebagai berikut.
+Dataset: Menggunakan 850 kalimat percakapan rekomendasi mobil berbahasa Indonesia yang telah dianotasi dengan 6 intent dan 16 jenis entitas (termasuk varian negasi). Dataset ini merupakan hasil anotasi dari proyek sebelumnya dan telah melalui proses augmentasi data. Tidak dilakukan pengumpulan data baru dari pengguna nyata.
+Framework dan model: Penelitian hanya menggunakan framework Rasa Open Source versi 3.4.11 dan model bahasa IndoBERT dengan bobot indobenchmark/indobert-base-p1. Tidak dilakukan eksplorasi dengan framework NLU lain (seperti Dialogflow atau Microsoft LUIS) maupun model bahasa lain (seperti RoBERTa atau GPT).
+Lingkup evaluasi: Evaluasi dibatasi pada metrik klasifikasi intent (presisi, recall, F1-score) dan ekstraksi entitas yang dihasilkan oleh modul NLU. Aspek dialogue management, responsivitas sistem dalam skala besar, dan pengujian dengan pengguna nyata ( user acceptance testing) tidak dikaji dalam penelitian ini.
+Bahasa: Penelitian terbatas pada teks berbahasa Indonesia. Tidak dilakukan pengujian lintas bahasa atau adaptasi untuk bahasa daerah.
+Domain: Hanya mencakup domain rekomendasi mobil baru (bukan mobil bekas) dengan fitur-fitur terbatas pada merek, tipe bodi, anggaran, transmisi, kursi, dan beberapa fitur lainnya. Domain di luar rekomendasi mobil (misalnya perawatan mobil, asuransi) tidak termasuk.

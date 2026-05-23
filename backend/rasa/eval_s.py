@@ -15,11 +15,11 @@ import sys
 # KONFIGURASI – ubah di sini sesuai kebutuhan
 # ================================================================
 # CONFIG_PATH = "configTAv6.yml"
-CONFIG_PATH = "configCP.yml"
+CONFIG_PATH = "configTAv7.yml"
 CONFIG_LABEL = None  # biarkan None, akan diambil dari nama file
 NLU_DATA = "data/nlu.yml"
 MODELS_DIR = "models"
-N_CV_RUNS = 1  # berapa kali cross‑validation diulang
+N_CV_RUNS = 3
 FOLDS = 5
 # ================================================================
 
@@ -39,7 +39,6 @@ def run_command(command, description, log_file=None):
             os.makedirs(os.path.dirname(log_file), exist_ok=True)
             with open(log_file, "w", encoding="utf-8") as f:
                 f.write(result.stdout)
-        # Tampilkan bagian akhir output
         tail = result.stdout[-2000:] if len(result.stdout) > 2000 else result.stdout
         print(tail)
         return True
@@ -55,7 +54,6 @@ def run_command(command, description, log_file=None):
 
 
 def extract_f1(results_dir):
-    """Ambil metrik F1 dari intent_report.json dan DIETClassifier_report.json."""
     out = {
         "intent_overall": None,
         "entity_overall": None,
@@ -97,27 +95,37 @@ def extract_f1(results_dir):
 
 
 def compute_stability(cv_summaries):
-    """Hitung rata‑rata dan standar deviasi dari beberapa CV runs."""
     stab = {}
+
+    # Helper untuk mean & sample std
+    def mean_std(vals):
+        if not vals:
+            return None, None
+        mean = sum(vals) / len(vals)
+        if len(vals) > 1:
+            var = sum((x - mean) ** 2 for x in vals) / (len(vals) - 1)
+            std = var**0.5
+        else:
+            std = 0.0
+        return round(mean, 4), round(std, 4)
+
     # Intent overall
     vals = [
         s["intent_overall"] for s in cv_summaries if s["intent_overall"] is not None
     ]
-    if vals:
-        mean = sum(vals) / len(vals)
-        std = (sum((x - mean) ** 2 for x in vals) / len(vals)) ** 0.5
-        stab["intent_overall_mean"] = round(mean, 4)
-        stab["intent_overall_std"] = round(std, 4)
+    mean, std = mean_std(vals)
+    if mean is not None:
+        stab["intent_overall_mean"] = mean
+        stab["intent_overall_std"] = std
 
     # Entity overall
     vals = [
         s["entity_overall"] for s in cv_summaries if s["entity_overall"] is not None
     ]
-    if vals:
-        mean = sum(vals) / len(vals)
-        std = (sum((x - mean) ** 2 for x in vals) / len(vals)) ** 0.5
-        stab["entity_overall_mean"] = round(mean, 4)
-        stab["entity_overall_std"] = round(std, 4)
+    mean, std = mean_std(vals)
+    if mean is not None:
+        stab["entity_overall_mean"] = mean
+        stab["entity_overall_std"] = std
 
     # Per intent
     all_intents = set()
@@ -130,10 +138,9 @@ def compute_stability(cv_summaries):
             for s in cv_summaries
             if intent in s.get("intent_per_class", {})
         ]
-        if vals:
-            mean = sum(vals) / len(vals)
-            std = (sum((x - mean) ** 2 for x in vals) / len(vals)) ** 0.5
-            stab["intent_per_class"][intent] = (round(mean, 4), round(std, 4))
+        mean, std = mean_std(vals)
+        if mean is not None:
+            stab["intent_per_class"][intent] = (mean, std)
 
     # Per entity
     all_entities = set()
@@ -146,16 +153,14 @@ def compute_stability(cv_summaries):
             for s in cv_summaries
             if entity in s.get("entity_per_class", {})
         ]
-        if vals:
-            mean = sum(vals) / len(vals)
-            std = (sum((x - mean) ** 2 for x in vals) / len(vals)) ** 0.5
-            stab["entity_per_class"][entity] = (round(mean, 4), round(std, 4))
+        mean, std = mean_std(vals)
+        if mean is not None:
+            stab["entity_per_class"][entity] = (mean, std)
 
     return stab
 
 
 def print_evaluation(label, stab, train_f1):
-    """Tampilkan hasil evaluasi di konsol dengan flag per kelas."""
     print(f"\n{'='*60}")
     print(f"HASIL EVALUASI: {label}")
     print(f"{'='*60}")
@@ -201,8 +206,7 @@ def print_evaluation(label, stab, train_f1):
 
 
 def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
-    """Simpan ringkasan dan detail ke CSV."""
-    # 1. Ringkasan overall
+    # Ringkasan overall
     overview_path = os.path.join(session_dir, "ringkasan_overall.csv")
     with open(overview_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)
@@ -250,7 +254,7 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
         )
     print(f"CSV ringkasan disimpan: {overview_path}")
 
-    # 2. Detail per kelas
+    # Detail per kelas
     detail_path = os.path.join(session_dir, "detail_per_kelas.csv")
     with open(detail_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)
@@ -264,7 +268,6 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
             ]
         )
 
-        # Intent
         for intent, (mean, std) in stab.get("intent_per_class", {}).items():
             train_val = (
                 tt_summary.get("intent_per_class", {}).get(intent, "")
@@ -273,7 +276,6 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
             )
             writer.writerow(["intent", intent, mean, std, train_val])
 
-        # Entity
         for entity, (mean, std) in stab.get("entity_per_class", {}).items():
             train_val = (
                 tt_summary.get("entity_per_class", {}).get(entity, "")
@@ -286,9 +288,6 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
 
 
 def main():
-    # -----------------------------------------------------------------
-    # Persiapan config
-    # -----------------------------------------------------------------
     if not os.path.exists(CONFIG_PATH):
         print(f"ERROR: File config tidak ditemukan: {CONFIG_PATH}")
         sys.exit(1)
@@ -308,9 +307,7 @@ def main():
     print(f"Folder : {session_dir}")
     print(f"{'#'*60}")
 
-    # -----------------------------------------------------------------
-    # Bagian 1: Cross-Validation (N runs)
-    # -----------------------------------------------------------------
+    # Cross-Validation
     cv_summaries = []
     for run_idx in range(1, N_CV_RUNS + 1):
         cv_dir = os.path.join(session_dir, f"cv_run_{run_idx}")
@@ -346,9 +343,7 @@ def main():
 
     stab = compute_stability(cv_summaries)
 
-    # -----------------------------------------------------------------
-    # Bagian 2: Training + Overfit Detection
-    # -----------------------------------------------------------------
+    # Training + Overfit Detection
     print(f"\n[TRAINING] Melatih model dengan config {CONFIG_LABEL}")
     train_ok = run_command(
         ["rasa", "train", "nlu", "--config", CONFIG_PATH],
@@ -359,15 +354,17 @@ def main():
     train_f1 = None
     tt_summary = None
     if train_ok:
-        # Cari model terbaru
         model_files = [
             f
             for f in os.listdir(MODELS_DIR)
             if f.startswith("nlu-") and f.endswith(".tar.gz")
         ]
         if model_files:
-            latest_model = sorted(model_files)[-1]
-            model_path = os.path.join(MODELS_DIR, latest_model)
+            # Gunakan model dengan waktu modifikasi terbaru
+            latest_model = max(
+                [os.path.join(MODELS_DIR, f) for f in model_files],
+                key=os.path.getmtime,
+            )
             tt_dir = os.path.join(session_dir, "train_test")
             os.makedirs(tt_dir, exist_ok=True)
             tt_ok = run_command(
@@ -378,7 +375,7 @@ def main():
                     "--nlu",
                     NLU_DATA,
                     "--model",
-                    model_path,
+                    latest_model,
                     "--out",
                     tt_dir,
                 ],
@@ -393,9 +390,6 @@ def main():
     else:
         print("Training gagal, overfit detection tidak dapat dilakukan.")
 
-    # -----------------------------------------------------------------
-    # Bagian 3: Tampilkan & simpan hasil
-    # -----------------------------------------------------------------
     print_evaluation(CONFIG_LABEL, stab, train_f1)
     save_csv(session_dir, CONFIG_LABEL, stab, train_f1, cv_summaries, tt_summary)
 

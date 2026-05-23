@@ -1,1 +1,0 @@
-python evaluasi_baseline\ctn.py

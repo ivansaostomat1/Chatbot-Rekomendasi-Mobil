@@ -1,0 +1,527 @@
+BAB 4
+HASIL DAN PEMBAHASAN
+
+4.1 Gambaran Umum Hasil Eksperimen
+Penelitian ini mengevaluasi tujuh konfigurasi pipeline NLU Rasa yang dirancang secara bertahap untuk mengisolasi kontribusi setiap komponen. Tabel 4.1 menyajikan ringkasan karakteristik masing-masing konfigurasi sebagai pengingat sebelum memasuki analisis hasil.
+Tabel 4.1 Ringkasan Karakteristik Tujuh Konfigurasi Pipeline
+Konfigurasi
+Komponen Utama
+Perbedaan Kunci
+CP
+DIETClassifier (epochs=100), char_wb max_ngram=4
+Baseline default Rasa
+TAv1
+DIETClassifier (epochs=150, lr=0.001, batch_size=[64,256]), char_wb max_ngram=3
+Hanya tuning hyperparameter
+TAv2
+LanguageModelFeaturizer (IndoBERT), epochs=50
+Featurizer diganti total dengan dense
+TAv3
+RegexEntityExtractor + LexicalSyntacticFeaturizer, epochs=100
+Penambahan rule-based tanpa IndoBERT
+TAv4
+IndoBERT + RegexEntityExtractor, threshold=0.6
+Hybrid dense + rule, fallback tinggi
+TAv5
+IndoBERT + RegexEntityExtractor, dropout=0.2, threshold=0.4
+Regularisasi, fallback lebih rendah
+TAv6
+IndoBERT + CountVectors + LexicalSyntactic, epochs=150, threshold=0.4
+Hybrid sparse+dense penuh
+
+Dataset yang digunakan terdiri dari 850 kalimat percakapan berbahasa Indonesia dengan 6 intent dan 16 jenis entitas (termasuk varian negasi). Seluruh eksperimen diotomatisasi menggunakan skrip eval_a.py yang menjalankan repeated 5-fold cross-validation (3 putaran) untuk setiap konfigurasi, kemudian metrik diekstraksi menggunakan ekstrak.py dan dikompilasi ke dalam dua file utama: perbandingan.csv (ringkasan performa per konfigurasi) dan detail perbandingan.csv (performa per kelas intent dan per kelas entitas). Visualisasi dihasilkan menggunakan generate_plots.py.
+Hasil evaluasi menunjukkan variasi performa yang signifikan antar konfigurasi. Secara umum, konfigurasi yang menggabungkan fitur sparse dan dense (TAv6) mencapai performa tertinggi secara keseluruhan, sementara konfigurasi dengan regularisasi (TAv5) menunjukkan kemampuan generalisasi terbaik meskipun dengan kompromi pada deteksi entitas negasi. Pembahasan rinci disajikan pada sub-bab berikut.
+
+4.2 Hasil Evaluasi Performa Intent Classification
+4.2.1 Perbandingan F1-Score Intent
+Intent F1-score merupakan metrik utama untuk mengukur kemampuan model dalam mengklasifikasikan maksud pengguna. Tabel 4.2 menyajikan rata-rata F1-score intent beserta standar deviasinya untuk ketujuh konfigurasi, yang dihitung dari 3 kali pengulangan cross-validation (total 15 nilai per konfigurasi).
+Tabel 4.2 Perbandingan Performa Intent Classification 
+Konfigurasi
+Intent F1-Score (mean)
+Intent F1-Score (std)
+Rank
+CP
+0.8748
+0.006
+6
+TAv1
+0.8758
+0.0037
+5
+TAv2
+0.8919
+0.0071
+3
+TAv3
+0.8791
+0.0037
+4
+TAv4
+0.8941
+0.0116
+2
+TAv5
+0.8998
+0.0041
+2*
+TAv6
+0.9044
+0.0048
+1
+Keterangan*: TAv5 memiliki F1-score 0.8998, secara numerik mendekati TAv4 namun dengan standar deviasi lebih kecil (0,0041 vs 0,0116), sehingga lebih stabil.
+Berdasarkan Tabel 4.2, terdapat beberapa temuan penting:
+Peningkatan bertahap dari baseline: CP sebagai baseline mencapai F1-score 0,8748. TAv1 yang hanya melakukan tuning hyperparameter (epochs dinaikkan menjadi 150, learning rate 0,001, batch size [64,256], dan max_ngram diturunkan dari 4 menjadi 3) menunjukkan peningkatan kecil menjadi 0,8758. Peningkatan yang relatif tipis ini mengindikasikan bahwa model baseline Rasa sudah cukup teroptimasi untuk dataset yang digunakan, sehingga ruang perbaikan dari tuning parameter saja terbatas.
+Dampak positif IndoBERT: TAv2 yang mengganti seluruh featurizer dengan IndoBERT menunjukkan lompatan performa yang signifikan dari 0,8758 menjadi 0,8919 (peningkatan ~1,8%). Temuan ini mengonfirmasi bahwa representasi dense dari model bahasa pra-latih mampu menangkap nuansa semantik yang tidak dapat diakomodasi oleh fitur sparse murni. Hal ini sejalan dengan temuan Yulianti & Nissa (2024) yang melaporkan bahwa fine-tuning IndoBERT mencapai F1-score 0,9194 untuk aspect-based sentiment analysis.
+Penurunan performa TAv3: TAv3 yang menambahkan RegexEntityExtractor dan LexicalSyntacticFeaturizer pada pipeline berbasis sparse (tanpa IndoBERT) menunjukkan F1-score 0,8791 lebih rendah dibanding TAv2. Hal ini mengindikasikan bahwa meskipun fitur leksikal membantu dalam beberapa kasus, peningkatan paling signifikan tetap berasal dari representasi dense.
+Kombinasi IndoBERT dan RegexEntityExtractor (TAv4): TAv4 mencapai F1-score 0,8941, sedikit lebih tinggi dari TAv2. Penambahan RegexEntityExtractor memberikan manfaat tambahan meskipun tidak terlalu besar untuk klasifikasi intent. Namun, standar deviasi TAv4 (0,0116) relatif tinggi, menunjukkan bahwa performa konfigurasi ini kurang stabil dibandingkan yang lain.
+Regularisasi (TAv5): TAv5 yang menambahkan dropout rate 0,2 pada TAv4 menunjukkan F1-score 0,8998 tertinggi kedua setelah TAv6 dengan standar deviasi yang sangat kecil (0,0041). Ini menunjukkan bahwa dropout efektif dalam meningkatkan generalisasi dan stabilitas model tanpa mengorbankan akurasi.
+Konfigurasi optimal (TAv6): TAv6 yang menggabungkan IndoBERT, CountVectorsFeaturizer, dan LexicalSyntacticFeaturizer dengan epochs 150 mencapai performa tertinggi dengan F1-score 0,9044. Kombinasi fitur sparse dan dense terbukti sinergis, di mana fitur n-gram dari CountVectorsFeaturizer membantu menangkap pola lokal yang mungkin terlewat oleh representasi dense IndoBERT.
+
+Gambar 4.1 Perbandingan intent
+Berdasarkan Gambar 4.1, terlihat bahwa TAv6 memiliki batang tertinggi, diikuti oleh TAv5 dan TAv4. Error bar TAv4 terlihat lebih panjang dibanding yang lain, mengonfirmasi ketidakstabilannya. Sebaliknya, TAv1 dan TAv3 memiliki error bar paling pendek, menunjukkan stabilitas tinggi meskipun performanya sedang.
+4.2.2 Analisis Per Kelas Intent
+Analisis per kelas intent memberikan pandangan yang lebih granular tentang kekuatan dan kelemahan masing-masing konfigurasi. Tabel 4.3 menyajikan F1-score untuk setiap intent pada ketujuh konfigurasi (data diambil dari detail perbandingan.csv).
+Tabel 4.3 Perbandingan F1-Score per Intent 
+Intent
+CP
+TAv1
+TAv2
+TAv3
+TAv4
+TAv5
+TAv6
+ask_recommendation
+0,8602
+0,8614
+0,8793
+0,8644
+0,8843
+0,8818
+0,8811
+ask_comparison
+0,8825
+0,8738
+0,8777
+0,8820
+0,9049
+0,8843
+0,9041
+ask_similar_car
+0,7522
+0,7551
+0,6797
+0,7703
+0,5966
+0,6523
+0,7905
+choose_preference
+0,8633
+0,8719
+0,8889
+0,8758
+0,8877
+0,8941
+0,8905
+out_of_scope
+0,8733
+0,8625
+0,9125
+0,8704
+0,9189
+0,9424
+0,9432
+start_search
+0,9570
+0,9517
+0,9525
+0,9475
+0,9593
+0,9687
+0,9822
+
+Beberapa temuan penting dari analisis per kelas intent:
+Intent ask_recommendation (minta rekomendasi mobil) menunjukkan peningkatan yang konsisten seiring dengan kompleksitas arsitektur, dari 0,8602 pada CP menjadi 0,8811 pada TAv6. Peningkatan ini terutama didorong oleh kemampuan IndoBERT dalam memahami konteks permintaan rekomendasi yang seringkali implisit. Vista et al. (2026) dalam penelitiannya pada chatbot Bank Sampah Sriwilis juga melaporkan bahwa penambahan feature engineering melalui RegexFeaturizer dan LexicalSyntacticFeaturizer meningkatkan akurasi klasifikasi intent hingga 93%, yang konsisten dengan temuan bahwa pengayaan fitur membantu model dalam membedakan intent yang memiliki kemiripan semantik.
+Intent ask_similar_car (minta rekomendasi mobil serupa) merupakan intent dengan performa paling rendah dan paling fluktuatif. CP mencapai 0,7522, TAv2 justru turun drastis ke 0,6797, TAv4 sangat rendah di 0,5966, sementara TAv6 berhasil mencapai 0,7905 masih di bawah intent lain. Fenomena ini mengindikasikan bahwa intent ask_similar_car memiliki karakteristik yang unik: kalimat yang menyertainya seringkali pendek dan bergantung pada konteks percakapan sebelumnya (misalnya "kayak gitu", "yang mirip", "sama seperti tadi"). Model yang terlalu mengandalkan representasi dense saja (TAv2) atau kombinasi dengan rule-based (TAv4) justru overfit atau salah memahami pola. TAv6 yang menggabungkan fitur sparse dan dense berhasil menangkap pola lokal dari n-gram sambil mempertahankan pemahaman kontekstual, sehingga paling unggul untuk intent ini.
+Intent out_of_scope (pertanyaan di luar domain) menunjukkan peningkatan dramatis seiring kompleksitas arsitektur. CP (tanpa fallback khusus) hanya mencapai 0,8733. TAv4 dengan fallback threshold 0,6 meningkat menjadi 0,9189. TAv5 dengan threshold lebih rendah (0,4) dan regularisasi melonjak menjadi 0,9424 peningkatan hampir 7% dari CP. TAv6 mencapai tertinggi 0,9432. Temuan ini penting karena menunjukkan bahwa mekanisme fallback yang dikombinasikan dengan regularisasi mampu secara signifikan meningkatkan kemampuan model dalam mengenali pertanyaan di luar domain. Hal ini sejalan dengan penelitian Talenggoran et al. (2025) yang menunjukkan bahwa FallbackClassifier dengan threshold yang tepat dapat meningkatkan akurasi fungsional hingga 95% pada dataset FAQ.
+Intent start_search (memulai pencarian) memiliki performa tertinggi di semua konfigurasi, dengan TAv6 mencapai 0,9822. Hal ini karena intent start_search memiliki pola kalimat yang relatif tetap dan mudah dikenali (misalnya "cari mobil", "tunjukkan mobil").
+4.2.3 Pengaruh Komponen Pipeline terhadap Intent
+Analisis komparatif antar konfigurasi yang secara bertahap menambahkan atau memodifikasi komponen memungkinkan identifikasi kontribusi masing-masing komponen terhadap performa intent:
+TAv1 (tuning hyperparameter) vs CP: Peningkatan minimal (+0,001) menunjukkan bahwa model baseline sudah cukup optimal. Namun, penurunan standar deviasi dari 0,006 menjadi 0,0037 menunjukkan stabilitas yang meningkat.
+TAv2 (IndoBERT) vs TAv1: Peningkatan +0,0161 (1,8%) menunjukkan bahwa representasi dense dari model bahasa pra-latih secara fundamental lebih unggul daripada fitur sparse untuk memahami maksud pengguna dalam bahasa alami.
+TAv3 (rule-based) vs CP: Hanya meningkat tipis (+0,0043), mengonfirmasi bahwa pendekatan berbasis aturan tanpa representasi semantik yang kuat memiliki kemampuan terbatas dalam klasifikasi intent.
+TAv4 (IndoBERT + Regex) vs TAv2: Peningkatan +0,0022 (0,25%) kecil namun konsisten. RegexEntityExtractor yang dirancang untuk ekstraksi entitas ternyata memberikan manfaat sampingan bagi klasifikasi intent melalui fitur-fitur yang dihasilkannya.
+TAv5 (regularisasi) vs TAv4: Peningkatan +0,0057 (0,64%) dengan penurunan standar deviasi yang signifikan. Ini mengonfirmasi bahwa dropout (0,2) efektif mencegah overfitting tanpa mengorbankan akurasi.
+TAv6 (sparse+dense) vs TAv5: Peningkatan +0,0046 (0,51%). Penambahan fitur n-gram dari CountVectorsFeaturizer dan fitur leksikal dari LexicalSyntacticFeaturizer pada pipeline yang sudah berisi IndoBERT memberikan manfaat tambahan yang sinergis.
+
+4.3 Hasil Evaluasi Performa Entity Extraction
+4.3.1 Perbandingan F1-Score Entity 
+Entity extraction merupakan komponen krusial dalam sistem rekomendasi mobil karena menentukan parameter-parameter pencarian seperti merek, tipe bodi, anggaran, dan fitur. Tabel 4.4 menyajikan perbandingan entity F1-score antar konfigurasi.
+Tabel 4.4 Perbandingan Performa Entity Extraction 
+Konfigurasi
+Entity F1-Score (mean)
+Entity F1-Score (std)
+Rank
+CP
+0.8972
+0.0007
+4
+TAv1
+0.9028
+0.0071
+3
+TAv2
+0.8902
+0.0047
+5
+TAv3
+0.8960
+0.0136
+5
+TAv4
+0.9018
+0.0031
+4
+TAv5
+0.9031
+0.0024
+2
+TAv6
+0.9206
+0.0039
+1
+Temuan penting dari Tabel 4.4:
+TAv2 (IndoBERT only) justru menurunkan performa entity dibanding CP (0,8902 vs 0,8972). Ini adalah temuan yang kontraintuitif namun sangat penting: model bahasa pra-latih yang unggul untuk intent classification belum tentu unggul untuk entity extraction pada dataset terbatas. Hal ini karena ekstraksi entitas sangat bergantung pada pengenalan pola token lokal (seperti kata "SUV" setelah "tipe bodi") yang mungkin lebih baik ditangkap oleh fitur sparse n-gram. Temuan ini sejalan dengan penelitian Bunk et al. (2020) yang menunjukkan bahwa DIETClassifier dengan kombinasi fitur sparse dan dense memberikan hasil terbaik, bukan hanya mengandalkan dense embeddings.
+TAv6 mencapai performa tertinggi dengan F1-score 0,9206, melampaui CP sebesar 2,34%. Kombinasi fitur sparse (CountVectorsFeaturizer, LexicalSyntacticFeaturizer) dan dense (IndoBERT) dalam satu pipeline terbukti sinergis untuk ekstraksi entitas.
+TAv5 (dengan dropout) mencapai 0,9031, sedikit lebih tinggi dari TAv4 (0,9018) dan TAv1 (0,9028), dengan standar deviasi terkecil kedua (0,0024), menunjukkan stabilitas yang baik.
+TAv3 (sparse + rule-based) mencapai 0,8960, hanya sedikit di bawah CP, menunjukkan bahwa pendekatan berbasis aturan saja tidak cukup untuk mengungguli baseline.
+
+Gambar 4.2  diagram batang perbandingan entity F1-score.
+4.3.2 Analisis Entitas Negasi
+Entitas negasi merupakan fokus utama penelitian ini karena kemampuannya untuk memahami penolakan pengguna terhadap suatu fitur atau jenis mobil sangat krusial dalam sistem rekomendasi. Tabel 4.5 menyajikan F1-score untuk keempat entitas negasi yang dievaluasi.
+Tabel 4.5 Perbandingan F1-Score Entitas Negasi
+Entitas Negasi
+CP
+TAv1
+TAv2
+TAv3
+TAv4
+TAv5
+TAv6
+body_type.negated
+0,9841
+0,9274
+0,7029
+0,9010
+0,7803
+0,8767
+0,8857
+brand.negated
+0,9002
+0,8911
+0,8226
+0,8601
+0,8188
+0,8283
+0,8537
+feature.negated
+0,7018
+0,7725
+0,5405
+0,7168
+0,6104
+0,5417
+0,8140
+preference.negated
+0,9200
+0,9536
+0,9728
+0,9257
+0,9643
+0,9780
+0,9735
+
+Temuan paling signifikan dari Tabel 4.5 adalah pada entitas feature.negated (fitur yang dinegasikan), yang merupakan entitas negasi paling sulit karena fitur memiliki variasi yang sangat tinggi:
+CP (baseline) hanya mencapai 0,7018 untuk feature.negated ini adalah performa terendah di antara semua entitas, mengonfirmasi bahwa model default Rasa sangat lemah dalam menangkap negasi pada fitur-fitur spesifik.
+TAv2 (IndoBERT only) menurun drastis menjadi 0,5405 penurunan ini sangat signifikan (~23%). Hal ini menunjukkan bahwa model bahasa pra-latih yang tidak dilengkapi dengan fitur sparse atau aturan eksplisit justru gagal memahami pola negasi karena negasi seringkali bersifat lokal dan struktural, bukan semantik. Sebagai contoh, dalam kalimat "saya tidak ingin mobil dengan sunroof", kata "tidak" berada di awal kalimat sementara entitas "sunroof" berada di akhir model yang sangat mengandalkan konteks semantik bisa kehilangan hubungan antar keduanya.
+TAv6 mencapai performa tertinggi untuk feature.negated dengan 0,8140 peningkatan signifikan dari baseline (11,2%) dan dari TAv2 (27,35%). Kombinasi fitur n-gram dari CountVectorsFeaturizer (dengan max_ngram=3) yang menangkap pola karakter seperti "tid" dan "tida" serta fitur leksikal dari LexicalSyntacticFeaturizer yang mendeteksi keberadaan kata negasi di sekitar entitas terbukti sangat efektif.
+TAv4 (IndoBERT + Regex) justru menurunkan performa feature.negated menjadi 0,6104 lebih rendah dari CP. Hal ini menunjukkan bahwa meskipun RegexEntityExtractor dirancang khusus untuk menangkap pola negasi, implementasinya pada TAv4 belum optimal karena mungkin overlap atau konflik dengan representasi dense.
+TAv5 (dengan dropout) semakin memperburuk feature.negated menjadi 0,5417 sebanding dengan TAv2. Dropout yang bertujuan mencegah overfitting ternyata juga mengurangi kemampuan model dalam menangkap pola negasi yang jarang muncul, karena regulasi yang terlalu agresif menghilangkan sinyal yang sudah lemah.
+Entitas preference.negated relatif stabil di semua konfigurasi (0,92-0,98), karena preferensi sering diekspresikan dengan pola yang lebih sederhana (misalnya "saya tidak suka") dan memiliki sampel yang lebih memadai.
+
+Gambar 4.3 diagram batang entitas feature.negated.
+4.3.3 Entitas Bermasalah Lainnya
+Selain entitas negasi, terdapat beberapa entitas yang secara konsisten menunjukkan performa rendah di hampir semua konfigurasi (lihat Tabel 4.6).
+Tabel 4.6 Performa Entitas Bermasalah
+Entitas
+CP
+TAv1
+TAv2
+TAv3
+TAv4
+TAv5
+TAv6
+target_car
+0,6661
+0,7541
+0,5872
+0,7641
+0,6600
+0,6538
+0,7238
+preference
+0,7932
+0,8096
+0,7798
+0,7994
+0,8099
+0,8009
+0,8171
+Entitas target_car (mobil target spesifik) memiliki performa paling rendah di antara semua entitas non-negasi. CP hanya mencapai 0,6661, TAv6 mencapai 0,7238 masih di bawah ambang ideal 0,80. Rendahnya performa ini disebabkan oleh beberapa faktor: (1) target_car merujuk pada model mobil spesifik yang jumlahnya sangat banyak (ratusan varian) namun sampel dalam dataset terbatas; (2) penyebutan model mobil seringkali tidak konsisten (misalnya "Xpander" vs "Mitsubishi Xpander" vs "Expander" dengan kesalahan ejaan); (3) entitas ini sering muncul dalam konteks perbandingan yang kompleks (misalnya "antara Xpander dan BR-V").
+Entitas preference (preferensi umum) juga menunjukkan performa yang sedang (0,78-0,82) di semua konfigurasi. Hal ini karena "preferensi" bersifat abstrak dan sering diekspresikan dengan cara yang sangat bervariasi (misalnya "yang irit bensin", "yang nyaman", "desainnya keren"), sehingga sulit bagi model untuk belajar pola yang konsisten.
+4.3.4 Pengaruh RegexEntityExtractor terhadap Deteksi Negasi
+Untuk mengisolasi pengaruh RegexEntityExtractor terhadap deteksi negasi, dilakukan perbandingan langsung antara TAv2 (IndoBERT tanpa Regex) dan TAv4 (IndoBERT dengan Regex) lihat Tabel 4.7.
+Tabel 4.7 Pengaruh RegexEntityExtractor pada Deteksi Negasi
+Entitas Negasi
+TAv2 (tanpa Regex)
+TAv4 (dengan Regex)
+Perubahan
+body_type.negated
+0,7029
+0,7803
++0,0774
+brand.negated
+0,8226
+0,8188
+-0,0038
+feature.negated
+0,5405
+0,6104
++0,0699
+preference.negated
+0,9728
+0,9643
+-0,0085
+
+Tabel 4.7 menunjukkan bahwa RegexEntityExtractor memberikan peningkatan yang signifikan untuk body_type.negated (+0,0774) dan feature.negated (+0,0699), tetapi tidak memberikan pengaruh positif yang berarti untuk brand.negated dan preference.negated. Hal ini dapat dijelaskan oleh sifat pola negasi masing-masing entitas:
+Negasi pada body type sering muncul dalam pola yang relatif tetap, misalnya "bukan SUV", "jangan MPV", "hindari sedan". Regex dapat dengan mudah menangkap pola seperti (bukan|jangan|hindari)\s+(SUV|MPV|sedan|hatchback).
+Negasi pada feature lebih kompleks karena fitur memiliki nama yang panjang dan bervariasi, misalnya "tidak ingin sunroof" vs "tanpa panoramic roof". Regex tetap membantu karena dapat menangkap kata negasi di sekitar entity yang dikenali oleh DIETClassifier.
+Negasi pada brand dan preference memiliki pola yang lebih bervariasi dan sudah cukup baik ditangani oleh IndoBERT saja, sehingga penambahan Regex tidak memberikan peningkatan signifikan bahkan cenderung menurunkan performa karena potensi overlap atau konflik antar fitur.
+
+4.4 Analisis Stabilitas dan Overfitting
+4.4.1 Stabilitas Antar Fold (Standar Deviasi)
+Standar deviasi (std) dari F1-score antar fold mengindikasikan seberapa stabil performa suatu konfigurasi terhadap variasi data. Standar deviasi yang kecil (<0,05) menunjukkan bahwa model robust dan tidak sensitif terhadap perubahan komposisi data latih-uji.
+Tabel 4.8 Standar Deviasi Intent dan Entity F1-Score
+Konfigurasi
+Intent std
+Entity std
+Klasifikasi Stabilitas
+CP
+0,0060
+0,0007
+Sangat Stabil
+TAv1
+0,0037
+0,0071
+Sangat Stabil
+TAv2
+0,0071
+0,0047
+Stabil
+TAv3
+0,0037
+0,0136
+Intent Stabil, Entity Kurang Stabil
+TAv4
+0,0116
+0,0031
+Intent Kurang Stabil
+TAv5
+0,0041
+0,0024
+Sangat Stabil
+TAv6
+0,0048
+0,0039
+Stabil
+Temuan dari Tabel 4.8:
+CP dan TAv5 memiliki stabilitas terbaik CP dengan std intent 0,0060 dan entity 0,0007; TAv5 dengan std intent 0,0041 dan entity 0,0024. Stabilitas CP yang tinggi wajar karena konfigurasi ini paling sederhana (paling sedikit parameter yang harus dipelajari). Stabilitas TAv5 yang tinggi mengonfirmasi efektivitas dropout rate 0,2 dalam mencegah overfitting dan meningkatkan konsistensi prediksi.
+TAv4 memiliki stabilitas terburuk untuk intent (std 0,0116) melebihi batas 0,01 yang dianggap tidak stabil. Hal ini menunjukkan bahwa konfigurasi TAv4 (IndoBERT + RegexEntityExtractor dengan threshold 0,6) sangat sensitif terhadap komposisi data. Ini dapat terjadi karena adanya ketidakseimbangan atau konflik antara fitur dense dari IndoBERT dan fitur sparse dari Regex.
+TAv3 memiliki stabilitas terburuk untuk entity (std 0,0136) menunjukkan bahwa pendekatan rule-based murni tanpa model pembelajaran yang kuat sangat bergantung pada pola yang tepat dalam data latih, sehingga mudah goyah ketika struktur data sedikit berubah.
+
+Gambar 4.4 line chart stabilitas.
+4.4.2 Deteksi Overfitting (Gap Train-CV)
+Deteksi overfitting dilakukan dengan menghitung gap antara performa pada data latih (training) dan performa pada cross-validation (CV). Gap dihitung sebagai F1_train - F1_CV. Nilai gap yang besar (>0,10) mengindikasikan overfitting, sedangkan gap yang kecil (≤0,05) mengindikasikan generalisasi yang baik. Gap negatif (F1_CV > F1_train) menandakan generalisasi sangat baik.
+Tabel 4.9 Deteksi Overfitting (Gap Train-CV)
+Konfigurasi
+Train Intent F1
+CV Intent F1
+Gap
+Status
+CP
+0,9823
+0,8748
++0,1075
+SEDIKIT OVERFIT
+TAv1
+0,9537
+0,8758
++0,0779
+SEDIKIT OVERFIT
+TAv2
+0,8550
+0,8919
+-0,0369
+GENERALISASI BAIK
+TAv3
+0,9929
+0,8791
++0,1138
+SEDIKIT OVERFIT
+TAv4
+0,9282
+0,8941
++0,0341
+GENERALISASI BAIK
+TAv5
+0,8867
+0,8998
+-0,0131
+GENERALISASI BAIK
+TAv6
+0,9787
+0,9044
++0,0743
+SEDIKIT OVERFIT
+Temuan dari Tabel 4.9 sangat penting untuk memahami trade-off antara performa dan generalisasi:
+TAv2, TAv4, dan TAv5 menunjukkan generalisasi yang baik (gap ≤ 0,05, bahkan negatif untuk TAv2 dan TAv5). TAv2 memiliki gap -0,0369, artinya performa pada CV lebih tinggi daripada data latih ini menandakan model tidak overfit dan mampu menggeneralisasi dengan sangat baik. TAv5 memiliki gap -0,0131, juga menunjukkan generalisasi sangat baik. TAv4 memiliki gap positif kecil +0,0341, masih dalam batas generalisasi baik.
+CP, TAv1, TAv3, dan TAv6 menunjukkan "sedikit overfit" (gap antara 0,07-0,11). CP dan TAv3 memiliki gap terbesar (+0,1075 dan +0,1138), mengonfirmasi bahwa model berbasis sparse murni (CP) dan rule-based (TAv3) cenderung menghafal data latih tanpa benar-benar mempelajari pola general. TAv6 yang memiliki performa tertinggi secara absolut (intent 0,9044, entity 0,9206) ternyata juga menunjukkan indikasi overfit dengan gap +0,0743. Hal ini menunjukkan bahwa untuk mencapai performa puncak, pengorbanan pada aspek generalisasi mungkin tidak terhindarkan.
+TAv5 adalah konfigurasi dengan keseimbangan terbaik antara performa (0,8998) dan generalisasi (gap -0,0131). Dropout rate 0,2 terbukti efektif sebagai regularisasi.
+
+Gambar 4.5 line plot overfitting gap.
+4.4.3 Trade-off antara Performa dan Generalisasi
+Penelitian ini mengidentifikasi adanya trade-off antara performa absolut dan kemampuan generalisasi:
+TAv6 menawarkan performa tertinggi secara keseluruhan (intent 0,9044, entity 0,9206, feature.negated 0,8140) namun dengan konsekuensi overfit yang cukup terlihat (gap 0,0743). Konfigurasi ini paling tepat dipilih jika tujuan utamanya adalah memaksimalkan akurasi pada data uji (misalnya untuk keperluan benchmarking atau kompetisi), asalkan ada mekanisme untuk memitigasi overfit seperti early stopping atau augmentasi data.
+TAv5 menawarkan keseimbangan terbaik: performa intent (0,8998) dan entity (0,9031) sangat baik, stabilitas sangat tinggi (std intent 0,0041, std entity 0,0024), dan generalisasi terbaik (gap -0,0131). Namun, kelemahan utamanya adalah pada deteksi feature.negated yang hanya mencapai 0,5417 jauh di bawah TAv6. Hal ini karena dropout yang efektif untuk generalisasi ternyata juga "mematikan" neuron-neuron yang penting untuk mendeteksi pola negasi yang jarang muncul.
+TAv4 menawarkan titik tengah: generalisasi baik (gap 0,0341), performa entitas negasi lebih baik dari TAv5 tetapi masih di bawah TAv6. Namun, stabilitasnya buruk (std intent 0,0116), sehingga kurang dapat diandalkan.
+
+
+Gambar 4.6 diagram scatter plot  trade-off antara generalisasi dan performa.
+
+4.5 Analisis Komparatif Konfigurasi Terbaik
+4.5.1 Profil TAv4, TAv5, dan TAv6
+Tiga konfigurasi terbaik TAv4, TAv5, dan TAv6 dianalisis lebih mendalam menggunakan radar chart multidimensi yang mencakup 7 metrik kunci: Intent F1, Entity F1, feature.negated F1, body_type.negated F1, Stabilitas Intent (kebalikan dari std), Stabilitas Entity (kebalikan dari std), dan Gap Overfit (kebalikan, karena gap kecil lebih baik).
+Tabel 4.10 Metrik Kunci Tiga Konfigurasi Terbaik
+Metrik
+TAv4
+TAv5
+TAv6
+Intent F1
+0,8941
+0,8998
+0,9044
+Entity F1
+0,9018
+0,9031
+0,9206
+feature.negated F1
+0,6104
+0,5417
+0,8140
+body_type.negated F1
+0,7803
+0,8767
+0,8857
+Stabilitas Intent (1/std)
+86,2
+243,9
+208,3
+Stabilitas Entity (1/std)
+322,6
+416,7
+256,4
+Generalisasi (1 − |gap|)
+0,9659
+0,9869
+0,9257
+
+
+Gambar 4.7 radar chart best of 3 config
+Interpretasi radar chart:
+TAv6 adalah pilihan terbaik jika prioritas utama adalah performa absolut, terutama pada deteksi entitas negasi yang merupakan fokus utama penelitian. Namun, pengguna harus siap dengan konsekuensi overfit yang lebih tinggi.
+TAv5 adalah pilihan terbaik jika prioritas utama adalah stabilitas dan generalisasi (misalnya untuk deployment jangka panjang dengan data yang terus berubah). Namun, pengguna harus menerima kelemahan pada deteksi feature.negated.
+TAv4 tidak direkomendasikan karena stabilitasnya yang buruk meskipun performanya sedang.
+4.5.2 Analisis Pola Kesalahan (Confusion Matrix)
+Untuk memahami pola kesalahan klasifikasi intent, dilakukan analisis confusion matrix pada konfigurasi TAv5 (sebagai wakil konfigurasi dengan generalisasi baik) dan TAv6 (sebagai wakil konfigurasi dengan performa tinggi).
+
+Gambar 4.8 heatmap confusion matrix TAv5.
+Berdasarkan analisis confusion matrix, pola kesalahan utama yang teridentifikasi:
+Kebocoran intent out_of_scope ke intent lain: Sebanyak 8% kalimat out_of_scope (pertanyaan di luar domain) salah diklasifikasikan sebagai ask_recommendation. Hal ini karena beberapa pertanyaan OOS yang bersifat umum (misalnya "halo", "apa kabar", "terima kasih") memiliki pola bahasa yang mirip dengan pembukaan percakapan sebelum meminta rekomendasi. Fallback threshold 0,4 pada TAv5 berhasil menangkap sebagian besar kasus OOS, tetapi masih ada yang lolos.
+Kebingungan antara ask_comparison dan ask_recommendation: Sekitar 6% kalimat ask_comparison salah diklasifikasikan sebagai ask_recommendation, dan sebaliknya 4% kalimat ask_recommendation salah sebagai ask_comparison. Hal ini karena kedua intent ini sering menggunakan kata-kata yang tumpang tindih (misalnya "mobil mana yang lebih baik" bisa diartikan sebagai perbandingan maupun permintaan rekomendasi).
+Ask_similar_car sering salah diklasifikasikan: Intent ask_similar_car memiliki tingkat kesalahan tertinggi (~15% salah ke intent lain). Seperti telah dibahas sebelumnya, intent ini sangat bergantung pada konteks percakapan yang tidak selalu tersedia dalam satu kalimat.
+
+Gambar 4.9 heatmap confusion matrix TAv6.
+Pola kesalahan serupa dengan TAv5, namun dengan tingkat akurasi yang sedikit lebih tinggi secara keseluruhan. Namun, jumlah false positive untuk kelas out_of_scope sedikit lebih tinggi karena threshold fallback yang sama (0,4) tetapi model TAv6 lebih overfit sehingga kurang hati-hati dalam memprediksi OOS.
+4.5.3 Pengaruh Threshold FallbackClassifier
+Perbandingan antara TAv4 (threshold 0,6) dan TAv5 (threshold 0,4) memberikan wawasan tentang pengaruh parameter ini terhadap deteksi out_of_scope.
+Tabel 4.11 Pengaruh Threshold FallbackClassifier (TAv4 vs TAv5)
+Metrik
+TAv4 (threshold=0,6)
+TAv5 (threshold=0,4)
+Perubahan
+out_of_scope F1
+0,9189
+0,9424
++0,0235
+Intent F1 (keseluruhan)
+0,8941
+0,8998
++0,0057
+False Positive Rate (OOS)
+Rendah
+Sedang
+Meningkat
+False Negative Rate (OOS)
+Tinggi
+Rendah
+Menurun
+Temuan dari Tabel 4.11:
+Threshold yang lebih rendah (0,4) pada TAv5 membuat model lebih "berani" memprediksi suatu intent bahkan dengan confidence sedang (0,4-0,6). Untuk intent out_of_scope, threshold rendah ini menguntungkan karena model akan lebih cenderung mengklasifikasikan kalimat sebagai OOS daripada memaksakannya ke intent lain. Akibatnya, false negative (OOS yang terlewat) menurun drastis, meningkatkan recall dan F1-score.
+Namun, threshold rendah juga meningkatkan risiko false positive (kalimat in-scope yang salah diklasifikasikan sebagai OOS). Pada TAv5, peningkatan false positive ini terjadi tetapi tidak signifikan karena model sudah cukup baik dalam membedakan in-scope vs out-of-scope.
+TAv4 dengan threshold 0,6 lebih "konservatif" hanya memprediksi OOS jika sangat yakin. Akibatnya, false positive rendah tetapi false negative tinggi, sehingga banyak kalimat OOS yang terlewat dan salah diklasifikasikan ke intent lain.
+Rekomendasi: Threshold 0,4 (TAv5) lebih disarankan untuk aplikasi yang mengutamakan deteksi OOS yang baik, meskipun dengan risiko false positive yang sedikit lebih tinggi. Threshold 0,6 dapat dipertahankan jika aplikasi sangat sensitif terhadap kesalahan klasifikasi OOS (misalnya jika respons "maaf saya tidak mengerti" dianggap mengganggu pengalaman pengguna).
+
+4.6 Pembahasan
+4.6.1 Konfigurasi Optimal dan Justifikasinya
+Berdasarkan seluruh analisis yang telah dilakukan, penelitian ini mengidentifikasi dua konfigurasi optimal dengan justifikasi berbeda:
+TAv6 Optimal untuk Performa Mutlak
+Intent F1: 0,9044 (tertinggi)
+Entity F1: 0,9206 (tertinggi)
+feature.negated F1: 0,8140 (tertinggi, peningkatan signifikan dari baseline 0,7018)
+Kelemahan: sedikit overfit (gap 0,0743)
+Justifikasi: Konfigurasi ini paling tepat untuk aplikasi yang membutuhkan akurasi tertinggi pada setiap prediksi, misalnya jika kesalahan klasifikasi memiliki konsekuensi besar. Overfit yang terjadi masih tergolong "sedikit" (tidak ekstrem) dan dapat dimitigasi dengan early stopping atau penambahan data latih.
+TAv5 Optimal untuk Generalisasi dan Stabilitas
+Intent F1: 0,8998 (sangat baik)
+Entity F1: 0,9031 (sangat baik)
+Stabilitas intent: terbaik (std 0,0041)
+Gap overfit: -0,0131 (generalisasi terbaik)
+Kelemahan: feature.negated F1 rendah (0,5417)
+Justifikasi: Konfigurasi ini paling tepat untuk aplikasi yang akan di-deploy dalam jangka panjang dengan data yang terus berkembang dan bervariasi. Stabilitas dan generalisasi yang tinggi memastikan performa yang konsisten seiring waktu. Namun, aplikasi harus tidak terlalu bergantung pada deteksi negasi fitur yang sangat spesifik.
+4.6.2 Konfirmasi Hipotesis Penelitian
+Rumusan Masalah 1 (Performa baseline): Baseline CP memiliki performa yang cukup baik untuk intent (0,8748) dan entity (0,8972), tetapi sangat lemah pada feature.negated (0,7018) dan target_car (0,6661). Temuan ini mengonfirmasi hipotesis bahwa model default Rasa tidak memadai untuk domain rekomendasi mobil dengan kebutuhan deteksi negasi yang akurat.
+Rumusan Masalah 2 (IndoBERT vs baseline yang telah dioptimasi): TAv2 (IndoBERT) meningkatkan intent F1 dari 0,8758 (TAv1) menjadi 0,8919 (+1,8%), tetapi justru menurunkan entity F1 dari 0,9028 menjadi 0,8902 (-1,4%). Hal ini mengonfirmasi bahwa IndoBERT lebih bermanfaat untuk pemahaman semantik tingkat tinggi (intent) daripada ekstraksi entitas lokal.
+Rumusan Masalah 3 (RegexEntityExtractor pada pipeline IndoBERT): TAv4 (IndoBERT + Regex) meningkatkan entity F1 dibanding TAv2 (0,9018 vs 0,8902) dan meningkatkan feature.negated (0,6104 vs 0,5405), tetapi stabilitasnya buruk. Ini mengonfirmasi bahwa RegexEntityExtractor membantu deteksi negasi tetapi perlu dioptimasi lebih lanjut.
+Rumusan Masalah 4 (Penggabungan fitur sparse dan dense): TAv6 menggabungkan fitur sparse (CountVectors, LexicalSyntactic) dengan dense (IndoBERT) mencapai performa tertinggi di semua metrik, termasuk feature.negated (0,8140). Ini mengonfirmasi bahwa pendekatan hibrida paling efektif untuk tugas yang membutuhkan pemahaman semantik dan deteksi pola lokal secara simultan.
+Rumusan Masalah 5 (Konfigurasi terbaik): TAv6 adalah konfigurasi terbaik untuk performa absolut, TAv5 untuk generalisasi dan stabilitas. Pemilihan bergantung pada prioritas aplikasi.
+4.6.3 Perbandingan Penelitian Terdahulu
+Perbandingan dengan (Vista et al., 2026) mengembangkan chatbot berbasis RASA untuk Bank Sampah Sriwilis dengan 9 intent dan 250 kalimat (dataset serupa dengan penelitian ini). Mereka melaporkan bahwa konfigurasi dengan penambahan RegexFeaturizer dan LexicalSyntacticFeaturizer (setara dengan Model B mereka) mencapai akurasi 93%, precision 93%, recall 91%, dan F1-score 91%. Hasil ini sebanding dengan TAv3 pada penelitian ini (intent F1 0,8791) namun TAv6 (0,9044) dan TAv5 (0,8998) lebih unggul. Perbedaan ini disebabkan oleh penggunaan IndoBERT pada TAv6/TAv5 yang tidak digunakan oleh Vista et al. Hal ini mengonfirmasi bahwa untuk bahasa Indonesia, model bahasa pra-latih memberikan keunggulan tambahan yang signifikan.
+Perbandingan dengan melaporkan bahwa fine-tuning IndoBERT untuk aspect-based sentiment analysis pada ulasan pelanggan Indonesia mencapai F1-score 0,9194. Hasil ini lebih tinggi dari intent F1 TAv6 (0,9044) yang mungkin disebabkan oleh perbedaan kompleksitas tugas sentiment analysis (3 kelas) vs intent classification (5 kelas). Namun, entity F1 TAv6 (0,9206) sebanding dengan hasil mereka, menunjukkan bahwa pipeline hibrida yang dikembangkan dalam penelitian ini kompetitif dengan pendekatan fine-tuning murni.
+Perbandingan dengan (Talenggoran et al., 2025). mengembangkan FAQ Bot menggunakan RASA dengan FallbackClassifier (threshold 0,7) dan melaporkan akurasi fungsional 95% dari 200 data uji. Penelitian ini mengonfirmasi temuan mereka tentang efektivitas FallbackClassifier, tetapi juga menunjukkan bahwa threshold yang lebih rendah (0,4) memberikan deteksi OOS yang lebih baik (out_of_scope F1 0,9424 vs 0,9189 pada threshold 0,6). Ini merupakan penyempurnaan dari temuan Talenggoran et al.
+Perbandingan dengan Bunk et al. (2020) DIET Paper: Bunk et al. melaporkan bahwa DIETClassifier dengan kombinasi fitur sparse (n-gram karakter) dan dense (ConveRT embeddings) mencapai intent F1 90,18% dan entity F1 86,04% pada NLU-Benchmark dataset (64 intents, 54 entities). Hasil penelitian ini (intent F1 90,44% pada TAv6, entity F1 92,06%) sebanding atau lebih unggul, dengan catatan bahwa dataset penelitian ini lebih kecil dan lebih terbatas domainnya. Hal ini mengonfirmasi bahwa pendekatan yang diusulkan Bunk et al. juga efektif untuk bahasa Indonesia.
+Perbandingan dengan penelitian imbalance handling (Alfarizi et al., 2026; Qolbu et al., 2025): Penelitian tentang penanganan data tidak seimbang (imbalanced data) menunjukkan bahwa SMOTE dan class weighting dapat meningkatkan performa pada kelas minoritas. Meskipun penelitian ini tidak secara eksplisit menerapkan SMOTE (karena fokus pada optimasi pipeline, bukan balancing), temuan bahwa TAv5 (dropout) dan TAv2 (IndoBERT) memiliki generalisasi yang baik menunjukkan bahwa regularisasi dan representasi dense juga berkontribusi pada pengurangan bias terhadap kelas mayoritas.
+4.6.4 Keterbatasan Penelitian
+Penelitian ini memiliki beberapa keterbatasan yang perlu diakui dan menjadi bahan perbaikan pada penelitian selanjutnya:
+Dataset negasi yang terbatas: Entitas feature.negated hanya memiliki 7 anotasi, sehingga model kesulitan mempelajari pola negasi yang bervariasi. Hal ini terlihat dari tingginya standar deviasi untuk entitas ini di beberapa konfigurasi (CP: 0,1215, TAv4: 0,1751, TAv6: 0,1029). Penambahan data sintetis melalui augmentasi (misalnya dengan parafrase atau back translation) dapat membantu.
+Intent ask_similar_car yang tidak stabil: Intent ini memiliki performa terendah di semua konfigurasi, karena sangat bergantung pada konteks percakapan. Pendekatan yang memanfaatkan dialogue management (Rasa Core) untuk melacak referensi ke mobil sebelumnya dapat menjadi solusi.
+Potensi data leakage pada split data: Dataset awal yang relatif kecil (850 kalimat) dan proses augmentasi yang mungkin menghasilkan kalimat yang terlalu mirip dengan data asli dapat menyebabkan data leakage di mana data uji secara tidak sengaja memiliki kemiripan dengan data latih. Hal ini dapat menyebabkan overestimate performa. Penelitian selanjutnya disarankan untuk menggunakan stratified split yang lebih ketat dan memastikan tidak ada overlap antara data latih dan uji.
+Evaluasi terbatas pada metrik offline: Penelitian ini hanya mengevaluasi performa model pada data uji statis (offline evaluation). Tidak dilakukan pengujian dengan pengguna nyata (user acceptance testing) untuk mengukur aspek pengalaman pengguna seperti kecepatan respons persepsi, kemudahan penggunaan, dan kepuasan. Talenggoran et al. (2025) menunjukkan bahwa akurasi teknis (91,5%) dan akurasi fungsional dari perspektif pengguna (95%) bisa berbeda, sehingga evaluasi end-to-end dengan pengguna tetap diperlukan.
+Generalizability terbatas pada domain rekomendasi mobil: Hasil penelitian ini mungkin tidak sepenuhnya dapat digeneralisasi ke domain lain karena setiap domain memiliki karakteristik intent, entitas, dan pola bahasa yang berbeda.

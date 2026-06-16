@@ -142,3 +142,48 @@ stories:
   - action: action_recommend_car
   - intent: ask_comparison
   - action: action_compare_budget
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PERBAIKAN: Story khusus saat user melewati (skip) refinement stage
+# Contoh: user jawab "tidak ada", "langsung aja", "cukup", dll.
+# ─────────────────────────────────────────────────────────────────────────────
+
+- story: budget and preference then skip refinement
+  steps:
+  - intent: ask_recommendation
+    entities:
+    - budget: "500jt"
+    - preference: "nyaman"
+    - brand: "toyota"
+  - action: action_recommend_car
+  - intent: choose_preference
+  - action: action_recommend_car
+
+
+- story: budget and preference then answer refinement with entities
+  steps:
+  - intent: ask_recommendation
+    entities:
+    - budget: "400jt"
+    - preference: "irit"
+  - action: action_recommend_car
+  - intent: choose_preference
+    entities:
+    - powertrain: "hybrid"
+    - min_seat: "7"
+  - action: action_recommend_car
+
+
+- story: budget and preference then skip refinement then compare
+  steps:
+  - intent: ask_recommendation
+    entities:
+    - budget: "600jt"
+    - preference: "keluarga"
+    - brand: "honda"
+  - action: action_recommend_car
+  - intent: choose_preference
+  - action: action_recommend_car
+  - intent: ask_comparison
+  - action: action_compare_budget

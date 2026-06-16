@@ -45,7 +45,10 @@ backend/rasa/gambar bab 4
 backend/rasa/jurnal - Copy
 backend/rasa/jurnal
 backend/rasa/Tugas akhir
-
-
+backend/rasa/jurnal baru
+backend/rasa/verifikasi jurnal.md
+backend/rasa/TA/
+backend/rasa/tools
+backend/rasa/tools/verifikasi   
 # Note: backend/data/ is NOT excluded. All CSV and Databases will be pushed.
 # Note: frontend/public/ is NOT excluded. All brosurs/images will be pushed.

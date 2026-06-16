@@ -509,6 +509,58 @@ nlu:
     - hindari yang [kuno]{"entity":"preference", "role":"negated"} desainnya
     - ga suka yang [boros]{"entity":"preference", "role":"negated"} maintenancenya
     - bukan yang [sempit]{"entity":"preference", "role":"negated"} buat keluarga
+    - tidak ada
+    - ga ada
+    - gak ada
+    - ngga ada
+    - nggak ada
+    - tidak ada preferensi lain
+    - ga ada preferensi khusus
+    - ga ada tambahan
+    - tidak ada tambahan
+    - tidak ada preferensi tambahan
+    - sudah cukup
+    - udah cukup
+    - cukup itu aja
+    - cukup segitu aja
+    - itu aja cukup
+    - udah itu aja
+    - sudah itu saja
+    - itu saja
+    - itu aja
+    - segitu aja
+    - segitu saja cukup
+    - langsung carikan
+    - langsung cari aja
+    - langsung aja
+    - langsung proses aja
+    - langsung rekomendasiin aja
+    - langsung tampilkan aja
+    - carikan langsung
+    - cari aja langsung
+    - lanjut aja
+    - lanjut
+    - skip
+    - skip aja
+    - ga usah
+    - ga perlu
+    - tidak perlu
+    - tidak usah
+    - gak perlu tambahan
+    - ga perlu tambahan lagi
+    - gak usah tambahin apa-apa
+    - engga ada
+    - enggak ada
+    - nope
+    - no
+    - gaada
+    - gaperlu
+    - udah gitu aja
+    - yaudah gitu aja
+    - ya udah langsung aja
+    - udah langsung aja
+    - gausah ditambahin
+    - udah cukup segitu
 
 
 

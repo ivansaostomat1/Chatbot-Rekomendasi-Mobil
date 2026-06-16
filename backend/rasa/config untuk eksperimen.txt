@@ -1,5 +1,5 @@
 ==================================================
- SECTION: configCP.yml 
+ SECTION: configDefault.yml 
 ==================================================
 
 # The config recipe.

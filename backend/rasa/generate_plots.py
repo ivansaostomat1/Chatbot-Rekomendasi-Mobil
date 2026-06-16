@@ -11,16 +11,21 @@ from math import pi
 plt.style.use("ggplot")
 sns.set_palette("viridis")
 
-RESULTS_DIR = r"results\comparison_20260512_145550"
+RESULTS_DIR = r"results\lama"
 OUTPUT_DIR = r"gambar bab 4"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-df_summary = pd.read_csv(os.path.join(RESULTS_DIR, "perbandingan.csv"))
-df_detail = pd.read_csv(os.path.join(RESULTS_DIR, "detail perbandingan.csv"))
+df_summary = pd.read_csv(os.path.join(RESULTS_DIR, "comparison_overview.csv"))
+df_detail = pd.read_csv(os.path.join(RESULTS_DIR, "comparison_detail.csv"))
 df_summary["gap(train-cv)"] = pd.to_numeric(df_summary["gap(train-cv)"], errors="coerce")
 
-configs = ["CP_baseline", "TAv1", "TAv2", "TAv3", "TAv4", "TAv5", "TAv6"]
+# --- Rename CP_baseline → Default (konsisten dengan configDefault.yml) ---
+df_summary['config'] = df_summary['config'].replace('CP_baseline', 'Default')
+rename_cols = {c: c.replace('CP_baseline', 'Default') for c in df_detail.columns if 'CP_baseline' in c}
+df_detail = df_detail.rename(columns=rename_cols)
+
+configs = ["Default", "TAv1", "TAv2", "TAv3", "TAv4", "TAv5", "TAv6"]
 df_summary['config'] = pd.Categorical(df_summary['config'], categories=configs, ordered=True)
 df_summary = df_summary.sort_values('config')
 
@@ -263,4 +268,126 @@ plot_cm("TAv5", "Heatmap Confusion Matrix Intent TAv5", "Gambar 4.8.png")
 # Gambar 4.9: CM TAv6
 plot_cm("TAv6", "Heatmap Confusion Matrix Intent TAv6", "Gambar 4.9.png")
 
-print("9 Gambar untuk revisi Bab 4 berhasil di-generate!")
+# ============================================================
+# Gambar 4.10: Dashboard Scorecard "Satu Pandang"
+# Heatmap komprehensif seluruh konfigurasi vs seluruh metrik kunci
+# ============================================================
+
+# Ambil data out_of_scope F1
+intents_df = df_detail[df_detail["type"] == "intent"].copy()
+oos_row = intents_df[intents_df["class"] == "out_of_scope"].iloc[0]
+
+# Ambil data feature.negated F1 (sudah ada dari feat_neg)
+scorecard_data = []
+for conf in configs:
+    row = df_summary[df_summary["config"] == conf].iloc[0]
+    conf_csv = conf  # sudah di-rename
+    scorecard_data.append({
+        "Config": conf,
+        "Intent\nF1": row["intent_f1_mean"],
+        "Entity\nF1": row["entity_f1_mean"],
+        "feature.\nnegated F1": float(feat_neg[f"{conf_csv}_f1"]),
+        "out_of_\nscope F1": float(oos_row[f"{conf_csv}_f1"]),
+        "Stabilitas\nIntent (std)": row["intent_f1_std"],
+        "Stabilitas\nEntity (std)": row["entity_f1_std"],
+        "Overfit\nGap": row["gap(train-cv)"],
+    })
+
+df_sc = pd.DataFrame(scorecard_data).set_index("Config")
+
+# Tentukan apakah memenuhi kriteria
+criteria = {
+    "Intent\nF1":           lambda v: v >= 0.90,
+    "Entity\nF1":           lambda v: v >= 0.90,
+    "feature.\nnegated F1": lambda v: v >= 0.80,
+    "out_of_\nscope F1":    lambda v: v >= 0.90,
+    "Stabilitas\nIntent (std)": lambda v: v < 0.05,
+    "Stabilitas\nEntity (std)": lambda v: v < 0.05,
+    "Overfit\nGap":         lambda v: abs(v) < 0.05,
+}
+
+# Normalisasi untuk pewarnaan (semua dinormalisasi agar hijau=baik)
+def normalize_for_color(df_sc):
+    df_norm = pd.DataFrame(index=df_sc.index, columns=df_sc.columns, dtype=float)
+    for col in df_sc.columns:
+        vals = df_sc[col].values.astype(float)
+        if "std" in col.lower() or "Gap" in col:
+            # Lower is better → invert
+            vmin, vmax = vals.min(), vals.max()
+            if vmax != vmin:
+                df_norm[col] = 1.0 - (vals - vmin) / (vmax - vmin)
+            else:
+                df_norm[col] = 0.5
+        else:
+            # Higher is better
+            vmin, vmax = vals.min(), vals.max()
+            if vmax != vmin:
+                df_norm[col] = (vals - vmin) / (vmax - vmin)
+            else:
+                df_norm[col] = 0.5
+    return df_norm
+
+df_color = normalize_for_color(df_sc)
+
+# Buat annotation text (nilai + ✅/❌)
+annot_text = pd.DataFrame(index=df_sc.index, columns=df_sc.columns, dtype=str)
+for col in df_sc.columns:
+    for idx in df_sc.index:
+        val = df_sc.loc[idx, col]
+        passed = criteria[col](val)
+        mark = "[OK]" if passed else "[X]"
+        if "std" in col.lower():
+            annot_text.loc[idx, col] = f"{val:.4f}\n{mark}"
+        elif "Gap" in col:
+            annot_text.loc[idx, col] = f"{val:+.4f}\n{mark}"
+        else:
+            annot_text.loc[idx, col] = f"{val:.4f}\n{mark}"
+
+# Hitung total kriteria terpenuhi per config
+pass_count = []
+for conf in configs:
+    count = sum(1 for col in df_sc.columns if criteria[col](df_sc.loc[conf, col]))
+    pass_count.append(count)
+
+# Plot
+fig, ax = plt.subplots(figsize=(14, 6))
+cmap = sns.color_palette("RdYlGn", as_cmap=True)
+
+sns.heatmap(df_color.astype(float), annot=annot_text.values, fmt="", cmap=cmap,
+            linewidths=1.5, linecolor='white', cbar=False, ax=ax,
+            annot_kws={"fontsize": 9, "fontweight": "bold", "va": "center"})
+
+# Tambah kolom "Lulus" di kanan
+for i, (conf, count) in enumerate(zip(configs, pass_count)):
+    color = "#2ca02c" if count >= 6 else ("#ff7f0e" if count >= 4 else "#d62728")
+    ax.text(len(df_sc.columns) + 0.5, i + 0.5, f"{count}/7",
+            ha="center", va="center", fontsize=12, fontweight="bold", color=color,
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor=color, linewidth=2))
+
+ax.text(len(df_sc.columns) + 0.5, -0.3, "Kriteria\nTerpenuhi",
+        ha="center", va="center", fontsize=9, fontweight="bold")
+
+# Highlight baris terbaik
+best_idx = pass_count.index(max(pass_count))
+ax.add_patch(plt.Rectangle((0, best_idx), len(df_sc.columns), 1, fill=False,
+             edgecolor='#2ca02c', linewidth=3, clip_on=False))
+
+ax.set_title("Dashboard Scorecard: Perbandingan Seluruh Konfigurasi Pipeline NLU",
+             fontsize=13, fontweight="bold", pad=15)
+ax.set_ylabel("")
+ax.set_xlabel("")
+plt.xticks(rotation=0)
+plt.yticks(rotation=0)
+
+# Kriteria legend di bawah
+criteria_text = ("Kriteria Kelulusan:  Intent F1 ≥ 0.90  |  Entity F1 ≥ 0.90  |  "
+                 "feature.negated ≥ 0.80  |  out_of_scope ≥ 0.90  |  "
+                 "Std < 0.05  |  |Gap| < 0.05")
+fig.text(0.5, 0.01, criteria_text, ha="center", fontsize=8, fontstyle="italic", color="gray")
+fig.text(0.98, 0.01, "[OK] = Lulus Kriteria  |  [X] = Tidak Lulus", ha="right", fontsize=8, color="gray")
+
+plt.tight_layout(rect=[0, 0.04, 0.92, 1])
+plt.savefig(os.path.join(OUTPUT_DIR, "Gambar 4.10.png"), dpi=300, bbox_inches="tight")
+plt.close()
+
+print("10 Gambar untuk revisi Bab 4 berhasil di-generate!")

@@ -389,6 +389,19 @@ class ActionRecommendCar(Action):
                 SlotSet("refinement_stage", True),
             ]
 
+        # ─────────────────────────────────────────────────────────────────────────────
+        # PERBAIKAN: Handle Refinement Skip
+        #
+        # Jika user sudah pernah ditanya refinement (is_refined=True) tapi menjawab
+        # tanpa entity teknis baru (misal: "tidak ada", "langsung aja", "cukup"),
+        # maka langsung lanjut ke pencarian tanpa meminta data lagi.
+        # ─────────────────────────────────────────────────────────────────────────────
+        if is_refined and needs_refinement:
+            print(
+                "[RASA ACTION] [REFINEMENT SKIP] User melewati tahap refinement "
+                f"(jawaban: '{text}'). Langsung lanjut ke pencarian."
+            )
+
         # SKENARIO 3: User baru memberikan preferensi sebagai follow-up dari budget sebelumnya
         # (has_previous_budget = True, has_preferences = True)
         if has_previous_budget and has_preferences:

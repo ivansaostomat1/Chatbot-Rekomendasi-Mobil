@@ -5,12 +5,13 @@ import { sendChatMessage } from '@/lib/api';
 import { ChatMessage, CarRecommendation, ConstraintReport } from '@/types';
 import CarCard from '@/components/CarCard';
 import TextType from '@/components/TextType';
+import Navbar from '@/components/Navbar';
 import RippleGrid from '@/components/RippleGrid';
 import ManualWeightInput from '@/components/ManualWeightInput';
 import DisambiguationPopup from '@/components/DisambiguationPopup';
 import api from '@/lib/api';
 import styles from './page.module.css';
-import { HiPaperAirplane, HiArrowPath } from 'react-icons/hi2';
+import { HiPaperAirplane } from 'react-icons/hi2';
 import { RiRobot2Fill } from 'react-icons/ri';
 import { HiUser } from 'react-icons/hi2';
 
@@ -290,47 +291,24 @@ export default function ChatbotPage() {
   };
 
   return (
-    <div className={styles.pageLayout}>
-      {/* ── Main Chat Area ── */}
-      <main className={styles.chatMain} style={{ position: 'relative', overflow: 'hidden' }}>
+    <>
+      <Navbar onReset={handleResetSession} />
+      <div className={styles.pageLayout}>
+        {/* ── Main Chat Area ── */}
+        <main className={styles.chatMain} style={{ position: 'relative', overflow: 'hidden' }}>
 
-        {/* ── Ripple Grid Animation (Only for Chat Background) ── */}
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, opacity: 10, pointerEvents: 'none' }}>
-          <RippleGrid
-            enableRainbow={true}
-            gridColor="#000000ff"
-            rippleIntensity={0}
-            gridSize={10}
-            gridThickness={60}
-            mouseInteraction={true}
-            mouseInteractionRadius={10}
-          />
-        </div>
-
-        {/* Chat Header */}
-        <div className={styles.chatHeader} style={{ position: 'relative', zIndex: 1 }}>
-          <div className={styles.chatHeaderLeft}>
-            <div className={styles.botAvatar}><RiRobot2Fill size={18} /></div>
-            <div>
-              <div className={styles.chatHeaderTitle}>Otobot Assistant</div>
-              <div className={styles.chatHeaderStatus}>
-                <span className={styles.statusDot} />
-                Online • Siap membantu
-              </div>
-            </div>
+          {/* ── Ripple Grid Animation (Only for Chat Background) ── */}
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, opacity: 10, pointerEvents: 'none' }}>
+            <RippleGrid
+              enableRainbow={true}
+              gridColor="#000000ff"
+              rippleIntensity={0}
+              gridSize={10}
+              gridThickness={60}
+              mouseInteraction={true}
+              mouseInteractionRadius={10}
+            />
           </div>
-          <div className={styles.chatHeaderRight}>
-            <span className={styles.chatHeaderBadge}>Chatbot Rekomendasi Mobil</span>
-            <button
-              className={styles.resetBtn}
-              onClick={handleResetSession}
-              title="Reset Sesi"
-              aria-label="Reset Sesi"
-            >
-              <HiArrowPath size={25} />
-            </button>
-          </div>
-        </div>
 
         {/* Messages */}
         <div className={styles.chatBody} style={{ position: 'relative', zIndex: 1 }}>
@@ -449,7 +427,8 @@ export default function ChatbotPage() {
             Tekan <kbd>Enter</kbd> untuk mengirim • Bahasa Indonesia
           </p>
         </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }

@@ -3,7 +3,7 @@ import os
 def merge_configs():
     # List of files to merge in order
     files_to_merge = [
-        "configCP.yml",
+        "configDefault.yml",
         "configTAv1.yml",
         "configTAv2.yml",
         "configTAv3.yml",

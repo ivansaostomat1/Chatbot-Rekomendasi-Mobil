@@ -23,7 +23,7 @@ FOLDS = 5  # fold untuk CV
 N_CV_RUNS = 1  # cukup 1× CV agar cepat
 
 CONFIGS = [
-    ("CP_baseline", "configCP.yml"),
+    ("Default", "configDefault.yml"),
     ("TAv1_sparse", "configTAv1.yml"),
     ("TAv2_indobert", "configTAv2.yml"),
     ("TAv3_hybrid", "configTAv3.yml"),

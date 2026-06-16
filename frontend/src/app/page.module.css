@@ -3,7 +3,8 @@
 /* The outer layout fills the full viewport below the navbar */
 .pageLayout {
   display: flex;
-  height: calc(100vh - 64px);
+  height: 100vh;
+  padding-top: 56px;
   background: var(--bg-primary);
   overflow: hidden;
   position: relative;
@@ -192,29 +193,7 @@
   font-weight: 500;
 }
 
-.resetBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 150ms ease;
-}
 
-.resetBtn:hover {
-  color: var(--danger);
-  border-color: rgba(239,68,68,0.4);
-  background: rgba(239,68,68,0.06);
-  transform: rotate(-90deg);
-}
 
 /* ════════════════════════════════════════
    MAIN CHAT PANEL
@@ -254,82 +233,7 @@
   z-index: 0;
 }
 
-/* ── Chat Header ── */
-.chatHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.75rem;
-  border-bottom: 1px solid var(--border-card);
-  background: var(--bg-card);
-  box-shadow: var(--shadow-xs);
-  flex-shrink: 0;
-  position: relative;
-  z-index: 10;
-}
 
-.chatHeaderLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.botAvatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background: var(--gradient-brand);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  box-shadow: var(--shadow-brand);
-  flex-shrink: 0;
-}
-
-.chatHeaderTitle {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  display: block;
-  margin-bottom: 2px;
-}
-
-.chatHeaderStatus {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.72rem;
-  color: var(--jade);
-  font-weight: 600;
-}
-
-.statusDot {
-  width: 7px;
-  height: 7px;
-  background: var(--jade);
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(0,187,119,0.7);
-  animation: pulse-dot 2.5s ease-in-out infinite;
-}
-
-.chatHeaderRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.chatHeaderBadge {
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  background: rgba(0,187,119,0.08);
-  color: var(--jade);
-  border: 1px solid rgba(0,187,119,0.25);
-  letter-spacing: 0.04em;
-}
 
 /* ── Messages body ── */
 .chatBody {
@@ -606,7 +510,7 @@
 }
 
 @media (max-width: 480px) {
-  .chatHeader  { padding: 0.75rem 1rem; }
+
   .chatBody    { padding: 1rem; }
   .inputArea   { padding: 0.75rem 1rem; }
 }

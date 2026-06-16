@@ -349,4 +349,56 @@ def feature_summary():
     from vikor.ranking_engine import get_feature_summary
     return get_feature_summary()
 
+@app.get("/katalog")
+def get_katalog():
+    from .data_loader import load_all_datasets
+    import pandas as pd
+    import numpy as np
+
+    try:
+        mobil, wholesales, retail = load_all_datasets()
+        
+        months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+
+        # 1. Wholesales: per-varian level (has BRAND, MODEL, VARIAN, TOTAL_2025)
+        if 'TOTAL_2025' in wholesales.columns:
+            ws_subset = wholesales[['BRAND', 'MODEL', 'VARIAN', 'TOTAL_2025']].copy()
+            ws_subset.rename(columns={'TOTAL_2025': 'WHOLESALES_VARIAN'}, inplace=True)
+        else:
+            for m in months:
+                if m not in wholesales.columns:
+                    wholesales[m] = 0
+            wholesales['WHOLESALES_VARIAN'] = wholesales[months].sum(axis=1)
+            ws_subset = wholesales[['BRAND', 'MODEL', 'VARIAN', 'WHOLESALES_VARIAN']].copy()
+
+        # 2. Retail: brand-level only (has BRAND, JAN-DEC)
+        for m in months:
+            if m not in retail.columns:
+                retail[m] = 0
+        retail['RETAIL_BRAND'] = retail[months].sum(axis=1)
+        rt_subset = retail[['BRAND', 'RETAIL_BRAND']].copy()
+
+        # 3. Merge mobil ← wholesales (per varian)
+        katalog = pd.merge(mobil, ws_subset, on=['BRAND', 'MODEL', 'VARIAN'], how='left')
+
+        # 4. Merge katalog ← retail (per brand)
+        katalog = pd.merge(katalog, rt_subset, on='BRAND', how='left')
+
+        # Fill NaN sales with 0
+        katalog['WHOLESALES_VARIAN'] = katalog['WHOLESALES_VARIAN'].fillna(0).astype(int)
+        katalog['RETAIL_BRAND'] = katalog['RETAIL_BRAND'].fillna(0).astype(int)
+        
+        # Replace remaining NaN with None for JSON serialization
+        katalog = katalog.replace({np.nan: None})
+        
+        return katalog.to_dict(orient='records')
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error loading catalog data: {str(e)}"
+        )
+
 

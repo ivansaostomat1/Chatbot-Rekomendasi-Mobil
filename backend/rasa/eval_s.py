@@ -56,9 +56,17 @@ def run_command(command, description, log_file=None):
 def extract_f1(results_dir):
     out = {
         "intent_overall": None,
+        "intent_overall_precision": None,
+        "intent_overall_recall": None,
         "entity_overall": None,
+        "entity_overall_precision": None,
+        "entity_overall_recall": None,
         "intent_per_class": {},
+        "intent_per_class_precision": {},
+        "intent_per_class_recall": {},
         "entity_per_class": {},
+        "entity_per_class_precision": {},
+        "entity_per_class_recall": {},
         "accuracy": None,
     }
 
@@ -69,6 +77,8 @@ def extract_f1(results_dir):
         out["accuracy"] = data.get("accuracy")
         wavg = data.get("weighted avg", {})
         out["intent_overall"] = wavg.get("f1-score")
+        out["intent_overall_precision"] = wavg.get("precision")
+        out["intent_overall_recall"] = wavg.get("recall")
         for k, v in data.items():
             if (
                 isinstance(v, dict)
@@ -76,6 +86,8 @@ def extract_f1(results_dir):
                 and k not in ("macro avg", "weighted avg", "micro avg", "accuracy")
             ):
                 out["intent_per_class"][k] = round(v["f1-score"], 4)
+                out["intent_per_class_precision"][k] = round(v.get("precision", 0), 4)
+                out["intent_per_class_recall"][k] = round(v.get("recall", 0), 4)
 
     ep = os.path.join(results_dir, "DIETClassifier_report.json")
     if os.path.exists(ep):
@@ -83,6 +95,8 @@ def extract_f1(results_dir):
             data = json.load(f)
         wavg = data.get("weighted avg", {})
         out["entity_overall"] = wavg.get("f1-score")
+        out["entity_overall_precision"] = wavg.get("precision")
+        out["entity_overall_recall"] = wavg.get("recall")
         for k, v in data.items():
             if (
                 isinstance(v, dict)
@@ -90,6 +104,8 @@ def extract_f1(results_dir):
                 and k not in ("macro avg", "weighted avg", "micro avg", "accuracy")
             ):
                 out["entity_per_class"][k] = round(v["f1-score"], 4)
+                out["entity_per_class_precision"][k] = round(v.get("precision", 0), 4)
+                out["entity_per_class_recall"][k] = round(v.get("recall", 0), 4)
 
     return out
 
@@ -109,53 +125,43 @@ def compute_stability(cv_summaries):
             std = 0.0
         return round(mean, 4), round(std, 4)
 
-    # Intent overall
-    vals = [
-        s["intent_overall"] for s in cv_summaries if s["intent_overall"] is not None
-    ]
-    mean, std = mean_std(vals)
-    if mean is not None:
-        stab["intent_overall_mean"] = mean
-        stab["intent_overall_std"] = std
+    def overall_stab(key, prefix):
+        vals = [s[key] for s in cv_summaries if s.get(key) is not None]
+        m, s = mean_std(vals)
+        if m is not None:
+            stab[f"{prefix}_mean"] = m
+            stab[f"{prefix}_std"] = s
 
-    # Entity overall
-    vals = [
-        s["entity_overall"] for s in cv_summaries if s["entity_overall"] is not None
-    ]
-    mean, std = mean_std(vals)
-    if mean is not None:
-        stab["entity_overall_mean"] = mean
-        stab["entity_overall_std"] = std
+    def per_class_stab(key, prefix):
+        all_classes = set()
+        for s in cv_summaries:
+            all_classes.update(s.get(key, {}).keys())
+        stab[prefix] = {}
+        for cls in sorted(all_classes):
+            vals = [
+                s[key][cls]
+                for s in cv_summaries
+                if cls in s.get(key, {})
+            ]
+            m, sd = mean_std(vals)
+            if m is not None:
+                stab[prefix][cls] = (m, sd)
 
-    # Per intent
-    all_intents = set()
-    for s in cv_summaries:
-        all_intents.update(s.get("intent_per_class", {}).keys())
-    stab["intent_per_class"] = {}
-    for intent in sorted(all_intents):
-        vals = [
-            s["intent_per_class"][intent]
-            for s in cv_summaries
-            if intent in s.get("intent_per_class", {})
-        ]
-        mean, std = mean_std(vals)
-        if mean is not None:
-            stab["intent_per_class"][intent] = (mean, std)
+    # Intent — F1, Precision, Recall
+    overall_stab("intent_overall", "intent_overall")
+    overall_stab("intent_overall_precision", "intent_overall_precision")
+    overall_stab("intent_overall_recall", "intent_overall_recall")
+    per_class_stab("intent_per_class", "intent_per_class")
+    per_class_stab("intent_per_class_precision", "intent_per_class_precision")
+    per_class_stab("intent_per_class_recall", "intent_per_class_recall")
 
-    # Per entity
-    all_entities = set()
-    for s in cv_summaries:
-        all_entities.update(s.get("entity_per_class", {}).keys())
-    stab["entity_per_class"] = {}
-    for entity in sorted(all_entities):
-        vals = [
-            s["entity_per_class"][entity]
-            for s in cv_summaries
-            if entity in s.get("entity_per_class", {})
-        ]
-        mean, std = mean_std(vals)
-        if mean is not None:
-            stab["entity_per_class"][entity] = (mean, std)
+    # Entity — F1, Precision, Recall
+    overall_stab("entity_overall", "entity_overall")
+    overall_stab("entity_overall_precision", "entity_overall_precision")
+    overall_stab("entity_overall_recall", "entity_overall_recall")
+    per_class_stab("entity_per_class", "entity_per_class")
+    per_class_stab("entity_per_class_precision", "entity_per_class_precision")
+    per_class_stab("entity_per_class_recall", "entity_per_class_recall")
 
     return stab
 
@@ -168,7 +174,15 @@ def print_evaluation(label, stab, train_f1):
     if "intent_overall_mean" in stab:
         f1 = stab["intent_overall_mean"]
         std = stab["intent_overall_std"]
-        print(f"\n[INTENT] Overall F1 : {f1:.4f} ± {std:.4f}")
+        prec = stab.get("intent_overall_precision_mean")
+        prec_std = stab.get("intent_overall_precision_std")
+        rec = stab.get("intent_overall_recall_mean")
+        rec_std = stab.get("intent_overall_recall_std")
+        print(f"\n[INTENT] Overall F1        : {f1:.4f} ± {std:.4f}")
+        if prec is not None:
+            print(f"         Overall Precision : {prec:.4f} ± {prec_std:.4f}")
+        if rec is not None:
+            print(f"         Overall Recall    : {rec:.4f} ± {rec_std:.4f}")
         if train_f1 is not None:
             gap = round(train_f1 - f1, 4)
             if gap > 0.15:
@@ -180,29 +194,49 @@ def print_evaluation(label, stab, train_f1):
             print(f"         Training F1 : {train_f1:.4f}  →  Gap: {gap:.4f}  →  {v}")
 
         print("\nIntent per class (mean ± std):")
-        for intent, (mean, std) in stab.get("intent_per_class", {}).items():
+        print(f"  {'Kelas':<30} {'F1':>12} {'Precision':>12} {'Recall':>12}  Flags")
+        print(f"  {'-'*30} {'-'*12} {'-'*12} {'-'*12}  {'-'*15}")
+        for intent, (m, s) in stab.get("intent_per_class", {}).items():
+            p = stab.get("intent_per_class_precision", {}).get(intent)
+            r = stab.get("intent_per_class_recall", {}).get(intent)
+            p_str = f"{p[0]:.4f}±{p[1]:.4f}" if p else "N/A"
+            r_str = f"{r[0]:.4f}±{r[1]:.4f}" if r else "N/A"
             flags = []
-            if mean < 0.80:
+            if m < 0.80:
                 flags.append("LEMAH")
-            if std > 0.05:
+            if s > 0.05:
                 flags.append("TIDAK STABIL")
             flag_str = "  <-- " + ", ".join(flags) if flags else ""
-            print(f"  {intent:<30} {mean:.4f} ± {std:.4f}{flag_str}")
+            print(f"  {intent:<30} {m:.4f}±{s:.4f} {p_str:>12} {r_str:>12}{flag_str}")
 
     if "entity_overall_mean" in stab:
         f1 = stab["entity_overall_mean"]
         std = stab["entity_overall_std"]
-        print(f"\n[ENTITY] Overall F1 : {f1:.4f} ± {std:.4f}")
+        prec = stab.get("entity_overall_precision_mean")
+        prec_std = stab.get("entity_overall_precision_std")
+        rec = stab.get("entity_overall_recall_mean")
+        rec_std = stab.get("entity_overall_recall_std")
+        print(f"\n[ENTITY] Overall F1        : {f1:.4f} ± {std:.4f}")
+        if prec is not None:
+            print(f"         Overall Precision : {prec:.4f} ± {prec_std:.4f}")
+        if rec is not None:
+            print(f"         Overall Recall    : {rec:.4f} ± {rec_std:.4f}")
 
         print("\nEntity per class (mean ± std):")
-        for entity, (mean, std) in stab.get("entity_per_class", {}).items():
+        print(f"  {'Kelas':<30} {'F1':>12} {'Precision':>12} {'Recall':>12}  Flags")
+        print(f"  {'-'*30} {'-'*12} {'-'*12} {'-'*12}  {'-'*15}")
+        for entity, (m, s) in stab.get("entity_per_class", {}).items():
+            p = stab.get("entity_per_class_precision", {}).get(entity)
+            r = stab.get("entity_per_class_recall", {}).get(entity)
+            p_str = f"{p[0]:.4f}±{p[1]:.4f}" if p else "N/A"
+            r_str = f"{r[0]:.4f}±{r[1]:.4f}" if r else "N/A"
             flags = []
-            if mean < 0.70:
+            if m < 0.70:
                 flags.append("LEMAH")
-            if std > 0.05:
+            if s > 0.05:
                 flags.append("TIDAK STABIL")
             flag_str = "  <-- " + ", ".join(flags) if flags else ""
-            print(f"  {entity:<30} {mean:.4f} ± {std:.4f}{flag_str}")
+            print(f"  {entity:<30} {m:.4f}±{s:.4f} {p_str:>12} {r_str:>12}{flag_str}")
 
 
 def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
@@ -215,8 +249,16 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
                 "Nama Konfigurasi",
                 "Intent F1 (CV Mean)",
                 "Intent F1 (CV Std)",
+                "Intent Precision (CV Mean)",
+                "Intent Precision (CV Std)",
+                "Intent Recall (CV Mean)",
+                "Intent Recall (CV Std)",
                 "Entity F1 (CV Mean)",
                 "Entity F1 (CV Std)",
+                "Entity Precision (CV Mean)",
+                "Entity Precision (CV Std)",
+                "Entity Recall (CV Mean)",
+                "Entity Recall (CV Std)",
                 "Intent F1 (Training)",
                 "Selisih Intent (Training - CV)",
                 "Status Overfit",
@@ -224,8 +266,16 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
         )
         intent_cv = stab.get("intent_overall_mean", "")
         intent_std = stab.get("intent_overall_std", "")
+        intent_prec = stab.get("intent_overall_precision_mean", "")
+        intent_prec_std = stab.get("intent_overall_precision_std", "")
+        intent_rec = stab.get("intent_overall_recall_mean", "")
+        intent_rec_std = stab.get("intent_overall_recall_std", "")
         entity_cv = stab.get("entity_overall_mean", "")
         entity_std = stab.get("entity_overall_std", "")
+        entity_prec = stab.get("entity_overall_precision_mean", "")
+        entity_prec_std = stab.get("entity_overall_precision_std", "")
+        entity_rec = stab.get("entity_overall_recall_mean", "")
+        entity_rec_std = stab.get("entity_overall_recall_std", "")
         gap = (
             round(train_f1 - intent_cv, 4)
             if (train_f1 is not None and intent_cv != "")
@@ -245,8 +295,16 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
                 label,
                 intent_cv,
                 intent_std,
+                intent_prec,
+                intent_prec_std,
+                intent_rec,
+                intent_rec_std,
                 entity_cv,
                 entity_std,
+                entity_prec,
+                entity_prec_std,
+                entity_rec,
+                entity_rec_std,
                 round(train_f1, 4) if train_f1 else "",
                 gap,
                 verdict,
@@ -264,25 +322,65 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
                 "Nama Kelas",
                 "F1 CV (Mean)",
                 "F1 CV (Std)",
-                "F1 Training (sendiri)",
+                "Precision CV (Mean)",
+                "Precision CV (Std)",
+                "Recall CV (Mean)",
+                "Recall CV (Std)",
+                "F1 Training",
+                "Precision Training",
+                "Recall Training",
             ]
         )
 
         for intent, (mean, std) in stab.get("intent_per_class", {}).items():
-            train_val = (
+            p_data = stab.get("intent_per_class_precision", {}).get(intent)
+            r_data = stab.get("intent_per_class_recall", {}).get(intent)
+            train_f1_val = (
                 tt_summary.get("intent_per_class", {}).get(intent, "")
                 if tt_summary
                 else ""
             )
-            writer.writerow(["intent", intent, mean, std, train_val])
+            train_p_val = (
+                tt_summary.get("intent_per_class_precision", {}).get(intent, "")
+                if tt_summary
+                else ""
+            )
+            train_r_val = (
+                tt_summary.get("intent_per_class_recall", {}).get(intent, "")
+                if tt_summary
+                else ""
+            )
+            writer.writerow([
+                "intent", intent, mean, std,
+                p_data[0] if p_data else "", p_data[1] if p_data else "",
+                r_data[0] if r_data else "", r_data[1] if r_data else "",
+                train_f1_val, train_p_val, train_r_val,
+            ])
 
         for entity, (mean, std) in stab.get("entity_per_class", {}).items():
-            train_val = (
+            p_data = stab.get("entity_per_class_precision", {}).get(entity)
+            r_data = stab.get("entity_per_class_recall", {}).get(entity)
+            train_f1_val = (
                 tt_summary.get("entity_per_class", {}).get(entity, "")
                 if tt_summary
                 else ""
             )
-            writer.writerow(["entity", entity, mean, std, train_val])
+            train_p_val = (
+                tt_summary.get("entity_per_class_precision", {}).get(entity, "")
+                if tt_summary
+                else ""
+            )
+            train_r_val = (
+                tt_summary.get("entity_per_class_recall", {}).get(entity, "")
+                if tt_summary
+                else ""
+            )
+            writer.writerow([
+                "entity", entity, mean, std,
+                p_data[0] if p_data else "", p_data[1] if p_data else "",
+                r_data[0] if r_data else "", r_data[1] if r_data else "",
+                train_f1_val, train_p_val, train_r_val,
+            ])
 
     print(f"CSV detail per kelas disimpan: {detail_path}")
 

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
-import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
   title: 'CarRec AI – Sistem Rekomendasi Mobil Cerdas',
@@ -14,10 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="id" suppressHydrationWarning>
       <body>
         <Providers>
-          <Navbar />
-          <main style={{ paddingTop: '64px', minHeight: '100vh' }}>
-            {children}
-          </main>
+          {children}
         </Providers>
       </body>
     </html>

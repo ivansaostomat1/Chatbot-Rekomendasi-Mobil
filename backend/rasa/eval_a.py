@@ -16,7 +16,7 @@ N_RUNS = 3
 FOLDS = 5
 
 CONFIGS = [
-    ("CP_baseline", "configCP.yml"),
+    ("Default", "configDefault.yml"),
     ("TAv1", "configTAv1.yml"),
     ("TAv2", "configTAv2.yml"),
     ("TAv3", "configTAv3.yml"),
@@ -65,28 +65,44 @@ def extract_f1_summary(results_dir):
     if os.path.exists(intent_path):
         with open(intent_path, encoding="utf-8") as f:
             data = json.load(f)
-        summary["intent_overall_f1"] = data.get("weighted avg", {}).get("f1-score")
+        wavg = data.get("weighted avg", {})
+        summary["intent_overall_f1"] = wavg.get("f1-score")
+        summary["intent_overall_precision"] = wavg.get("precision")
+        summary["intent_overall_recall"] = wavg.get("recall")
         summary["intent_overall_acc"] = data.get("accuracy")
-        summary["intent_per_class"] = {
-            k: round(v["f1-score"], 4)
-            for k, v in data.items()
-            if isinstance(v, dict)
-            and "f1-score" in v
-            and k not in ("macro avg", "weighted avg", "micro avg")
-        }
+        summary["intent_per_class"] = {}
+        summary["intent_per_class_precision"] = {}
+        summary["intent_per_class_recall"] = {}
+        for k, v in data.items():
+            if (
+                isinstance(v, dict)
+                and "f1-score" in v
+                and k not in ("macro avg", "weighted avg", "micro avg")
+            ):
+                summary["intent_per_class"][k] = round(v["f1-score"], 4)
+                summary["intent_per_class_precision"][k] = round(v.get("precision", 0), 4)
+                summary["intent_per_class_recall"][k] = round(v.get("recall", 0), 4)
 
     entity_path = os.path.join(results_dir, "DIETClassifier_report.json")
     if os.path.exists(entity_path):
         with open(entity_path, encoding="utf-8") as f:
             data = json.load(f)
-        summary["entity_overall_f1"] = data.get("weighted avg", {}).get("f1-score")
-        summary["entity_per_class"] = {
-            k: round(v["f1-score"], 4)
-            for k, v in data.items()
-            if isinstance(v, dict)
-            and "f1-score" in v
-            and k not in ("macro avg", "weighted avg", "micro avg")
-        }
+        wavg = data.get("weighted avg", {})
+        summary["entity_overall_f1"] = wavg.get("f1-score")
+        summary["entity_overall_precision"] = wavg.get("precision")
+        summary["entity_overall_recall"] = wavg.get("recall")
+        summary["entity_per_class"] = {}
+        summary["entity_per_class_precision"] = {}
+        summary["entity_per_class_recall"] = {}
+        for k, v in data.items():
+            if (
+                isinstance(v, dict)
+                and "f1-score" in v
+                and k not in ("macro avg", "weighted avg", "micro avg")
+            ):
+                summary["entity_per_class"][k] = round(v["f1-score"], 4)
+                summary["entity_per_class_precision"][k] = round(v.get("precision", 0), 4)
+                summary["entity_per_class_recall"][k] = round(v.get("recall", 0), 4)
 
     return summary
 
@@ -119,65 +135,54 @@ def rename_outputs(results_dir, config_label, run_label):
 def compute_stability(summaries):
     result = {}
 
-    vals = [s["intent_overall_f1"] for s in summaries if "intent_overall_f1" in s]
-    if vals:
+    def mean_std(vals):
+        if not vals:
+            return None, None
         mean = sum(vals) / len(vals)
         if len(vals) > 1:
             variance = sum((x - mean) ** 2 for x in vals) / (len(vals) - 1)
             std = variance ** 0.5
         else:
             std = 0.0
-        result["intent_overall_mean"] = round(mean, 4)
-        result["intent_overall_std"] = round(std, 4)
+        return round(mean, 4), round(std, 4)
 
-    all_intents = set()
-    for s in summaries:
-        all_intents.update(s.get("intent_per_class", {}).keys())
-    result["intent_per_class"] = {}
-    for intent in sorted(all_intents):
-        vals = [
-            s["intent_per_class"][intent]
-            for s in summaries
-            if intent in s.get("intent_per_class", {})
-        ]
-        if vals:
-            mean = sum(vals) / len(vals)
-            if len(vals) > 1:
-                variance = sum((x - mean) ** 2 for x in vals) / (len(vals) - 1)
-                std = variance ** 0.5
-            else:
-                std = 0.0
-            result["intent_per_class"][intent] = (round(mean, 4), round(std, 4))
+    def overall_stab(key, prefix):
+        vals = [s[key] for s in summaries if key in s and s[key] is not None]
+        m, s = mean_std(vals)
+        if m is not None:
+            result[f"{prefix}_mean"] = m
+            result[f"{prefix}_std"] = s
 
-    vals = [s["entity_overall_f1"] for s in summaries if "entity_overall_f1" in s]
-    if vals:
-        mean = sum(vals) / len(vals)
-        if len(vals) > 1:
-            variance = sum((x - mean) ** 2 for x in vals) / (len(vals) - 1)
-            std = variance ** 0.5
-        else:
-            std = 0.0
-        result["entity_overall_mean"] = round(mean, 4)
-        result["entity_overall_std"] = round(std, 4)
+    def per_class_stab(key, prefix):
+        all_classes = set()
+        for s in summaries:
+            all_classes.update(s.get(key, {}).keys())
+        result[prefix] = {}
+        for cls in sorted(all_classes):
+            vals = [
+                s[key][cls]
+                for s in summaries
+                if cls in s.get(key, {})
+            ]
+            m, sd = mean_std(vals)
+            if m is not None:
+                result[prefix][cls] = (m, sd)
 
-    all_entities = set()
-    for s in summaries:
-        all_entities.update(s.get("entity_per_class", {}).keys())
-    result["entity_per_class"] = {}
-    for entity in sorted(all_entities):
-        vals = [
-            s["entity_per_class"][entity]
-            for s in summaries
-            if entity in s.get("entity_per_class", {})
-        ]
-        if vals:
-            mean = sum(vals) / len(vals)
-            if len(vals) > 1:
-                variance = sum((x - mean) ** 2 for x in vals) / (len(vals) - 1)
-                std = variance ** 0.5
-            else:
-                std = 0.0
-            result["entity_per_class"][entity] = (round(mean, 4), round(std, 4))
+    # Intent — F1, Precision, Recall
+    overall_stab("intent_overall_f1", "intent_overall")
+    overall_stab("intent_overall_precision", "intent_overall_precision")
+    overall_stab("intent_overall_recall", "intent_overall_recall")
+    per_class_stab("intent_per_class", "intent_per_class")
+    per_class_stab("intent_per_class_precision", "intent_per_class_precision")
+    per_class_stab("intent_per_class_recall", "intent_per_class_recall")
+
+    # Entity — F1, Precision, Recall
+    overall_stab("entity_overall_f1", "entity_overall")
+    overall_stab("entity_overall_precision", "entity_overall_precision")
+    overall_stab("entity_overall_recall", "entity_overall_recall")
+    per_class_stab("entity_per_class", "entity_per_class")
+    per_class_stab("entity_per_class_precision", "entity_per_class_precision")
+    per_class_stab("entity_per_class_recall", "entity_per_class_recall")
 
     return result
 
@@ -190,7 +195,15 @@ def print_stability(label, stab, train_f1=None):
     if "intent_overall_mean" in stab:
         f1 = stab["intent_overall_mean"]
         std = stab["intent_overall_std"]
-        print(f"\n  [INTENT] Overall F1 : {f1:.4f} ± {std:.4f}")
+        prec = stab.get("intent_overall_precision_mean")
+        prec_std = stab.get("intent_overall_precision_std")
+        rec = stab.get("intent_overall_recall_mean")
+        rec_std = stab.get("intent_overall_recall_std")
+        print(f"\n  [INTENT] Overall F1        : {f1:.4f} ± {std:.4f}")
+        if prec is not None:
+            print(f"           Overall Precision : {prec:.4f} ± {prec_std:.4f}")
+        if rec is not None:
+            print(f"           Overall Recall    : {rec:.4f} ± {rec_std:.4f}")
         if train_f1 is not None:
             gap = train_f1 - f1
             if gap > 0.15:
@@ -204,28 +217,49 @@ def print_stability(label, stab, train_f1=None):
             )
 
         print(f"\n  Intent per class (mean ± std):")
+        print(f"    {'Kelas':<30} {'F1':>12} {'Precision':>12} {'Recall':>12}  Flags")
+        print(f"    {'-'*30} {'-'*12} {'-'*12} {'-'*12}  {'-'*15}")
         for intent, (mean, std) in stab.get("intent_per_class", {}).items():
+            p = stab.get("intent_per_class_precision", {}).get(intent)
+            r = stab.get("intent_per_class_recall", {}).get(intent)
+            p_str = f"{p[0]:.4f}±{p[1]:.4f}" if p else "N/A"
+            r_str = f"{r[0]:.4f}±{r[1]:.4f}" if r else "N/A"
             flags = []
             if mean < 0.80:
                 flags.append("LEMAH")
             if std > 0.05:
                 flags.append("TIDAK STABIL")
             flag_str = "  <-- " + ", ".join(flags) if flags else ""
-            print(f"    {intent:<30} {mean:.4f} ± {std:.4f}{flag_str}")
+            print(f"    {intent:<30} {mean:.4f}±{std:.4f} {p_str:>12} {r_str:>12}{flag_str}")
 
     if "entity_overall_mean" in stab:
         f1 = stab["entity_overall_mean"]
         std = stab["entity_overall_std"]
-        print(f"\n  [ENTITY] Overall F1 : {f1:.4f} ± {std:.4f}")
+        prec = stab.get("entity_overall_precision_mean")
+        prec_std = stab.get("entity_overall_precision_std")
+        rec = stab.get("entity_overall_recall_mean")
+        rec_std = stab.get("entity_overall_recall_std")
+        print(f"\n  [ENTITY] Overall F1        : {f1:.4f} ± {std:.4f}")
+        if prec is not None:
+            print(f"           Overall Precision : {prec:.4f} ± {prec_std:.4f}")
+        if rec is not None:
+            print(f"           Overall Recall    : {rec:.4f} ± {rec_std:.4f}")
+
         print(f"\n  Entity per class (mean ± std):")
+        print(f"    {'Kelas':<30} {'F1':>12} {'Precision':>12} {'Recall':>12}  Flags")
+        print(f"    {'-'*30} {'-'*12} {'-'*12} {'-'*12}  {'-'*15}")
         for entity, (mean, std) in stab.get("entity_per_class", {}).items():
+            p = stab.get("entity_per_class_precision", {}).get(entity)
+            r = stab.get("entity_per_class_recall", {}).get(entity)
+            p_str = f"{p[0]:.4f}±{p[1]:.4f}" if p else "N/A"
+            r_str = f"{r[0]:.4f}±{r[1]:.4f}" if r else "N/A"
             flags = []
             if mean < 0.70:
                 flags.append("LEMAH")
             if std > 0.05:
                 flags.append("TIDAK STABIL")
             flag_str = "  <-- " + ", ".join(flags) if flags else ""
-            print(f"    {entity:<30} {mean:.4f} ± {std:.4f}{flag_str}")
+            print(f"    {entity:<30} {mean:.4f}±{std:.4f} {p_str:>12} {r_str:>12}{flag_str}")
 
 
 def save_comparison_csv(all_results, session_dir):
@@ -234,8 +268,16 @@ def save_comparison_csv(all_results, session_dir):
     for config_label, stab, train_f1, cv_dur, train_dur in all_results:
         intent_f1 = stab.get("intent_overall_mean", "")
         intent_std = stab.get("intent_overall_std", "")
+        intent_prec = stab.get("intent_overall_precision_mean", "")
+        intent_prec_std = stab.get("intent_overall_precision_std", "")
+        intent_rec = stab.get("intent_overall_recall_mean", "")
+        intent_rec_std = stab.get("intent_overall_recall_std", "")
         entity_f1 = stab.get("entity_overall_mean", "")
         entity_std = stab.get("entity_overall_std", "")
+        entity_prec = stab.get("entity_overall_precision_mean", "")
+        entity_prec_std = stab.get("entity_overall_precision_std", "")
+        entity_rec = stab.get("entity_overall_recall_mean", "")
+        entity_rec_std = stab.get("entity_overall_recall_std", "")
         gap = round(train_f1 - intent_f1, 4) if (train_f1 and intent_f1) else ""
         if gap != "":
             if gap > 0.15:
@@ -251,11 +293,19 @@ def save_comparison_csv(all_results, session_dir):
                 "config": config_label,
                 "intent_f1_mean": intent_f1,
                 "intent_f1_std": intent_std,
+                "intent_precision_mean": intent_prec,
+                "intent_precision_std": intent_prec_std,
+                "intent_recall_mean": intent_rec,
+                "intent_recall_std": intent_rec_std,
                 "intent_train_f1": round(train_f1, 4) if train_f1 else "",
                 "gap_train_vs_cv": gap,
                 "overfit_verdict": verdict,
                 "entity_f1_mean": entity_f1,
                 "entity_f1_std": entity_std,
+                "entity_precision_mean": entity_prec,
+                "entity_precision_std": entity_prec_std,
+                "entity_recall_mean": entity_rec,
+                "entity_recall_std": entity_rec_std,
                 "cv_duration_seconds": cv_dur,
                 "train_duration_seconds": train_dur,
             }
@@ -265,8 +315,16 @@ def save_comparison_csv(all_results, session_dir):
         "config",
         "intent_f1_mean",
         "intent_f1_std",
+        "intent_precision_mean",
+        "intent_precision_std",
+        "intent_recall_mean",
+        "intent_recall_std",
         "entity_f1_mean",
         "entity_f1_std",
+        "entity_precision_mean",
+        "entity_precision_std",
+        "entity_recall_mean",
+        "entity_recall_std",
         "intent_train_f1",
         "gap_train_vs_cv",
         "overfit_verdict",
@@ -289,26 +347,49 @@ def save_comparison_csv(all_results, session_dir):
     detail_path = os.path.join(session_dir, "comparison_detail.csv")
     detail_rows = []
 
-    for class_type, labels, key in [
-        ("intent", sorted(all_intent_labels), "intent_per_class"),
-        ("entity", sorted(all_entity_labels), "entity_per_class"),
+    for class_type, labels, f1_key, prec_key, rec_key in [
+        ("intent", sorted(all_intent_labels), "intent_per_class", "intent_per_class_precision", "intent_per_class_recall"),
+        ("entity", sorted(all_entity_labels), "entity_per_class", "entity_per_class_precision", "entity_per_class_recall"),
     ]:
         for label in labels:
             row = {"type": class_type, "class": label}
             for config_label, stab, _, _, _ in all_results:
-                per_class = stab.get(key, {})
-                if label in per_class:
-                    mean, std = per_class[label]
+                # F1
+                f1_data = stab.get(f1_key, {})
+                if label in f1_data:
+                    mean, std = f1_data[label]
                     row[f"{config_label}_f1"] = mean
-                    row[f"{config_label}_std"] = std
+                    row[f"{config_label}_f1_std"] = std
                 else:
                     row[f"{config_label}_f1"] = ""
-                    row[f"{config_label}_std"] = ""
+                    row[f"{config_label}_f1_std"] = ""
+                # Precision
+                p_data = stab.get(prec_key, {})
+                if label in p_data:
+                    mean, std = p_data[label]
+                    row[f"{config_label}_precision"] = mean
+                    row[f"{config_label}_precision_std"] = std
+                else:
+                    row[f"{config_label}_precision"] = ""
+                    row[f"{config_label}_precision_std"] = ""
+                # Recall
+                r_data = stab.get(rec_key, {})
+                if label in r_data:
+                    mean, std = r_data[label]
+                    row[f"{config_label}_recall"] = mean
+                    row[f"{config_label}_recall_std"] = std
+                else:
+                    row[f"{config_label}_recall"] = ""
+                    row[f"{config_label}_recall_std"] = ""
             detail_rows.append(row)
 
     fieldnames = ["type", "class"]
     for config_label, _, _, _, _ in all_results:
-        fieldnames += [f"{config_label}_f1", f"{config_label}_std"]
+        fieldnames += [
+            f"{config_label}_f1", f"{config_label}_f1_std",
+            f"{config_label}_precision", f"{config_label}_precision_std",
+            f"{config_label}_recall", f"{config_label}_recall_std",
+        ]
 
     with open(detail_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -425,15 +506,17 @@ def main():
     print(f"\n\n{'='*60}")
     print("  FINAL COMPARISON SUMMARY")
     print(f"{'='*60}")
-    header_cols = ["Config", "Intent F1", "±", "Entity F1", "±", "Gap", "CV (s)", "Train (s)", "Verdict"]
-    print(f"  {header_cols[0]:<20} {header_cols[1]:>10} {header_cols[2]:>6} {header_cols[3]:>10} {header_cols[4]:>6} {header_cols[5]:>7} {header_cols[6]:>7} {header_cols[7]:>7}  {header_cols[8]}")
-    print(f"  {'-'*20} {'-'*10} {'-'*6} {'-'*10} {'-'*6} {'-'*7} {'-'*7} {'-'*7}  {'-'*22}")
+    header_cols = ["Config", "Intent F1", "±", "Int Prec", "Int Rec", "Entity F1", "±", "Gap", "CV (s)", "Train (s)", "Verdict"]
+    print(f"  {header_cols[0]:<20} {header_cols[1]:>10} {header_cols[2]:>6} {header_cols[3]:>9} {header_cols[4]:>9} {header_cols[5]:>10} {header_cols[6]:>6} {header_cols[7]:>7} {header_cols[8]:>7} {header_cols[9]:>7}  {header_cols[10]}")
+    print(f"  {'-'*20} {'-'*10} {'-'*6} {'-'*9} {'-'*9} {'-'*10} {'-'*6} {'-'*7} {'-'*7} {'-'*7}  {'-'*22}")
 
     best_f1 = -1
     best_config = ""
     for config_label, stab, train_f1, cv_dur, train_dur in all_results:
         i_f1 = stab.get("intent_overall_mean", 0)
         i_std = stab.get("intent_overall_std", 0)
+        i_prec = stab.get("intent_overall_precision_mean", 0)
+        i_rec = stab.get("intent_overall_recall_mean", 0)
         e_f1 = stab.get("entity_overall_mean", 0)
         e_std = stab.get("entity_overall_std", 0)
         gap = round(train_f1 - i_f1, 4) if train_f1 else 0
@@ -451,6 +534,7 @@ def main():
 
         print(
             f"  {config_label:<20} {i_f1:>10.4f} {i_std:>6.4f} "
+            f"{i_prec:>9.4f} {i_rec:>9.4f} "
             f"{e_f1:>10.4f} {e_std:>6.4f} {gap:>7.4f} "
             f"{cv_dur:>7.1f} {train_dur:>7.1f}  {verdict}{marker}"
         )

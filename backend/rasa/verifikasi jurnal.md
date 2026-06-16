@@ -6,7 +6,7 @@ Berdasarkan [what have i done.md](file:///c:/capstone/Chatbot-Rekomendasi-Mobil/
 
 | ID | Komponen | Detail | Config yang Memakai |
 |---|---|---|---|
-| **K1** | Rasa Framework (v3.1) | Open-source conversational AI framework | Semua (CP–TAv6) |
+| **K1** | Rasa Framework (v3.4.11) | Open-source conversational AI framework | Semua (CP–TAv6) |
 | **K2** | DIETClassifier | Joint intent & entity classifier (Dual Intent Entity Transformer) | Semua (CP–TAv6) |
 | **K3** | CountVectorsFeaturizer | Sparse featurizer (word-level + char n-gram `char_wb`) | CP, TAv1, TAv3, TAv6 |
 | **K4** | IndoBERT (`LanguageModelFeaturizer`) | Pre-trained `indobenchmark/indobert-base-p1` via HuggingFace | TAv2, TAv4, TAv5, TAv6 |
@@ -252,5 +252,5 @@ Berdasarkan [what have i done.md](file:///c:/capstone/Chatbot-Rekomendasi-Mobil/
 > 
 > ### Yang Perlu Ditegaskan di Skripsi:
 > 1. Negation handling (`.negated` entity) sebagai **kontribusi orisinal** — belum ada di literatur
-> 2. Justifikasi mengapa **tidak pakai SMOTE** meski banyak literatur yang merekomendasikan → jawab dengan: distribusi data cukup baik secara overall (850 kalimat), dan dropout + hybrid featurizer sudah cukup
+> 2. Justifikasi mengapa **tidak pakai SMOTE** meski banyak literatur yang merekomendasikan → jawab dengan: distribusi data cukup baik secara overall (903 kalimat), dan dropout + hybrid featurizer sudah cukup
 > 3. Justifikasi `RegexEntityExtractor` cukup lewat **dokumentasi resmi Rasa** + hasil empiris di TAv3/TAv4/TAv5

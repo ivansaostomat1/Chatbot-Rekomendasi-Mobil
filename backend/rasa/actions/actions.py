@@ -247,6 +247,27 @@ class ActionRecommendCar(Action):
         print(f"[RASA ACTION] Intent terdeteksi: {intent_name}")
         print(f"[RASA ACTION] Entities dari NLU: {entities}")
 
+        # 1. REDIRECT LOOKALIKE / K-MEANS ROUTE
+        # Jika pesan mengandung entitas target_car, intent adalah ask_similar_car,
+        # atau text mengandung kata kunci kemiripan (look-alike),
+        # segera alihkan seluruh proses ke ActionFindLookalike untuk menghindari jalur VIKOR.
+        target_car_entity = None
+        for e in entities:
+            if e.get("entity") == "target_car":
+                target_car_entity = e.get("value")
+                break
+
+        import re
+        similar_keywords = ["alternatif", "mirip", "sekelas", "sejenis", "setara", "kompetitor", "saingan", "setipe", "kayak"]
+        pattern = r"\b(" + "|".join(re.escape(w) for w in similar_keywords) + r")\b"
+        has_similar_keyword = bool(re.search(pattern, text.lower()))
+
+        if intent_name == "ask_similar_car" or target_car_entity is not None or has_similar_keyword:
+            print(
+                f"[RASA ACTION] [REDIRECT] Mengalihkan ke ActionFindLookalike karena target_car '{target_car_entity}', intent '{intent_name}', or keyword terdeteksi."
+            )
+            return ActionFindLookalike().run(dispatcher, tracker, domain)
+
         # Pendelegasian Out Of Scope ke fallback policy / utter_default
         if intent_name == "out_of_scope":
             print(
@@ -508,6 +529,7 @@ class ActionRecommendCar(Action):
                 "refinement_stage",
                 False if new_query else tracker.get_slot("refinement_stage"),
             ),
+            SlotSet("target_car", None),  # Reset target_car slot agar tidak bocor ke pencarian VIKOR berikutnya
         ]
 
 
@@ -617,13 +639,25 @@ class ActionFindLookalike(Action):
 
         # Extract from text as fallback if still none
         if not target_car:
-            target_car = (
-                text.replace("sekelas", "")
-                .replace("mirip", "")
-                .replace("alternatif", "")
-                .replace("selain", "")
-                .strip()
-            )
+            cleaned_text = text.lower()
+            
+            # Check if this is a Rasa slash command (payload starting with /)
+            if cleaned_text.startswith("/"):
+                try:
+                    import json
+                    json_str = cleaned_text[cleaned_text.find("{"):cleaned_text.rfind("}")+1]
+                    if json_str:
+                        payload_dict = json.loads(json_str)
+                        target_car = payload_dict.get("target_car")
+                except Exception as ex:
+                    print(f"[RASA ACTION] Gagal parse JSON payload: {ex}")
+            
+            if not target_car:
+                import re
+                words_to_remove = ["alternatif", "mirip", "sekelas", "sejenis", "setara", "kompetitor", "saingan", "setipe", "kayak", "selain", "dong", "sih", "deh", "ya", "aja", "saja", "mobil", "yang", "cari"]
+                pattern = r"\b(" + "|".join(re.escape(w) for w in words_to_remove) + r")\b"
+                cleaned_text = re.sub(pattern, "", cleaned_text)
+                target_car = re.sub(r"\s+", " ", cleaned_text).strip()
 
         if not target_car:
             dispatcher.utter_message(text="Mobil apa yang ingin dicari alternatifnya?")

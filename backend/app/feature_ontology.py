@@ -218,16 +218,67 @@ HARD_FILTER_MAP = {
 # ======================================================
 
 BRAND_MAP = {
+    # Japanese Brands
     "toyota": "Toyota",
     "honda": "Honda",
     "suzuki": "Suzuki",
     "mitsubishi": "Mitsubishi",
+    "mitsu": "Mitsubishi",
     "daihatsu": "Daihatsu",
+    "mazda": "Mazda",
+    "nissan": "Nissan",
+    "nisan": "Nissan",
+    "subaru": "Subaru",
+    "isuzu": "Isuzu",
+    "lexus": "Lexus",
+
+    # Korean Brands
     "hyundai": "Hyundai",
     "kia": "Kia",
+
+    # Chinese Brands
     "wuling": "Wuling",
-    "mazda": "Mazda",
-    "nissan": "Nissan"
+    "chery": "Chery",
+    "cherry": "Chery",
+    "byd": "BYD",
+    "aion": "AION",
+    "baic": "BAIC",
+    "denza": "Denza",
+    "geely": "Geely",
+    "gwm": "GWM",
+    "jaecoo": "Jaecoo",
+    "jetour": "Jetour",
+    "maxus": "Maxus",
+    "neta": "Neta",
+    "xpeng": "XPeng",
+
+    # European / American Brands
+    "bmw": "BMW",
+    "audi": "Audi",
+    "citroen": "Citroën",
+    "citroën": "Citroën",
+    "ford": "Ford",
+    "mercedes-amg": "Mercedes-AMG",
+    "mercedes amg": "Mercedes-AMG",
+    "amg": "Mercedes-AMG",
+    "mercedes-benz": "Mercedes-Benz",
+    "mercedes benz": "Mercedes-Benz",
+    "mercedes": "Mercedes-Benz",
+    "mercy": "Mercedes-Benz",
+    "merci": "Mercedes-Benz",
+    "merc": "Mercedes-Benz",
+    "mercedes-maybach": "Mercedes-Maybach",
+    "mercedes maybach": "Mercedes-Maybach",
+    "maybach": "Mercedes-Maybach",
+    "mg": "MG",
+    "mini": "MINI",
+    "volkswagen": "Volkswagen",
+    "vw": "Volkswagen",
+    "volvo": "Volvo",
+
+    # Other Brands
+    "polytron": "Polytron",
+    "vinfast": "VinFast"
 }
 
 

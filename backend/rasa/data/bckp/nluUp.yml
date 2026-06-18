@@ -935,6 +935,13 @@ nlu:
     - rekomendasiin dong mobil [nyaman](preference) buat [keluarga](preference) di [400jt](budget)
     - tolong bantu pilihin mobil [kencang](preference) di [700jt](budget)
     - carikan saya [Toyota](brand) budget [500jt](budget) yang [irit](preference)
+    - saya mau [Toyota](brand) yang irit
+    - saya mau [mercy](brand) yang [mewah](preference)
+    - cari mobil [nisan](brand) yang [irit](preference)
+    - ada [mitsu](brand) [hybrid](powertrain) ga?
+    - rekomendasi [cherry](brand) yang [canggih](preference)
+    - saya cari [vw](brand) [sedan](body_type)
+    - budget [500jt](budget) pengen [merci](brand) ada?
     - ada rekomendasi mobil [mpv](body_type) [7](min_seat) seat?
     - saya butuh rekomendasi mobil [diesel](powertrain) budget [400jt](budget)
     - rekomendasikan mobil [listrik](powertrain) di bawah [1M](budget)
@@ -1285,3 +1292,46 @@ nlu:
     - ada alternatif [Wuling Binguo](target_car) ga?
     - yang setipe sama [HRV](target_car)
     - cari yang kayak [Pajero](target_car)
+    - ada alternatif [mercy](target_car) ga?
+    - cari mobil sekelas [mercy C200](target_car)
+    - mobil yang mirip [mercedes c200](target_car) dong
+    - selain [merci](target_car) mending ambil apa
+    - kompetitor [VW Tiguan](target_car) apa aja
+    - alternatif [citroen c3](target_car) dong
+    - sekelas [nisan livina](target_car) ada apa aja
+    - mobil mirip [mitsu xpander](target_car)
+    - alternatif [cherry omoda](target_car) dong
+
+- synonym: Mercedes-Benz
+  examples: |
+    - mercy
+    - merci
+    - merc
+    - mercedes
+    - mercedes benz
+    - mercedes-benz
+
+- synonym: Volkswagen
+  examples: |
+    - vw
+    - volkswagen
+
+- synonym: Citroën
+  examples: |
+    - citroen
+    - citroën
+
+- synonym: Nissan
+  examples: |
+    - nisan
+    - nissan
+
+- synonym: Mitsubishi
+  examples: |
+    - mitsu
+    - mitsubishi
+
+- synonym: Chery
+  examples: |
+    - cherry
+    - chery

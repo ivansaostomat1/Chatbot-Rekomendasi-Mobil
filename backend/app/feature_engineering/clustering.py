@@ -75,7 +75,34 @@ class KMeansEngine:
             return []
         
         query_norm = normalize_text(query.strip())
-        filler_words = {"mobil", "yang", "cari", "tampilkan", "rekomendasi", "alternatif", "mirip", "dengan", "sama"}
+        
+        # Normalisasi sinonim brand agar cocok dengan database
+        import re
+        synonyms = {
+            r"\bmercedes[- ]benz\b": "mercedes-benz",
+            r"\bmerc(?:y|i|s)?\b": "mercedes-benz",
+            r"\bmercedes\b": "mercedes-benz",
+            r"\bvw\b": "volkswagen",
+            r"\bnisan\b": "nissan",
+            r"\bmitsu\b": "mitsubishi",
+            r"\bcherry\b": "chery",
+            r"\bcitroen\b": "citroën"
+        }
+        for pattern, replacement in synonyms.items():
+            query_norm = re.sub(pattern, replacement, query_norm)
+
+        filler_words = {
+            "mobil", "yang", "cari", "tampilkan", "rekomendasi", "alternatif", 
+            "mirip", "dengan", "sama", "dong", "sih", "deh", "lah", "kah", 
+            "ya", "kok", "aja", "saja", "pun", "irit", "hemat", "bbm", 
+            "sporty", "sport", "performa", "kencang", "ngebut", "responsif", 
+            "tenaga", "nanjak", "lincah", "gesit", "handling", "enak", 
+            "dikendarai", "fun", "stabil", "nyaman", "keluarga", "luas", 
+            "kabinnya", "kabin", "aman", "teknologi", "fitur", "lengkap", 
+            "modern", "canggih", "mewah", "luxury", "banjir", "bebas", 
+            "rusak", "jalan", "merek", "brand", "terkenal", "laku", "populer", 
+            "baru", "sparepart", "harga", "murah", "bagus"
+        }
         query_parts = [p for p in query_norm.split() if p not in filler_words and len(p) > 1]
         
         if not query_parts:

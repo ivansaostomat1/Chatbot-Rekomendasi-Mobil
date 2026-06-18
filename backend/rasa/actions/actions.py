@@ -9,6 +9,16 @@ from actions.context_manager import DialogueContextManager
 API_URL = "http://localhost:8000/chat"
 
 # ======================================================
+# CONFIGURATION FLAGS (KONTROL FALLBACK & FILTER)
+# ======================================================
+ENABLE_FALLBACK_CATCHER = (
+    False  # Mengaktifkan/menonaktifkan pemulihan Regex/Keyword dari raw text
+)
+ENABLE_NLU_FILTERS = (
+    False  # Mengaktifkan/menonaktifkan filter angka budget kecil dan nomor list
+)
+
+# ======================================================
 # EXTRACT ENTITIES MURNI (TANPA HARDCODED ONTOLOGY)
 # ======================================================
 
@@ -19,6 +29,7 @@ def extract_entities(entities, text=None):
     body_entities = []
     powertrain_entities = []
     brand_entities = []
+    transmission_entities = []
     hard_filter_entities = []
     negated_entities = []
     raw_budgets = []
@@ -41,7 +52,7 @@ def extract_entities(entities, text=None):
             continue
 
         # 2. FILTER NUMBERED LIST (Ignore markers like "1" in "1. bensin")
-        if entity_type in ["min_seat", "budget"]:
+        if ENABLE_NLU_FILTERS and entity_type in ["min_seat", "budget"]:
             if value in list_markers:
                 print(
                     f"[RASA ACTION] [FILTER] Mengabaikan '{value}' karena terdeteksi sebagai nomor urut list."
@@ -65,6 +76,8 @@ def extract_entities(entities, text=None):
             powertrain_entities.append(value)
         elif entity_type == "brand":
             brand_entities.append(value)
+        elif entity_type == "transmission":
+            transmission_entities.append(value)
         elif entity_type == "hard_filter":
             hard_filter_entities.append(value)
 
@@ -86,16 +99,18 @@ def extract_entities(entities, text=None):
         elif entity_type == "budget":
             # Budget Guard: Abaikan angka kecil (< 20) kecuali ada unit "jt/juta"
             is_small = False
-            try:
-                numeric_part = re.search(r"[\d\.,]+", value)
-                if numeric_part:
-                    num = float(numeric_part.group().replace(",", ""))
-                    if num < 20 and not any(
-                        kw in value for kw in ["jt", "juta", "milyar", "miliar", "m"]
-                    ):
-                        is_small = True
-            except:
-                pass
+            if ENABLE_NLU_FILTERS:
+                try:
+                    numeric_part = re.search(r"[\d\.,]+", value)
+                    if numeric_part:
+                        num = float(numeric_part.group().replace(",", ""))
+                        if num < 20 and not any(
+                            kw in value
+                            for kw in ["jt", "juta", "milyar", "miliar", "m"]
+                        ):
+                            is_small = True
+                except:
+                    pass
 
             if is_small:
                 print(
@@ -106,7 +121,7 @@ def extract_entities(entities, text=None):
 
     # 3. FALLBACK CATCHER DARI RAW TEXT
     # Jika model NLU gagal mengenali entitas "seat" secara penuh, kita bantu dengan regex mentah
-    if text:
+    if ENABLE_FALLBACK_CATCHER and text:
         txt_lower = text.lower()
         if min_seat is None:
             seat_match = re.search(r"(\d+)\s*(seat|kursi|penumpang)", txt_lower)
@@ -143,12 +158,49 @@ def extract_entities(entities, text=None):
                     f"[RASA ACTION] [FALLBACK DETECTED] Memulihkan preference term: '{kw}' dari raw text."
                 )
 
+        # 5. FALLBACK NEGATION CATCHER (SAFETY NET FOR ROLES)
+        negatable_terms = {
+            "transmission": ["matic", "manual", "cvt", "dct", "amt", "single speed", "dht"],
+            "powertrain": ["hybrid", "bensin", "diesel", "listrik", "ev", "bev", "phev", "hev"],
+            "brand": ["toyota", "honda", "suzuki", "mitsubishi", "nissan", "mazda", "hyundai", "kia", "wuling", "chery", "bmw", "mercedes"],
+            "body_type": ["suv", "mpv", "sedan", "hatchback", "coupe", "wagon"]
+        }
+        
+        negation_patterns = [
+            r"jangan\s+(?:yang\s+)?{}",
+            r"tidak\s+(?:mau|suka|perlu)?\s+{}",
+            r"bukan\s+{}",
+            r"ga\s+mau\s+{}",
+            r"gak\s+mau\s+{}",
+            r"enggan\s+{}",
+            r"anti\s+{}",
+            r"skip\s+{}",
+            r"exclude\s+{}",
+            r"hindari\s+(?:yang\s+)?{}"
+        ]
+        
+        for category, terms in negatable_terms.items():
+            for term in terms:
+                for pat in negation_patterns:
+                    pattern = pat.format(re.escape(term))
+                    if re.search(pattern, txt_lower):
+                        if term not in negated_entities:
+                            negated_entities.append(term)
+                            print(f"[RASA ACTION] [NEGATION FALLBACK] Menangkap negasi untuk '{term}' (kategori: {category}) dari raw text.")
+
+    # Bersihkan entitas positif yang ternyata terdeteksi sebagai negated di fallback
+    body_entities = [x for x in body_entities if x not in negated_entities]
+    powertrain_entities = [x for x in powertrain_entities if x not in negated_entities]
+    brand_entities = [x for x in brand_entities if x not in negated_entities]
+    transmission_entities = [x for x in transmission_entities if x not in negated_entities]
+
     return {
         "preference_terms": preference_terms,
         "feature_entities": feature_entities,
         "body_entities": body_entities,
         "powertrain_entities": powertrain_entities,
         "brand_entities": brand_entities,
+        "transmission_entities": transmission_entities,
         "hard_filter_entities": hard_filter_entities,
         "negated_entities": negated_entities,
         "raw_budgets": raw_budgets,
@@ -228,7 +280,9 @@ class ActionRecommendCar(Action):
             + merged_context["body_entities"]
             + merged_context["powertrain_entities"]
             + merged_context["brand_entities"]
+            + merged_context["transmission_entities"]
             + merged_context["hard_filter_entities"]
+            + merged_context["preference_terms"]
         )
 
         print(
@@ -263,7 +317,9 @@ class ActionRecommendCar(Action):
                 payload["profile_display_name"] = returned_payload.get(
                     "profile_display_name", "Personalized"
                 )
-                payload["base_weight_profile"] = returned_payload.get("base_weight_profile", {})
+                payload["base_weight_profile"] = returned_payload.get(
+                    "base_weight_profile", {}
+                )
             else:
                 payload["base_weight_profile"] = {}
 
@@ -315,17 +371,22 @@ class ActionRecommendCar(Action):
 
         # SKENARIO 0: User tidak menyebut budget sama sekali
         if not global_budget_present:
-            print("[RASA ACTION] [MISSING BUDGET] User lupa menyebutkan budget. Meminta budget.")
+            print(
+                "[RASA ACTION] [MISSING BUDGET] User lupa menyebutkan budget. Meminta budget."
+            )
             dispatcher.utter_message(response="utter_ask_budget")
             return [
                 SlotSet("preference", merged_context["preference_terms"]),
                 SlotSet("feature", merged_context["feature_entities"]),
                 SlotSet("brand", merged_context["brand_entities"]),
                 SlotSet("powertrain", merged_context["powertrain_entities"]),
+                SlotSet("transmission", merged_context["transmission_entities"]),
                 SlotSet("body_type", merged_context["body_entities"]),
                 SlotSet("hard_filter", merged_context["hard_filter_entities"]),
                 SlotSet("min_seat", merged_context.get("min_seat")),
-                SlotSet("must_have_sunroof", merged_context.get("must_have_sunroof", False)),
+                SlotSet(
+                    "must_have_sunroof", merged_context.get("must_have_sunroof", False)
+                ),
                 SlotSet("negated_terms", merged_context["negated_terms"]),
             ]
 
@@ -434,6 +495,7 @@ class ActionRecommendCar(Action):
             SlotSet("feature", merged_context["feature_entities"]),
             SlotSet("brand", merged_context["brand_entities"]),
             SlotSet("powertrain", merged_context["powertrain_entities"]),
+            SlotSet("transmission", merged_context["transmission_entities"]),
             SlotSet("body_type", merged_context["body_entities"]),
             SlotSet("hard_filter", merged_context["hard_filter_entities"]),
             SlotSet("raw_budgets", merged_context["raw_budgets"]),
@@ -533,6 +595,7 @@ class ActionCompareBudget(Action):
 
         return []
 
+
 class ActionFindLookalike(Action):
 
     def name(self):
@@ -541,72 +604,82 @@ class ActionFindLookalike(Action):
     def run(self, dispatcher, tracker, domain):
         text = tracker.latest_message.get("text", "")
         entities = tracker.latest_message.get("entities", [])
-        
+
         # Prioritize entity from latest message over slot
         target_car = None
         for e in entities:
             if e.get("entity") == "target_car":
                 target_car = e.get("value")
                 break
-        
+
         if not target_car:
             target_car = tracker.get_slot("target_car")
-                    
+
         # Extract from text as fallback if still none
         if not target_car:
-            target_car = text.replace("sekelas", "").replace("mirip", "").replace("alternatif", "").replace("selain", "").strip()
-            
+            target_car = (
+                text.replace("sekelas", "")
+                .replace("mirip", "")
+                .replace("alternatif", "")
+                .replace("selain", "")
+                .strip()
+            )
+
         if not target_car:
             dispatcher.utter_message(text="Mobil apa yang ingin dicari alternatifnya?")
             return []
 
         if isinstance(target_car, list):
             target_car = target_car[0]
-            
+
         print(f"[RASA ACTION] Mencari lookalike untuk: {target_car}")
 
         try:
             # Panggil endpoint /chat (Sentral Router)
             chat_resp = requests.post(
-                "http://localhost:8000/chat", 
-                json={"target_car": target_car}
+                "http://localhost:8000/chat", json={"target_car": target_car}
             )
             chat_resp.raise_for_status()
             data = chat_resp.json()
-            
+
             if "error" in data:
                 dispatcher.utter_message(text=data["error"])
                 return []
-                
+
             if data.get("action") == "disambiguate_car":
-                print(f"[RASA ACTION] Ambiguous target '{target_car}'. Triggering popup.")
+                print(
+                    f"[RASA ACTION] Ambiguous target '{target_car}'. Triggering popup."
+                )
                 dispatcher.utter_message(
                     text=f"Ada beberapa varian untuk '{target_car}'. Silakan pilih yang mana:",
                     custom={
-                        "action": "disambiguate_car", 
+                        "action": "disambiguate_car",
                         "matches": data["matches"],
-                        "query": data["query"]
-                    }
+                        "query": data["query"],
+                    },
                 )
                 return [SlotSet("target_car", target_car)]
-                
+
             if "recommendations" in data:
                 cars = data["recommendations"]
                 if not cars:
-                    dispatcher.utter_message(text="Maaf, saya tidak menemukan mobil yang sekelas.")
+                    dispatcher.utter_message(
+                        text="Maaf, saya tidak menemukan mobil yang sekelas."
+                    )
                     return []
-                    
+
                 dispatcher.utter_message(
                     text=f"Sip! Berdasarkan K-Means Clustering, ini 5 mobil yang setara dengan pencarian Anda:",
                     custom={
-                        "recommendations": cars, 
-                        "constraint_report": data.get("constraint_report")
-                    }
+                        "recommendations": cars,
+                        "constraint_report": data.get("constraint_report"),
+                    },
                 )
-                
+
         except Exception as e:
             print(f"[RASA ACTION] Error calling chat backend: {e}")
-            dispatcher.utter_message(text="Maaf, terjadi kesalahan teknis pada sistem rekomendasi.")
-            
-        return [SlotSet("target_car", target_car)]
+            dispatcher.utter_message(
+                text="Maaf, terjadi kesalahan teknis pada sistem rekomendasi."
+            )
 
+        return [SlotSet("target_car", target_car)]

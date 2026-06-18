@@ -60,6 +60,7 @@ class DialogueContextManager:
             "brand_entities": self._merge_and_strip(self.new_parsed["brand_entities"], self._get_prev("brand"), "BRANDS"),
             "powertrain_entities": self._merge_and_strip(self.new_parsed["powertrain_entities"], self._get_prev("powertrain"), "POWERTRAIN"),
             "body_entities": self._merge_and_strip(self.new_parsed["body_entities"], self._get_prev("body_type"), "BODY_TYPE"),
+            "transmission_entities": self._merge_and_strip(self.new_parsed.get("transmission_entities", []), self._get_prev("transmission"), "TRANSMISSION"),
             "hard_filter_entities": self._merge_and_strip(self.new_parsed["hard_filter_entities"], self._get_prev("hard_filter"), "HARD_FILTERS"),
             
             # Budget tidak di-_merge (jangan digabungkan), tapi jika baru di-set, timpa yang lama

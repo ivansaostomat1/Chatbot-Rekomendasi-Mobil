@@ -125,6 +125,9 @@ def apply_hard_filters(df, req_kwargs: dict):
     if req_kwargs.get("must_have_wireless_tech"):
         df = df[(df["APPLE_CARPLAY"] == 2) | (df["ANDROID_AUTO"] == 2)]
 
+    if req_kwargs.get("transmission") is not None:
+        df = df[df["TRANSMISSION"] == req_kwargs["transmission"]]
+
     return df
 
 

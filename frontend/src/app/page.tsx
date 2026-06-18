@@ -324,10 +324,6 @@ export default function ChatbotPage() {
                       <RiRobot2Fill size={16} style={{ color: '#4090F7' }} /> Otobot menangkap:
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                        <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Gaya Rekomendasi:</span>
-                        <span style={{ fontWeight: 800, color: '#8B5CF6' }}>{payload.profile_display_name || "Personalized"}</span>
-                      </div>
                       {payload.entities?.length > 0 && (
                         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                           <span style={{ fontWeight: 700, width: '100px', color: 'var(--text-muted)' }}>Filter Syarat:</span>

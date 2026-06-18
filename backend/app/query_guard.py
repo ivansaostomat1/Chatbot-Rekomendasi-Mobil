@@ -6,7 +6,8 @@ import re
 
 from .feature_ontology import (
     BODY_TYPE_MAP, POWERTRAIN_MAP, DRIVETRAIN_MAP, 
-    DRIVETRAIN_ENCODING, FEATURE_CONSTRAINT_MAP, BRAND_MAP
+    DRIVETRAIN_ENCODING, FEATURE_CONSTRAINT_MAP, BRAND_MAP,
+    TRANSMISSION_MAP
 )
 
 # ======================================================
@@ -27,6 +28,8 @@ def parse_budget_strings(raw_budgets: List[str]) -> Tuple[Optional[int], Optiona
     text = text.replace("juta", "jt")
     text = text.replace("miliar", "m")
     text = text.replace("milyar", "m")
+    # Ganti desimal koma (,) khas Indonesia ke desimal titik (.)
+    text = text.replace(",", ".")
     
     # Ekstrak angka float
     numbers = re.findall(r"\d+(?:\.\d+)?", text)
@@ -93,9 +96,10 @@ def filter_body_type(df: pd.DataFrame, body_type: Optional[str]):
     if "BODY_GROUP" not in df.columns:
         return df
 
-    filtered = df[df["BODY_GROUP"] == body_type]
+    filtered = df[df["BODY_GROUP"].astype(str).str.upper() == body_type]
 
     if filtered.empty:
+        print(f"[QUERY GUARD] Body type filter '{body_type}' menghasilkan 0 baris, mengabaikan filter.")
         return df
 
     return filtered
@@ -115,9 +119,10 @@ def filter_powertrain(df: pd.DataFrame, powertrain: Optional[str]):
     if "POWERTRAIN" not in df.columns:
         return df
 
-    filtered = df[df["POWERTRAIN"] == powertrain]
+    filtered = df[df["POWERTRAIN"].astype(str).str.upper() == powertrain]
 
     if filtered.empty:
+        print(f"[QUERY GUARD] Powertrain filter '{powertrain}' menghasilkan 0 baris, mengabaikan filter.")
         return df
 
     return filtered
@@ -240,7 +245,16 @@ def apply_negations(df: pd.DataFrame, negated_terms: List[str]):
                 print(f"[QUERY GUARD] Negasi Feature '{text}' ({col}<{val}): {before} -> {len(filtered)} rows")
                 found_category = True
 
-        # 6. Fallback: Substring match terhadap Brand/Model (Jika tidak masuk kategori manapun)
+        # 6. Cek apabila Transmission
+        if text in TRANSMISSION_MAP:
+            target = TRANSMISSION_MAP[text]
+            if "TRANSMISSION" in filtered.columns:
+                before = len(filtered)
+                filtered = filtered[filtered["TRANSMISSION"] != target]
+                print(f"[QUERY GUARD] Negasi Transmission '{text}' ({target}): {before} -> {len(filtered)} rows")
+                found_category = True
+
+        # 7. Fallback: Substring match terhadap Brand/Model (Jika tidak masuk kategori manapun)
         if not found_category:
             before = len(filtered)
             # Buat filter substring: MODEL atau BRAND tidak boleh mengandung term negasi

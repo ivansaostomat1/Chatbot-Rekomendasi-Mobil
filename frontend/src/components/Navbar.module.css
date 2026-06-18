@@ -95,7 +95,7 @@
 }
 
 /* Reset button specific hover */
-.actionBtn:first-child:hover {
+.resetBtn:hover {
   color: #ef4444;
   background: rgba(239,68,68,0.06);
   border-color: rgba(239,68,68,0.25);

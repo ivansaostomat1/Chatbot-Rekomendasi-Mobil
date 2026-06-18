@@ -107,14 +107,18 @@ BODY_TYPE_MAP = {
 # ======================================================
 
 POWERTRAIN_MAP = {
-    "bensin": "Bensin",
-    "gasoline": "Bensin",
-    "diesel": "Diesel",
-    "solar": "Diesel",
-    "hybrid": "Hybrid",
-    "listrik": "Listrik",
-    "ev": "Listrik",
-    "bev": "Listrik"
+    "bensin": "BENSIN",
+    "gasoline": "BENSIN",
+    "petrol": "BENSIN",
+    "diesel": "DIESEL",
+    "solar": "DIESEL",
+    "hybrid": "HYBRID",
+    "hev": "HYBRID",
+    "phev": "HYBRID",
+    "mhev": "HYBRID",
+    "listrik": "LISTRIK",
+    "ev": "LISTRIK",
+    "bev": "LISTRIK"
 }
 
 
@@ -156,7 +160,9 @@ DRIVETRAIN_ENCODING = {
 
 TRANSMISSION_MAP = {
     "mt": 1.0,
+    "manual": 1.0,
     "at": 2.0,
+    "matic": 2.0,
     "cvt": 3.0,
     "dct": 4.0,
     "single speed": 5.0,

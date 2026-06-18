@@ -76,6 +76,14 @@ def encode_granular_features(df):
         if df[col].dtype == object:
             df[col] = df[col].apply(normalize_text)
 
+    binary_map = {
+        "no": 0, "yes": 1,
+        "0": 0, "1": 1,
+        "": 0,
+        0: 0, 1: 1,
+        0.0: 0, 1.0: 1
+    }
+
     encoders = {
 
         "APPLE_CARPLAY": {"": 0, "wired": 1, "wireless": 2},
@@ -99,15 +107,15 @@ def encode_granular_features(df):
         },
 
         "SPEEDOMETER": {"analog": 0, "digital": 1},
-        "WIRELESS_CHARGER": {"no": 0, "yes": 1},
+        "WIRELESS_CHARGER": binary_map,
         "DRIVE_SYS": {"fwd": 1, "rwd": 2, "awd": 3, "4wd": 4},
         "TRANSMISSION": TRANSMISSION_MAP,
-        "POWER_TAILGATE": {"no": 0, "yes": 1},
+        "POWER_TAILGATE": binary_map,
 
-        "AMBIENT_LIGHT": {"no": 0, "yes": 1},
-        "HEAD_UP_DISPLAY": {"no": 0, "yes": 1},
-        "CAMERA_360": {"no": 0, "yes": 1, "0": 0, "1": 1},
-        "AUTO_HOLD": {"no": 0, "yes": 1},
+        "AMBIENT_LIGHT": binary_map,
+        "HEAD_UP_DISPLAY": binary_map,
+        "CAMERA_360": binary_map,
+        "AUTO_HOLD": binary_map,
 
 # Untuk tipe jok (Leather/Fabric) buat skalanya
 "LEATHER_SEAT": {
@@ -136,15 +144,15 @@ def encode_granular_features(df):
     "yes (front & rear)": 4,
     "yes (all)": 5
 },
-"REAR_SEAT_ENTERTAINMENT": {"no": 0, "yes": 1},
+"REAR_SEAT_ENTERTAINMENT": binary_map,
 "PARKING_BRAKE": {"manual": 0, "electric": 1},
-"AEB": {"no": 0, "yes": 1, "0": 0, "1": 1},
-"ACC": {"no": 0, "yes": 1, "0": 0, "1": 1},
-"LKA": {"no": 0, "yes": 1, "0": 0, "1": 1},
-"ABS": {"no": 0, "yes": 1, "0": 0, "1": 1},
-"ESC": {"no": 0, "yes": 1, "0": 0, "1": 1},
-"TCS": {"no": 0, "yes": 1, "0": 0, "1": 1},
-"RCTA": {"no": 0, "yes": 1, "0": 0, "1": 1},
+"AEB": binary_map,
+"ACC": binary_map,
+"LKA": binary_map,
+"ABS": binary_map,
+"ESC": binary_map,
+"TCS": binary_map,
+"RCTA": binary_map,
 "MASSAGE_SEAT": {
     "no": 0, 
     "yes (driver)": 1, 

@@ -10,7 +10,8 @@ from app.feature_ontology import (
     HARD_FILTER_MAP,
     BRAND_MAP,
     GLOBAL_DEFAULT_WEIGHTS,
-    UI_TO_INDEX_MAP
+    UI_TO_INDEX_MAP,
+    TRANSMISSION_MAP
 )
 from .feature_engineering.preference_weight_map import (
     resolve_preference_weights
@@ -165,6 +166,17 @@ def extract_brand(entities):
     return None
     
 # ======================================================
+# BUILD TRANSMISSION
+# ======================================================
+
+def extract_transmission(entities):
+    for e in entities:
+        text = e.lower()
+        if text in TRANSMISSION_MAP:
+            return TRANSMISSION_MAP[text]
+    return None
+
+# ======================================================
 # MAIN BUILDER
 # ======================================================
 def build_recommendation_params(
@@ -187,6 +199,8 @@ def build_recommendation_params(
     params["drive_sys"] = extract_drive_sys(entities)
 
     params["brand"] = extract_brand(entities)
+
+    params["transmission"] = extract_transmission(entities)
 
     params["feature_constraints"] = build_feature_constraints(
         entities

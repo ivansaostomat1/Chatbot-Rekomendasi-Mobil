@@ -41,7 +41,7 @@ export default function Navbar({ onReset }: NavbarProps) {
           </Link>
           {onReset && (
             <button
-              className={styles.actionBtn}
+              className={`${styles.actionBtn} ${styles.resetBtn}`}
               onClick={onReset}
               title="Reset Sesi"
               aria-label="Reset Sesi"

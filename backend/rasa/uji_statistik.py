@@ -22,7 +22,7 @@ from itertools import combinations
 # ==============================================================================
 # KONFIGURASI
 # ==============================================================================
-RESULTS_DIR = os.path.join("results", "lama")
+RESULTS_DIR = os.path.join("results", "baru")
 
 CONFIGS = {
     "CP": "Default",
@@ -256,7 +256,7 @@ def main():
     # 2. UJI NORMALITAS (SHAPIRO-WILK)
     # -----------------------------------------------------------
     print("\n" + "=" * 80)
-    print("[2/4] UJI NORMALITAS (Shapiro-Wilk, α = 0.05)")
+    print("[2/4] UJI NORMALITAS (Shapiro-Wilk, alpha = 0.05)")
     print("=" * 80)
     
     normality_results = {}
@@ -277,7 +277,7 @@ def main():
     # 3. UJI SIGNIFIKANSI + EFFECT SIZE
     # -----------------------------------------------------------
     print("\n" + "=" * 80)
-    print("[3/4] UJI SIGNIFIKANSI & EFFECT SIZE (α = 0.05)")
+    print("[3/4] UJI SIGNIFIKANSI & EFFECT SIZE (alpha = 0.05)")
     print("=" * 80)
     
     all_sig_results = []
@@ -313,7 +313,7 @@ def main():
                     print(f"    {result['pair']:20s} | {result['test']:15s} | "
                           f"p={result['p_value']:.4f} {sig_marker} | "
                           f"{result['effect_size']:>20s} ({result['effect_label']}) | "
-                          f"Δ={result['diff']:+.4f}")
+                          f"Diff={result['diff']:+.4f}")
     
     # -----------------------------------------------------------
     # 4. ANALISIS FEATURE.NEGATED (fokus khusus)
@@ -339,8 +339,8 @@ def main():
                 sig_marker = "***" if result["significant"] else "   "
                 print(f"  {result['pair']:20s} | {result['test']:15s} | "
                       f"p={result['p_value']:.4f} {sig_marker} | "
-                      f"mean: {result['mean_a']:.4f} → {result['mean_b']:.4f} "
-                      f"(Δ={result['diff']:+.4f})")
+                      f"mean: {result['mean_a']:.4f} -> {result['mean_b']:.4f} "
+                      f"(Diff={result['diff']:+.4f})")
     
     # -----------------------------------------------------------
     # RINGKASAN

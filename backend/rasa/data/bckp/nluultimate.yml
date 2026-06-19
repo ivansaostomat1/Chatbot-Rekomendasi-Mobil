@@ -227,105 +227,6 @@ nlu:
 
 - intent: choose_preference
   examples: |
-    - pilih yang ada [apple carplay](feature) tapi tolong skip [amt]{"entity":"transmission", "role":"negated"}
-    - saya prefer [mercedes](brand) tapi bukan [suv]{"entity":"body_type", "role":"negated"}
-    - pilih [mazda](brand) saja tapi hindari [hatchback]{"entity":"body_type", "role":"negated"}
-    - maunya tipe [hatchback](body_type) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
-    - maunya tipe [sedan](body_type) tapi bukan [hatchback]{"entity":"body_type", "role":"negated"}
-    - saya mau yang [ev](powertrain) tapi exclude [wuling]{"entity":"brand", "role":"negated"}
-    - saya mau yang [hybrid](powertrain) tapi jangan yang [ev]{"entity":"powertrain", "role":"negated"}
-    - pilih [toyota](brand) saja tapi hindari yang [hybrid]{"entity":"powertrain", "role":"negated"}
-    - saya mau yang [listrik](powertrain) tapi hindari yang [boros]{"entity":"preference", "role":"negated"}
-    - maunya tipe [suv](body_type) tapi hindari yang [bensin]{"entity":"powertrain", "role":"negated"}
-    - maunya tipe [coupe](body_type) tapi tidak mau [cvt]{"entity":"transmission", "role":"negated"}
-    - pilih yang ada [sunroof](feature) tapi tolong hindari yang [bensin]{"entity":"powertrain", "role":"negated"}
-    - pilih yang [sporty](preference) tapi bukan [matic]{"entity":"transmission", "role":"negated"}
-    - maunya [7 orang](hard_filter) saja tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - pilih [honda](brand) saja tapi bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}
-    - pilih yang ada [adas](feature) tapi tolong skip tipe [mpv]{"entity":"body_type", "role":"negated"}
-    - saya mau yang [bensin](powertrain) tapi hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"}
-    - pilih yang ada [kamera 360](feature) tapi tolong tidak mau yang [lemot]{"entity":"preference", "role":"negated"}
-    - saya prefer [mercedes](brand) tapi ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - saya prefer [kia](brand) tapi hindari [matic]{"entity":"transmission", "role":"negated"}
-    - pilih [hyundai](brand) saja tapi tidak perlu [jok kulit]{"entity":"feature", "role":"negated"}
-    - maunya tipe [sedan](body_type) tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - pilih yang [mewah](preference) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
-    - maunya tipe [suv](body_type) tapi hindari yang [kaku]{"entity":"preference", "role":"negated"}
-    - pilih yang ada [sunroof](feature) tapi tolong hindari [sedan]{"entity":"body_type", "role":"negated"}
-    - saya prefer [mitsubishi](brand) tapi jangan yang [kaku]{"entity":"preference", "role":"negated"}
-    - pilih yang [canggih](preference) tapi hindari [dct]{"entity":"transmission", "role":"negated"}
-    - maunya tipe [sedan](body_type) tapi skip [ev]{"entity":"powertrain", "role":"negated"}
-    - pilih [mitsubishi](brand) saja tapi tidak mau yang [kaku]{"entity":"preference", "role":"negated"}
-    - pilih [mercedes](brand) saja tapi jangan yang [hybrid]{"entity":"powertrain", "role":"negated"}
-    - pilih yang [lincah](preference) tapi jangan [kia]{"entity":"brand", "role":"negated"}
-    - pilih [bensin](powertrain) tapi tanpa [kamera 360]{"entity":"feature", "role":"negated"} ya
-    - saya mau yang [ev](powertrain) tapi skip [listrik]{"entity":"powertrain", "role":"negated"}
-    - pilih [ev](powertrain) tapi jangan [mercedes]{"entity":"brand", "role":"negated"} ya
-    - pilih [bensin](powertrain) tapi jangan [wuling]{"entity":"brand", "role":"negated"} ya
-    - pilih [mercedes](brand) saja tapi jangan yang [diesel]{"entity":"powertrain", "role":"negated"}
-    - pilih [hybrid](powertrain) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"} ya
-    - maunya [7 orang](hard_filter) saja tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"}
-    - saya prefer [kia](brand) tapi exclude [hyundai]{"entity":"brand", "role":"negated"}
-    - pilih [listrik](powertrain) tapi tidak perlu [sunroof]{"entity":"feature", "role":"negated"} ya
-    - pilih [mazda](brand) saja tapi bukan [hyundai]{"entity":"brand", "role":"negated"}
-    - saya mau yang [bensin](powertrain) tapi skip [manual]{"entity":"transmission", "role":"negated"}
-    - pilih [chery](brand) saja tapi hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
-    - saya prefer [kia](brand) tapi hindari [mpv]{"entity":"body_type", "role":"negated"}
-    - saya prefer [toyota](brand) tapi bukan yang [diesel]{"entity":"powertrain", "role":"negated"}
-    - pilih [hybrid](powertrain) tapi hindari [mercedes]{"entity":"brand", "role":"negated"} ya
-    - pilih yang [mewah](preference) tapi bukan [dct]{"entity":"transmission", "role":"negated"}
-    - pilih yang [sporty](preference) tapi hindari [mpv]{"entity":"body_type", "role":"negated"}
-    - saya prefer [bmw](brand) tapi hindari yang pakai [adas]{"entity":"feature", "role":"negated"}
-    - pilih yang ada [jok kulit](feature) tapi tolong hindari [mazda]{"entity":"brand", "role":"negated"}
-    - pilih yang [aman](preference) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"}
-    - maunya [7 seat](hard_filter) saja tapi hindari yang pakai [android auto]{"entity":"feature", "role":"negated"}
-    - maunya [7 kursi](hard_filter) saja tapi bukan [manual]{"entity":"transmission", "role":"negated"}
-    - pilih yang [lincah](preference) tapi hindari [coupe]{"entity":"body_type", "role":"negated"}
-    - maunya [5 orang](hard_filter) saja tapi tidak perlu [android auto]{"entity":"feature", "role":"negated"}
-    - pilih yang [canggih](preference) tapi tidak mau [dct]{"entity":"transmission", "role":"negated"}
-    - saya prefer [chery](brand) tapi hindari yang [sempit]{"entity":"preference", "role":"negated"}
-    - pilih yang ada [android auto](feature) tapi tolong jangan yang [kaku]{"entity":"preference", "role":"negated"}
-    - maunya [7 orang](hard_filter) saja tapi bukan [manual]{"entity":"transmission", "role":"negated"}
-    - maunya [5 seat](hard_filter) saja tapi hindari yang [hybrid]{"entity":"powertrain", "role":"negated"}
-    - maunya [5 orang](hard_filter) saja tapi bukan yang [diesel]{"entity":"powertrain", "role":"negated"}
-    - saya mau yang [ev](powertrain) tapi jangan yang [boros]{"entity":"preference", "role":"negated"}
-    - maunya tipe [coupe](body_type) tapi jangan yang [lemot]{"entity":"preference", "role":"negated"}
-    - saya mau yang [bensin](powertrain) tapi hindari yang [boros]{"entity":"preference", "role":"negated"}
-    - saya prefer [suzuki](brand) tapi skip [listrik]{"entity":"powertrain", "role":"negated"}
-    - pilih [nissan](brand) saja tapi skip [manual]{"entity":"transmission", "role":"negated"}
-    - saya mau yang [hybrid](powertrain) tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - pilih yang [canggih](preference) tapi hindari [hatchback]{"entity":"body_type", "role":"negated"}
-    - pilih yang ada [kamera 360](feature) tapi tolong tanpa [jok kulit]{"entity":"feature", "role":"negated"}
-    - saya prefer [chery](brand) tapi hindari [mazda]{"entity":"brand", "role":"negated"}
-    - pilih yang ada [adas](feature) tapi tolong bukan [chery]{"entity":"brand", "role":"negated"}
-    - pilih yang [lincah](preference) tapi hindari [suzuki]{"entity":"brand", "role":"negated"}
-    - maunya [5 orang](hard_filter) saja tapi hindari yang [boros]{"entity":"preference", "role":"negated"}
-    - pilih yang [mewah](preference) tapi hindari [sedan]{"entity":"body_type", "role":"negated"}
-    - pilih yang ada [jok kulit](feature) tapi tolong hindari [mpv]{"entity":"body_type", "role":"negated"}
-    - pilih yang ada [kamera 360](feature) tapi tolong hindari yang [ev]{"entity":"powertrain", "role":"negated"}
-    - pilih [ev](powertrain) tapi tidak mau yang [lemot]{"entity":"preference", "role":"negated"} ya
-    - maunya tipe [sedan](body_type) tapi exclude [toyota]{"entity":"brand", "role":"negated"}
-    - maunya [5 orang](hard_filter) saja tapi bukan [coupe]{"entity":"body_type", "role":"negated"}
-    - pilih [mercedes](brand) saja tapi tanpa [apple carplay]{"entity":"feature", "role":"negated"}
-    - maunya [5 orang](hard_filter) saja tapi hindari [mercedes]{"entity":"brand", "role":"negated"}
-    - pilih [mazda](brand) saja tapi exclude [mitsubishi]{"entity":"brand", "role":"negated"}
-    - maunya tipe [coupe](body_type) tapi skip [cvt]{"entity":"transmission", "role":"negated"}
-    - pilih [mitsubishi](brand) saja tapi tidak mau [matic]{"entity":"transmission", "role":"negated"}
-    - pilih yang [nyaman](preference) tapi hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
-    - maunya [5 orang](hard_filter) saja tapi jangan yang [mahal]{"entity":"preference", "role":"negated"}
-    - pilih [ev](powertrain) tapi jangan [kia]{"entity":"brand", "role":"negated"} ya
-    - pilih yang [nyaman](preference) tapi hindari [sedan]{"entity":"body_type", "role":"negated"}
-    - pilih yang [mewah](preference) tapi bukan [hyundai]{"entity":"brand", "role":"negated"}
-    - pilih [honda](brand) saja tapi bukan [cvt]{"entity":"transmission", "role":"negated"}
-    - pilih yang [sporty](preference) tapi hindari yang [kaku]{"entity":"preference", "role":"negated"}
-    - pilih yang ada [sunroof](feature) tapi tolong skip [cvt]{"entity":"transmission", "role":"negated"}
-    - maunya tipe [sedan](body_type) tapi hindari yang [diesel]{"entity":"powertrain", "role":"negated"}
-    - pilih [kia](brand) saja tapi tanpa [adas]{"entity":"feature", "role":"negated"}
-    - pilih yang ada [adas](feature) tapi tolong skip [mazda]{"entity":"brand", "role":"negated"}
-    - saya prefer [mercedes](brand) tapi bukan yang [ev]{"entity":"powertrain", "role":"negated"}
-    - pilih yang [canggih](preference) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
-    - pilih yang ada [adas](feature) tapi tolong hindari [dct]{"entity":"transmission", "role":"negated"}
-    - pilih [wuling](brand) saja tapi jangan yang [mahal]{"entity":"preference", "role":"negated"}
     - saya mau yang pakai [bensin](powertrain) aja
     - pilih yang [bensin](powertrain) karena gampang isi
     - saya pilih [hybrid](powertrain) biar irit
@@ -660,8 +561,105 @@ nlu:
     - udah langsung aja
     - gausah ditambahin
     - udah cukup segitu
-
-
+    - pilih yang ada [apple carplay](feature) tapi tolong skip [amt]{"entity":"transmission", "role":"negated"}
+    - saya prefer [mercedes](brand) tapi bukan [suv]{"entity":"body_type", "role":"negated"}
+    - pilih [mazda](brand) saja tapi hindari [hatchback]{"entity":"body_type", "role":"negated"}
+    - maunya tipe [hatchback](body_type) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
+    - maunya tipe [sedan](body_type) tapi bukan [hatchback]{"entity":"body_type", "role":"negated"}
+    - saya mau yang [ev](powertrain) tapi exclude [wuling]{"entity":"brand", "role":"negated"}
+    - saya mau yang [hybrid](powertrain) tapi jangan yang [ev]{"entity":"powertrain", "role":"negated"}
+    - pilih [toyota](brand) saja tapi hindari yang [hybrid]{"entity":"powertrain", "role":"negated"}
+    - saya mau yang [listrik](powertrain) tapi hindari yang [boros]{"entity":"preference", "role":"negated"}
+    - maunya tipe [suv](body_type) tapi hindari yang [bensin]{"entity":"powertrain", "role":"negated"}
+    - maunya tipe [coupe](body_type) tapi tidak mau [cvt]{"entity":"transmission", "role":"negated"}
+    - pilih yang ada [sunroof](feature) tapi tolong hindari yang [bensin]{"entity":"powertrain", "role":"negated"}
+    - pilih yang [sporty](preference) tapi bukan [matic]{"entity":"transmission", "role":"negated"}
+    - maunya [7 orang](hard_filter) saja tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - pilih [honda](brand) saja tapi bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}
+    - pilih yang ada [adas](feature) tapi tolong skip tipe [mpv]{"entity":"body_type", "role":"negated"}
+    - saya mau yang [bensin](powertrain) tapi hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"}
+    - pilih yang ada [kamera 360](feature) tapi tolong tidak mau yang [lemot]{"entity":"preference", "role":"negated"}
+    - saya prefer [mercedes](brand) tapi ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - saya prefer [kia](brand) tapi hindari [matic]{"entity":"transmission", "role":"negated"}
+    - pilih [hyundai](brand) saja tapi tidak perlu [jok kulit]{"entity":"feature", "role":"negated"}
+    - maunya tipe [sedan](body_type) tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - pilih yang [mewah](preference) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
+    - maunya tipe [suv](body_type) tapi hindari yang [kaku]{"entity":"preference", "role":"negated"}
+    - pilih yang ada [sunroof](feature) tapi tolong hindari [sedan]{"entity":"body_type", "role":"negated"}
+    - saya prefer [mitsubishi](brand) tapi jangan yang [kaku]{"entity":"preference", "role":"negated"}
+    - pilih yang [canggih](preference) tapi hindari [dct]{"entity":"transmission", "role":"negated"}
+    - maunya tipe [sedan](body_type) tapi skip [ev]{"entity":"powertrain", "role":"negated"}
+    - pilih [mitsubishi](brand) saja tapi tidak mau yang [kaku]{"entity":"preference", "role":"negated"}
+    - pilih [mercedes](brand) saja tapi jangan yang [hybrid]{"entity":"powertrain", "role":"negated"}
+    - pilih yang [lincah](preference) tapi jangan [kia]{"entity":"brand", "role":"negated"}
+    - pilih [bensin](powertrain) tapi tanpa [kamera 360]{"entity":"feature", "role":"negated"} ya
+    - saya mau yang [ev](powertrain) tapi skip [listrik]{"entity":"powertrain", "role":"negated"}
+    - pilih [ev](powertrain) tapi jangan [mercedes]{"entity":"brand", "role":"negated"} ya
+    - pilih [bensin](powertrain) tapi jangan [wuling]{"entity":"brand", "role":"negated"} ya
+    - pilih [mercedes](brand) saja tapi jangan yang [diesel]{"entity":"powertrain", "role":"negated"}
+    - pilih [hybrid](powertrain) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"} ya
+    - maunya [7 orang](hard_filter) saja tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"}
+    - saya prefer [kia](brand) tapi exclude [hyundai]{"entity":"brand", "role":"negated"}
+    - pilih [listrik](powertrain) tapi tidak perlu [sunroof]{"entity":"feature", "role":"negated"} ya
+    - pilih [mazda](brand) saja tapi bukan [hyundai]{"entity":"brand", "role":"negated"}
+    - saya mau yang [bensin](powertrain) tapi skip [manual]{"entity":"transmission", "role":"negated"}
+    - pilih [chery](brand) saja tapi hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
+    - saya prefer [kia](brand) tapi hindari [mpv]{"entity":"body_type", "role":"negated"}
+    - saya prefer [toyota](brand) tapi bukan yang [diesel]{"entity":"powertrain", "role":"negated"}
+    - pilih [hybrid](powertrain) tapi hindari [mercedes]{"entity":"brand", "role":"negated"} ya
+    - pilih yang [mewah](preference) tapi bukan [dct]{"entity":"transmission", "role":"negated"}
+    - pilih yang [sporty](preference) tapi hindari [mpv]{"entity":"body_type", "role":"negated"}
+    - saya prefer [bmw](brand) tapi hindari yang pakai [adas]{"entity":"feature", "role":"negated"}
+    - pilih yang ada [jok kulit](feature) tapi tolong hindari [mazda]{"entity":"brand", "role":"negated"}
+    - pilih yang [aman](preference) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"}
+    - maunya [7 seat](hard_filter) saja tapi hindari yang pakai [android auto]{"entity":"feature", "role":"negated"}
+    - maunya [7 kursi](hard_filter) saja tapi bukan [manual]{"entity":"transmission", "role":"negated"}
+    - pilih yang [lincah](preference) tapi hindari [coupe]{"entity":"body_type", "role":"negated"}
+    - maunya [5 orang](hard_filter) saja tapi tidak perlu [android auto]{"entity":"feature", "role":"negated"}
+    - pilih yang [canggih](preference) tapi tidak mau [dct]{"entity":"transmission", "role":"negated"}
+    - saya prefer [chery](brand) tapi hindari yang [sempit]{"entity":"preference", "role":"negated"}
+    - pilih yang ada [android auto](feature) tapi tolong jangan yang [kaku]{"entity":"preference", "role":"negated"}
+    - maunya [7 orang](hard_filter) saja tapi bukan [manual]{"entity":"transmission", "role":"negated"}
+    - maunya [5 seat](hard_filter) saja tapi hindari yang [hybrid]{"entity":"powertrain", "role":"negated"}
+    - maunya [5 orang](hard_filter) saja tapi bukan yang [diesel]{"entity":"powertrain", "role":"negated"}
+    - saya mau yang [ev](powertrain) tapi jangan yang [boros]{"entity":"preference", "role":"negated"}
+    - maunya tipe [coupe](body_type) tapi jangan yang [lemot]{"entity":"preference", "role":"negated"}
+    - saya mau yang [bensin](powertrain) tapi hindari yang [boros]{"entity":"preference", "role":"negated"}
+    - saya prefer [suzuki](brand) tapi skip [listrik]{"entity":"powertrain", "role":"negated"}
+    - pilih [nissan](brand) saja tapi skip [manual]{"entity":"transmission", "role":"negated"}
+    - saya mau yang [hybrid](powertrain) tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - pilih yang [canggih](preference) tapi hindari [hatchback]{"entity":"body_type", "role":"negated"}
+    - pilih yang ada [kamera 360](feature) tapi tolong tanpa [jok kulit]{"entity":"feature", "role":"negated"}
+    - saya prefer [chery](brand) tapi hindari [mazda]{"entity":"brand", "role":"negated"}
+    - pilih yang ada [adas](feature) tapi tolong bukan [chery]{"entity":"brand", "role":"negated"}
+    - pilih yang [lincah](preference) tapi hindari [suzuki]{"entity":"brand", "role":"negated"}
+    - maunya [5 orang](hard_filter) saja tapi hindari yang [boros]{"entity":"preference", "role":"negated"}
+    - pilih yang [mewah](preference) tapi hindari [sedan]{"entity":"body_type", "role":"negated"}
+    - pilih yang ada [jok kulit](feature) tapi tolong hindari [mpv]{"entity":"body_type", "role":"negated"}
+    - pilih yang ada [kamera 360](feature) tapi tolong hindari yang [ev]{"entity":"powertrain", "role":"negated"}
+    - pilih [ev](powertrain) tapi tidak mau yang [lemot]{"entity":"preference", "role":"negated"} ya
+    - maunya tipe [sedan](body_type) tapi exclude [toyota]{"entity":"brand", "role":"negated"}
+    - maunya [5 orang](hard_filter) saja tapi bukan [coupe]{"entity":"body_type", "role":"negated"}
+    - pilih [mercedes](brand) saja tapi tanpa [apple carplay]{"entity":"feature", "role":"negated"}
+    - maunya [5 orang](hard_filter) saja tapi hindari [mercedes]{"entity":"brand", "role":"negated"}
+    - pilih [mazda](brand) saja tapi exclude [mitsubishi]{"entity":"brand", "role":"negated"}
+    - maunya tipe [coupe](body_type) tapi skip [cvt]{"entity":"transmission", "role":"negated"}
+    - pilih [mitsubishi](brand) saja tapi tidak mau [matic]{"entity":"transmission", "role":"negated"}
+    - pilih yang [nyaman](preference) tapi hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
+    - maunya [5 orang](hard_filter) saja tapi jangan yang [mahal]{"entity":"preference", "role":"negated"}
+    - pilih [ev](powertrain) tapi jangan [kia]{"entity":"brand", "role":"negated"} ya
+    - pilih yang [nyaman](preference) tapi hindari [sedan]{"entity":"body_type", "role":"negated"}
+    - pilih yang [mewah](preference) tapi bukan [hyundai]{"entity":"brand", "role":"negated"}
+    - pilih [honda](brand) saja tapi bukan [cvt]{"entity":"transmission", "role":"negated"}
+    - pilih yang [sporty](preference) tapi hindari yang [kaku]{"entity":"preference", "role":"negated"}
+    - pilih yang ada [sunroof](feature) tapi tolong skip [cvt]{"entity":"transmission", "role":"negated"}
+    - maunya tipe [sedan](body_type) tapi hindari yang [diesel]{"entity":"powertrain", "role":"negated"}
+    - pilih [kia](brand) saja tapi tanpa [adas]{"entity":"feature", "role":"negated"}
+    - pilih yang ada [adas](feature) tapi tolong skip [mazda]{"entity":"brand", "role":"negated"}
+    - saya prefer [mercedes](brand) tapi bukan yang [ev]{"entity":"powertrain", "role":"negated"}
+    - pilih yang [canggih](preference) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
+    - pilih yang ada [adas](feature) tapi tolong hindari [dct]{"entity":"transmission", "role":"negated"}
+    - pilih [wuling](brand) saja tapi jangan yang [mahal]{"entity":"preference", "role":"negated"}
 
 - lookup: transmission
   examples: |
@@ -798,136 +796,6 @@ nlu:
 
 - intent: ask_recommendation
   examples: |
-    - cari mobil [mercedes](brand) [mewah](preference) budget [200jt](budget) yang ada [jok kulit](feature) tapi tolong hindari [suv]{"entity":"body_type", "role":"negated"}
-    - cari mobil [nyaman](preference) yang [canggih](preference), [7 kursi](hard_filter) budget [300jt](budget) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
-    - mau cari mobil [stabil](preference) [5 orang](hard_filter) yang [nyaman](preference) under [700jt](budget), tidak mau yang [lemot]{"entity":"preference", "role":"negated"}
-    - mau cari mobil [mewah](preference) [7 kursi](hard_filter) yang [sporty](preference) under [400jt](budget), bukan yang [bensin]{"entity":"powertrain", "role":"negated"}
-    - rekomendasikan mobil [hatchback](body_type) [aman](preference) budget [300jt](budget) tapi bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [sporty](preference) yang [aman](preference), [5 seat](hard_filter) budget [600jt](budget) tapi skip [diesel]{"entity":"powertrain", "role":"negated"}
-    - mau cari mobil [mewah](preference) [7 kursi](hard_filter) yang [canggih](preference) under [700jt](budget), hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
-    - cari mobil [stabil](preference) yang [tangguh](preference), [5 orang](hard_filter) budget [300jt](budget) tapi bukan [amt]{"entity":"transmission", "role":"negated"}
-    - rekomendasi mobil [tangguh](preference) budget [200jt](budget) [5 seat](hard_filter) tapi tolong hindari [dct]{"entity":"transmission", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
-    - mau cari mobil [lincah](preference) [5 orang](hard_filter) yang [sporty](preference) under [400jt](budget), skip [hybrid]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [bmw](brand) [mpv](body_type) budget [2m](budget) tapi hindari yang [diesel]{"entity":"powertrain", "role":"negated"} dan harus [bensin](powertrain)
-    - butuh mobil [sedan](body_type) yang [mewah](preference) dan [canggih](preference) budget [2m](budget) jangan [nissan]{"entity":"brand", "role":"negated"} ya
-    - cari mobil [wuling](brand) [coupe](body_type) budget [500jt](budget) tapi tidak mau yang [sempit]{"entity":"preference", "role":"negated"} dan harus [bensin](powertrain)
-    - butuh mobil [suv](body_type) yang [tangguh](preference) dan [aman](preference) budget [900jt](budget) hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"} ya
-    - mau cari mobil [aman](preference) [5 orang](hard_filter) yang [lincah](preference) under [800jt](budget), jangan yang [ev]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [kia](brand) [sedan](body_type) budget [1.5m](budget) tapi jangan yang [boros]{"entity":"preference", "role":"negated"} dan harus [hybrid](powertrain)
-    - rekomendasikan mobil [mpv](body_type) [sporty](preference) budget [2m](budget) tapi hindari yang [kaku]{"entity":"preference", "role":"negated"}
-    - rekomendasi mobil [irit](preference) budget [600jt](budget) [5 seat](hard_filter) tapi tolong tidak mau yang [boros]{"entity":"preference", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
-    - butuh mobil [coupe](body_type) yang [tangguh](preference) dan [lincah](preference) budget [900jt](budget) jangan [hatchback]{"entity":"body_type", "role":"negated"} ya
-    - mau cari mobil [lincah](preference) [7 orang](hard_filter) yang [irit](preference) under [700jt](budget), jangan [suzuki]{"entity":"brand", "role":"negated"}
-    - cari mobil [irit](preference) yang [nyaman](preference), [5 orang](hard_filter) budget [2m](budget) tapi jangan yang [kaku]{"entity":"preference", "role":"negated"}
-    - cari mobil [mitsubishi](brand) [mewah](preference) budget [800jt](budget) yang ada [jok kulit](feature) tapi tolong jangan yang [amt]{"entity":"transmission", "role":"negated"}
-    - cari mobil [irit](preference) yang [sporty](preference), [7 orang](hard_filter) budget [2m](budget) tapi jangan yang [ev]{"entity":"powertrain", "role":"negated"}
-    - rekomendasikan mobil [sedan](body_type) [stabil](preference) budget [1m](budget) tapi tidak mau yang [boros]{"entity":"preference", "role":"negated"}
-    - rekomendasi mobil [tangguh](preference) budget [300jt](budget) [7 seat](hard_filter) tapi tolong hindari yang [kaku]{"entity":"preference", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
-    - rekomendasi mobil [irit](preference) budget [800jt](budget) [7 kursi](hard_filter) tapi tolong ga mau yang [hybrid]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [ev](powertrain)
-    - rekomendasikan mobil [sedan](body_type) [mewah](preference) budget [800jt](budget) tapi jangan yang ada [jok kulit]{"entity":"feature", "role":"negated"}
-    - mau cari mobil [irit](preference) [5 seat](hard_filter) yang [sporty](preference) under [600jt](budget), ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [honda](brand) [nyaman](preference) budget [1m](budget) yang ada [jok kulit](feature) tapi tolong hindari yang [diesel]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [bmw](brand) [mpv](body_type) budget [2m](budget) tapi hindari [chery]{"entity":"brand", "role":"negated"} dan harus [bensin](powertrain)
-    - rekomendasi mobil [sporty](preference) budget [800jt](budget) [5 seat](hard_filter) tapi tolong jangan yang [boros]{"entity":"preference", "role":"negated"}, kalau bisa yang [ev](powertrain)
-    - cari mobil [sporty](preference) yang [canggih](preference), [7 kursi](hard_filter) budget [700jt](budget) tapi hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
-    - rekomendasi mobil [tangguh](preference) budget [2m](budget) [5 seat](hard_filter) tapi tolong tanpa [kamera 360]{"entity":"feature", "role":"negated"}, kalau bisa yang [diesel](powertrain)
-    - rekomendasikan mobil [sedan](body_type) [stabil](preference) budget [200jt](budget) tapi bukan [suv]{"entity":"body_type", "role":"negated"}
-    - butuh mobil [coupe](body_type) yang [lincah](preference) dan [mewah](preference) budget [1m](budget) tanpa [apple carplay]{"entity":"feature", "role":"negated"} ya
-    - mau cari mobil [canggih](preference) [7 orang](hard_filter) yang [sporty](preference) under [700jt](budget), bukan [kia]{"entity":"brand", "role":"negated"}
-    - cari mobil [toyota](brand) [mewah](preference) budget [500jt](budget) yang ada [jok kulit](feature) tapi tolong hindari yang [kaku]{"entity":"preference", "role":"negated"}
-    - cari mobil [canggih](preference) yang [stabil](preference), [5 orang](hard_filter) budget [200jt](budget) tapi bukan yang [bensin]{"entity":"powertrain", "role":"negated"}
-    - butuh mobil [hatchback](body_type) yang [irit](preference) dan [stabil](preference) budget [1m](budget) jangan yang ada [kamera 360]{"entity":"feature", "role":"negated"} ya
-    - rekomendasi mobil [stabil](preference) budget [900jt](budget) [5 kursi](hard_filter) tapi tolong jangan [mazda]{"entity":"brand", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
-    - rekomendasi mobil [mewah](preference) budget [300jt](budget) [7 orang](hard_filter) tapi tolong exclude [bmw]{"entity":"brand", "role":"negated"}, kalau bisa yang [bensin](powertrain)
-    - cari mobil [stabil](preference) yang [aman](preference), [5 seat](hard_filter) budget [700jt](budget) tapi skip tipe [suv]{"entity":"body_type", "role":"negated"}
-    - cari mobil [mitsubishi](brand) [suv](body_type) budget [2m](budget) tapi tanpa [jok kulit]{"entity":"feature", "role":"negated"} dan harus [diesel](powertrain)
-    - mau cari mobil [nyaman](preference) [7 orang](hard_filter) yang [lincah](preference) under [900jt](budget), bukan [coupe]{"entity":"body_type", "role":"negated"}
-    - butuh mobil [hatchback](body_type) yang [stabil](preference) dan [lincah](preference) budget [1m](budget) hindari [sedan]{"entity":"body_type", "role":"negated"} ya
-    - cari mobil [canggih](preference) yang [mewah](preference), [5 orang](hard_filter) budget [1.2m](budget) tapi skip [mitsubishi]{"entity":"brand", "role":"negated"}
-    - butuh mobil [mpv](body_type) yang [nyaman](preference) dan [aman](preference) budget [600jt](budget) tanpa [jok kulit]{"entity":"feature", "role":"negated"} ya
-    - rekomendasikan mobil [mpv](body_type) [nyaman](preference) budget [1.2m](budget) tapi jangan [mitsubishi]{"entity":"brand", "role":"negated"}
-    - cari mobil [stabil](preference) yang [sporty](preference), [7 kursi](hard_filter) budget [200jt](budget) tapi bukan yang [ev]{"entity":"powertrain", "role":"negated"}
-    - rekomendasi mobil [irit](preference) budget [2m](budget) [5 kursi](hard_filter) tapi tolong jangan yang [matic]{"entity":"transmission", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
-    - cari mobil [nissan](brand) [coupe](body_type) budget [700jt](budget) tapi hindari [suv]{"entity":"body_type", "role":"negated"} dan harus [bensin](powertrain)
-    - rekomendasi mobil [irit](preference) budget [600jt](budget) [5 seat](hard_filter) tapi tolong tidak mau [amt]{"entity":"transmission", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
-    - cari mobil [lincah](preference) yang [sporty](preference), [5 orang](hard_filter) budget [500jt](budget) tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [stabil](preference) yang [aman](preference), [5 orang](hard_filter) budget [400jt](budget) tapi hindari yang pakai [android auto]{"entity":"feature", "role":"negated"}
-    - mau cari mobil [canggih](preference) [5 seat](hard_filter) yang [lincah](preference) under [300jt](budget), skip [bensin]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [mewah](preference) yang [tangguh](preference), [5 seat](hard_filter) budget [800jt](budget) tapi jangan [coupe]{"entity":"body_type", "role":"negated"}
-    - minta saran mobil [aman](preference) dengan budget [800jt](budget) [7 kursi](hard_filter) yang [hybrid](powertrain) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"}
-    - cari mobil [hyundai](brand) [hatchback](body_type) budget [200jt](budget) tapi bukan [manual]{"entity":"transmission", "role":"negated"} dan harus [hybrid](powertrain)
-    - cari mobil [wuling](brand) [suv](body_type) budget [2m](budget) tapi jangan yang ada [sunroof]{"entity":"feature", "role":"negated"} dan harus [ev](powertrain)
-    - cari mobil [honda](brand) [mpv](body_type) budget [700jt](budget) tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"} dan harus [listrik](powertrain)
-    - rekomendasikan mobil [suv](body_type) [lincah](preference) budget [200jt](budget) tapi jangan [coupe]{"entity":"body_type", "role":"negated"}
-    - cari mobil [tangguh](preference) yang [canggih](preference), [5 kursi](hard_filter) budget [300jt](budget) tapi hindari [mpv]{"entity":"body_type", "role":"negated"}
-    - minta saran mobil [canggih](preference) dengan budget [1.5m](budget) [7 seat](hard_filter) yang [bensin](powertrain) tapi tidak mau [dct]{"entity":"transmission", "role":"negated"}
-    - cari mobil [irit](preference) yang [lincah](preference), [5 kursi](hard_filter) budget [1m](budget) tapi bukan [mpv]{"entity":"body_type", "role":"negated"}
-    - mau cari mobil [tangguh](preference) [7 kursi](hard_filter) yang [irit](preference) under [2m](budget), tanpa [android auto]{"entity":"feature", "role":"negated"}
-    - mau cari mobil [tangguh](preference) [7 kursi](hard_filter) yang [nyaman](preference) under [400jt](budget), jangan [wuling]{"entity":"brand", "role":"negated"}
-    - rekomendasikan mobil [hatchback](body_type) [aman](preference) budget [1m](budget) tapi skip [nissan]{"entity":"brand", "role":"negated"}
-    - mau cari mobil [sporty](preference) [5 kursi](hard_filter) yang [mewah](preference) under [800jt](budget), tanpa [android auto]{"entity":"feature", "role":"negated"}
-    - minta saran mobil [tangguh](preference) dengan budget [900jt](budget) [5 orang](hard_filter) yang [hybrid](powertrain) tapi skip [diesel]{"entity":"powertrain", "role":"negated"}
-    - minta saran mobil [aman](preference) dengan budget [800jt](budget) [7 seat](hard_filter) yang [bensin](powertrain) tapi jangan yang [lemot]{"entity":"preference", "role":"negated"}
-    - rekomendasi mobil [aman](preference) budget [200jt](budget) [7 seat](hard_filter) tapi tolong jangan [mercedes]{"entity":"brand", "role":"negated"}, kalau bisa yang [ev](powertrain)
-    - cari mobil [sporty](preference) yang [canggih](preference), [7 seat](hard_filter) budget [2m](budget) tapi jangan [kia]{"entity":"brand", "role":"negated"}
-    - rekomendasi mobil [stabil](preference) budget [1.2m](budget) [7 kursi](hard_filter) tapi tolong bukan [sedan]{"entity":"body_type", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
-    - rekomendasikan mobil [sedan](body_type) [aman](preference) budget [500jt](budget) tapi tidak mau [amt]{"entity":"transmission", "role":"negated"}
-    - cari mobil [nissan](brand) [hatchback](body_type) budget [200jt](budget) tapi hindari yang [sempit]{"entity":"preference", "role":"negated"} dan harus [ev](powertrain)
-    - cari mobil [bmw](brand) [stabil](preference) budget [300jt](budget) yang ada [apple carplay](feature) tapi tolong jangan yang [mahal]{"entity":"preference", "role":"negated"}
-    - mau cari mobil [canggih](preference) [5 seat](hard_filter) yang [nyaman](preference) under [600jt](budget), jangan yang [hybrid]{"entity":"powertrain", "role":"negated"}
-    - butuh mobil [hatchback](body_type) yang [tangguh](preference) dan [aman](preference) budget [1m](budget) jangan [nissan]{"entity":"brand", "role":"negated"} ya
-    - minta saran mobil [lincah](preference) dengan budget [900jt](budget) [7 orang](hard_filter) yang [listrik](powertrain) tapi jangan yang [ev]{"entity":"powertrain", "role":"negated"}
-    - minta saran mobil [lincah](preference) dengan budget [700jt](budget) [7 kursi](hard_filter) yang [listrik](powertrain) tapi jangan yang [matic]{"entity":"transmission", "role":"negated"}
-    - cari mobil [hyundai](brand) [stabil](preference) budget [500jt](budget) yang ada [sunroof](feature) tapi tolong bukan [mpv]{"entity":"body_type", "role":"negated"}
-    - minta saran mobil [mewah](preference) dengan budget [1.5m](budget) [5 orang](hard_filter) yang [listrik](powertrain) tapi tidak mau yang [lemot]{"entity":"preference", "role":"negated"}
-    - rekomendasi mobil [tangguh](preference) budget [200jt](budget) [5 orang](hard_filter) tapi tolong jangan yang [mahal]{"entity":"preference", "role":"negated"}, kalau bisa yang [diesel](powertrain)
-    - cari mobil [irit](preference) yang [nyaman](preference), [7 seat](hard_filter) budget [800jt](budget) tapi tidak perlu [android auto]{"entity":"feature", "role":"negated"}
-    - cari mobil [nissan](brand) [hatchback](body_type) budget [600jt](budget) tapi hindari yang [hybrid]{"entity":"powertrain", "role":"negated"} dan harus [diesel](powertrain)
-    - cari mobil [mercedes](brand) [lincah](preference) budget [2m](budget) yang ada [apple carplay](feature) tapi tolong hindari yang [bensin]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [stabil](preference) yang [nyaman](preference), [7 seat](hard_filter) budget [1m](budget) tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"}
-    - rekomendasi mobil [tangguh](preference) budget [400jt](budget) [7 kursi](hard_filter) tapi tolong bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [diesel](powertrain)
-    - mau cari mobil [aman](preference) [5 kursi](hard_filter) yang [tangguh](preference) under [1.5m](budget), hindari [matic]{"entity":"transmission", "role":"negated"}
-    - cari mobil [irit](preference) yang [sporty](preference), [5 orang](hard_filter) budget [800jt](budget) tapi jangan yang ada [adas]{"entity":"feature", "role":"negated"}
-    - cari mobil [mazda](brand) [sedan](body_type) budget [1.2m](budget) tapi hindari [manual]{"entity":"transmission", "role":"negated"} dan harus [listrik](powertrain)
-    - rekomendasikan mobil [suv](body_type) [canggih](preference) budget [1.5m](budget) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"}
-    - cari mobil [mazda](brand) [aman](preference) budget [600jt](budget) yang ada [sunroof](feature) tapi tolong tidak perlu [apple carplay]{"entity":"feature", "role":"negated"}
-    - cari mobil [nissan](brand) [mpv](body_type) budget [400jt](budget) tapi tanpa [android auto]{"entity":"feature", "role":"negated"} dan harus [ev](powertrain)
-    - butuh mobil [sedan](body_type) yang [irit](preference) dan [mewah](preference) budget [800jt](budget) hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"} ya
-    - mau cari mobil [stabil](preference) [7 kursi](hard_filter) yang [sporty](preference) under [500jt](budget), exclude [kia]{"entity":"brand", "role":"negated"}
-    - minta saran mobil [lincah](preference) dengan budget [900jt](budget) [5 kursi](hard_filter) yang [ev](powertrain) tapi bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [toyota](brand) [stabil](preference) budget [800jt](budget) yang ada [android auto](feature) tapi tolong jangan [coupe]{"entity":"body_type", "role":"negated"}
-    - mau cari mobil [canggih](preference) [7 seat](hard_filter) yang [nyaman](preference) under [2m](budget), exclude [chery]{"entity":"brand", "role":"negated"}
-    - minta saran mobil [lincah](preference) dengan budget [600jt](budget) [5 orang](hard_filter) yang [listrik](powertrain) tapi tidak perlu [apple carplay]{"entity":"feature", "role":"negated"}
-    - cari mobil [wuling](brand) [sedan](body_type) budget [400jt](budget) tapi jangan yang ada [adas]{"entity":"feature", "role":"negated"} dan harus [bensin](powertrain)
-    - cari mobil [suzuki](brand) [tangguh](preference) budget [2m](budget) yang ada [android auto](feature) tapi tolong skip [dct]{"entity":"transmission", "role":"negated"}
-    - cari mobil [aman](preference) yang [stabil](preference), [7 kursi](hard_filter) budget [700jt](budget) tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"}
-    - mau cari mobil [mewah](preference) [7 kursi](hard_filter) yang [sporty](preference) under [300jt](budget), hindari yang [kaku]{"entity":"preference", "role":"negated"}
-    - mau cari mobil [nyaman](preference) [5 kursi](hard_filter) yang [canggih](preference) under [600jt](budget), tidak mau [manual]{"entity":"transmission", "role":"negated"}
-    - mau cari mobil [canggih](preference) [7 seat](hard_filter) yang [nyaman](preference) under [500jt](budget), bukan [hyundai]{"entity":"brand", "role":"negated"}
-    - cari mobil [lincah](preference) yang [mewah](preference), [7 seat](hard_filter) budget [2m](budget) tapi hindari [mazda]{"entity":"brand", "role":"negated"}
-    - mau cari mobil [lincah](preference) [5 seat](hard_filter) yang [sporty](preference) under [1.2m](budget), hindari [hatchback]{"entity":"body_type", "role":"negated"}
-    - rekomendasikan mobil [coupe](body_type) [tangguh](preference) budget [1.2m](budget) tapi jangan yang ada [kamera 360]{"entity":"feature", "role":"negated"}
-    - rekomendasikan mobil [coupe](body_type) [sporty](preference) budget [2m](budget) tapi skip tipe [mpv]{"entity":"body_type", "role":"negated"}
-    - rekomendasi mobil [canggih](preference) budget [500jt](budget) [7 kursi](hard_filter) tapi tolong ga mau yang [hybrid]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [ev](powertrain)
-    - cari mobil [wuling](brand) [aman](preference) budget [1m](budget) yang ada [apple carplay](feature) tapi tolong bukan yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - rekomendasi mobil [lincah](preference) budget [2m](budget) [5 seat](hard_filter) tapi tolong bukan [matic]{"entity":"transmission", "role":"negated"}, kalau bisa yang [listrik](powertrain)
-    - rekomendasikan mobil [coupe](body_type) [stabil](preference) budget [400jt](budget) tapi hindari yang pakai [adas]{"entity":"feature", "role":"negated"}
-    - cari mobil [wuling](brand) [nyaman](preference) budget [700jt](budget) yang ada [android auto](feature) tapi tolong ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}
-    - rekomendasi mobil [stabil](preference) budget [1m](budget) [5 kursi](hard_filter) tapi tolong ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [bensin](powertrain)
-    - mau cari mobil [mewah](preference) [5 orang](hard_filter) yang [aman](preference) under [1m](budget), jangan [sedan]{"entity":"body_type", "role":"negated"}
-    - cari mobil [wuling](brand) [mewah](preference) budget [2m](budget) yang ada [jok kulit](feature) tapi tolong bukan [kia]{"entity":"brand", "role":"negated"}
-    - butuh mobil [mpv](body_type) yang [nyaman](preference) dan [aman](preference) budget [2m](budget) hindari [suv]{"entity":"body_type", "role":"negated"} ya
-    - cari mobil [mercedes](brand) [coupe](body_type) budget [200jt](budget) tapi skip tipe [sedan]{"entity":"body_type", "role":"negated"} dan harus [diesel](powertrain)
-    - rekomendasikan mobil [coupe](body_type) [aman](preference) budget [800jt](budget) tapi skip [cvt]{"entity":"transmission", "role":"negated"}
-    - cari mobil [wuling](brand) [sedan](body_type) budget [2m](budget) tapi hindari yang [mahal]{"entity":"preference", "role":"negated"} dan harus [diesel](powertrain)
-    - rekomendasikan mobil [mpv](body_type) [nyaman](preference) budget [500jt](budget) tapi ga mau yang [diesel]{"entity":"powertrain", "role":"negated"}
-    - rekomendasi mobil [nyaman](preference) budget [300jt](budget) [7 kursi](hard_filter) tapi tolong hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"}, kalau bisa yang [bensin](powertrain)
-    - cari mobil [stabil](preference) yang [aman](preference), [7 orang](hard_filter) budget [800jt](budget) tapi jangan [suv]{"entity":"body_type", "role":"negated"}
-    - mau cari mobil [tangguh](preference) [5 orang](hard_filter) yang [irit](preference) under [900jt](budget), skip [listrik]{"entity":"powertrain", "role":"negated"}
-    - cari mobil [aman](preference) yang [stabil](preference), [5 kursi](hard_filter) budget [1.5m](budget) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
-    - cari mobil [mitsubishi](brand) [coupe](body_type) budget [700jt](budget) tapi hindari [amt]{"entity":"transmission", "role":"negated"} dan harus [ev](powertrain)
-    - cari mobil [honda](brand) [mpv](body_type) budget [600jt](budget) tapi skip tipe [suv]{"entity":"body_type", "role":"negated"} dan harus [diesel](powertrain)
-    - rekomendasikan mobil [mpv](body_type) [sporty](preference) budget [500jt](budget) tapi jangan yang ada [jok kulit]{"entity":"feature", "role":"negated"}
     - tolong cariin mobil [irit](preference) budget [200jt](budget)
     - rekomendasi mobil [keluarga](preference) di [500jt](budget)
     - carikan mobil [SUV](body_type) [irit](preference) harga [300jt](budget)
@@ -935,13 +803,6 @@ nlu:
     - rekomendasiin dong mobil [nyaman](preference) buat [keluarga](preference) di [400jt](budget)
     - tolong bantu pilihin mobil [kencang](preference) di [700jt](budget)
     - carikan saya [Toyota](brand) budget [500jt](budget) yang [irit](preference)
-    - saya mau [Toyota](brand) yang irit
-    - saya mau [mercy](brand) yang [mewah](preference)
-    - cari mobil [nisan](brand) yang [irit](preference)
-    - ada [mitsu](brand) [hybrid](powertrain) ga?
-    - rekomendasi [cherry](brand) yang [canggih](preference)
-    - saya cari [vw](brand) [sedan](body_type)
-    - budget [500jt](budget) pengen [merci](brand) ada?
     - ada rekomendasi mobil [mpv](body_type) [7](min_seat) seat?
     - saya butuh rekomendasi mobil [diesel](powertrain) budget [400jt](budget)
     - rekomendasikan mobil [listrik](powertrain) di bawah [1M](budget)
@@ -1045,6 +906,12 @@ nlu:
     - saya cari yang [manual](transmission) karena lebih sporty
     - pilih yang [dct](transmission) biar responsif
     - saya mau [Toyota](brand) yang irit
+    - saya mau [mercy](brand) yang [mewah](preference)
+    - cari mobil [nisan](brand) yang [irit](preference)
+    - ada [mitsu](brand) [hybrid](powertrain) ga?
+    - rekomendasi [cherry](brand) yang [canggih](preference)
+    - saya cari [vw](brand) [sedan](body_type)
+    - budget [500jt](budget) pengen [merci](brand) ada?
     - [Honda](brand) selalu jadi pilihan
     - mobil [Suzuki](brand) untuk harian
     - cari [BMW](brand) sedan
@@ -1232,6 +1099,136 @@ nlu:
     - hindari yang ada [sunroof]{"entity":"feature", "role":"negated"}
     - saya tidak tertarik fitur [sunroof]{"entity":"feature", "role":"negated"}
     - ga butuh [kamera 360]{"entity":"feature", "role":"negated"} saya sudah mahir parkir
+    - cari mobil [mercedes](brand) [mewah](preference) budget [200jt](budget) yang ada [jok kulit](feature) tapi tolong hindari [suv]{"entity":"body_type", "role":"negated"}
+    - cari mobil [nyaman](preference) yang [canggih](preference), [7 kursi](hard_filter) budget [300jt](budget) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
+    - mau cari mobil [stabil](preference) [5 orang](hard_filter) yang [nyaman](preference) under [700jt](budget), tidak mau yang [lemot]{"entity":"preference", "role":"negated"}
+    - mau cari mobil [mewah](preference) [7 kursi](hard_filter) yang [sporty](preference) under [400jt](budget), bukan yang [bensin]{"entity":"powertrain", "role":"negated"}
+    - rekomendasikan mobil [hatchback](body_type) [aman](preference) budget [300jt](budget) tapi bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [sporty](preference) yang [aman](preference), [5 seat](hard_filter) budget [600jt](budget) tapi skip [diesel]{"entity":"powertrain", "role":"negated"}
+    - mau cari mobil [mewah](preference) [7 kursi](hard_filter) yang [canggih](preference) under [700jt](budget), hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
+    - cari mobil [stabil](preference) yang [tangguh](preference), [5 orang](hard_filter) budget [300jt](budget) tapi bukan [amt]{"entity":"transmission", "role":"negated"}
+    - rekomendasi mobil [tangguh](preference) budget [200jt](budget) [5 seat](hard_filter) tapi tolong hindari [dct]{"entity":"transmission", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
+    - mau cari mobil [lincah](preference) [5 orang](hard_filter) yang [sporty](preference) under [400jt](budget), skip [hybrid]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [bmw](brand) [mpv](body_type) budget [2m](budget) tapi hindari yang [diesel]{"entity":"powertrain", "role":"negated"} dan harus [bensin](powertrain)
+    - butuh mobil [sedan](body_type) yang [mewah](preference) dan [canggih](preference) budget [2m](budget) jangan [nissan]{"entity":"brand", "role":"negated"} ya
+    - cari mobil [wuling](brand) [coupe](body_type) budget [500jt](budget) tapi tidak mau yang [sempit]{"entity":"preference", "role":"negated"} dan harus [bensin](powertrain)
+    - butuh mobil [suv](body_type) yang [tangguh](preference) dan [aman](preference) budget [900jt](budget) hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"} ya
+    - mau cari mobil [aman](preference) [5 orang](hard_filter) yang [lincah](preference) under [800jt](budget), jangan yang [ev]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [kia](brand) [sedan](body_type) budget [1.5m](budget) tapi jangan yang [boros]{"entity":"preference", "role":"negated"} dan harus [hybrid](powertrain)
+    - rekomendasikan mobil [mpv](body_type) [sporty](preference) budget [2m](budget) tapi hindari yang [kaku]{"entity":"preference", "role":"negated"}
+    - rekomendasi mobil [irit](preference) budget [600jt](budget) [5 seat](hard_filter) tapi tolong tidak mau yang [boros]{"entity":"preference", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
+    - butuh mobil [coupe](body_type) yang [tangguh](preference) dan [lincah](preference) budget [900jt](budget) jangan [hatchback]{"entity":"body_type", "role":"negated"} ya
+    - mau cari mobil [lincah](preference) [7 orang](hard_filter) yang [irit](preference) under [700jt](budget), jangan [suzuki]{"entity":"brand", "role":"negated"}
+    - cari mobil [irit](preference) yang [nyaman](preference), [5 orang](hard_filter) budget [2m](budget) tapi jangan yang [kaku]{"entity":"preference", "role":"negated"}
+    - cari mobil [mitsubishi](brand) [mewah](preference) budget [800jt](budget) yang ada [jok kulit](feature) tapi tolong jangan yang [amt]{"entity":"transmission", "role":"negated"}
+    - cari mobil [irit](preference) yang [sporty](preference), [7 orang](hard_filter) budget [2m](budget) tapi jangan yang [ev]{"entity":"powertrain", "role":"negated"}
+    - rekomendasikan mobil [sedan](body_type) [stabil](preference) budget [1m](budget) tapi tidak mau yang [boros]{"entity":"preference", "role":"negated"}
+    - rekomendasi mobil [tangguh](preference) budget [300jt](budget) [7 seat](hard_filter) tapi tolong hindari yang [kaku]{"entity":"preference", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
+    - rekomendasi mobil [irit](preference) budget [800jt](budget) [7 kursi](hard_filter) tapi tolong ga mau yang [hybrid]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [ev](powertrain)
+    - rekomendasikan mobil [sedan](body_type) [mewah](preference) budget [800jt](budget) tapi jangan yang ada [jok kulit]{"entity":"feature", "role":"negated"}
+    - mau cari mobil [irit](preference) [5 seat](hard_filter) yang [sporty](preference) under [600jt](budget), ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [honda](brand) [nyaman](preference) budget [1m](budget) yang ada [jok kulit](feature) tapi tolong hindari yang [diesel]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [bmw](brand) [mpv](body_type) budget [2m](budget) tapi hindari [chery]{"entity":"brand", "role":"negated"} dan harus [bensin](powertrain)
+    - rekomendasi mobil [sporty](preference) budget [800jt](budget) [5 seat](hard_filter) tapi tolong jangan yang [boros]{"entity":"preference", "role":"negated"}, kalau bisa yang [ev](powertrain)
+    - cari mobil [sporty](preference) yang [canggih](preference), [7 kursi](hard_filter) budget [700jt](budget) tapi hindari yang pakai [kamera 360]{"entity":"feature", "role":"negated"}
+    - rekomendasi mobil [tangguh](preference) budget [2m](budget) [5 seat](hard_filter) tapi tolong tanpa [kamera 360]{"entity":"feature", "role":"negated"}, kalau bisa yang [diesel](powertrain)
+    - rekomendasikan mobil [sedan](body_type) [stabil](preference) budget [200jt](budget) tapi bukan [suv]{"entity":"body_type", "role":"negated"}
+    - butuh mobil [coupe](body_type) yang [lincah](preference) dan [mewah](preference) budget [1m](budget) tanpa [apple carplay]{"entity":"feature", "role":"negated"} ya
+    - mau cari mobil [canggih](preference) [7 orang](hard_filter) yang [sporty](preference) under [700jt](budget), bukan [kia]{"entity":"brand", "role":"negated"}
+    - cari mobil [toyota](brand) [mewah](preference) budget [500jt](budget) yang ada [jok kulit](feature) tapi tolong hindari yang [kaku]{"entity":"preference", "role":"negated"}
+    - cari mobil [canggih](preference) yang [stabil](preference), [5 orang](hard_filter) budget [200jt](budget) tapi bukan yang [bensin]{"entity":"powertrain", "role":"negated"}
+    - butuh mobil [hatchback](body_type) yang [irit](preference) dan [stabil](preference) budget [1m](budget) jangan yang ada [kamera 360]{"entity":"feature", "role":"negated"} ya
+    - rekomendasi mobil [stabil](preference) budget [900jt](budget) [5 kursi](hard_filter) tapi tolong jangan [mazda]{"entity":"brand", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
+    - rekomendasi mobil [mewah](preference) budget [300jt](budget) [7 orang](hard_filter) tapi tolong exclude [bmw]{"entity":"brand", "role":"negated"}, kalau bisa yang [bensin](powertrain)
+    - cari mobil [stabil](preference) yang [aman](preference), [5 seat](hard_filter) budget [700jt](budget) tapi skip tipe [suv]{"entity":"body_type", "role":"negated"}
+    - cari mobil [mitsubishi](brand) [suv](body_type) budget [2m](budget) tapi tanpa [jok kulit]{"entity":"feature", "role":"negated"} dan harus [diesel](powertrain)
+    - mau cari mobil [nyaman](preference) [7 orang](hard_filter) yang [lincah](preference) under [900jt](budget), bukan [coupe]{"entity":"body_type", "role":"negated"}
+    - butuh mobil [hatchback](body_type) yang [stabil](preference) dan [lincah](preference) budget [1m](budget) hindari [sedan]{"entity":"body_type", "role":"negated"} ya
+    - cari mobil [canggih](preference) yang [mewah](preference), [5 orang](hard_filter) budget [1.2m](budget) tapi skip [mitsubishi]{"entity":"brand", "role":"negated"}
+    - butuh mobil [mpv](body_type) yang [nyaman](preference) dan [aman](preference) budget [600jt](budget) tanpa [jok kulit]{"entity":"feature", "role":"negated"} ya
+    - rekomendasikan mobil [mpv](body_type) [nyaman](preference) budget [1.2m](budget) tapi jangan [mitsubishi]{"entity":"brand", "role":"negated"}
+    - cari mobil [stabil](preference) yang [sporty](preference), [7 kursi](hard_filter) budget [200jt](budget) tapi bukan yang [ev]{"entity":"powertrain", "role":"negated"}
+    - rekomendasi mobil [irit](preference) budget [2m](budget) [5 kursi](hard_filter) tapi tolong jangan yang [matic]{"entity":"transmission", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
+    - cari mobil [nissan](brand) [coupe](body_type) budget [700jt](budget) tapi hindari [suv]{"entity":"body_type", "role":"negated"} dan harus [bensin](powertrain)
+    - rekomendasi mobil [irit](preference) budget [600jt](budget) [5 seat](hard_filter) tapi tolong tidak mau [amt]{"entity":"transmission", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
+    - cari mobil [lincah](preference) yang [sporty](preference), [5 orang](hard_filter) budget [500jt](budget) tapi hindari yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [stabil](preference) yang [aman](preference), [5 orang](hard_filter) budget [400jt](budget) tapi hindari yang pakai [android auto]{"entity":"feature", "role":"negated"}
+    - mau cari mobil [canggih](preference) [5 seat](hard_filter) yang [lincah](preference) under [300jt](budget), skip [bensin]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [mewah](preference) yang [tangguh](preference), [5 seat](hard_filter) budget [800jt](budget) tapi jangan [coupe]{"entity":"body_type", "role":"negated"}
+    - minta saran mobil [aman](preference) dengan budget [800jt](budget) [7 kursi](hard_filter) yang [hybrid](powertrain) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"}
+    - cari mobil [hyundai](brand) [hatchback](body_type) budget [200jt](budget) tapi bukan [manual]{"entity":"transmission", "role":"negated"} dan harus [hybrid](powertrain)
+    - cari mobil [wuling](brand) [suv](body_type) budget [2m](budget) tapi jangan yang ada [sunroof]{"entity":"feature", "role":"negated"} dan harus [ev](powertrain)
+    - cari mobil [honda](brand) [mpv](body_type) budget [700jt](budget) tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"} dan harus [listrik](powertrain)
+    - rekomendasikan mobil [suv](body_type) [lincah](preference) budget [200jt](budget) tapi jangan [coupe]{"entity":"body_type", "role":"negated"}
+    - cari mobil [tangguh](preference) yang [canggih](preference), [5 kursi](hard_filter) budget [300jt](budget) tapi hindari [mpv]{"entity":"body_type", "role":"negated"}
+    - minta saran mobil [canggih](preference) dengan budget [1.5m](budget) [7 seat](hard_filter) yang [bensin](powertrain) tapi tidak mau [dct]{"entity":"transmission", "role":"negated"}
+    - cari mobil [irit](preference) yang [lincah](preference), [5 kursi](hard_filter) budget [1m](budget) tapi bukan [mpv]{"entity":"body_type", "role":"negated"}
+    - mau cari mobil [tangguh](preference) [7 kursi](hard_filter) yang [irit](preference) under [2m](budget), tanpa [android auto]{"entity":"feature", "role":"negated"}
+    - mau cari mobil [tangguh](preference) [7 kursi](hard_filter) yang [nyaman](preference) under [400jt](budget), jangan [wuling]{"entity":"brand", "role":"negated"}
+    - rekomendasikan mobil [hatchback](body_type) [aman](preference) budget [1m](budget) tapi skip [nissan]{"entity":"brand", "role":"negated"}
+    - mau cari mobil [sporty](preference) [5 kursi](hard_filter) yang [mewah](preference) under [800jt](budget), tanpa [android auto]{"entity":"feature", "role":"negated"}
+    - minta saran mobil [tangguh](preference) dengan budget [900jt](budget) [5 orang](hard_filter) yang [hybrid](powertrain) tapi skip [diesel]{"entity":"powertrain", "role":"negated"}
+    - minta saran mobil [aman](preference) dengan budget [800jt](budget) [7 seat](hard_filter) yang [bensin](powertrain) tapi jangan yang [lemot]{"entity":"preference", "role":"negated"}
+    - rekomendasi mobil [aman](preference) budget [200jt](budget) [7 seat](hard_filter) tapi tolong jangan [mercedes]{"entity":"brand", "role":"negated"}, kalau bisa yang [ev](powertrain)
+    - cari mobil [sporty](preference) yang [canggih](preference), [7 seat](hard_filter) budget [2m](budget) tapi jangan [kia]{"entity":"brand", "role":"negated"}
+    - rekomendasi mobil [stabil](preference) budget [1.2m](budget) [7 kursi](hard_filter) tapi tolong bukan [sedan]{"entity":"body_type", "role":"negated"}, kalau bisa yang [hybrid](powertrain)
+    - rekomendasikan mobil [sedan](body_type) [aman](preference) budget [500jt](budget) tapi tidak mau [amt]{"entity":"transmission", "role":"negated"}
+    - cari mobil [nissan](brand) [hatchback](body_type) budget [200jt](budget) tapi hindari yang [sempit]{"entity":"preference", "role":"negated"} dan harus [ev](powertrain)
+    - cari mobil [bmw](brand) [stabil](preference) budget [300jt](budget) yang ada [apple carplay](feature) tapi tolong jangan yang [mahal]{"entity":"preference", "role":"negated"}
+    - mau cari mobil [canggih](preference) [5 seat](hard_filter) yang [nyaman](preference) under [600jt](budget), jangan yang [hybrid]{"entity":"powertrain", "role":"negated"}
+    - butuh mobil [hatchback](body_type) yang [tangguh](preference) dan [aman](preference) budget [1m](budget) jangan [nissan]{"entity":"brand", "role":"negated"} ya
+    - minta saran mobil [lincah](preference) dengan budget [900jt](budget) [7 orang](hard_filter) yang [listrik](powertrain) tapi jangan yang [ev]{"entity":"powertrain", "role":"negated"}
+    - minta saran mobil [lincah](preference) dengan budget [700jt](budget) [7 kursi](hard_filter) yang [listrik](powertrain) tapi jangan yang [matic]{"entity":"transmission", "role":"negated"}
+    - cari mobil [hyundai](brand) [stabil](preference) budget [500jt](budget) yang ada [sunroof](feature) tapi tolong bukan [mpv]{"entity":"body_type", "role":"negated"}
+    - minta saran mobil [mewah](preference) dengan budget [1.5m](budget) [5 orang](hard_filter) yang [listrik](powertrain) tapi tidak mau yang [lemot]{"entity":"preference", "role":"negated"}
+    - rekomendasi mobil [tangguh](preference) budget [200jt](budget) [5 orang](hard_filter) tapi tolong jangan yang [mahal]{"entity":"preference", "role":"negated"}, kalau bisa yang [diesel](powertrain)
+    - cari mobil [irit](preference) yang [nyaman](preference), [7 seat](hard_filter) budget [800jt](budget) tapi tidak perlu [android auto]{"entity":"feature", "role":"negated"}
+    - cari mobil [nissan](brand) [hatchback](body_type) budget [600jt](budget) tapi hindari yang [hybrid]{"entity":"powertrain", "role":"negated"} dan harus [diesel](powertrain)
+    - cari mobil [mercedes](brand) [lincah](preference) budget [2m](budget) yang ada [apple carplay](feature) tapi tolong hindari yang [bensin]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [stabil](preference) yang [nyaman](preference), [7 seat](hard_filter) budget [1m](budget) tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"}
+    - rekomendasi mobil [tangguh](preference) budget [400jt](budget) [7 kursi](hard_filter) tapi tolong bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [diesel](powertrain)
+    - mau cari mobil [aman](preference) [5 kursi](hard_filter) yang [tangguh](preference) under [1.5m](budget), hindari [matic]{"entity":"transmission", "role":"negated"}
+    - cari mobil [irit](preference) yang [sporty](preference), [5 orang](hard_filter) budget [800jt](budget) tapi jangan yang ada [adas]{"entity":"feature", "role":"negated"}
+    - cari mobil [mazda](brand) [sedan](body_type) budget [1.2m](budget) tapi hindari [manual]{"entity":"transmission", "role":"negated"} dan harus [listrik](powertrain)
+    - rekomendasikan mobil [suv](body_type) [canggih](preference) budget [1.5m](budget) tapi jangan yang [sempit]{"entity":"preference", "role":"negated"}
+    - cari mobil [mazda](brand) [aman](preference) budget [600jt](budget) yang ada [sunroof](feature) tapi tolong tidak perlu [apple carplay]{"entity":"feature", "role":"negated"}
+    - cari mobil [nissan](brand) [mpv](body_type) budget [400jt](budget) tapi tanpa [android auto]{"entity":"feature", "role":"negated"} dan harus [ev](powertrain)
+    - butuh mobil [sedan](body_type) yang [irit](preference) dan [mewah](preference) budget [800jt](budget) hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"} ya
+    - mau cari mobil [stabil](preference) [7 kursi](hard_filter) yang [sporty](preference) under [500jt](budget), exclude [kia]{"entity":"brand", "role":"negated"}
+    - minta saran mobil [lincah](preference) dengan budget [900jt](budget) [5 kursi](hard_filter) yang [ev](powertrain) tapi bukan yang [hybrid]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [toyota](brand) [stabil](preference) budget [800jt](budget) yang ada [android auto](feature) tapi tolong jangan [coupe]{"entity":"body_type", "role":"negated"}
+    - mau cari mobil [canggih](preference) [7 seat](hard_filter) yang [nyaman](preference) under [2m](budget), exclude [chery]{"entity":"brand", "role":"negated"}
+    - minta saran mobil [lincah](preference) dengan budget [600jt](budget) [5 orang](hard_filter) yang [listrik](powertrain) tapi tidak perlu [apple carplay]{"entity":"feature", "role":"negated"}
+    - cari mobil [wuling](brand) [sedan](body_type) budget [400jt](budget) tapi jangan yang ada [adas]{"entity":"feature", "role":"negated"} dan harus [bensin](powertrain)
+    - cari mobil [suzuki](brand) [tangguh](preference) budget [2m](budget) yang ada [android auto](feature) tapi tolong skip [dct]{"entity":"transmission", "role":"negated"}
+    - cari mobil [aman](preference) yang [stabil](preference), [7 kursi](hard_filter) budget [700jt](budget) tapi hindari yang pakai [jok kulit]{"entity":"feature", "role":"negated"}
+    - mau cari mobil [mewah](preference) [7 kursi](hard_filter) yang [sporty](preference) under [300jt](budget), hindari yang [kaku]{"entity":"preference", "role":"negated"}
+    - mau cari mobil [nyaman](preference) [5 kursi](hard_filter) yang [canggih](preference) under [600jt](budget), tidak mau [manual]{"entity":"transmission", "role":"negated"}
+    - mau cari mobil [canggih](preference) [7 seat](hard_filter) yang [nyaman](preference) under [500jt](budget), bukan [hyundai]{"entity":"brand", "role":"negated"}
+    - cari mobil [lincah](preference) yang [mewah](preference), [7 seat](hard_filter) budget [2m](budget) tapi hindari [mazda]{"entity":"brand", "role":"negated"}
+    - mau cari mobil [lincah](preference) [5 seat](hard_filter) yang [sporty](preference) under [1.2m](budget), hindari [hatchback]{"entity":"body_type", "role":"negated"}
+    - rekomendasikan mobil [coupe](body_type) [tangguh](preference) budget [1.2m](budget) tapi jangan yang ada [kamera 360]{"entity":"feature", "role":"negated"}
+    - rekomendasikan mobil [coupe](body_type) [sporty](preference) budget [2m](budget) tapi skip tipe [mpv]{"entity":"body_type", "role":"negated"}
+    - rekomendasi mobil [canggih](preference) budget [500jt](budget) [7 kursi](hard_filter) tapi tolong ga mau yang [hybrid]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [ev](powertrain)
+    - cari mobil [wuling](brand) [aman](preference) budget [1m](budget) yang ada [apple carplay](feature) tapi tolong bukan yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - rekomendasi mobil [lincah](preference) budget [2m](budget) [5 seat](hard_filter) tapi tolong bukan [matic]{"entity":"transmission", "role":"negated"}, kalau bisa yang [listrik](powertrain)
+    - rekomendasikan mobil [coupe](body_type) [stabil](preference) budget [400jt](budget) tapi hindari yang pakai [adas]{"entity":"feature", "role":"negated"}
+    - cari mobil [wuling](brand) [nyaman](preference) budget [700jt](budget) yang ada [android auto](feature) tapi tolong ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}
+    - rekomendasi mobil [stabil](preference) budget [1m](budget) [5 kursi](hard_filter) tapi tolong ga mau yang [listrik]{"entity":"powertrain", "role":"negated"}, kalau bisa yang [bensin](powertrain)
+    - mau cari mobil [mewah](preference) [5 orang](hard_filter) yang [aman](preference) under [1m](budget), jangan [sedan]{"entity":"body_type", "role":"negated"}
+    - cari mobil [wuling](brand) [mewah](preference) budget [2m](budget) yang ada [jok kulit](feature) tapi tolong bukan [kia]{"entity":"brand", "role":"negated"}
+    - butuh mobil [mpv](body_type) yang [nyaman](preference) dan [aman](preference) budget [2m](budget) hindari [suv]{"entity":"body_type", "role":"negated"} ya
+    - cari mobil [mercedes](brand) [coupe](body_type) budget [200jt](budget) tapi skip tipe [sedan]{"entity":"body_type", "role":"negated"} dan harus [diesel](powertrain)
+    - rekomendasikan mobil [coupe](body_type) [aman](preference) budget [800jt](budget) tapi skip [cvt]{"entity":"transmission", "role":"negated"}
+    - cari mobil [wuling](brand) [sedan](body_type) budget [2m](budget) tapi hindari yang [mahal]{"entity":"preference", "role":"negated"} dan harus [diesel](powertrain)
+    - rekomendasikan mobil [mpv](body_type) [nyaman](preference) budget [500jt](budget) tapi ga mau yang [diesel]{"entity":"powertrain", "role":"negated"}
+    - rekomendasi mobil [nyaman](preference) budget [300jt](budget) [7 kursi](hard_filter) tapi tolong hindari yang pakai [sunroof]{"entity":"feature", "role":"negated"}, kalau bisa yang [bensin](powertrain)
+    - cari mobil [stabil](preference) yang [aman](preference), [7 orang](hard_filter) budget [800jt](budget) tapi jangan [suv]{"entity":"body_type", "role":"negated"}
+    - mau cari mobil [tangguh](preference) [5 orang](hard_filter) yang [irit](preference) under [900jt](budget), skip [listrik]{"entity":"powertrain", "role":"negated"}
+    - cari mobil [aman](preference) yang [stabil](preference), [5 kursi](hard_filter) budget [1.5m](budget) tapi bukan [sedan]{"entity":"body_type", "role":"negated"}
+    - cari mobil [mitsubishi](brand) [coupe](body_type) budget [700jt](budget) tapi hindari [amt]{"entity":"transmission", "role":"negated"} dan harus [ev](powertrain)
+    - cari mobil [honda](brand) [mpv](body_type) budget [600jt](budget) tapi skip tipe [suv]{"entity":"body_type", "role":"negated"} dan harus [diesel](powertrain)
+    - rekomendasikan mobil [mpv](body_type) [sporty](preference) budget [500jt](budget) tapi jangan yang ada [jok kulit]{"entity":"feature", "role":"negated"}
 
 - intent: ask_comparison
   examples: |
@@ -1301,6 +1298,15 @@ nlu:
     - sekelas [nisan livina](target_car) ada apa aja
     - mobil mirip [mitsu xpander](target_car)
     - alternatif [cherry omoda](target_car) dong
+    - cari mobil yang mirip [alphard](target_car)
+    - rekomendasi mobil sekelas [alphard](target_car)
+    - ada rekomendasi mobil yang mirip [fortuner](target_car) ga?
+    - cari alternatif [alphard](target_car)
+    - cari mobil sejenis [alphard](target_car)
+    - apa mobil yang setara dengan [alphard](target_car)?
+    - tolong carikan mobil sekelas [alphard](target_car)
+    - mirip [alphard](target_car) ada apa saja
+    - saingan [alphard](target_car) apa ya
 
 - synonym: Mercedes-Benz
   examples: |

@@ -17,7 +17,7 @@ import os
 import json
 import numpy as np
 from scipy import stats
-from itertools import combinations
+import csv
 
 # ==============================================================================
 # KONFIGURASI
@@ -53,6 +53,34 @@ HYPOTHESIS_PAIRS = {
         ("CP", "TAv6"),
     ],
 }
+
+INTENT_CLASSES = [
+    "ask_comparison",
+    "ask_recommendation",
+    "ask_similar_car",
+    "choose_preference",
+    "out_of_scope",
+    "start_search"
+]
+
+ENTITY_CLASSES = [
+    "body_type",
+    "body_type.negated",
+    "brand",
+    "brand.negated",
+    "budget",
+    "feature",
+    "feature.negated",
+    "hard_filter",
+    "min_seat",
+    "powertrain",
+    "powertrain.negated",
+    "preference",
+    "preference.negated",
+    "target_car",
+    "transmission",
+    "transmission.negated"
+]
 
 
 # ==============================================================================
@@ -125,6 +153,9 @@ def extract_per_class_f1(config_folder, class_name, metric_type="entity"):
         
         if class_name in data:
             f1_values.append(data[class_name]["f1-score"])
+        else:
+            # Jika kelas tidak terdeteksi sama sekali pada run ini, F1 dianggap 0.0
+            f1_values.append(0.0)
     
     return f1_values
 
@@ -135,8 +166,19 @@ def extract_per_class_f1(config_folder, class_name, metric_type="entity"):
 def shapiro_wilk_test(values, label):
     """Uji normalitas Shapiro-Wilk."""
     if len(values) < 3:
-        return None, "Data terlalu sedikit"
+        return None
     
+    # Jika seluruh nilai sama persis (std = 0), Shapiro-Wilk tidak dapat dihitung dengan benar
+    if np.all(np.array(values) == values[0]):
+        return {
+            "label": label,
+            "n": len(values),
+            "statistic": 1.0,
+            "p_value": 1.0,
+            "is_normal": True,
+            "interpretation": "Normal (Konstan)"
+        }
+        
     stat, p_value = stats.shapiro(values)
     is_normal = p_value > ALPHA
     return {
@@ -170,12 +212,15 @@ def significance_test(values_a, values_b, label_a, label_b, both_normal):
             return {
                 "pair": f"{label_a} vs {label_b}",
                 "test": "N/A",
-                "statistic": 0,
+                "statistic": 0.0,
                 "p_value": 1.0,
                 "significant": False,
                 "interpretation": "Tidak ada perbedaan",
-                "effect_size": 0,
-                "effect_label": "N/A"
+                "effect_size": "N/A",
+                "effect_label": "N/A",
+                "mean_a": round(np.mean(a), 4),
+                "mean_b": round(np.mean(b), 4),
+                "diff": 0.0
             }
         stat, p_value = stats.wilcoxon(a, b)
         test_name = "Wilcoxon"
@@ -207,13 +252,16 @@ def significance_test(values_a, values_b, label_a, label_b, both_normal):
             effect_label = "Besar"
         effect_name = f"r = {round(r, 4)}"
     
+    # Mengamankan pembagian nan pada p_value
+    p_val_rounded = round(p_value, 4) if not np.isnan(p_value) else 1.0
+    
     return {
         "pair": f"{label_a} vs {label_b}",
         "test": test_name,
-        "statistic": round(stat, 4),
-        "p_value": round(p_value, 4),
-        "significant": significant,
-        "interpretation": "Signifikan" if significant else "Tidak Signifikan",
+        "statistic": round(stat, 4) if not np.isnan(stat) else 0.0,
+        "p_value": p_val_rounded,
+        "significant": significant if not np.isnan(p_value) else False,
+        "interpretation": "Signifikan" if (significant and not np.isnan(p_value)) else "Tidak Signifikan",
         "effect_size": effect_name,
         "effect_label": effect_label,
         "mean_a": round(np.mean(a), 4),
@@ -227,61 +275,80 @@ def significance_test(values_a, values_b, label_a, label_b, both_normal):
 # ==============================================================================
 def main():
     print("=" * 80)
-    print("UJI STATISTIK HASIL EKSPERIMEN NLU PIPELINE")
+    print("UJI STATISTIK HASIL EKSPERIMEN NLU PIPELINE (SEMUA KELAS)")
     print("=" * 80)
     
     # -----------------------------------------------------------
     # 1. EKSTRAKSI DATA
     # -----------------------------------------------------------
-    print("\n[1/4] Mengekstrak F1-Score per-run dari setiap konfigurasi...\n")
+    print("\n[1/3] Mengekstrak F1-Score per-run dari setiap konfigurasi...\n")
     
     intent_f1 = {}
     entity_f1 = {}
-    feature_neg_f1 = {}
+    
+    intent_classes_f1 = {cls: {} for cls in INTENT_CLASSES}
+    entity_classes_f1 = {cls: {} for cls in ENTITY_CLASSES}
     
     for label, folder in CONFIGS.items():
-        intent_vals = extract_f1_per_run(label, folder, "intent")
-        entity_vals = extract_f1_per_run(label, folder, "entity")
-        feat_neg_vals = extract_per_class_f1(folder, "feature.negated", "entity")
+        intent_f1[label] = extract_f1_per_run(label, folder, "intent")
+        entity_f1[label] = extract_f1_per_run(label, folder, "entity")
         
-        intent_f1[label] = intent_vals
-        entity_f1[label] = entity_vals
-        feature_neg_f1[label] = feat_neg_vals
-        
-        print(f"  {label:6s}: Intent F1 = {[round(v,4) for v in intent_vals]}, "
-              f"Entity F1 = {[round(v,4) for v in entity_vals]}, "
-              f"feature.negated F1 = {[round(v,4) for v in feat_neg_vals]}")
+        for cls in INTENT_CLASSES:
+            intent_classes_f1[cls][label] = extract_per_class_f1(folder, cls, "intent")
+        for cls in ENTITY_CLASSES:
+            entity_classes_f1[cls][label] = extract_per_class_f1(folder, cls, "entity")
+            
+        print(f"  {label:6s}: Intent F1 (Macro) = {[round(v,4) for v in intent_f1[label]]}, "
+              f"Entity F1 (Macro) = {[round(v,4) for v in entity_f1[label]]}")
     
     # -----------------------------------------------------------
     # 2. UJI NORMALITAS (SHAPIRO-WILK)
     # -----------------------------------------------------------
     print("\n" + "=" * 80)
-    print("[2/4] UJI NORMALITAS (Shapiro-Wilk, alpha = 0.05)")
+    print("[2/3] UJI NORMALITAS (Shapiro-Wilk, alpha = 0.05)")
     print("=" * 80)
     
     normality_results = {}
     
+    # Uji normalitas makro
     for metric_name, data_dict in [("Intent F1", intent_f1), ("Entity F1", entity_f1)]:
         print(f"\n--- {metric_name} ---")
         print(f"{'Config':<8} {'n':>3} {'W-stat':>8} {'p-value':>8} {'Hasil':>15}")
         print("-" * 50)
         
         for label in CONFIGS:
-            result = shapiro_wilk_test(data_dict[label], f"{label}_{metric_name}")
+            key = f"{label}_{metric_name}"
+            result = shapiro_wilk_test(data_dict[label], key)
             if result:
-                normality_results[f"{label}_{metric_name}"] = result
+                normality_results[key] = result
                 print(f"{label:<8} {result['n']:>3} {result['statistic']:>8.4f} "
                       f"{result['p_value']:>8.4f} {result['interpretation']:>15}")
+                
+    # Uji normalitas sub-kelas (tidak dicetak panjang di konsol agar bersih)
+    for cls in INTENT_CLASSES:
+        for label in CONFIGS:
+            key = f"{label}_intent:{cls}"
+            result = shapiro_wilk_test(intent_classes_f1[cls][label], key)
+            if result:
+                normality_results[key] = result
+                
+    for cls in ENTITY_CLASSES:
+        for label in CONFIGS:
+            key = f"{label}_entity:{cls}"
+            result = shapiro_wilk_test(entity_classes_f1[cls][label], key)
+            if result:
+                normality_results[key] = result
     
     # -----------------------------------------------------------
     # 3. UJI SIGNIFIKANSI + EFFECT SIZE
     # -----------------------------------------------------------
     print("\n" + "=" * 80)
-    print("[3/4] UJI SIGNIFIKANSI & EFFECT SIZE (alpha = 0.05)")
+    print("[3/3] UJI SIGNIFIKANSI & EFFECT SIZE (alpha = 0.05)")
     print("=" * 80)
     
     all_sig_results = []
     
+    # 3.1 Uji Signifikansi Makro (dicetak di konsol)
     for hypothesis, pairs in HYPOTHESIS_PAIRS.items():
         print(f"\n{'='*60}")
         print(f"  {hypothesis}")
@@ -291,7 +358,6 @@ def main():
             print(f"\n  --- {metric_name} ---")
             
             for label_a, label_b in pairs:
-                # Cek normalitas kedua distribusi
                 key_a = f"{label_a}_{metric_name}"
                 key_b = f"{label_b}_{metric_name}"
                 
@@ -314,55 +380,69 @@ def main():
                           f"p={result['p_value']:.4f} {sig_marker} | "
                           f"{result['effect_size']:>20s} ({result['effect_label']}) | "
                           f"Diff={result['diff']:+.4f}")
+                    
+    # 3.2 Uji Signifikansi Sub-Kelas (ditulis langsung ke CSV)
+    print("\n  --- MENJALANKAN UJI SIGNIFIKANSI UNTUK SEMUA SUB-KELAS (Ditulis ke CSV) ---")
+    significant_subclasses = []
+    
+    for hypothesis, pairs in HYPOTHESIS_PAIRS.items():
+        # Uji sub-kelas intent
+        for cls in INTENT_CLASSES:
+            for label_a, label_b in pairs:
+                key_a = f"{label_a}_intent:{cls}"
+                key_b = f"{label_b}_intent:{cls}"
+                
+                normal_a = normality_results.get(key_a, {}).get("is_normal", False)
+                normal_b = normality_results.get(key_b, {}).get("is_normal", False)
+                both_normal = normal_a and normal_b
+                
+                result = significance_test(
+                    intent_classes_f1[cls][label_a], intent_classes_f1[cls][label_b],
+                    label_a, label_b, both_normal
+                )
+                
+                if result:
+                    result["metric"] = f"intent:{cls}"
+                    result["hypothesis"] = hypothesis
+                    all_sig_results.append(result)
+                    if result["significant"]:
+                        significant_subclasses.append(f"{hypothesis} | {result['metric']} | {result['pair']} (p={result['p_value']:.4f})")
+                        
+        # Uji sub-kelas entity
+        for cls in ENTITY_CLASSES:
+            for label_a, label_b in pairs:
+                key_a = f"{label_a}_entity:{cls}"
+                key_b = f"{label_b}_entity:{cls}"
+                
+                normal_a = normality_results.get(key_a, {}).get("is_normal", False)
+                normal_b = normality_results.get(key_b, {}).get("is_normal", False)
+                both_normal = normal_a and normal_b
+                
+                result = significance_test(
+                    entity_classes_f1[cls][label_a], entity_classes_f1[cls][label_b],
+                    label_a, label_b, both_normal
+                )
+                
+                if result:
+                    result["metric"] = f"entity:{cls}"
+                    result["hypothesis"] = hypothesis
+                    all_sig_results.append(result)
+                    if result["significant"]:
+                        significant_subclasses.append(f"{hypothesis} | {result['metric']} | {result['pair']} (p={result['p_value']:.4f})")
+                        
+    # Ringkasan sub-kelas yang signifikan secara statistik
+    if significant_subclasses:
+        print(f"\n  [INFO] Ditemukan {len(significant_subclasses)} perbedaan signifikan pada sub-kelas:")
+        for sc in significant_subclasses:
+            print(f"    - {sc}")
+    else:
+        print("\n  [INFO] Tidak ditemukan perbedaan signifikan pada sub-kelas.")
     
     # -----------------------------------------------------------
-    # 4. ANALISIS FEATURE.NEGATED (fokus khusus)
+    # SIMPAN KE CSV
     # -----------------------------------------------------------
-    print("\n" + "=" * 80)
-    print("[4/4] ANALISIS KHUSUS: feature.negated F1")
-    print("=" * 80)
-    
-    key_pairs_negasi = [
-        ("CP", "TAv6"),
-        ("TAv2", "TAv6"),
-        ("TAv5", "TAv6"),
-    ]
-    
-    for label_a, label_b in key_pairs_negasi:
-        vals_a = feature_neg_f1[label_a]
-        vals_b = feature_neg_f1[label_b]
-        
-        if len(vals_a) >= 2 and len(vals_b) >= 2:
-            # Gunakan Wilcoxon karena n kecil (3)
-            result = significance_test(vals_a, vals_b, label_a, label_b, False)
-            if result:
-                sig_marker = "***" if result["significant"] else "   "
-                print(f"  {result['pair']:20s} | {result['test']:15s} | "
-                      f"p={result['p_value']:.4f} {sig_marker} | "
-                      f"mean: {result['mean_a']:.4f} -> {result['mean_b']:.4f} "
-                      f"(Diff={result['diff']:+.4f})")
-    
-    # -----------------------------------------------------------
-    # RINGKASAN
-    # -----------------------------------------------------------
-    print("\n" + "=" * 80)
-    print("RINGKASAN KONFIRMASI HIPOTESIS")
-    print("=" * 80)
-    
-    print("""
-Catatan: Dengan hanya 3 nilai per konfigurasi (3 runs), kekuatan uji statistik 
-(statistical power) terbatas. Hasil ini bersifat indikatif dan harus diinterpretasikan 
-bersama dengan analisis deskriptif yang telah dilakukan di BAB 4.
-
-Kriteria konfirmasi:
-  - p < 0.05: Perbedaan signifikan secara statistik
-  - p >= 0.05: H0 tidak dapat ditolak (perbedaan tidak signifikan)
-    """)
-    
-    # Simpan ke CSV
     output_csv = os.path.join(RESULTS_DIR, "uji_statistik_hasil.csv")
     try:
-        import csv
         with open(output_csv, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=[
                 "hypothesis", "metric", "pair", "test", "statistic", 
@@ -372,7 +452,7 @@ Kriteria konfirmasi:
             writer.writeheader()
             for r in all_sig_results:
                 writer.writerow(r)
-        print(f"\nHasil disimpan ke: {output_csv}")
+        print(f"\nHasil lengkap seluruh uji statistik disimpan ke: {output_csv}")
     except Exception as e:
         print(f"\n[ERROR] Gagal menyimpan CSV: {e}")
     

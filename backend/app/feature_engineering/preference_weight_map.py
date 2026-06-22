@@ -111,10 +111,16 @@ PREFERENCE_WEIGHT_MAP: Dict[str, Dict[str, float]] = {
     "sporty": {
         "power": 8,
         "handling": 9,
+        "driver_comfort": 7,
+        "tech": 6,
+        "passenger_comfort": 4,
     },
     "sport": {
         "power": 8,
         "handling": 8,
+        "driver_comfort": 7,
+        "tech": 6,
+        "passenger_comfort": 4,
     },
     "fun": {
         "power": 7,
@@ -159,10 +165,16 @@ PREFERENCE_WEIGHT_MAP: Dict[str, Dict[str, float]] = {
     "nyaman": {
         "driver_comfort": 8,
         "passenger_comfort": 8,
+        "space": 7,
+        "tech": 6,
+        "luxury": 6,
     },
     "kenyamanan": {
         "driver_comfort": 8,
         "passenger_comfort": 8,
+        "space": 7,
+        "tech": 6,
+        "luxury": 6,
     },
     "empuk": {
         "driver_comfort": 8,
@@ -185,22 +197,34 @@ PREFERENCE_WEIGHT_MAP: Dict[str, Dict[str, float]] = {
 
     # --------- PENGGUNAAN HARIAN ------------------------------------------------
     "harian": {
-        "efficiency": 8,
-        "driver_comfort": 8,
+        "efficiency": 7,
         "price": 7,
-        "brand_strength": 5,
+        "space": 7,
+        "brand_strength": 8,
+        "lifecycle": 6,
+        "driver_comfort": 6,
+        "passenger_comfort": 6,
+        "offroad": 6,
     },
     "daily": {
-        "efficiency": 8,
-        "driver_comfort": 8,
+        "efficiency": 7,
         "price": 7,
-        "brand_strength": 5,
+        "space": 7,
+        "brand_strength": 8,
+        "lifecycle": 6,
+        "driver_comfort": 6,
+        "passenger_comfort": 6,
+        "offroad": 6,
     },
     "daily driver": {
-        "efficiency": 8,
-        "driver_comfort": 8,
+        "efficiency": 7,
         "price": 7,
-        "brand_strength": 5,
+        "space": 7,
+        "brand_strength": 8,
+        "lifecycle": 6,
+        "driver_comfort": 6,
+        "passenger_comfort": 6,
+        "offroad": 6,
     },
     "kantor": {
         "driver_comfort": 8,
@@ -213,9 +237,14 @@ PREFERENCE_WEIGHT_MAP: Dict[str, Dict[str, float]] = {
         "price": 6,
     },
     "enak buat harian": {
-        "efficiency": 8,
-        "driver_comfort": 8,
+        "efficiency": 7,
         "price": 7,
+        "space": 7,
+        "brand_strength": 8,
+        "lifecycle": 6,
+        "driver_comfort": 6,
+        "passenger_comfort": 6,
+        "offroad": 6,
     },
 
     # --------- PERJALANAN JAUH / MUDIK ------------------------------------------
@@ -248,27 +277,37 @@ PREFERENCE_WEIGHT_MAP: Dict[str, Dict[str, float]] = {
         "space": 9,
         "passenger_comfort": 8,
         "safety": 7,
+        "driver_comfort": 7,
+        "brand_strength": 6,
         "efficiency": 5,
     },
     "keluarga besar": {
         "space": 10,
         "passenger_comfort": 9,
         "safety": 7,
+        "driver_comfort": 7,
+        "brand_strength": 6,
     },
     "untuk keluarga": {
         "space": 9,
         "passenger_comfort": 8,
         "safety": 7,
+        "driver_comfort": 7,
+        "brand_strength": 6,
     },
     "buat keluarga": {
         "space": 9,
         "passenger_comfort": 8,
         "safety": 7,
+        "driver_comfort": 7,
+        "brand_strength": 6,
     },
     "family": {
         "space": 9,
         "passenger_comfort": 8,
         "safety": 7,
+        "driver_comfort": 7,
+        "brand_strength": 6,
     },
 
     # --------- RUANG KABIN ------------------------------------------------------
@@ -367,11 +406,13 @@ PREFERENCE_WEIGHT_MAP: Dict[str, Dict[str, float]] = {
     # --------- OFFROAD / TANGGUH ------------------------------------------------
     "tangguh": {
         "offroad": 9,
-        "power": 6,
+        "power": 7,
+        "driver_comfort": 7,
     },
     "offroad": {
         "offroad": 10,
-        "power": 6,
+        "power": 7,
+        "driver_comfort": 7,
     },
     "banjir": {
         "offroad": 10,
@@ -468,6 +509,7 @@ PREFERENCE_WEIGHT_MAP: Dict[str, Dict[str, float]] = {
         "tech": 7,
         "efficiency": 6,
         "handling": 5,
+        "luxury": 5,
     },
     "kuliah": {
         "price": 9,

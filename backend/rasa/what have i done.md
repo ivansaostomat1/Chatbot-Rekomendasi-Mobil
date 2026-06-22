@@ -650,16 +650,6 @@ entity,transmission,0.9325,0.0103,0.9283,0.0143,0.9375,0.0313,0.8962,0.052,0.889
 entity,transmission.negated,0.9268,0.0343,0.9293,0.069,0.9259,0.0,0.9002,0.0374,0.9171,0.0726,0.8889,0.0641,0.779,0.0253,0.822,0.0203,0.7407,0.0371,0.932,0.0198,0.9386,0.0396,0.9259,0.0,0.8553,0.0113,0.8722,0.0177,0.8395,0.0214,0.8338,0.0367,0.8681,0.0555,0.8025,0.0214,0.8875,0.0025,0.8993,0.018,0.8766,0.0214
 ```
 
-### 4.5 Temuan Khusus: Analisis Dampak Data Starvation pada feature.negated
-
-Hasil pengujian pada **Fase 4** menunjukkan bahwa entitas `feature.negated` memiliki rata-rata F1-Score yang cukup rendah pada model Default (**0.6909**). Namun, perbandingan dengan pengujian sebelumnya menggunakan dataset cadangan **`nluultimate.yml`** (yang dilaporkan pada direktori `unused/comparison_20260618_221703`) memberikan wawasan ilmiah yang sangat krusial:
-
-* **Pada Pengujian Aktif (`nlu.yml` / `results/baru`):** Entitas `feature.negated` dipangkas sehingga hanya memiliki **11 sampel** latih, menghasilkan rata-rata F1-Score **69.09%** pada model Default.
-* **Pada Pengujian Lama (`nluultimate.yml`):** Entitas `feature.negated` memiliki **80 sampel** latih, dan berhasil mencapai rata-rata F1-Score **91.79%** pada model Default.
-
-**Analisis/Kesimpulan:**
-Rendahnya performa `feature.negated` pada subjek penelitian saat ini (`results/baru`) bukanlah disebabkan oleh kelemahan algoritma Default Rasa dalam memproses negasi, melainkan murni akibat terjadinya **data starvation** (penyusutan ukuran sampel secara drastis dari 80 ke 11 sampel). Konfigurasi default terbukti mampu mengekstrak negasi dengan sangat andal (F1 > 91%) selama jumlah sampel data latih yang diberikan memadai.
-
 ---
 
 ## Fase 5: Deployment

@@ -149,13 +149,13 @@ Terdapat **7 konfigurasi pipeline** yang diujikan, masing-masing dengan strategi
 | TAv3    | Whitespace       | RegexFeaturizer, LexicalSyntactic, CountVectors (char_wb=3)             | 100, lr=0.001                 | **0.2**       | ✅                   | ❌                      |
 | TAv4    | Whitespace       | IndoBERT, RegexFeaturizer                                               | 75, lr=0.001, batch=[64,256]  | ❌            | ✅                   | threshold=0.6           |
 | TAv5    | Whitespace       | IndoBERT, RegexFeaturizer                                               | 75, lr=0.001, batch=[64,256]  | **0.2**       | ✅                   | threshold=0.4           |
-| TAv6    | Whitespace       | IndoBERT, RegexFeaturizer, LexicalSyntactic, CountVectors (char_wb=3)   | 150, lr=0.001, batch=[64,256] | ❌            | ❌                   | threshold=0.4           |
+| TAv6    | Whitespace       | IndoBERT, RegexFeaturizer, LexicalSyntactic, CountVectors (ngram=2, char_wb=3) | 150, lr=0.001, batch=[32,128] | **0.15**      | ✅                   | threshold=0.4           |
 
 **Catatan penting:**
 
 - Default menggunakan `pipeline:` tanpa isi (semua di-comment di configDefault.yml), sehingga Rasa secara otomatis menggunakan default pipeline.
 - TAv5 identik dengan TAv4 **kecuali** penambahan `dropout_rate: 0.2` dan penurunan threshold dari 0.6 menjadi 0.4.
-- TAv6 **tidak** menggunakan RegexEntityExtractor (sengaja dihapus agar tidak bentrok dengan DIET yang sudah kuat berkat hybrid featurizer).
+- TAv6 menggunakan arsitektur hybrid featurizer yang digabungkan dengan **RegexEntityExtractor**, **dropout_rate: 0.15**, dan ukuran batch **[32, 128]** untuk optimalisasi performa pada kelas minoritas.
 
 ### 3.3 Detail Konfigurasi Pipeline (YAML)
 
@@ -448,31 +448,47 @@ Fokus: menggabungkan kekuatan semantik IndoBERT dengan sensitivitas n-gram/imbuh
 recipe: default.v1
 language: id
 
-# TAv6 — Most Optimal Performance: Ekstensif Featurizer (IndoBERT + N-Gram)
-# Fokus: Menggabungkan kekuatan semantik IndoBERT dengan sensitivitas n-gram/imbuhan
-#        dari CountVectors dan LexicalSyntacticFeaturizer, dipadu dengan epochs 150.
-
 pipeline:
   - name: WhitespaceTokenizer
     intent_tokenization_flag: false
     intent_split_symbol: "_"
+
+  # 1. IndoBERT untuk Intent Contextual Understanding
   - name: LanguageModelFeaturizer
     model_name: "bert"
     model_weights: "indobenchmark/indobert-base-p1"
+
   - name: RegexFeaturizer
+  
+  # 2. LexicalSyntacticFeaturizer (Untuk mendeteksi posisi "tanpa"/"bukan")
   - name: LexicalSyntacticFeaturizer
+  
+  # 3. CountVectors (Sparse feature) untuk ketajaman entity boundaries
   - name: CountVectorsFeaturizer
+    min_ngram: 1
+    max_ngram: 2   # Diperluas ke bigram untuk menangkap kombinasi negasi leksikal
   - name: CountVectorsFeaturizer
     analyzer: char_wb
     min_ngram: 1
-    max_ngram: 3
+    max_ngram: 3   # Menggunakan 3 seperti di TAv1 untuk mengurangi noise
+
+  # 4. DIETClassifier (Tuned untuk dataset kecil)
   - name: DIETClassifier
     epochs: 150
     learning_rate: 0.001
-    batch_size: [64, 256]
+    batch_size: [32, 128]      # Diperkecil untuk update bobot lebih sering pada data terbatas
+    dropout_rate: 0.15          # Regularisasi ringan untuk membantu generalisasi entitas minoritas
     constrain_similarities: true
     entity_recognition: true
+
   - name: EntitySynonymMapper
+  
+  # 5. RegexEntityExtractor (Pencegahan kegagalan ekstraksi entitas minoritas/negasi via lookup tables)
+  - name: RegexEntityExtractor
+    use_lookup_tables: true
+    use_regexes: true
+    use_word_boundaries: true
+  
   - name: FallbackClassifier
     threshold: 0.4
     ambiguity_threshold: 0.1

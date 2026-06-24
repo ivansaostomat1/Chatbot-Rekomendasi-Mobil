@@ -138,11 +138,7 @@ def compute_stability(cv_summaries):
             all_classes.update(s.get(key, {}).keys())
         stab[prefix] = {}
         for cls in sorted(all_classes):
-            vals = [
-                s[key][cls]
-                for s in cv_summaries
-                if cls in s.get(key, {})
-            ]
+            vals = [s[key][cls] for s in cv_summaries if cls in s.get(key, {})]
             m, sd = mean_std(vals)
             if m is not None:
                 stab[prefix][cls] = (m, sd)
@@ -350,12 +346,21 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
                 if tt_summary
                 else ""
             )
-            writer.writerow([
-                "intent", intent, mean, std,
-                p_data[0] if p_data else "", p_data[1] if p_data else "",
-                r_data[0] if r_data else "", r_data[1] if r_data else "",
-                train_f1_val, train_p_val, train_r_val,
-            ])
+            writer.writerow(
+                [
+                    "intent",
+                    intent,
+                    mean,
+                    std,
+                    p_data[0] if p_data else "",
+                    p_data[1] if p_data else "",
+                    r_data[0] if r_data else "",
+                    r_data[1] if r_data else "",
+                    train_f1_val,
+                    train_p_val,
+                    train_r_val,
+                ]
+            )
 
         for entity, (mean, std) in stab.get("entity_per_class", {}).items():
             p_data = stab.get("entity_per_class_precision", {}).get(entity)
@@ -375,12 +380,21 @@ def save_csv(session_dir, label, stab, train_f1, cv_summaries, tt_summary):
                 if tt_summary
                 else ""
             )
-            writer.writerow([
-                "entity", entity, mean, std,
-                p_data[0] if p_data else "", p_data[1] if p_data else "",
-                r_data[0] if r_data else "", r_data[1] if r_data else "",
-                train_f1_val, train_p_val, train_r_val,
-            ])
+            writer.writerow(
+                [
+                    "entity",
+                    entity,
+                    mean,
+                    std,
+                    p_data[0] if p_data else "",
+                    p_data[1] if p_data else "",
+                    r_data[0] if r_data else "",
+                    r_data[1] if r_data else "",
+                    train_f1_val,
+                    train_p_val,
+                    train_r_val,
+                ]
+            )
 
     print(f"CSV detail per kelas disimpan: {detail_path}")
 

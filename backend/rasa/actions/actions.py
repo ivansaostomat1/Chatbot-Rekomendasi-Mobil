@@ -160,12 +160,42 @@ def extract_entities(entities, text=None):
 
         # 5. FALLBACK NEGATION CATCHER (SAFETY NET FOR ROLES)
         negatable_terms = {
-            "transmission": ["matic", "manual", "cvt", "dct", "amt", "single speed", "dht"],
-            "powertrain": ["hybrid", "bensin", "diesel", "listrik", "ev", "bev", "phev", "hev"],
-            "brand": ["toyota", "honda", "suzuki", "mitsubishi", "nissan", "mazda", "hyundai", "kia", "wuling", "chery", "bmw", "mercedes"],
-            "body_type": ["suv", "mpv", "sedan", "hatchback", "coupe", "wagon"]
+            "transmission": [
+                "matic",
+                "manual",
+                "cvt",
+                "dct",
+                "amt",
+                "single speed",
+                "dht",
+            ],
+            "powertrain": [
+                "hybrid",
+                "bensin",
+                "diesel",
+                "listrik",
+                "ev",
+                "bev",
+                "phev",
+                "hev",
+            ],
+            "brand": [
+                "toyota",
+                "honda",
+                "suzuki",
+                "mitsubishi",
+                "nissan",
+                "mazda",
+                "hyundai",
+                "kia",
+                "wuling",
+                "chery",
+                "bmw",
+                "mercedes",
+            ],
+            "body_type": ["suv", "mpv", "sedan", "hatchback", "coupe", "wagon"],
         }
-        
+
         negation_patterns = [
             r"jangan\s+(?:yang\s+)?{}",
             r"tidak\s+(?:mau|suka|perlu)?\s+{}",
@@ -176,9 +206,9 @@ def extract_entities(entities, text=None):
             r"anti\s+{}",
             r"skip\s+{}",
             r"exclude\s+{}",
-            r"hindari\s+(?:yang\s+)?{}"
+            r"hindari\s+(?:yang\s+)?{}",
         ]
-        
+
         for category, terms in negatable_terms.items():
             for term in terms:
                 for pat in negation_patterns:
@@ -186,13 +216,60 @@ def extract_entities(entities, text=None):
                     if re.search(pattern, txt_lower):
                         if term not in negated_entities:
                             negated_entities.append(term)
-                            print(f"[RASA ACTION] [NEGATION FALLBACK] Menangkap negasi untuk '{term}' (kategori: {category}) dari raw text.")
+                            print(
+                                f"[RASA ACTION] [NEGATION FALLBACK] Menangkap negasi untuk '{term}' (kategori: {category}) dari raw text."
+                            )
+
+        # 6. FALLBACK POSITIVE CATCHER FOR RECOGNIZED DICTIONARIES
+        # Jika NLU meleset tetapi term ada di kamus dan tidak dinegasikan, kita masukkan sebagai entitas positif
+        positive_fallback_terms = {
+            "transmission": (
+                transmission_entities,
+                ["matic", "manual", "cvt", "dct", "amt", "single speed", "dht"],
+            ),
+            "powertrain": (
+                powertrain_entities,
+                ["hybrid", "bensin", "diesel", "listrik", "ev", "bev", "phev", "hev"],
+            ),
+            "brand": (
+                brand_entities,
+                [
+                    "toyota",
+                    "honda",
+                    "suzuki",
+                    "mitsubishi",
+                    "nissan",
+                    "mazda",
+                    "hyundai",
+                    "kia",
+                    "wuling",
+                    "chery",
+                    "bmw",
+                    "mercedes",
+                ],
+            ),
+            "body_type": (
+                body_entities,
+                ["suv", "mpv", "sedan", "hatchback", "coupe", "wagon"],
+            ),
+        }
+        for category, (entity_list, terms) in positive_fallback_terms.items():
+            for term in terms:
+                pattern = r"\b" + re.escape(term) + r"\b"
+                if re.search(pattern, txt_lower):
+                    if term not in negated_entities and term not in entity_list:
+                        entity_list.append(term)
+                        print(
+                            f"[RASA ACTION] [POSITIVE FALLBACK] Memulihkan {category}: '{term}' dari raw text."
+                        )
 
     # Bersihkan entitas positif yang ternyata terdeteksi sebagai negated di fallback
     body_entities = [x for x in body_entities if x not in negated_entities]
     powertrain_entities = [x for x in powertrain_entities if x not in negated_entities]
     brand_entities = [x for x in brand_entities if x not in negated_entities]
-    transmission_entities = [x for x in transmission_entities if x not in negated_entities]
+    transmission_entities = [
+        x for x in transmission_entities if x not in negated_entities
+    ]
 
     return {
         "preference_terms": preference_terms,
@@ -258,11 +335,26 @@ class ActionRecommendCar(Action):
                 break
 
         import re
-        similar_keywords = ["alternatif", "mirip", "sekelas", "sejenis", "setara", "kompetitor", "saingan", "setipe", "kayak"]
+
+        similar_keywords = [
+            "alternatif",
+            "mirip",
+            "sekelas",
+            "sejenis",
+            "setara",
+            "kompetitor",
+            "saingan",
+            "setipe",
+            "kayak",
+        ]
         pattern = r"\b(" + "|".join(re.escape(w) for w in similar_keywords) + r")\b"
         has_similar_keyword = bool(re.search(pattern, text.lower()))
 
-        if intent_name == "ask_similar_car" or target_car_entity is not None or has_similar_keyword:
+        if (
+            intent_name == "ask_similar_car"
+            or target_car_entity is not None
+            or has_similar_keyword
+        ):
             print(
                 f"[RASA ACTION] [REDIRECT] Mengalihkan ke ActionFindLookalike karena target_car '{target_car_entity}', intent '{intent_name}', or keyword terdeteksi."
             )
@@ -529,7 +621,9 @@ class ActionRecommendCar(Action):
                 "refinement_stage",
                 False if new_query else tracker.get_slot("refinement_stage"),
             ),
-            SlotSet("target_car", None),  # Reset target_car slot agar tidak bocor ke pencarian VIKOR berikutnya
+            SlotSet(
+                "target_car", None
+            ),  # Reset target_car slot agar tidak bocor ke pencarian VIKOR berikutnya
         ]
 
 
@@ -640,22 +734,48 @@ class ActionFindLookalike(Action):
         # Extract from text as fallback if still none
         if not target_car:
             cleaned_text = text.lower()
-            
+
             # Check if this is a Rasa slash command (payload starting with /)
             if cleaned_text.startswith("/"):
                 try:
                     import json
-                    json_str = cleaned_text[cleaned_text.find("{"):cleaned_text.rfind("}")+1]
+
+                    json_str = cleaned_text[
+                        cleaned_text.find("{") : cleaned_text.rfind("}") + 1
+                    ]
                     if json_str:
                         payload_dict = json.loads(json_str)
                         target_car = payload_dict.get("target_car")
                 except Exception as ex:
                     print(f"[RASA ACTION] Gagal parse JSON payload: {ex}")
-            
+
             if not target_car:
                 import re
-                words_to_remove = ["alternatif", "mirip", "sekelas", "sejenis", "setara", "kompetitor", "saingan", "setipe", "kayak", "selain", "dong", "sih", "deh", "ya", "aja", "saja", "mobil", "yang", "cari"]
-                pattern = r"\b(" + "|".join(re.escape(w) for w in words_to_remove) + r")\b"
+
+                words_to_remove = [
+                    "alternatif",
+                    "mirip",
+                    "sekelas",
+                    "sejenis",
+                    "setara",
+                    "kompetitor",
+                    "saingan",
+                    "setipe",
+                    "kayak",
+                    "selain",
+                    "dong",
+                    "sih",
+                    "deh",
+                    "ya",
+                    "aja",
+                    "saja",
+                    "mobil",
+                    "yang",
+                    "cari",
+                ]
+                pattern = (
+                    r"\b(" + "|".join(re.escape(w) for w in words_to_remove) + r")\b"
+                )
                 cleaned_text = re.sub(pattern, "", cleaned_text)
                 target_car = re.sub(r"\s+", " ", cleaned_text).strip()
 

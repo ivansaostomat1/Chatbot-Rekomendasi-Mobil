@@ -11,7 +11,7 @@ from math import pi
 plt.style.use("ggplot")
 sns.set_palette("viridis")
 
-RESULTS_DIR = r"results\lama"
+RESULTS_DIR = r"results\baru"
 OUTPUT_DIR = r"gambar bab 4"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)

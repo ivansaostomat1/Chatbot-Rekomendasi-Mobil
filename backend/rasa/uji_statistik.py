@@ -98,23 +98,22 @@ def extract_f1_per_run(config_label, config_folder, metric_type="intent"):
     Returns:
         List of F1-scores, satu per run
     """
+    import glob
     f1_values = []
     
     for run_idx in range(1, N_RUNS + 1):
         run_dir = os.path.join(RESULTS_DIR, config_folder, f"cv_run{run_idx}")
         
         if metric_type == "intent":
-            # File: {folder}_cv_run{n}_intent_report.json
-            filename = f"{config_folder}_cv_run{run_idx}_intent_report.json"
+            files = glob.glob(os.path.join(run_dir, "*intent_report.json"))
         else:
-            # File: {folder}_cv_run{n}_DIETClassifier_report.json
-            filename = f"{config_folder}_cv_run{run_idx}_DIETClassifier_report.json"
+            files = glob.glob(os.path.join(run_dir, "*DIETClassifier_report.json"))
         
-        filepath = os.path.join(run_dir, filename)
-        
-        if not os.path.exists(filepath):
-            print(f"  [WARNING] File tidak ditemukan: {filepath}")
+        if not files:
+            print(f"  [WARNING] File tidak ditemukan di {run_dir}")
             continue
+        
+        filepath = files[0]
         
         with open(filepath, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -133,20 +132,21 @@ def extract_per_class_f1(config_folder, class_name, metric_type="entity"):
     """
     Ekstrak F1-Score per kelas dari setiap cv_run.
     """
+    import glob
     f1_values = []
     
     for run_idx in range(1, N_RUNS + 1):
         run_dir = os.path.join(RESULTS_DIR, config_folder, f"cv_run{run_idx}")
         
         if metric_type == "intent":
-            filename = f"{config_folder}_cv_run{run_idx}_intent_report.json"
+            files = glob.glob(os.path.join(run_dir, "*intent_report.json"))
         else:
-            filename = f"{config_folder}_cv_run{run_idx}_DIETClassifier_report.json"
+            files = glob.glob(os.path.join(run_dir, "*DIETClassifier_report.json"))
         
-        filepath = os.path.join(run_dir, filename)
-        
-        if not os.path.exists(filepath):
+        if not files:
             continue
+        
+        filepath = files[0]
         
         with open(filepath, 'r', encoding='utf-8') as f:
             data = json.load(f)

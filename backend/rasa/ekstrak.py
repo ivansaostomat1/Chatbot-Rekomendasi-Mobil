@@ -56,8 +56,8 @@ from statistics import mean, stdev
 # ================================================================
 # KONFIGURASI (ganti sesuai path folder hasil Anda)
 # ================================================================
-RESULTS_DIR = "results/lama"  # <-- GANTI INI
-OUTPUT_CSV = "perbandingan.csv"  # akan disimpan di RESULTS_DIR
+RESULTS_DIR = "results/baru"  # <-- GANTI INI
+OUTPUT_CSV = "comparison_overview.csv"  # akan disimpan di RESULTS_DIR
 # ================================================================
 
 
@@ -192,7 +192,7 @@ def save_single_config_csv(label, folder, overall_data, per_class_data):
         elif gap > 0.05:
             verdict = "SEDIKIT OVERFIT"
         else:
-            verdict = "GENERALISASI BAIK"
+            verdict = "GOOD FIT"
     else:
         verdict = "tidak ada data train_test"
 
@@ -371,8 +371,7 @@ def main():
             save_single_config_csv(label, folder, overall_tuple, config_per_class[label])
 
     # --- Simpan overview CSV ---
-    root_label = os.path.basename(RESULTS_DIR.rstrip("/\\"))
-    csv_path = os.path.join(RESULTS_DIR, f"{root_label}_perbandingan.csv")
+    csv_path = os.path.join(RESULTS_DIR, "comparison_overview.csv")
     fieldnames = [
         "config",
         "intent_f1_mean",
@@ -417,7 +416,7 @@ def main():
                 elif gap > 0.05:
                     verdict = "SEDIKIT OVERFIT"
                 else:
-                    verdict = "GENERALISASI BAIK"
+                    verdict = "GOOD FIT"
             else:
                 verdict = "tidak ada data train_test"
 
@@ -446,7 +445,7 @@ def main():
     print(f"\n[OK] Ringkasan disimpan ke: {csv_path}")
 
     # --- Simpan detail CSV (per kelas) ---
-    detail_csv = os.path.join(RESULTS_DIR, f"{root_label}_detail_perbandingan.csv")
+    detail_csv = os.path.join(RESULTS_DIR, "comparison_detail.csv")
     all_intents = set()
     all_entities = set()
     for label, data in config_per_class.items():

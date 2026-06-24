@@ -16,9 +16,9 @@ Dalam konteks **Optimalisasi Pipeline**, masalah utama yang dihadapi bukan terle
 * **Masalah:** Distribusi dataset latih antar kelas intent sangat tidak seimbang (rasio kelas mayoritas vs minoritas mencapai **16.6 : 1**). Pipeline default cenderung bias terhadap intent mayoritas dan gagal menggeneralisasikan intent minoritas.
 * **Bukti Empiris:** Intent `choose_preference` memiliki 332 sampel sedangkan `ask_similar_car` hanya memiliki 20 sampel. Akibatnya, pada validasi silang (cross-validation), model default menghasilkan F1-score yang rendah pada intent-intent minoritas karena tidak adanya mekanisme bobot kelas (*class weighting*) atau fitur representasi yang kuat.
 
-### C. Degradasi Ekstraksi Entitas Akibat Kelangkaan Data (*Data Starvation*)
-* **Masalah:** Pipeline default mengalami penurunan performa drastis ketika mengekstrak entitas bermakna negasi (`*.negated`, contoh: `feature.negated` dengan F1-score hanya **69.1%**) setelah dilakukan pemangkasan dataset.
-* **Bukti Empiris:** Pembandingan dengan dataset lama (`nluultimate.yml`) menunjukkan bahwa ketika entitas `feature.negated` memiliki **80 sampel**, pipeline default mampu mencapai F1-Score **91.79%**. Namun, ketika sampel dipangkas menjadi **11 sampel** pada dataset aktif (`nlu.yml`), F1-Score turun drastis menjadi **69.1%**. Ini membuktikan bahwa model ekstraksi entitas pada pipeline default sangat sensitif terhadap kelangkaan sampel data (*data starvation*).
+### C. Rendahnya Kinerja Ekstraksi Entitas dengan Sampel Terbatas
+* **Masalah:** Pipeline default mengalami penurunan performa yang signifikan saat mengekstrak entitas negasi dengan jumlah sampel yang sangat kecil (seperti `feature.negated`).
+* **Bukti Empiris:** Pada pengujian validasi silang (*5-Fold Cross-Validation*), entitas `feature.negated` hanya memperoleh rata-rata F1-score sebesar **0.691** (69.1%). Masalah ini disebabkan oleh keterbatasan jumlah sampel (hanya 7 sampel untuk `feature.negated` pada berkas `nlu.yml`), sehingga featurizer tradisional (`CountVectors` + `LexicalSyntactic`) pada pipeline default kesulitan menangkap representasi pola negasi yang memadai untuk digeneralisasikan pada data uji baru.
 
 ---
 

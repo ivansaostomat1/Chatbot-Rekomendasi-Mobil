@@ -53,4 +53,4 @@ backend/rasa/tools/verifikasi
 # Note: backend/data/ is NOT excluded. All CSV and Databases will be pushed.
 # Note: frontend/public/ is NOT excluded. All brosurs/images will be pushed.
 backend/rasa/4.5.1 .md
-backend/rasa/what have i done.md
+docs/Contoh Laporan Pengujian Black Box Testing Aplikasi KepaEcoBank.xlsx

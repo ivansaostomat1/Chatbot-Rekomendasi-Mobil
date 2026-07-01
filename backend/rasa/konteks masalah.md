@@ -13,8 +13,8 @@ Dalam konteks **Optimalisasi Pipeline**, masalah utama yang dihadapi bukan terle
 * **Bukti Empiris:** Pada pengujian baseline, model salah mengklasifikasikan 100% data *error* pada *train-test split* (110 sampel) dari `choose_preference` menjadi `ask_recommendation`. Hal ini disebabkan karena kemiripan struktur leksikal (kosa kata yang sama seperti nama merek, transmisi, dll.) tanpa adanya pemahaman konteks semantik kalimat yang mendalam pada pipeline default.
 
 ### B. Kerentanan terhadap Ketimpangan Sampel (Class Imbalance)
-* **Masalah:** Distribusi dataset latih antar kelas intent sangat tidak seimbang (rasio kelas mayoritas vs minoritas mencapai **16.6 : 1**). Pipeline default cenderung bias terhadap intent mayoritas dan gagal menggeneralisasikan intent minoritas.
-* **Bukti Empiris:** Intent `choose_preference` memiliki 332 sampel sedangkan `ask_similar_car` hanya memiliki 20 sampel. Akibatnya, pada validasi silang (cross-validation), model default menghasilkan F1-score yang rendah pada intent-intent minoritas karena tidak adanya mekanisme bobot kelas (*class weighting*) atau fitur representasi yang kuat.
+* **Masalah:** Distribusi dataset latih antar kelas intent sangat tidak seimbang (rasio kelas mayoritas vs minoritas mencapai **16.7 : 1**). Pipeline default cenderung bias terhadap intent mayoritas dan gagal menggeneralisasikan intent minoritas.
+* **Bukti Empiris:** Intent `choose_preference` memiliki 334 sampel sedangkan `ask_similar_car` hanya memiliki 20 sampel. Akibatnya, pada validasi silang (cross-validation), model default menghasilkan F1-score yang rendah pada intent-intent minoritas karena tidak adanya mekanisme bobot kelas (*class weighting*) atau fitur representasi yang kuat.
 
 ### C. Rendahnya Kinerja Ekstraksi Entitas dengan Sampel Terbatas
 * **Masalah:** Pipeline default mengalami penurunan performa yang signifikan saat mengekstrak entitas negasi dengan jumlah sampel yang sangat kecil (seperti `feature.negated`).

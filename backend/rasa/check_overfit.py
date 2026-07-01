@@ -24,11 +24,12 @@ N_CV_RUNS = 1  # cukup 1× CV agar cepat
 
 CONFIGS = [
     ("Default", "configDefault.yml"),
-    ("TAv1_sparse", "configTAv1.yml"),
-    ("TAv2_indobert", "configTAv2.yml"),
-    ("TAv3_hybrid", "configTAv3.yml"),
-    ("TAv4_deep", "configTAv4.yml"),
-    ("TAv5_large", "configTAv5.yml"),
+    ("TAv1", "configTAv1.yml"),
+    ("TAv2", "configTAv2.yml"),
+    ("TAv3", "configTAv3.yml"),
+    ("TAv4", "configTAv4.yml"),
+    ("TAv5", "configTAv5.yml"),
+    ("TAv6", "configTAv6.yml"),
 ]
 # ================================================================
 
